@@ -1,6 +1,5 @@
-meego-keyboard (0.4.18~1) unstable; urgency=low
+meego-keyboard (0.5.0-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Fixes: NB#190740 - Releasing long press of HWK backspace in text fields does not stop deletion immediately
   * Fixes: NB#187289 - [browser-blocker] Last character entered by vkb is doubled in awesomebar when "Sym" button is pressed
   * Fixes: NB#186306 - '+' or '-' symbols are not working in the number text field.
@@ -8,7 +7,7 @@ meego-keyboard (0.4.18~1) unstable; urgency=low
   * Standard toolbar is now shaped (CSS doesn't refer to new graphical assets yet)
   * Toolbar handles removed, invisible handle disabled
 
- -- Hannu Koivisto <hannu.koivisto@vincit.fi>  Wed, 08 Sep 2010 11:34:00 +0300
+ -- huaming wang <huaming.wang@nokia.com>  Mon, 13 Sep 2010 11:29:55 +0300
 
 meego-keyboard (0.4.17-3) unstable; urgency=low
 
