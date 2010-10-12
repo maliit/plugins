@@ -19,6 +19,7 @@
 #include "mimcorrectioncandidatewidget.h"
 #include "mimcorrectioncandidateitem.h"
 
+#include <QGraphicsLinearLayout>
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 #include <QString>
@@ -26,114 +27,82 @@
 #include <MSceneManager>
 #include <mreactionmap.h>
 #include <mplainwindow.h>
-#include <MWidgetRecycler>
-#include <MList>
-#include <MLabel>
 #include <MGConfItem>
-#include <QGraphicsLinearLayout>
-#include <QStringListModel>
+#include <MScalableImage>
+#include <MTheme>
+
+#include <mwidgetcreator.h>
+M_REGISTER_WIDGET_NO_CREATE(MImCorrectionCandidateWidget)
 
 namespace
 {
-    const int ZValue = 10;
-    const int CandidatesPreeditMargin = 10; // Margin between pre-edit rectangle and candidates
-    const int MaximumCandidateLength = 100; // Maximum length of a candidate.
-    const QString CandidatesListObjectName("CorrectionCandidateList");
-    const QString CandidatesItemObjectName("CorrectionCandidateItem");
-    const QString CandidatesItemLabelObjectName("CorrectionCandidateItemTitle");
+    const int CandidatesPreeditGap = 10; // Gap between pre-edit and candidates
+    const int MinimumCandidateWidget = 64; // Minimum length of a candidate.
+    const char * const CandidatesListObjectName = "CorrectionCandidateList";
+    const char * const CandidatesItemObjectName = "CorrectionCandidateItem";
+    const char * const CandidatesItemLabelObjectName = "CorrectionCandidateItemTitle";
 
-    // This GConf item defines whether multitouch is enabled or disabled
-    const QString MultitouchSettings = "/meegotouch/inputmethods/multitouch/enabled";
+    const int ShowHideFrames = 100;
+    const int ShowHideTime = 400;
+    const int ShowHideInterval = 10;
+
 };
 
-class MImCorrectionContentItemCreator : public MAbstractCellCreator<MImCorrectionCandidateItem>
-{
-public:
-    MImCorrectionContentItemCreator();
-    /*! \reimp */
-    virtual MWidget *createCell(const QModelIndex &index, MWidgetRecycler &recycler) const;
-    virtual void updateCell(const QModelIndex &index, MWidget *cell) const;
-    /*! \reimp_end */
-private:
-    void updateContentItemMode(const QModelIndex &index, MImCorrectionCandidateItem *contentItem) const;
-};
-
-MImCorrectionContentItemCreator::MImCorrectionContentItemCreator()
-{
-}
-
-MWidget *MImCorrectionContentItemCreator::createCell(const QModelIndex &index, MWidgetRecycler &recycler) const
-{
-    MWidget *cell = recycler.take(MContentItem::staticMetaObject.className());
-    if (cell == NULL) {
-        cell = new MImCorrectionCandidateItem(MContentItem::SingleTextLabel);
-        cell->setObjectName(CandidatesItemObjectName);
-    }
-    updateCell(index, cell);
-    return cell;
-}
-
-void MImCorrectionContentItemCreator::updateCell(const QModelIndex &index, MWidget *cell) const
-{
-    if (cell == NULL)
-        return;
-    MImCorrectionCandidateItem *contentItem = qobject_cast<MImCorrectionCandidateItem *>(cell);
-    const QVariant data = index.data(Qt::DisplayRole);
-    const QStringList rowData = data.value<QStringList>();
-    if (rowData.size() > 0) {
-        // Restrict the candidate length to MaximumCandidateLength characters.
-        contentItem->setTitle(rowData[0].left(MaximumCandidateLength));
-    }
-    updateContentItemMode(index, contentItem);
-}
-
-void MImCorrectionContentItemCreator::updateContentItemMode(const QModelIndex &index,
-        MImCorrectionCandidateItem *contentItem) const
-{
-    const int row = index.row();
-    bool thereIsNextRow = index.sibling(row + 1, 0).isValid();
-    if (row == 0) {
-        contentItem->setItemMode(MContentItem::SingleColumnTop);
-    } else if (thereIsNextRow) {
-        contentItem->setItemMode(MContentItem::SingleColumnCenter);
-    } else {
-        contentItem->setItemMode(MContentItem::SingleColumnBottom);
-    }
-}
 
 MImCorrectionCandidateContainer::MImCorrectionCandidateContainer(QGraphicsItem *parent)
-    : MStylableWidget(parent)
+    : MStylableWidget(parent),
+      width(0)
 {
 }
 
-MImCorrectionCandidateWidget::MImCorrectionCandidateWidget(QGraphicsWidget *parent)
-    : MSceneWindow(parent),
+void MImCorrectionCandidateContainer::setCandidateMaximumWidth(qreal w)
+{
+    width = w + style()->paddingLeft() + style()->paddingRight()
+            + style()->marginLeft() + style()->marginRight();
+}
+
+qreal MImCorrectionCandidateContainer::idealWidth() const
+{
+    return width;
+}
+
+int MImCorrectionCandidateContainer::pointerHeight() const
+{
+    return (style()->wordtrackerPointerSize().height() - style()->wordtrackerPointerOverlap());
+}
+
+void MImCorrectionCandidateContainer::drawBackground(QPainter *painter, const QStyleOptionGraphicsItem *option) const
+{
+    MStylableWidget::drawBackground(painter, option);
+    if (style()->wordtrackerPointerImage()) {
+         const QSize pointerSize = style()->wordtrackerPointerSize();
+         QRect rect = QRect((idealWidth() - pointerSize.width())/2,
+                            style()->wordtrackerPointerOverlap() - pointerSize.height(),
+                            pointerSize.width(),
+                            pointerSize.height());
+         style()->wordtrackerPointerImage()->draw(rect, painter);
+    }
+}
+
+MImCorrectionCandidateWidget::MImCorrectionCandidateWidget()
+    : MImOverlay(),
       rotationInProgress(false),
       candidatePosition(0, 0),
       sceneManager(MPlainWindow::instance()->sceneManager()),
       containerWidget(new MImCorrectionCandidateContainer(this)),
-      candidatesWidget(new MList(containerWidget)),
-      cellCreator(new MImCorrectionContentItemCreator),
-      candidatesModel(new QStringListModel(candidatesWidget)),
-      candidateWidth(0)
+      currentMode(MImCorrectionCandidateWidget::PopupMode)
 {
-    // By default multi-touch is disabled
-    setAcceptTouchEvents(MGConfItem(MultitouchSettings).value().toBool());
+    mainLayout = new QGraphicsLinearLayout(Qt::Vertical);
+    mainLayout->setSpacing(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    containerWidget->setLayout(mainLayout);
+    for (int i = 0; i < MaxCandidateCount; i++) {
+        candidateItems[i] = new MImCorrectionCandidateItem("", containerWidget); 
+        candidateItems[i]->setVisible(false);
+        connect(candidateItems[i], SIGNAL(clicked()), this, SLOT(select()));
+    }
 
-    setGeometry(QRectF(0, 0, sceneManager->visibleSceneSize().width(),
-                sceneManager->visibleSceneSize().height()));
-
-    // The z-value should always be more than vkb and text widget's z-value
-    setZValue(ZValue);
-
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout;
-    containerWidget->setLayout(layout);
-
-    layout->addItem(candidatesWidget);
-    candidatesWidget->setObjectName(CandidatesListObjectName);
-    candidatesWidget->setCellCreator(cellCreator);
-    candidatesWidget->setItemModel(candidatesModel);
-    connect(candidatesWidget, SIGNAL(itemClicked(const QModelIndex &)), this, SLOT(select(const QModelIndex &)));
+    setupTimeLine();
 }
 
 
@@ -143,41 +112,29 @@ MImCorrectionCandidateWidget::~MImCorrectionCandidateWidget()
 
 void MImCorrectionCandidateWidget::setCandidates(const QStringList candidateList)
 {
-    // Filter the preedit from the candidate list.
-    QStringList filteredCandidateList = candidateList;
-    for (int i = 0; i < filteredCandidateList.size(); i++) {
-        if (m_preeditString.compare(filteredCandidateList.at(i), Qt::CaseInsensitive) == 0) {
-            filteredCandidateList.removeAt(i);
-            break;
-        }
+    candidates.clear();
+    candidates = candidateList.mid(0, MaxCandidateCount);
+    suggestionString.clear();
+    if (candidates.isEmpty()) {
+        return;
     }
-
-    // Below is the QT way to update model size
-    if (candidatesModel->rowCount() > 0)
-        candidatesModel->removeRows(0, candidatesModel->rowCount());
-    candidatesModel->insertRows(0, filteredCandidateList.size());
-    candidatesModel->setStringList(filteredCandidateList);
+    suggestionString = candidates.at(0);
 
     // Calculate the width for MContentItem dynamically.
-    // To ensure the whole words in candidate list could be shown.
-    candidateWidth = 0;
-    MLabel label;
-    label.setObjectName(CandidatesItemLabelObjectName);
-    label.setWordWrap(false);
-    // Below "label.preferredSize().width()" could be bigger than actual left + right
-    // margin of the label. But unfortunately there is no way to get styling parameters
-    // outside of styled object. So we assume the preferredSize of an empty label is
-    // just its left + right margin.
-    const int leftRightMargins = label.preferredSize().width();
-    foreach (const QString &candidate, filteredCandidateList) {
-        label.setText(candidate);
-        candidateWidth = qMax(candidateWidth, label.preferredSize().width());
+    // To ensure the word tracker could be shown.
+    qreal width = 0;
+    MImCorrectionCandidateItem candidateItem;
+    if (candidates.at(0) == m_preeditString && candidates.count() > 1) {
+        candidateItem.setTitle(candidates.at(1));
+    } else {
+        candidateItem.setTitle(candidates.at(0));
     }
 
-    candidateWidth += leftRightMargins;
+    width = candidateItem.idealWidth();;
     // not less than minimum width
-    if (candidateWidth < containerWidget->minimumSize().width())
-        candidateWidth = containerWidget->minimumSize().width();
+    if (width < containerWidget->minimumSize().width())
+        width = containerWidget->minimumSize().width();
+    containerWidget->setCandidateMaximumWidth(width);
 }
 
 void MImCorrectionCandidateWidget::setPreeditString(const QString &string)
@@ -190,124 +147,154 @@ QPoint MImCorrectionCandidateWidget::position() const
     return candidatePosition;
 }
 
-QStringList MImCorrectionCandidateWidget::candidates() const
-{
-    return candidatesModel->stringList();
-}
-
 QString MImCorrectionCandidateWidget::preeditString() const
 {
     return m_preeditString;
 }
 
-void MImCorrectionCandidateWidget::setPosition(const QPoint &position, int bottomLimit)
+void MImCorrectionCandidateWidget::setPosition(const QPoint &position)
 {
-    qDebug() << __PRETTY_FUNCTION__;
-    QSize sceneSize = sceneManager->visibleSceneSize();
-    int popupWidth = candidateWidth;
-    int popupHeight = candidatesWidget->preferredSize().height();
-    if (bottomLimit < 0) {
-        bottomLimit = sceneManager->visibleSceneSize().height();
-    }
-
     candidatePosition = position;
 
-    // Adjust candidates list so that it doesn't
-    // overlap with scene boundary, if possible.
-
-    if (candidatePosition.x() + popupWidth > sceneSize.width())
-        candidatePosition.setX(sceneSize.width() - popupWidth);
-
-    if (candidatePosition.y() + popupHeight > bottomLimit)
-        candidatePosition.setY(bottomLimit - popupHeight);
-
-    if (candidatePosition.x() < 0)
-        candidatePosition.setX(0);
-    if (candidatePosition.y() < 0)
-        candidatePosition.setY(0);
-
-    containerWidget->setPos(candidatePosition.x(), candidatePosition.y());
+    int sceneWidth = sceneManager->visibleSceneSize().width();
+    candidatePosition.setX(qBound(0, candidatePosition.x(), (int)(sceneWidth - containerWidget->idealWidth())));
 }
 
-void MImCorrectionCandidateWidget::setPosition(const QRect &preeditRect, const int bottomLimit)
+void MImCorrectionCandidateWidget::setPosition(const QRect &preeditRect)
 {
-    qDebug() << "in " << __PRETTY_FUNCTION__;
-
     if (preeditRect.isNull() || !preeditRect.isValid()) {
         candidatePosition = QPoint(0, 0);
         return;
     }
 
     QPoint position;
-    QSize sceneSize = sceneManager->visibleSceneSize();
-    int popupWidth = candidateWidth;
-    int popupHeight = candidatesWidget->preferredSize().height();
+    int sceneWidth = sceneManager->visibleSceneSize().width();
 
     // Set horizontal position
-
-    if (preeditRect.right() + CandidatesPreeditMargin + popupWidth < sceneSize.width()) {
-        // List is positioned to the right of pre-edit rectangle.
-        position.setX(preeditRect.x() + preeditRect.width() + CandidatesPreeditMargin);
-    } else if (preeditRect.x() - CandidatesPreeditMargin - popupWidth >= 0) {
-        // List is positioned to the left of pre-edit rectangle.
-        position.setX(preeditRect.x() - CandidatesPreeditMargin - popupWidth);
+    if (preeditRect.right() + MinimumCandidateWidget < sceneWidth) {
+        // the right side correction widget is aligned with the right side of
+        // pre-edit rectangle + MinimumCandidateWidget
+        position.setX(preeditRect.right() + MinimumCandidateWidget - containerWidget->idealWidth());
     } else {
-        // No room in neither side. Pick one that has more.
-        int roomRight = sceneSize.width() - preeditRect.right();
-        int roomLeft = preeditRect.x();
-        if (roomRight >= roomLeft) {
-            // Align to right side of scene rect
-            position.setX(sceneSize.width() - popupWidth);
-        } else {
-            // Align to left side of scene rect
-            position.setX(0);
-        }
+        // Align to left side of scene rect
+        position.setX(sceneWidth - containerWidget->idealWidth());
     }
 
     // Set vertical position
+    // Vertically the candidatesWidget is below the pre-edit + CandidatesPreeditGap.
+    position.setY(preeditRect.bottom() + CandidatesPreeditGap);
 
-    // Vertically the candidatesWidget is centered at the pre-edit rectangle.
-    position.setY(preeditRect.y() + preeditRect.height() / 2 - popupHeight / 2);
-
-    // Finally handle scene boundaries.
-    setPosition(position, bottomLimit);
+    // Records the position.
+    candidatePosition = position;
 }
 
-void MImCorrectionCandidateWidget::showWidget()
+void MImCorrectionCandidateWidget::showWidget(MImCorrectionCandidateWidget::CandidateMode mode)
 {
-    // The height of MList is automatically expanded.
-    // But the width of MList is not automatically expanded.
-    // So set the container widget's width to candidateWidth,
-    // to make MList have the enough width to show whole words.
-    containerWidget->setPreferredWidth(candidateWidth);
-    appear();
+    currentMode = mode;
 
-    // Extend overlay window to whole screen area.
-    emit regionUpdated(mapRectToScene(QRect(QPoint(0, 0), sceneManager->visibleSceneSize())).toRect());
-}
-
-void MImCorrectionCandidateWidget::mousePressEvent(QGraphicsSceneMouseEvent *e)
-{
-    Q_UNUSED(e);
-}
-
-void MImCorrectionCandidateWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
-{
-    Q_UNUSED(e);
-    disappear();
-}
-
-void MImCorrectionCandidateWidget::select(const QModelIndex &index)
-{
-    if (!index.isValid())
+    if (candidates.isEmpty()) {
+        hideWidget(false);
         return;
-    const QVariant selectedVariant = candidatesModel->data(index, Qt::DisplayRole);
-    Q_ASSERT(selectedVariant.isValid());
-    const QString candidate = selectedVariant.toString();
-    if (candidate != m_preeditString) {
-        emit candidateClicked(candidate);
     }
-    disappear();
+
+    if (currentMode == PopupMode) {
+        suggestionString = candidates.at(0);
+        if (suggestionString == m_preeditString && candidates.count() > 1) {
+            suggestionString = candidates.at(1);
+        }
+        mainLayout->addItem(candidateItems[0]);
+        candidateItems[0]->setTitle(suggestionString);
+        candidateItems[0]->setSelected(false);
+        candidateItems[0]->setVisible(true);
+        for (int i = 1; i < MaxCandidateCount; i++) {
+            mainLayout->removeItem(candidateItems[i]);
+            candidateItems[i]->setVisible(false);
+        }
+    } else {
+        for (int i = 0; i < candidates.count(); i++) {
+            candidateItems[i]->setSelected(false);
+            mainLayout->addItem(candidateItems[i]);
+            candidateItems[i]->setTitle(candidates.at(i));
+            candidateItems[i]->setVisible(true);
+        }
+        int selectedIndex = candidates.indexOf(m_preeditString);
+        candidateItems[selectedIndex]->setSelected(true);
+    }
+    
+
+    if (currentMode == SuggestionListMode) {
+        // Re-calculate the width for suggestion list.
+        // To ensure all words in candidate list could be shown.
+        qreal width = 0;
+        for (int i = 0; i < candidates.count(); i++) {
+            width = qMax(width, candidateItems[i]->idealWidth());
+        }
+        qDebug() << "preffered with:" << width;
+
+        // not less than minimum width
+        if (width < containerWidget->minimumSize().width())
+            width = containerWidget->minimumSize().width();
+
+        qDebug() << "set candidate width:" << containerWidget->idealWidth();
+        containerWidget->setCandidateMaximumWidth(width);
+        int sceneWidth = sceneManager->visibleSceneSize().width();
+        candidatePosition.setX(qBound(0, candidatePosition.x(), (int)(sceneWidth - containerWidget->idealWidth())));
+    }
+    qDebug() << "fitted width:" << containerWidget->idealWidth();
+
+    // So set the container widget's width to idealWidth,
+    // to make it have the enough width to show whole words.
+    containerWidget->setPreferredWidth(containerWidget->idealWidth());
+
+    QRectF widgetRect, containerRect;
+
+    if (currentMode == PopupMode) {
+        // PopupMode only require its own geometry.
+        QSizeF size = containerWidget->preferredSize();
+        size.setHeight(size.height() + containerWidget->pointerHeight());
+        widgetRect = QRectF(candidatePosition, size);
+        containerRect = QRectF(QPointF(0, containerWidget->pointerHeight()),
+                               containerWidget->preferredSize());
+    } else {
+        // SuggestionListMode require a modal window, thus require whole screen
+        widgetRect = QRectF(0, 0, sceneManager->visibleSceneSize().width(),
+                            sceneManager->visibleSceneSize().height());
+
+        QPoint position = candidatePosition;
+        position.setY(position.y() + containerWidget->pointerHeight());
+        containerRect = QRectF(position, containerWidget->preferredSize());
+    }
+    setGeometry(widgetRect);
+    containerWidget->setGeometry(containerRect);
+    mainLayout->invalidate();
+
+    if (!isVisible()) {
+        showHideTimeline.setDirection(QTimeLine::Forward);
+        if (showHideTimeline.state() != QTimeLine::Running) {
+            showHideTimeline.start();
+        }
+        show();
+    } else {
+        update();
+        emit regionUpdated(region());
+    }
+}
+
+void MImCorrectionCandidateWidget::hideWidget(bool withAnimation)
+{
+    if (withAnimation) {
+        showHideTimeline.setDirection(QTimeLine::Backward);
+        if (showHideTimeline.state() != QTimeLine::Running) {
+            showHideTimeline.start();
+        }
+    } else {
+        hide();
+    }
+}
+
+MImCorrectionCandidateWidget::CandidateMode MImCorrectionCandidateWidget::candidateMode() const
+{
+    return currentMode;
 }
 
 void MImCorrectionCandidateWidget::hideEvent(QHideEvent *event)
@@ -316,30 +303,21 @@ void MImCorrectionCandidateWidget::hideEvent(QHideEvent *event)
     emit regionUpdated(QRegion());
 }
 
-int MImCorrectionCandidateWidget::activeIndex() const
+QString MImCorrectionCandidateWidget::suggestion() const
 {
-    int activeWordIndex = -1;
-    QStringList candidateList = candidatesModel->stringList();
-    for (int i = 0; i < candidateList.size(); i++) {
-        if (m_preeditString.compare(candidateList.at(i), Qt::CaseInsensitive) == 0) {
-            activeWordIndex = i;
-            break;
-        }
-    }
-    return activeWordIndex;
+    return suggestionString;
 }
 
 void MImCorrectionCandidateWidget::prepareToOrientationChange()
 {
-    if (sceneWindowState() != MSceneWindow::Disappeared) {
+    if (isVisible()) {
         rotationInProgress = true;
-        disappear();
+        hideWidget();
     }
 }
 
 void MImCorrectionCandidateWidget::finalizeOrientationChange()
 {
-    setGeometry(QRect(QPoint(0, 0), sceneManager->visibleSceneSize()));
     if (rotationInProgress) {
         showWidget();
         rotationInProgress = false;
@@ -356,19 +334,93 @@ void MImCorrectionCandidateWidget::paintReactionMap(MReactionMap *reactionMap, Q
     // Draw the actual candidate candidatesWidget area.
     reactionMap->setTransform(this, view);
     reactionMap->setReactiveDrawingValue();
-    reactionMap->fillRectangle(candidatesWidget->geometry());
+    //reactionMap->fillRectangle(candidatesWidget->geometry());
+    reactionMap->fillRectangle(containerWidget->geometry());
 }
 
 bool MImCorrectionCandidateWidget::sceneEvent(QEvent *e)
 {
-    MSceneWindow::sceneEvent(e);
+    qDebug() << __PRETTY_FUNCTION__;
 
-    // eat all the touch events to avoid the touch events
-    // go to the background virtual keyboard.
-    e->setAccepted(e->isAccepted()
-                   || e->type() == QEvent::TouchBegin
-                   || e->type() == QEvent::TouchUpdate
-                   || e->type() == QEvent::TouchEnd);
-    return e->isAccepted();
+    if (e->type() == QEvent::GraphicsSceneMouseRelease) {
+        hideWidget();
+    } else if (e->type() == QEvent::GraphicsSceneMouseMove) {
+        qDebug() << "mouse move!";
+        int selectedIndex = candidates.indexOf(m_preeditString);
+        candidateItems[selectedIndex]->setSelected(true);
+    }
+    return MImOverlay::sceneEvent(e);
 }
 
+QRegion MImCorrectionCandidateWidget::region() const
+{
+    if (!isVisible())
+        return QRegion();
+
+    if (currentMode == SuggestionListMode) {
+        return mapRectToScene(QRect(QPoint(0, 0), sceneManager->visibleSceneSize())).toRect();
+    } else {
+        return mapRectToScene(containerWidget->geometry()).toRect();
+    }
+}
+
+void MImCorrectionCandidateWidget::setupTimeLine()
+{
+    showHideTimeline.setCurveShape(QTimeLine::EaseInCurve);
+    showHideTimeline.setFrameRange(0, ShowHideFrames);
+    showHideTimeline.setDuration(ShowHideTime);
+    showHideTimeline.setUpdateInterval(ShowHideInterval);
+    connect(&showHideTimeline, SIGNAL(frameChanged(int)), this, SLOT(fade(int)));
+    connect(&showHideTimeline, SIGNAL(finished()), this, SLOT(showHideFinished()));
+}
+
+void MImCorrectionCandidateWidget::fade(int frame)
+{
+    const float opacity = float(frame) / ShowHideFrames;
+    this->setOpacity(opacity);
+    update();
+}
+
+
+void MImCorrectionCandidateWidget::showHideFinished()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    const bool hiding = (showHideTimeline.direction() == QTimeLine::Backward);
+
+    if (hiding) {
+        hide();
+    }
+}
+
+void MImCorrectionCandidateWidget::handleVisibilityChanged()
+{
+    if (!isVisible()) {
+        emit regionUpdated(QRegion());
+    } else {
+        // Extend overlay window to whole screen area.
+        emit regionUpdated(region());
+    }
+}
+
+void MImCorrectionCandidateWidget::handleOrientationChanged()
+{
+    //do nothing
+}
+
+void MImCorrectionCandidateWidget::select()
+{
+    MImCorrectionCandidateItem *item = qobject_cast<MImCorrectionCandidateItem *> (sender());
+    if (item) {
+        for (int i = 0; i < candidates.count(); i++) {
+            if (candidateItems[i] != item)
+                candidateItems[i]->setSelected(false);
+        }
+        item->setSelected(true);
+        qDebug() << "select item:" << item->title();
+        qDebug() << "select?" << item->selected();
+        const QString candidate = item->title();
+        suggestionString = candidate;
+        emit candidateClicked(candidate);
+    }
+    hideWidget();
+}

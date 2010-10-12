@@ -99,9 +99,9 @@ private slots:
     void updateReactionMaps();
 
     /*!
-     * Update the pre-edit word
+     * Confirm \a string to replace preedit
      */
-    void updatePreedit(const QString &string);
+    void confirmPreedit(const QString &string);
 
     /*! \brief Prepares vkb for orientation change when application is about to rotate.
      *
@@ -194,6 +194,9 @@ private:
     //! update autocapitalization state
     void updateAutoCapitalization();
 
+    //! update context
+    void updateContext();
+
     /*!
      * Reset temporary shift state (shift on state set by user or auto capitalization,
      * besides capslocked) for virtual keyboard.
@@ -266,6 +269,9 @@ private:
     //! \return input mode indicator corresponding to a dead \a key character or
     //! MInputMethodBase::NoIndicator if not a (supported) dead key character
     static MInputMethodBase::InputModeIndicator deadKeyToIndicator(const QChar &key);
+
+    //! update preedit style according error correction candidates.
+    void updatePreeditStyle();
 
 private:
     class CycleKeyHandler; //! Reacts to cycle key press events.

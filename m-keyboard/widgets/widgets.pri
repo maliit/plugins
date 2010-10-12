@@ -25,7 +25,6 @@ HEADERS += \
     $$WIDGETS_DIR/mimcorrectioncandidatewindow.h \
     $$WIDGETS_DIR/mimcorrectioncandidatewidget.h \
     $$WIDGETS_DIR/mimcorrectioncandidateitem.h \
-    $$WIDGETS_DIR/mimcorrectioncandidateitemview.h \
     $$WIDGETS_DIR/mimtoolbar.h \
     $$WIDGETS_DIR/mvirtualkeyboard.h \
     $$WIDGETS_DIR/horizontalswitcher.h \
@@ -54,7 +53,6 @@ SOURCES += \
     $$WIDGETS_DIR/mimcorrectioncandidatewindow.cpp \
     $$WIDGETS_DIR/mimcorrectioncandidatewidget.cpp \
     $$WIDGETS_DIR/mimcorrectioncandidateitem.cpp \
-    $$WIDGETS_DIR/mimcorrectioncandidateitemview.cpp \
     $$WIDGETS_DIR/mimtoolbar.cpp \
     $$WIDGETS_DIR/mvirtualkeyboard.cpp \
     $$WIDGETS_DIR/horizontalswitcher.cpp \

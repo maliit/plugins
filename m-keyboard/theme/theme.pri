@@ -1,4 +1,6 @@
-IMAGES_DATA = theme/meegotouch-keyboard.svg
+IMAGES_DATA = theme/meegotouch-keyboard.svg \
+              theme/meegotouch-wordtracker.svg \
+
 images_data.path = /usr/share/themes/base/meegotouch/svg
 images_data.files = $$IMAGES_DATA
 

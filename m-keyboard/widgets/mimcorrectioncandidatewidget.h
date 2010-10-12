@@ -20,15 +20,17 @@
 #define MIMCORRECTIONCANDIDATEWIDGET_H
 
 #include <QModelIndex>
-#include <MSceneWindow>
+#include <MWidget>
 #include <MStylableWidget>
+#include <QTimeLine>
 #include "mimcorrectioncandidatecontainerstyle.h"
+#include "mimoverlay.h"
 
 class MSceneManager;
-class MList;
-class MImCorrectionContentItemCreator;
 class MReactionMap;
 class QStringListModel;
+class QGraphicsLinearLayout;
+class MImCorrectionCandidateItem;
 
 class MImCorrectionCandidateContainer: public MStylableWidget
 {
@@ -36,7 +38,28 @@ class MImCorrectionCandidateContainer: public MStylableWidget
 public:
     explicit MImCorrectionCandidateContainer(QGraphicsItem *parent = 0);
 
+    void setCandidateMaximumWidth(qreal);
+
+    /*!
+     * \brief Returns the ideal width of the container widget.
+     *
+     * The ideal width is the actually used width of the candidate widgets together with margins and paddings.
+     */
+    qreal idealWidth() const;
+
+    /*!
+     * \brief Returns the height of pointer for word tracker.
+     */
+    int pointerHeight() const;
+
+protected:
+    //! reimp
+    virtual void drawBackground(QPainter *painter, const QStyleOptionGraphicsItem *option) const;
+    //! reimp_end
+
 private:
+    int width;
+
     M_STYLABLE_WIDGET(MImCorrectionCandidateContainerStyle)
 };
 
@@ -44,17 +67,23 @@ private:
   \class MImCorrectionCandidateWidget
   \brief The MImCorrectionCandidateWidget class is used to show error correction candidate list
 */
-class MImCorrectionCandidateWidget: public MSceneWindow
+class MImCorrectionCandidateWidget: public MImOverlay
 {
     Q_OBJECT
 
     friend class Ut_MImCorrectionCandidateWidget;
 
 public:
+    //! CandidateMode is used by showWidget and setMode.
+    enum CandidateMode {
+        PopupMode,  //!< popup
+        SuggestionListMode //!< word suggestion list
+    };
+
     /*! Constructor
      *
      */
-    explicit MImCorrectionCandidateWidget(QGraphicsWidget *parent = 0);
+    explicit MImCorrectionCandidateWidget();
 
     /*! Destructor
      *
@@ -66,28 +95,45 @@ public:
      */
     void setCandidates(QStringList candidate);
 
-    virtual void showWidget();
+    /*!
+     * \brief Shows candidate widget with different \a mode.
+     *
+     * \sa CandidateMode.
+     */
+    virtual void showWidget(CandidateMode mode = PopupMode);
+
+    /*!
+     * \brief Hides candidate widget with or without animation according \a withAnimation.
+     *
+     * \param withAnimation if ture hide widget by useing animation.
+     */
+    virtual void hideWidget(bool withAnimation = true);
+
+
+    /*!
+     * \brief Returns current used mode for the candidate widget.
+     *
+     * \sa CandidateMode.
+     */
+    CandidateMode candidateMode() const;
 
     /*! \brief Sets the position of candidate list. The list cannot be outside screen.
      *
-     * If \a bottomLimit is provided, it is respected but not at the expense of
-     * being out of screen.
      */
-    void setPosition(const QPoint &pos, int bottomLimit = -1);
+    void setPosition(const QPoint &pos);
 
     /*!
      * \brief Sets the position of candidate list based on pre-edit rectangle.
      *
      * Candidate list is put horizontally next to the pre-edit rectangle. Right side
      * of the rectangle is preferred but left side will be used if there is not enough
-     * space. Vertically list will be in the middle of the rectangle. If \a bottomLimit
-     * is provided, it is respected but not at the expense of being out of screen.
+     * space. Vertically list will be in the middle of the rectangle.
      */
-    void setPosition(const QRect &preeditRect, int bottomLimit = -1);
+    void setPosition(const QRect &preeditRect);
 
     /*! Returns the index of preedit string in the candidate list.
      */
-    int activeIndex() const;
+    QString suggestion() const;
 
     /*! Sets the preedit string
      */
@@ -98,9 +144,6 @@ public:
      */
     QPoint position() const;
 
-    /*! Returns the actual set candidates
-     */
-    QStringList candidates() const;
 
     /*! Returns the Preedit String
      */
@@ -117,6 +160,10 @@ public:
     //! Finalize orientation change
     void finalizeOrientationChange();
 
+    enum {
+        MaxCandidateCount = 5
+    };
+
 signals:
     /*! Updates the preedit word
      */
@@ -128,25 +175,44 @@ signals:
 
 protected:
     /*! \reimp */
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *e);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *e);
     virtual void hideEvent(QHideEvent *event);
     virtual bool sceneEvent(QEvent *event);
     /*! \reimp_end */
 
 protected slots:
-    void select(const QModelIndex &);
+    /*!
+     * Method to fade the vkb during transition
+     */
+    void fade(int);
+
+    /*!
+     * This function gets called when fading is finished
+     */
+    void showHideFinished();
+
+    /*! \reimp */
+    virtual void handleVisibilityChanged();
+    virtual void handleOrientationChanged();
+    /*! \reimp_end */
+
+    void select();
 
 private:
+    QRegion region() const;
+
+    void setupTimeLine();
+
     bool rotationInProgress;
     QString m_preeditString;
     QPoint candidatePosition;
     MSceneManager *sceneManager;
     MImCorrectionCandidateContainer *containerWidget;
-    MList *candidatesWidget;
-    MImCorrectionContentItemCreator *cellCreator;
-    QStringListModel *candidatesModel;
-    qreal candidateWidth;
+    QStringList candidates;
+    CandidateMode currentMode;
+    QTimeLine showHideTimeline;
+    QString suggestionString;
+    QGraphicsLinearLayout *mainLayout;
+    MImCorrectionCandidateItem *candidateItems[MaxCandidateCount];
 
     Q_DISABLE_COPY(MImCorrectionCandidateWidget)
 };
