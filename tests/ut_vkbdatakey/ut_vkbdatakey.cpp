@@ -85,7 +85,7 @@ void Ut_VKBDataKey::testAccent()
     KeyBinding *noShiftBinding = new KeyBinding;
     subject->bindings[VKBDataKey::NoShift] = noShiftBinding;
     noShiftBinding->keyLabel = label;
-    noShiftBinding->accentedLabels = QString(accentedChars,
+    noShiftBinding->accented_labels = QString(accentedChars,
                                      sizeof(accentedChars) / sizeof(accentedChars[0]));
     noShiftBinding->accents = QString(accents,
                                       sizeof(accents) / sizeof(accents[0]));

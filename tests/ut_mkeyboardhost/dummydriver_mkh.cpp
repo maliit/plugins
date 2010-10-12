@@ -65,13 +65,20 @@ bool DummyDriverMkh::removeDictionary(M::DictionaryType type)
     return false;
 }
 
-void DummyDriverMkh::appendString(const QString &s)
+void DummyDriverMkh::appendString(const QString &s, bool reselection)
 {
     Q_UNUSED(s);
+    Q_UNUSED(reselection);
 }
 void DummyDriverMkh::appendCharacter(const QChar &c)
 {
     Q_UNUSED(c);
+}
+
+void DummyDriverMkh::tapKeyboard(const QPoint &position, bool shift)
+{
+    Q_UNUSED(position);
+    Q_UNUSED(shift);
 }
 
 void DummyDriverMkh::setContext(const QString &s)
@@ -152,9 +159,20 @@ bool  DummyDriverMkh::setSuggestedCandidateIndex(int index)
     return true;
 }
 
-void DummyDriverMkh::setExactWordPositionInList(int settings)
+void DummyDriverMkh::setExactWordPositionInList(M::ExactInListType setting)
 {
-    Q_UNUSED(settings);
+    Q_UNUSED(setting);
+}
+
+M::DictionaryType DummyDriverMkh::candidateSource(int index)
+{
+    Q_UNUSED(index);
+    return M::DictionaryTypeInvalid;
+}
+
+void DummyDriverMkh::loadKeyboardLayout(const QList<M::KeyboardLayoutKey> &keys)
+{
+    Q_UNUSED(keys);
 }
 
 void DummyDriverMkh::clearEngineBuffer()

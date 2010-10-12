@@ -60,9 +60,11 @@ public:
 
     virtual bool removeDictionary(M::DictionaryType);
 
-    virtual void appendString(const QString &s);
+    virtual void appendString(const QString &s, bool reselection = false);
 
     virtual void appendCharacter(const QChar &c);
+
+    virtual void tapKeyboard(const QPoint &position, bool shift);
 
     virtual void setContext(const QString &s);
 
@@ -94,7 +96,11 @@ public:
 
     virtual bool setSuggestedCandidateIndex(int index);
 
-    virtual void setExactWordPositionInList(int settings);
+    virtual void setExactWordPositionInList(M::ExactInListType setting);
+
+    virtual M::DictionaryType candidateSource(int index);
+
+    virtual void loadKeyboardLayout(const QList<M::KeyboardLayoutKey> &keys);
 
     virtual void clearEngineBuffer();
 

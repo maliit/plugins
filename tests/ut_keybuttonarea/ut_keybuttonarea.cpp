@@ -499,7 +499,10 @@ void Ut_KeyButtonArea::testTwoDeadInOne()
     foreach (TestOperation op, operations) {
         switch (op) {
         case TestOpClickDeadKey:
-            subject->click(deadkey);
+            {
+                KeyButtonArea::TouchPointInfo tpi;
+                subject->click(deadkey);
+            }
             break;
         case TestOpSetShiftOn:
             subject->switchLevel(1);
