@@ -23,7 +23,7 @@ KeyBinding::KeyBinding()
     : keyAction(ActionInsert),
       cycleSet(""),
       accents(""),
-      accentedLabels(""),
+      accented_labels(""),
       secondary_label(""),
       keyLabel(""),
       dead(false)
@@ -41,13 +41,18 @@ QString KeyBinding::accented(QChar accent) const
 {
     QString activeLabel;
     int index = accents.indexOf(accent);
-    if (index >= 0 && index < accentedLabels.length()) {
-        activeLabel = accentedLabels[index];
+    if (index >= 0 && index < accented_labels.length()) {
+        activeLabel = accented_labels[index];
     } else {
         activeLabel = label();
     }
 
     return activeLabel;
+}
+
+QString KeyBinding::accentedLabels() const
+{
+    return accented_labels;
 }
 
 KeyEvent KeyBinding::toKeyEventImpl(QKeyEvent::Type eventType,
