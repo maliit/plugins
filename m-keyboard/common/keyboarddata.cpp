@@ -506,7 +506,7 @@ void KeyboardData::parseTagBinding(const QDomElement &element, ParseParameters &
     binding->dead = toBoolean(element.attribute(VKBTagDead));
 
     binding->accents = element.attribute(VKBTagAccents);
-    binding->accentedLabels = element.attribute(VKBTagAccentedLabels);
+    binding->accented_labels = element.attribute(VKBTagAccentedLabels);
 
     binding->extended_labels = element.attribute(VKBTagExtendedLabels);
 

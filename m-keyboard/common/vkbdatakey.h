@@ -77,6 +77,9 @@ public:
     //! \return label with a given \a accent
     QString accented(QChar accent) const;
 
+    //! \return accented labels available for the key binding
+    QString accentedLabels() const;
+
     //! \return true if the key is a dead key, false otherwise
     bool isDead() const;
 
@@ -102,7 +105,7 @@ private:
     //! Accents enabled for this key
     QString accents;
     //! Labels corresponding to accents
-    QString accentedLabels;
+    QString accented_labels;
     //! Extra labels of the extended_labels attribute
     QString extended_labels;
     //! Secondary label
