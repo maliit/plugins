@@ -136,13 +136,13 @@ VKBDataKey *Ut_KeyButton::createDataKey()
     binding1->keyLabel = "a";
     binding1->dead = false;
     binding1->accents = "`´^¨";
-    binding1->accentedLabels = QString(L'à') + L'á' + L'á' + L'â' + L'ä';
+    binding1->accented_labels = QString(L'à') + L'á' + L'á' + L'â' + L'ä';
 
     KeyBinding *binding2 = new KeyBinding;
     binding2->keyLabel = "A";
     binding2->dead = false;
     binding2->accents = "`´^¨";
-    binding2->accentedLabels = QString(L'À') + L'Á' + L'Â' + L'Ä';
+    binding2->accented_labels = QString(L'À') + L'Á' + L'Â' + L'Ä';
 
     key->bindings[VKBDataKey::NoShift] = binding1;
     key->bindings[VKBDataKey::Shift] = binding2;
