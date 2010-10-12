@@ -1,4 +1,4 @@
-@const HEIGHT_CANDIDATEITEM:  6.4mm;
+@const HEIGHT_CANDIDATEITEM:  3.2mm;
 @const HEIGHT_TOOLBARITEM: 4mm;
 
 MVirtualKeyboardStyle {
@@ -268,28 +268,58 @@ WidgetBarStyle {
 }
 
 MImCorrectionCandidateContainerStyle {
-    background-image: "meegotouch-candidatelist-background" 15 15 15 15;
+    background-image: "meegotouch-wordtracker-background" 15 15 15 15;
+
+    wordtracker-pointer-image: "meegotouch-wordtracker-pointer" 15 15 15 15;
+    wordtracker-pointer-size: 13 12;
+    wordtracker-pointer-overlap: 1;
+
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
 
-    minimum-size: 15mm $HEIGHT_CANDIDATEITEM;
+    padding-top:  0;
+    padding-bottom: 0;
+    padding-right: 0.8mm;
+    padding-left: 0.8mm;
+   
+    minimum-size: 6.4mm $HEIGHT_CANDIDATEITEM;
     maximum-size: 100% 100%;
 }
 
 MImCorrectionCandidateItemStyle {
     preferred-size: -1 $HEIGHT_CANDIDATEITEM;
-    minimum-size: 10mm $HEIGHT_CANDIDATEITEM;
+    minimum-size: 4.8mm $HEIGHT_CANDIDATEITEM;
     maximum-size: 100% $HEIGHT_CANDIDATEITEM;
 
     title-object-name: "CorrectionCandidateItemTitle";
+    background-opacity: 1.0;
+
+    /*font: "Nokia Sans Light" 24; */
+    font: $FONT_DEFAULT; 
+    font-color: $COLOR_INVERTED_FOREGROUND;
+
+    margin-top: 1.1mm;
+    margin-bottom: 1.1mm;
+    margin-left: 0;
+    margin-right: 0;
+
+    padding-top:  0;
+    padding-bottom: 0;
+    padding-right: 0;
+    padding-left: 0;
 }
 
-#CorrectionCandidateItemTitle {
-    margin-left: $MARGIN_XLARGE;
-    margin-right: $MARGIN_XLARGE;
+MImCorrectionCandidateItemStyle:selected {
+    title-object-name: "CorrectionCandidateItemHighlightTitle";
+    background-image: meegotouch-wordtracker-selection 15px 15px 15px 15px;
 }
+
+MImCorrectionCandidateItemStyle:pressed {
+    background-image: meegotouch-wordtracker-item-pressed 15px 15px 15px 15px;
+}
+
 
 MImToolbarStyle {
     background-image: "meegotouch-keyboard-toolbar-background" 15px 15px 15px 15px;

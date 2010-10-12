@@ -23,6 +23,10 @@ class MImCorrectionCandidateContainerStyle : public MWidgetStyle
 {
     Q_OBJECT
     M_STYLE(MImCorrectionCandidateContainerStyle)
+
+    M_STYLE_PTR_ATTRIBUTE(MScalableImage *,  wordtrackerPointerImage, WordtrackPointerImage)
+    M_STYLE_ATTRIBUTE(QSize, wordtrackerPointerSize, WordtrackerPointerSize)
+    M_STYLE_ATTRIBUTE(int, wordtrackerPointerOverlap, WordtrackerPointerOverlap)
 };
 
 class M_EXPORT MImCorrectionCandidateContainerStyleContainer : public MWidgetStyleContainer

@@ -17,15 +17,18 @@
 #ifndef MIMCORRECTIONCANDIDATEITEMSTYLE_H
 #define MIMCORRECTIONCANDIDATEITEMSTYLE_H
 
-#include <mcontentitemstyle.h>
+#include <MWidgetStyle>
 
-class MImCorrectionCandidateItemStyle : public MContentItemStyle
+class MImCorrectionCandidateItemStyle : public MWidgetStyle
 {
     Q_OBJECT
     M_STYLE(MImCorrectionCandidateItemStyle)
+
+    M_STYLE_ATTRIBUTE(QFont, font, Font)
+    M_STYLE_ATTRIBUTE(QColor, fontColor, FontColor)
 };
 
-class M_EXPORT MImCorrectionCandidateItemStyleContainer : public MContentItemStyleContainer
+class M_EXPORT MImCorrectionCandidateItemStyleContainer : public MWidgetStyleContainer
 {
     M_STYLE_CONTAINER(MImCorrectionCandidateItemStyle)
 };
