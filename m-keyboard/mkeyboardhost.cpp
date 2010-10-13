@@ -662,6 +662,9 @@ void MKeyboardHost::finalizeOrientationChange()
             correctionCandidateWidget->disappear();
         }
     }
+    if (vkbWidget->isVisible()) {
+        imCorrectionEngine->loadKeyboardLayout(vkbWidget->mainLayoutKeys());
+    }
 
     rotationInProgress = false;
 }
@@ -1062,7 +1065,7 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
 
         candidates.clear();
         qDebug() << "event touch point:" << event.touchPoint();
-        imCorrectionEngine->appendCharacter(text.at(0));
+        imCorrectionEngine->tapKeyboard(event.touchPoint(), vkbWidget->shiftStatus() != ModifierClearState);
         candidates = imCorrectionEngine->candidates();
 
         const MInputMethod::PreeditFace face
@@ -1086,13 +1089,13 @@ void MKeyboardHost::initializeInputEngine()
     if (engineReady) {
         // TODO: maybe we should check return values here and in case of failure
         // be always in accurate mode, for example
-        imCorrectionEngine->setKeyboardLayout(language);
         imCorrectionEngine->setLanguage(language, M::LanguagePriorityPrimary);
+        imCorrectionEngine->loadKeyboardLayout(vkbWidget->mainLayoutKeys());
         synchronizeCorrectionSetting();
         imCorrectionEngine->disablePrediction();
         imCorrectionEngine->disableCompletion();
         imCorrectionEngine->setMaximumErrors(6);
-        imCorrectionEngine->setExactWordPositionInList(2);
+        imCorrectionEngine->setExactWordPositionInList(M::ExactInListFirst);
     }
 }
 
