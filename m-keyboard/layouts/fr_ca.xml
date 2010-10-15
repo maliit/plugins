@@ -13,8 +13,8 @@
               <binding shift="true" label="W"/>
             </key>
             <key>
-              <binding accented_labels="èéêë" accents="`´^¨" label="e"/>
-              <binding shift="true" accented_labels="ÈÉÊË" accents="`´^¨" label="E"/>
+              <binding accented_labels="èéêë" accents="`´^¨" label="e" extended_labels="éèëê"/>
+              <binding shift="true" accented_labels="ÈÉÊË" accents="`´^¨" label="E" extended_labels="ÉÈËÊ"/>
             </key>
             <key>
               <binding label="r"/>
@@ -29,16 +29,16 @@
               <binding shift="true" accented_labels="ÝŸ" accents="´¨" label="Y"/>
             </key>
             <key>
-              <binding accented_labels="ùúûü" accents="`´^¨" label="u"/>
-              <binding shift="true" accented_labels="ÙÚÛÜ" accents="`´^¨" label="U"/>
+              <binding accented_labels="ùúûü" accents="`´^¨" label="u" extended_labels="ûùúü"/>
+              <binding shift="true" accented_labels="ÙÚÛÜ" accents="`´^¨" label="U" extended_labels="ÛÙÚÜ"/>
             </key>
             <key>
-              <binding accented_labels="ìíîï" accents="`´^¨" label="i"/>
-              <binding shift="true" accented_labels="ÌÍÎÏ" accents="`´^¨" label="I"/>
+              <binding accented_labels="ìíîï" accents="`´^¨" label="i" extended_labels="îïìí"/>
+              <binding shift="true" accented_labels="ÌÍÎÏ" accents="`´^¨" label="I" extended_labels="ÎÏÌÍ"/>
             </key>
             <key>
-              <binding accented_labels="òóôö" accents="`´^¨" label="o"/>
-              <binding shift="true" accented_labels="ÒÓÔÖ" accents="`´^¨" label="O"/>
+              <binding accented_labels="òóôö" accents="`´^¨" label="o" extended_labels="ôœòóõ"/>
+              <binding shift="true" accented_labels="ÒÓÔÖ" accents="`´^¨" label="O" extended_labels="ÔŒÒÓÕ"/>
             </key>
             <key>
               <binding label="p"/>
@@ -53,8 +53,8 @@
 
           <row>
             <key>
-              <binding accented_labels="àáâä" accents="`´^¨" label="a"/>
-              <binding shift="true" accented_labels="ÀÁÂÄ" accents="`´^¨" label="A"/>
+              <binding accented_labels="àáâä" accents="`´^¨" label="a" extended_labels="àâæáãä"/>
+              <binding shift="true" accented_labels="ÀÁÂÄ" accents="`´^¨" label="A" extended_labels="ÀÂÆÁÃÄ"/>
             </key>
             <key>
               <binding label="s"/>
@@ -113,8 +113,8 @@
               <binding shift="true" label="X"/>
             </key>
             <key>
-              <binding label="c"/>
-              <binding shift="true" label="C"/>
+              <binding label="c" extended_labels="ç"/>
+              <binding shift="true" label="C" extended_labels="Ç"/>
             </key>
             <key>
               <binding label="v"/>
@@ -125,8 +125,8 @@
               <binding shift="true" label="B"/>
             </key>
             <key>
-              <binding label="n"/>
-              <binding shift="true" label="N"/>
+              <binding label="n" extended_labels="ñ"/>
+              <binding shift="true" label="N" extended_labels="Ñ"/>
             </key>
             <key>
               <binding label="m"/>
@@ -182,8 +182,8 @@
               <binding shift="true" label="W"/>
             </key>
             <key>
-              <binding accented_labels="èéêë" accents="`´^¨" label="e"/>
-              <binding shift="true" accented_labels="ÈÉÊË" accents="`´^¨" label="E"/>
+              <binding accented_labels="èéêë" accents="`´^¨" label="e" extended_labels="éèëê"/>
+              <binding shift="true" accented_labels="ÈÉÊË" accents="`´^¨" label="E" extended_labels="ÉÈËÊ"/>
             </key>
             <key>
               <binding label="r"/>
@@ -198,16 +198,16 @@
               <binding shift="true" accented_labels="ÝŸ" accents="´¨" label="Y"/>
             </key>
             <key>
-              <binding accented_labels="ùúûü" accents="`´^¨" label="u"/>
-              <binding shift="true" accented_labels="ÙÚÛÜ" accents="`´^¨" label="U"/>
+              <binding accented_labels="ùúûü" accents="`´^¨" label="u" extended_labels="ûùúü"/>
+              <binding shift="true" accented_labels="ÙÚÛÜ" accents="`´^¨" label="U" extended_labels="ÛÙÚÜ"/>
             </key>
             <key>
-              <binding accented_labels="ìíîï" accents="`´^¨" label="i"/>
-              <binding shift="true" accented_labels="ÌÍÎÏ" accents="`´^¨" label="I"/>
+              <binding accented_labels="ìíîï" accents="`´^¨" label="i" extended_labels="îïìí"/>
+              <binding shift="true" accented_labels="ÌÍÎÏ" accents="`´^¨" label="I" extended_labels="ÎÏÌÍ"/>
             </key>
             <key>
-              <binding accented_labels="òóôö" accents="`´^¨" label="o"/>
-              <binding shift="true" accented_labels="ÒÓÔÖ" accents="`´^¨" label="O"/>
+              <binding accented_labels="òóôö" accents="`´^¨" label="o" extended_labels="ôœòóõ"/>
+              <binding shift="true" accented_labels="ÒÓÔÖ" accents="`´^¨" label="O" extended_labels="ÔŒÒÓÕ"/>
             </key>
             <key>
               <binding label="p"/>
@@ -222,11 +222,11 @@
 
           <row>
             <key>
-              <binding accented_labels="àáâä" accents="`´^¨" label="a"/>
-              <binding shift="true" accented_labels="ÀÁÂÄ" accents="`´^¨" label="A"/>
+              <binding accented_labels="àáâä" accents="`´^¨" label="a" extended_labels="àâæáãä"/>
+              <binding shift="true" accented_labels="ÀÁÂÄ" accents="`´^¨" label="A" extended_labels="ÀÂÆÁÃÄ"/>
             </key>
             <key>
-              <binding label="s"/>
+              <binding label="s" extended_labels="ß"/>
               <binding shift="true" label="S"/>
             </key>
             <key>
@@ -282,8 +282,8 @@
               <binding shift="true" label="X"/>
             </key>
             <key>
-              <binding label="c"/>
-              <binding shift="true" label="C"/>
+              <binding label="c" extended_labels="ç"/>
+              <binding shift="true" label="C" extended_labels="Ç"/>
             </key>
             <key>
               <binding label="v"/>
@@ -294,8 +294,8 @@
               <binding shift="true" label="B"/>
             </key>
             <key>
-              <binding label="n"/>
-              <binding shift="true" label="N"/>
+              <binding label="n" extended_labels="ñ"/>
+              <binding shift="true" label="N" extended_labels="Ñ"/>
             </key>
             <key>
               <binding label="m"/>
