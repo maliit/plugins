@@ -150,6 +150,144 @@
 
        </row>
      </section>
+
+     <section id="symbols1" type="non-sloppy">
+       <row>
+         <key>
+           <binding label="&#x0419;"/>
+         </key>
+         <key>
+           <binding label="&#x0426;"/>
+         </key>
+         <key>
+           <binding label="&#x0423;"/>
+         </key>
+         <key>
+           <binding label="&#x041A;"/>
+         </key>
+         <key>
+           <binding label="&#x0415;"/>
+         </key>
+         <key>
+           <binding label="&#x041D;"/>
+         </key>
+         <key>
+           <binding label="&#x0413;"/>
+         </key>
+         <key>
+           <binding label="&#x0428;"/>
+         </key>
+         <key>
+           <binding label="&#x0429;"/>
+         </key>
+         <key>
+           <binding label="&#x0417;"/>
+         </key>
+         <key>
+           <binding label="&#x0425;"/>
+         </key>
+       </row>
+
+       <row>
+         <key>
+           <binding label="&#x0424;"/>
+         </key>
+         <key>
+           <binding label="&#x0406;"/>
+         </key>
+         <key>
+           <binding label="&#x0412;"/>
+         </key>
+         <key>
+           <binding label="&#x0410;"/>
+         </key>
+         <key>
+           <binding label="&#x041F;"/>
+         </key>
+         <key>
+           <binding label="&#x0420;"/>
+         </key>
+         <key>
+           <binding label="&#x041E;"/>
+         </key>
+         <key>
+           <binding label="&#x041B;"/>
+         </key>
+         <key>
+           <binding label="&#x0414;"/>
+         </key>
+         <key>
+           <binding label="&#x0416;"/>
+         </key>
+         <key>
+           <binding label="&#x0404;"/>
+         </key>
+       </row>
+
+       <row>
+         <key style="special">
+           <binding action="switch" label="2/2"/>
+         </key>
+         <key>
+           <binding label="&#x0490;"/>
+         </key>
+         <key>
+           <binding label="&#x042F;"/>
+         </key>
+         <key>
+           <binding label="&#x0427;"/>
+         </key>
+         <key>
+           <binding label="&#x0421;"/>
+         </key>
+         <key>
+           <binding label="&#x041C;"/>
+         </key>
+         <key>
+           <binding label="&#x0418;"/>
+         </key>
+         <key>
+           <binding label="&#x0422;"/>
+         </key>
+         <key>
+           <binding label="&#x042C;"/>
+         </key>
+         <key>
+           <binding label="&#x0411;"/>
+         </key>
+         <key style="special">
+           <binding action="backspace"/>
+         </key>
+       </row>
+
+       <row>
+         <key style="special" width="xx-large">
+           <binding action="sym" label="&#x0410;&#x0411;&#x0412;"/>
+         </key>
+         <key>
+           <binding label="&#x002C;"/>
+         </key>
+         <key>
+           <binding label="&#x002E;"/>
+         </key>
+
+         <key width="stretched">
+           <binding action="space"/>
+         </key>
+
+         <key>
+           <binding label="&#x042E;"/>
+         </key>
+         <key>
+           <binding label="&#x0407;"/>
+         </key>
+
+         <key style="special" width="xx-large">
+           <binding action="return"/>
+         </key>
+
+       </row>
+     </section>
    </layout>
 
    <layout type="general" orientation="portrait">
@@ -293,6 +431,144 @@
          <key>
            <binding label="&#x003A;"/>
            <binding shift="true" label="&#x00BB;"/>
+         </key>
+
+         <key style="special" width="xx-large">
+           <binding action="return"/>
+         </key>
+
+       </row>
+     </section>
+
+     <section id="symbols1" type="non-sloppy">
+       <row>
+         <key>
+           <binding label="&#x0419;"/>
+         </key>
+         <key>
+           <binding label="&#x0426;"/>
+         </key>
+         <key>
+           <binding label="&#x0423;"/>
+         </key>
+         <key>
+           <binding label="&#x041A;"/>
+         </key>
+         <key>
+           <binding label="&#x0415;"/>
+         </key>
+         <key>
+           <binding label="&#x041D;"/>
+         </key>
+         <key>
+           <binding label="&#x0413;"/>
+         </key>
+         <key>
+           <binding label="&#x0428;"/>
+         </key>
+         <key>
+           <binding label="&#x0429;"/>
+         </key>
+         <key>
+           <binding label="&#x0417;"/>
+         </key>
+         <key>
+           <binding label="&#x0425;"/>
+         </key>
+       </row>
+
+       <row>
+         <key>
+           <binding label="&#x0424;"/>
+         </key>
+         <key>
+           <binding label="&#x0406;"/>
+         </key>
+         <key>
+           <binding label="&#x0412;"/>
+         </key>
+         <key>
+           <binding label="&#x0410;"/>
+         </key>
+         <key>
+           <binding label="&#x041F;"/>
+         </key>
+         <key>
+           <binding label="&#x0420;"/>
+         </key>
+         <key>
+           <binding label="&#x041E;"/>
+         </key>
+         <key>
+           <binding label="&#x041B;"/>
+         </key>
+         <key>
+           <binding label="&#x0414;"/>
+         </key>
+         <key>
+           <binding label="&#x0416;"/>
+         </key>
+         <key>
+           <binding label="&#x0404;"/>
+         </key>
+       </row>
+
+       <row>
+         <key style="special">
+           <binding action="switch" label="2/2"/>
+         </key>
+         <key>
+           <binding label="&#x0490;"/>
+         </key>
+         <key>
+           <binding label="&#x042F;"/>
+         </key>
+         <key>
+           <binding label="&#x0427;"/>
+         </key>
+         <key>
+           <binding label="&#x0421;"/>
+         </key>
+         <key>
+           <binding label="&#x041C;"/>
+         </key>
+         <key>
+           <binding label="&#x0418;"/>
+         </key>
+         <key>
+           <binding label="&#x0422;"/>
+         </key>
+         <key>
+           <binding label="&#x042C;"/>
+         </key>
+         <key>
+           <binding label="&#x0411;"/>
+         </key>
+         <key style="special">
+           <binding action="backspace"/>
+         </key>
+       </row>
+
+       <row>
+         <key style="special" width="xx-large">
+           <binding action="sym" label="&#x0410;&#x0411;&#x0412;"/>
+         </key>
+         <key>
+           <binding label="&#x002C;"/>
+         </key>
+         <key>
+           <binding label="&#x002E;"/>
+         </key>
+
+         <key width="stretched">
+           <binding action="space"/>
+         </key>
+
+         <key>
+           <binding label="&#x042E;"/>
+         </key>
+         <key>
+           <binding label="&#x0407;"/>
          </key>
 
          <key style="special" width="xx-large">
