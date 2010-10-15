@@ -13,32 +13,32 @@
             <binding shift="true" label="W"/>
           </key>
           <key>
-            <binding accented_labels="é" accents="´" label="e"/>
-            <binding shift="true" accented_labels="É" accents="´" label="E"/>
+            <binding accented_labels="é" accents="´" label="e" extended_labels="éěę"/>
+            <binding shift="true" accented_labels="É" accents="´" label="E" extended_labels="ÉĚĘ"/>
           </key>
           <key>
-            <binding accented_labels="ŕ" accents="´" label="r"/>
-            <binding shift="true" accented_labels="Ŕ" accents="´" label="R"/>
+            <binding accented_labels="ŕ" accents="´" label="r" extended_labels="ŕř"/>
+            <binding shift="true" accented_labels="Ŕ" accents="´" label="R" extended_labels="ŔŘ"/>
           </key>
           <key>
-            <binding accented_labels="ť" accents="ˇ" label="t"/>
-            <binding shift="true" accented_labels="Ť" accents="ˇ" label="T"/>
+            <binding accented_labels="ť" accents="ˇ" label="t" extended_labels="ťţ"/>
+            <binding shift="true" accented_labels="Ť" accents="ˇ" label="T" extended_labels="ŤŢ"/>
           </key>
           <key>
-            <binding accented_labels="ž" accents="ˇ" label="z"/>
-            <binding shift="true" accented_labels="Ž" accents="ˇ" label="Z"/>
+            <binding accented_labels="ž" accents="ˇ" label="z" extended_labels="žźż"/>
+            <binding shift="true" accented_labels="Ž" accents="ˇ" label="Z" extended_labels="ŽŹŻ"/>
           </key>
           <key>
-            <binding accented_labels="ú" accents="´" label="u"/>
-            <binding shift="true" accented_labels="Ú" accents="´" label="U"/>
+            <binding accented_labels="ú" accents="´" label="u" extended_labels="úůüűùû"/>
+            <binding shift="true" accented_labels="Ú" accents="´" label="U" extended_labels="ÚŮÜŰÙÛ"/>
           </key>
           <key>
-            <binding accented_labels="í" accents="´" label="i"/>
-            <binding shift="true" accented_labels="Í" accents="´" label="I"/>
+            <binding accented_labels="í" accents="´" label="i" extended_labels="íî"/>
+            <binding shift="true" accented_labels="Í" accents="´" label="I" extended_labels="ÍÎ"/>
           </key>
           <key>
-            <binding accented_labels="ó" accents="´" label="o"/>
-            <binding shift="true" accented_labels="Ó" accents="´" label="O"/>
+            <binding accented_labels="ó" accents="´" label="o" extended_labels="óôöő"/>
+            <binding shift="true" accented_labels="Ó" accents="´" label="O" extended_labels="ÓÔÖŐ"/>
           </key>
           <key>
             <binding label="p"/>
@@ -48,16 +48,16 @@
 
         <row>
           <key>
-            <binding accented_labels="á" accents="´" label="a"/>
-            <binding shift="true" accented_labels="Á" accents="´" label="A"/>
+            <binding accented_labels="á" accents="´" label="a" extended_labels="áäăâą"/>
+            <binding shift="true" accented_labels="Á" accents="´" label="A" extended_labels="ÁÄĂÂĄ"/>
           </key>
           <key>
-            <binding accented_labels="š" accents="ˇ" label="s"/>
-            <binding shift="true" accented_labels="Š" accents="ˇ" label="S"/>
+            <binding accented_labels="š" accents="ˇ" label="s" extended_labels="šßśş"/>
+            <binding shift="true" accented_labels="Š" accents="ˇ" label="S" extended_labels="ŠŚŞ"/>
           </key>
           <key>
-            <binding accented_labels="ď" accents="ˇ" label="d"/>
-            <binding shift="true" accented_labels="Ď" accents="ˇ" label="D"/>
+            <binding accented_labels="ď" accents="ˇ" label="d" extended_labels="ďđ"/>
+            <binding shift="true" accented_labels="Ď" accents="ˇ" label="D" extended_labels="ĎĐ"/>
           </key>
           <key>
             <binding label="f"/>
@@ -80,8 +80,8 @@
             <binding shift="true" label="K"/>
           </key>
           <key>
-            <binding accented_labels="ĺľ" accents="´ˇ" label="l"/>
-            <binding shift="true" accented_labels="ĹĽ" accents="´ˇ" label="L"/>
+            <binding accented_labels="ĺľ" accents="´ˇ" label="l" extended_labels="ľĺł"/>
+            <binding shift="true" accented_labels="ĹĽ" accents="´ˇ" label="L" extended_labels="ĽĹŁ"/>
           </key>
           <key>
             <binding label="ä"/>
@@ -95,16 +95,16 @@
           </key>
 
           <key>
-            <binding accented_labels="ý" accents="´" label="y"/>
-            <binding shift="true" accented_labels="Ý" accents="´" label="Y"/>
+            <binding accented_labels="ý" accents="´" label="y" extended_labels="ý"/>
+            <binding shift="true" accented_labels="Ý" accents="´" label="Y" extended_labels="Ý"/>
           </key>
           <key>
             <binding label="x"/>
             <binding shift="true" label="X"/>
           </key>
           <key>
-            <binding accented_labels="č" accents="ˇ" label="c"/>
-            <binding shift="true" accented_labels="Č" accents="ˇ" label="C"/>
+            <binding accented_labels="č" accents="ˇ" label="c" extended_labels="čćç"/>
+            <binding shift="true" accented_labels="Č" accents="ˇ" label="C" extended_labels="ČĆÇ"/>
           </key>
           <key>
             <binding label="v"/>
@@ -115,8 +115,8 @@
             <binding shift="true" label="B"/>
           </key>
           <key>
-            <binding accented_labels="ň" accents="ˇ" label="n"/>
-            <binding shift="true" accented_labels="Ň" accents="ˇ" label="N"/>
+            <binding accented_labels="ň" accents="ˇ" label="n" extended_labels="ňńñ"/>
+            <binding shift="true" accented_labels="Ň" accents="ˇ" label="N" extended_labels="ŇŃÑ"/>
           </key>
           <key>
             <binding label="m"/>
@@ -169,32 +169,32 @@
             <binding shift="true" label="W"/>
           </key>
           <key>
-            <binding accented_labels="é" accents="´" label="e"/>
-            <binding shift="true" accented_labels="É" accents="´" label="E"/>
+            <binding accented_labels="é" accents="´" label="e" extended_labels="éěę"/>
+            <binding shift="true" accented_labels="É" accents="´" label="E" extended_labels="ÉĚĘ"/>
           </key>
           <key>
-            <binding accented_labels="ŕ" accents="´" label="r"/>
-            <binding shift="true" accented_labels="Ŕ" accents="´" label="R"/>
+            <binding accented_labels="ŕ" accents="´" label="r" extended_labels="ŕř"/>
+            <binding shift="true" accented_labels="Ŕ" accents="´" label="R" extended_labels="ŔŘ"/>
           </key>
           <key>
-            <binding accented_labels="ť" accents="ˇ" label="t"/>
-            <binding shift="true" accented_labels="Ť" accents="ˇ" label="T"/>
+            <binding accented_labels="ť" accents="ˇ" label="t" extended_labels="ťţ"/>
+            <binding shift="true" accented_labels="Ť" accents="ˇ" label="T" extended_labels="ŤŢ"/>
           </key>
           <key>
-            <binding accented_labels="ž" accents="ˇ" label="z"/>
-            <binding shift="true" accented_labels="Ž" accents="ˇ" label="Z"/>
+            <binding accented_labels="ž" accents="ˇ" label="z" extended_labels="žźż"/>
+            <binding shift="true" accented_labels="Ž" accents="ˇ" label="Z" extended_labels="ŽŹŻ"/>
           </key>
           <key>
-            <binding accented_labels="ú" accents="´" label="u"/>
-            <binding shift="true" accented_labels="Ú" accents="´" label="U"/>
+            <binding accented_labels="ú" accents="´" label="u" extended_labels="úůüűùû"/>
+            <binding shift="true" accented_labels="Ú" accents="´" label="U" extended_labels="ÚŮÜŰÙÛ"/>
           </key>
           <key>
-            <binding accented_labels="í" accents="´" label="i"/>
-            <binding shift="true" accented_labels="Í" accents="´" label="I"/>
+            <binding accented_labels="í" accents="´" label="i" extended_labels="íî"/>
+            <binding shift="true" accented_labels="Í" accents="´" label="I" extended_labels="ÍÎ"/>
           </key>
           <key>
-            <binding accented_labels="ó" accents="´" label="o"/>
-            <binding shift="true" accented_labels="Ó" accents="´" label="O"/>
+            <binding accented_labels="ó" accents="´" label="o" extended_labels="óôöő"/>
+            <binding shift="true" accented_labels="Ó" accents="´" label="O" extended_labels="ÓÔÖŐ"/>
           </key>
           <key>
             <binding label="p"/>
@@ -204,16 +204,16 @@
 
         <row>
           <key>
-            <binding accented_labels="á" accents="´" label="a"/>
-            <binding shift="true" accented_labels="Á" accents="´" label="A"/>
+            <binding accented_labels="á" accents="´" label="a" extended_labels="áäăâą"/>
+            <binding shift="true" accented_labels="Á" accents="´" label="A" extended_labels="ÁÄĂÂĄ"/>
           </key>
           <key>
-            <binding accented_labels="š" accents="ˇ" label="s"/>
-            <binding shift="true" accented_labels="Š" accents="ˇ" label="S"/>
+            <binding accented_labels="š" accents="ˇ" label="s" extended_labels="šßśş"/>
+            <binding shift="true" accented_labels="Š" accents="ˇ" label="S" extended_labels="ŠŚŞ"/>
           </key>
           <key>
-            <binding accented_labels="ď" accents="ˇ" label="d"/>
-            <binding shift="true" accented_labels="Ď" accents="ˇ" label="D"/>
+            <binding accented_labels="ď" accents="ˇ" label="d" extended_labels="ďđ"/>
+            <binding shift="true" accented_labels="Ď" accents="ˇ" label="D" extended_labels="ĎĐ"/>
           </key>
           <key>
             <binding label="f"/>
@@ -236,8 +236,8 @@
             <binding shift="true" label="K"/>
           </key>
           <key>
-            <binding accented_labels="ĺľ" accents="´ˇ" label="l"/>
-            <binding shift="true" accented_labels="ĹĽ" accents="´ˇ" label="L"/>
+            <binding accented_labels="ĺľ" accents="´ˇ" label="l" extended_labels="ľĺł"/>
+            <binding shift="true" accented_labels="ĹĽ" accents="´ˇ" label="L" extended_labels="ĽĹŁ"/>
           </key>
           <key>
             <binding label="ä"/>
@@ -251,16 +251,16 @@
           </key>
 
           <key>
-            <binding accented_labels="ý" accents="´" label="y"/>
-            <binding shift="true" accented_labels="Ý" accents="´" label="Y"/>
+            <binding accented_labels="ý" accents="´" label="y" extended_labels="ý"/>
+            <binding shift="true" accented_labels="Ý" accents="´" label="Y" extended_labels="Ý"/>
           </key>
           <key>
             <binding label="x"/>
             <binding shift="true" label="X"/>
           </key>
           <key>
-            <binding accented_labels="č" accents="ˇ" label="c"/>
-            <binding shift="true" accented_labels="Č" accents="ˇ" label="C"/>
+            <binding accented_labels="č" accents="ˇ" label="c" extended_labels="čćç"/>
+            <binding shift="true" accented_labels="Č" accents="ˇ" label="C" extended_labels="ČĆÇ"/>
           </key>
           <key>
             <binding label="v"/>
@@ -271,8 +271,8 @@
             <binding shift="true" label="B"/>
           </key>
           <key>
-            <binding accented_labels="ň" accents="ˇ" label="n"/>
-            <binding shift="true" accented_labels="Ň" accents="ˇ" label="N"/>
+            <binding accented_labels="ň" accents="ˇ" label="n" extended_labels="ňńñ"/>
+            <binding shift="true" accented_labels="Ň" accents="ˇ" label="N" extended_labels="ŇŃÑ"/>
           </key>
           <key>
             <binding label="m"/>

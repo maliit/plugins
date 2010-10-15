@@ -13,8 +13,8 @@
             <binding shift="true" label="W"/>
           </key>
           <key>
-            <binding label="e"/>
-            <binding shift="true" label="E"/>
+            <binding label="e" extended_labels="èéêë"/>
+            <binding shift="true" label="E" extended_labels="ÈÉÊË"/>
           </key>
           <key>
             <binding label="r"/>
@@ -29,16 +29,16 @@
             <binding shift="true" label="Y"/>
           </key>
           <key>
-            <binding label="u"/>
-            <binding shift="true" label="U"/>
+            <binding label="u" extended_labels="ûùúü"/>
+            <binding shift="true" label="U" extended_labels="ÛÙÚÜ"/>
           </key>
           <key>
-            <binding label="i"/>
-            <binding shift="true" label="I"/>
+            <binding label="i" extended_labels="îïìí"/>
+            <binding shift="true" label="I" extended_labels="ÎÏÌÍ"/>
           </key>
           <key>
-            <binding label="o"/>
-            <binding shift="true" label="O"/>
+            <binding label="o" extended_labels="óôòõ"/>
+            <binding shift="true" label="O" extended_labels="ÓÔÒÕ"/>
           </key>
           <key>
             <binding label="p"/>
@@ -50,11 +50,11 @@
           <spacer/>
 
           <key>
-            <binding label="a"/>
-            <binding shift="true" label="A"/>
+            <binding label="a" extended_labels="àâæáãä"/>
+            <binding shift="true" label="A" extended_labels="ÀÂÆÁÃÄ"/>
           </key>
           <key>
-            <binding label="s"/>
+            <binding label="s" extended_labels="ß"/>
             <binding shift="true" label="S"/>
           </key>
           <key>
@@ -105,8 +105,8 @@
             <binding shift="true" label="X"/>
           </key>
           <key>
-            <binding label="c"/>
-            <binding shift="true" label="C"/>
+            <binding label="c" extended_labels="ç"/>
+            <binding shift="true" label="C" extended_labels="Ç"/>
           </key>
           <key>
             <binding label="v"/>
@@ -117,8 +117,8 @@
             <binding shift="true" label="B"/>
           </key>
           <key>
-            <binding label="n"/>
-            <binding shift="true" label="N"/>
+            <binding label="n" extended_labels="ñ"/>
+            <binding shift="true" label="N" extended_labels="Ñ"/>
           </key>
           <key>
             <binding label="m"/>
@@ -166,8 +166,8 @@
             <binding shift="true" label="W"/>
           </key>
           <key>
-            <binding label="e"/>
-            <binding shift="true" label="E"/>
+            <binding label="e" extended_labels="èéêë"/>
+            <binding shift="true" label="E" extended_labels="ÈÉÊË"/>
           </key>
           <key>
             <binding label="r"/>
@@ -182,16 +182,16 @@
             <binding shift="true" label="Y"/>
           </key>
           <key>
-            <binding label="u"/>
-            <binding shift="true" label="U"/>
+            <binding label="u" extended_labels="ûùúü"/>
+            <binding shift="true" label="U" extended_labels="ÛÙÚÜ"/>
           </key>
           <key>
-            <binding label="i"/>
-            <binding shift="true" label="I"/>
+            <binding label="i" extended_labels="îïìí"/>
+            <binding shift="true" label="I" extended_labels="ÎÏÌÍ"/>
           </key>
           <key>
-            <binding label="o"/>
-            <binding shift="true" label="O"/>
+            <binding label="o" extended_labels="óôòõ"/>
+            <binding shift="true" label="O" extended_labels="ÓÔÒÕ"/>
           </key>
           <key>
             <binding label="p"/>
@@ -203,11 +203,11 @@
           <spacer/>
 
           <key>
-            <binding label="a"/>
-            <binding shift="true" label="A"/>
+            <binding label="a" extended_labels="àâæáãä"/>
+            <binding shift="true" label="A" extended_labels="ÀÂÆÁÃÄ"/>
           </key>
           <key>
-            <binding label="s"/>
+            <binding label="s" extended_labels="ß"/>
             <binding shift="true" label="S"/>
           </key>
           <key>
@@ -258,8 +258,8 @@
             <binding shift="true" label="X"/>
           </key>
           <key>
-            <binding label="c"/>
-            <binding shift="true" label="C"/>
+            <binding label="c" extended_labels="ç"/>
+            <binding shift="true" label="C" extended_labels="Ç"/>
           </key>
           <key>
             <binding label="v"/>
@@ -270,8 +270,8 @@
             <binding shift="true" label="B"/>
           </key>
           <key>
-            <binding label="n"/>
-            <binding shift="true" label="N"/>
+            <binding label="n" extended_labels="ñ"/>
+            <binding shift="true" label="N" extended_labels="Ñ"/>
           </key>
           <key>
             <binding label="m"/>
