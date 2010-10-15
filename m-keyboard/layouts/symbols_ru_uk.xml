@@ -81,7 +81,7 @@
 
        <row>
          <key style="special">
-           <binding action="shift"/>
+           <binding action="switch" label="1/2"/>
          </key>
          <key>
            <binding label="@"/>
@@ -116,7 +116,7 @@
            <binding shift="true" label="&#x00A1;"/>
          </key>
          <key style="special">
-           <binding action="return" label=""/>
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -145,7 +145,7 @@
          </key>
 
          <key style="special" width="xx-large">
-           <binding action="backspace"/>
+           <binding action="return"/>
          </key>
 
        </row>
@@ -232,7 +232,7 @@
 
        <row>
          <key style="special">
-           <binding action="shift"/>
+           <binding action="switch" label="2/2"/>
          </key>
          <key>
            <binding label="@"/>
@@ -267,7 +267,7 @@
            <binding shift="true" label="&#x00A1;"/>
          </key>
          <key style="special">
-           <binding action="return" label=""/>
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -296,7 +296,7 @@
          </key>
 
          <key style="special" width="xx-large">
-           <binding action="backspace"/>
+           <binding action="return"/>
          </key>
 
        </row>

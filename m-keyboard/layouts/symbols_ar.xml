@@ -90,9 +90,6 @@
           </row>
 
           <row>
-            <key style="special">
-              <binding action="shift"/>
-            </key>
             <key>
               <binding label="&#x0040;"/>
               <binding shift="true" label="&#x0060;"/>
@@ -124,8 +121,8 @@
             <key>
               <binding label="&#x0021;"/>
             </key>
-            <key>
-              <binding label="&#x066B;"/>
+            <key style="special" width="xx-large" rtl="true">
+              <binding action="backspace"/>
             </key>
           </row>
 
@@ -155,8 +152,8 @@
               <binding shift="true" label="&#x00BB;"/>
             </key>
 
-            <key style="special" width="xx-large" rtl="true">
-              <binding action="backspace"/>
+            <key style="special" width="xx-large" rtl="false">
+              <binding action="return"/>
             </key>
           </row>
         </section>
@@ -251,9 +248,6 @@
           </row>
 
           <row>
-            <key style="special">
-              <binding action="shift"/>
-            </key>
             <key>
               <binding label="&#x0040;"/>
               <binding shift="true" label="&#x0060;"/>
@@ -288,6 +282,9 @@
             <key>
               <binding label="&#x066B;"/>
             </key>
+            <key style="special" rtl="true">
+              <binding action="backspace"/>
+            </key>
           </row>
 
           <row>
@@ -316,8 +313,8 @@
               <binding shift="true" label="&#x00BB;"/>
             </key>
 
-            <key style="special" width="xx-large" rtl="true">
-              <binding action="backspace"/>
+            <key style="special" width="xx-large" rtl="false">
+              <binding action="return"/>
             </key>
           </row>
         </section>

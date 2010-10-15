@@ -128,7 +128,7 @@
           </key>
 
           <key style="special">
-            <binding action="return" label=""/>
+            <binding action="backspace"/>
           </key>
         </row>
 
@@ -151,7 +151,7 @@
           <key><binding label="."/></key>
 
           <key style="special" width="x-large">
-            <binding action="backspace" label=""/>
+            <binding action="return"/>
           </key>
         </row>
       </section>
@@ -284,7 +284,7 @@
           </key>
 
           <key style="special">
-            <binding action="return" label=""/>
+            <binding action="backspace"/>
           </key>
         </row>
 
@@ -307,7 +307,7 @@
           <key><binding label="."/></key>
 
           <key style="special" width="x-large">
-            <binding action="backspace" label=""/>
+            <binding action="return"/>
           </key>
         </row>
       </section>

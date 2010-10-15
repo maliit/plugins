@@ -82,7 +82,7 @@
 
        <row>
          <key style="special" width="large">
-           <binding action="shift"/>
+           <binding action="switch" label="1/2"/>
          </key>
 
          <spacer/>
@@ -119,7 +119,7 @@
          <spacer/>
 
          <key style="special" width="large">
-           <binding action="switch" label="àź"/>
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -147,7 +147,7 @@
          </key>
 
          <key style="special" width="x-large">
-           <binding action="backspace"/>
+           <binding action="return"/>
          </key>
 
        </row>
@@ -242,7 +242,7 @@
 
        <row>
          <key style="special" width="large">
-           <binding action="shift"/>
+           <binding action="switch" label="2/2"/>
          </key>
 
          <spacer/>
@@ -279,7 +279,7 @@
          <spacer/>
 
          <key style="special" width="large">
-           <binding action="switch" label="1*"/>
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -309,7 +309,7 @@
          </key>
 
          <key style="special" width="x-large">
-           <binding action="backspace"/>
+           <binding action="return"/>
          </key>
        </row>
      </section>
@@ -395,7 +395,7 @@
 
        <row>
          <key style="special" width="large">
-           <binding action="shift"/>
+           <binding action="switch" label="1/2"/>
          </key>
 
          <spacer/>
@@ -432,7 +432,7 @@
          <spacer/>
 
          <key style="special" width="large">
-           <binding action="switch" label="àź"/>
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -454,7 +454,7 @@
          </key>
 
          <key style="special" width="xx-large">
-           <binding action="backspace"/>
+           <binding action="return"/>
          </key>
        </row>
      </section>
@@ -548,7 +548,7 @@
 
        <row>
          <key style="special" width="large">
-           <binding action="shift"/>
+           <binding action="switch" label="2/2"/>
          </key>
 
          <spacer/>
@@ -585,7 +585,7 @@
          <spacer/>
 
          <key style="special" width="large">
-           <binding action="switch" label="1*"/>
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -609,7 +609,7 @@
          </key>
 
          <key style="special" width="xx-large">
-           <binding action="backspace"/>
+           <binding action="return"/>
          </key>
        </row>
      </section>

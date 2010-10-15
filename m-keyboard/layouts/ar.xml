@@ -113,8 +113,8 @@
            <binding label="ظ"/>
          </key>
 
-         <key style="special" rtl="false">
-           <binding action="return"/>
+         <key style="special" rtl="true">
+           <binding action="backspace"/>
          </key>
        </row>
 
@@ -133,8 +133,8 @@
          <key><binding label="."/></key>
          <key><binding label="ط"/></key>
 
-         <key style="special" width="xx-large" rtl="true">
-           <binding action="backspace"/>
+         <key style="special" width="xx-large" rtl="false">
+           <binding action="return"/>
          </key>
        </row>
      </section>
