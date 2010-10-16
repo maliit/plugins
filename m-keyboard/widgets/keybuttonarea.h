@@ -167,6 +167,8 @@ protected:
     struct TouchPointInfo {
         TouchPointInfo();
 
+        void reset();
+
         //! True if finger is held down and is inside the layout's area.
         bool fingerInsideArea;
 
@@ -184,6 +186,9 @@ protected:
 
         //! Whether to perform gravity checks for this touchpoint.
         bool checkGravity;
+
+        //! Whether this touchpoint has become invalid.
+        bool invalid;
     };
 
     /*! \reimp */
@@ -305,7 +310,7 @@ private:
     bool wasGestureTriggered;
 
     //! Keys are QTouchEvent::TouchPoint id
-    QMap<int, TouchPointInfo> touchPoints;
+    QVector<TouchPointInfo> touchPoints;
 
     bool enableMultiTouch;
 
@@ -324,6 +329,8 @@ private:
 
     //! This timer is used to recognize long press.
     QTimer longPressTimer;
+
+    int activelyPressedTouchPointId;
 
     M_STYLABLE_WIDGET(KeyButtonAreaStyle)
 
