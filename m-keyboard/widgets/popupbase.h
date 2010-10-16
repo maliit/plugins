@@ -14,29 +14,26 @@
  * of this file.
  */
 
-
-
 #ifndef POPUPBASE_H
 #define POPUPBASE_H
 
-#include <QPointF>
-#include <QPoint>
-#include <QSize>
-#include <QString>
-#include <QRectF>
-#include <QPixmap>
-
 class IKeyButton;
-class QGraphicsItem;
+class KeyButtonArea;
 
-/*!
- * \brief Base class for popup implementation
- */
+class QPointF;
+class QPoint;
+class QFont;
+class QSize;
+class QString;
+
+
+//! \brief Base class for popup implementation
 class PopupBase
 {
 public:
     //! Constructor
-    PopupBase();
+    //! \param mainArea Allows PopupBase to forward requests to the main area
+    explicit PopupBase(const KeyButtonArea  *mainArea);
 
     //! \brief Destructor
     virtual ~PopupBase();
@@ -44,34 +41,41 @@ public:
     //! \brief Sets the accurate position of finger relative to center of popup text
     virtual void setFingerPos(const QPointF &pos) = 0;
 
-    //! \brief Sets popup content
-    virtual void setTargetButton(const IKeyButton *key);
+    //! Returns main area
+    virtual KeyButtonArea *mainArea() const = 0;
 
-    //! Sets the font used in keyboard to which this popup is associated with.
-    virtual void setKeyboardFont(const QFont &font);
+    //! \brief Sets popup position at specified key in according to current orientation
+    //! \param keyPos key's position
+    //! \param screenPos key's position on the screen
+    //! \param keySize  key's size
+    virtual void updatePos(const QPointF &keyPos,
+                           const QPoint &screenPos,
+                           const QSize &keySize) = 0;
 
-    /*!
-     * \brief Sets popup position at specified key in according to current orientation
-     * \param keyPos key's position
-     * \param screenPos key's position on the screen
-     * \param keySize  key's size
-     */
-    virtual void updatePos(QPointF keyPos, QPoint screenPos, const QSize &keySize) = 0;
+    //! \brief Allows PopupBase to act upon invalid key-pressed on the main area
+    virtual void handleInvalidKeyPressedOnMainArea() = 0;
 
-    //! Hide widget
-    virtual void hidePopup() = 0;
+    //! \brief Allows PopupBase to act upon key-pressed on the main area
+    //! \param keyPos key's position
+    //! \param screenPos key's position on the screen
+    //! \param keySize  key's size
+    virtual void handleKeyPressedOnMainArea(const IKeyButton *key,
+                                            const QString &accent,
+                                            bool upperCase) = 0;
 
-    //! Show widget
-    virtual void showPopup() = 0;
+    //! \brief Allows PopupBase to act upon long key-pressed on the main area
+    //! \param keyPos key's position
+    //! \param screenPos key's position on the screen
+    //! \param keySize  key's size
+    virtual void handleLongKeyPressedOnMainArea(const IKeyButton *key,
+                                                const QString &accent,
+                                                bool upperCase) = 0;
 
-    // Return true if widget is visible
-    virtual bool isPopupVisible() const = 0;
+    //! Returns whether PopupBase has any visible components
+    virtual bool isVisible() const = 0;
 
-protected:
-
-#ifdef UNIT_TEST
-    friend class Ut_IPopup;
-#endif
+    //! Enables/disables PopupBase completely (affects visibility)
+    virtual void setEnabled(bool ok) = 0;
 };
 
 #endif

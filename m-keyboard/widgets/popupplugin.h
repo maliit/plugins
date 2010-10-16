@@ -14,22 +14,19 @@
  * of this file.
  */
 
-
-
 #ifndef POPUPPLUGIN_H
 #define POPUPPLUGIN_H
 
 #include <QtPlugin>
 
-class QGraphicsItem;
 class PopupBase;
+class KeyButtonArea;
 
 class PopupPlugin
 {
 public:
-    virtual PopupBase *createPopup(QGraphicsItem *parent) = 0;
+    virtual PopupBase *createPopup(KeyButtonArea *mainArea) const = 0;
 };
-
 
 Q_DECLARE_INTERFACE(PopupPlugin,
                     "com.nokia.maemo.MeegoImPluginPopupPlugin/1.0")

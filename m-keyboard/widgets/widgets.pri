@@ -7,6 +7,9 @@ INSTALL_HEADERS += \
     $$WIDGETS_DIR/keybuttonareastyle.h \
     $$WIDGETS_DIR/popupplugin.h \
     $$WIDGETS_DIR/mimoverlay.h \
+    $$WIDGETS_DIR/keybuttonarea.h \
+    $$WIDGETS_DIR/singlewidgetbutton.h \
+    $$WIDGETS_DIR/singlewidgetbuttonarea.h \
 
 STYLE_HEADERS += \
     $$WIDGETS_DIR/widgetbarstyle.h \
@@ -20,6 +23,7 @@ STYLE_HEADERS += \
     $$WIDGETS_DIR/mtoolbarlabelstyle.h \
 
 HEADERS += \
+    $$INSTALL_HEADERS \
     $$STYLE_HEADERS \
     $$WIDGETS_DIR/widgetbar.h \
     $$WIDGETS_DIR/mimcorrectioncandidatewindow.h \
@@ -32,12 +36,9 @@ HEADERS += \
     $$WIDGETS_DIR/notification.h \
     $$WIDGETS_DIR/symbolview.h \
     $$WIDGETS_DIR/keybuttonarea.h \
-    $$WIDGETS_DIR/ikeybutton.h \
     $$WIDGETS_DIR/singlewidgetbutton.h \
     $$WIDGETS_DIR/singlewidgetbuttonarea.h \
-    $$WIDGETS_DIR/popupbase.h \
     $$WIDGETS_DIR/popupfactory.h \
-    $$WIDGETS_DIR/popupplugin.h \
     $$WIDGETS_DIR/mtoolbarbutton.h \
     $$WIDGETS_DIR/mtoolbarbuttonview.h \
     $$WIDGETS_DIR/mtoolbarlabel.h \
@@ -77,4 +78,3 @@ SOURCES += \
 
 INCLUDEPATH += $$WIDGETS_DIR
 DEPENDPATH += $$WIDGETS_DIR
-

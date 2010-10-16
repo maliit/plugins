@@ -42,6 +42,7 @@ class MVirtualKeyboardStyleContainer;
 class LayoutData;
 class QGraphicsLinearLayout;
 class QTextLayout;
+class PopupHost;
 class PopupBase;
 
 /*!
@@ -67,19 +68,20 @@ public:
     //! \brief Destructor
     virtual ~KeyButtonArea();
 
-    /*!
-     * \brief Checks whether popup is currently turned on.
-     */
-    bool isPopupActive() const;
-
     //! \return layout model
     const LayoutData::SharedLayoutSection &sectionModel() const;
 
     //! Returns current level of this layout.
     int level() const;
 
+    //! Expose style used by KeyButtonArea.
+    const KeyButtonAreaStyleContainer &baseStyle() const;
+
     //! Set input method mode for all KeyButtonArea instances
     static void setInputMethodMode(M::InputMethodMode inputMethodMode);
+
+    //! Returns relative button base width
+    qreal relativeButtonBaseWidth() const;
 
 public slots:
     /*!
@@ -97,6 +99,9 @@ public slots:
     void unlockDeadkeys();
 
 signals:
+    //! \brief Emitted when the covered region changed
+    //! \param region The changed region
+    void regionUpdated(const QRegion &region);
 
     /*!
      * \brief Emitted when key is pressed
@@ -149,11 +154,13 @@ signals:
     //! Emitted when flicked down
     void flickDown();
 
-    /*!
-     * \brief Emitted when flicked up
-     * \param binding Information about the key where mouse button was pressed
-     */
+    //! \brief Emitted when flicked up
+    //! \param binding Information about the key where mouse button was pressed
     void flickUp(const KeyBinding &binding);
+
+    //! \brief Emitted if button width has changed
+    //! \param baseWidth base width used for relative button widths
+    void relativeButtonBaseWidthChanged(qreal baseWidth);
 
 protected:
     //! Stores touch point specific information.
@@ -191,7 +198,7 @@ protected:
     /*! \reimp_end */
 
     //! Called when widget is about to lose visibility.
-    virtual void onHide();
+    virtual void handleVisibilityChanged(bool visible);
 
 
     //! Shows popup and updates its content and position.
@@ -237,15 +244,14 @@ protected:
      */
     virtual void updateButtonGeometriesForWidth(int availableWidth) = 0;
 
-    const PopupBase &popupWidget() const;
+    const PopupBase &popup() const;
 
     //! Sets button state and sends release & press events.
     void setActiveKey(IKeyButton *key, TouchPointInfo &tpi);
 
     void clearActiveKeys();
 
-    //! Expose style to derived classes.
-    const KeyButtonAreaStyleContainer &baseStyle() const;
+    qreal mRelativeButtonBaseWidth;
 
 protected slots:
     //! Update background images, text layouts, etc. when the theme changed.
@@ -284,7 +290,7 @@ private:
     int currentLevel;
 
     //! Popup to show additional information for a button
-    PopupBase *popup;
+    PopupBase *mPopup;
 
     //! Touch point id of the most recent press event.
     int newestTouchPointId;
@@ -313,8 +319,6 @@ private:
 
     //! layout section viewed by this class
     const LayoutData::SharedLayoutSection section;
-
-    const bool usePopup;
 
     static M::InputMethodMode InputMethodMode;
 

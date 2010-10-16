@@ -13,29 +13,10 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-
-
-
 #include "popupbase.h"
 
-#include <QDebug>
-#include <MTheme>
-
-PopupBase::PopupBase()
-{
-}
+PopupBase::PopupBase(const KeyButtonArea *)
+{}
 
 PopupBase::~PopupBase()
-{
-}
-
-
-void PopupBase::setTargetButton(const IKeyButton *key)
-{
-    Q_UNUSED(key)
-}
-
-void PopupBase::setKeyboardFont(const QFont &font)
-{
-    Q_UNUSED(font)
-}
+{}

@@ -590,6 +590,7 @@ void Ut_KeyButtonArea::testPopup()
 
     const QPoint mousePos(subject->style()->paddingTop() + 1, subject->style()->paddingLeft() + 1); // approximately the top left key on layout
     const int touchId = 0;
+    QVERIFY(&subject->popup());
 
     // Test popup activation
     // direct call
@@ -609,7 +610,7 @@ void Ut_KeyButtonArea::testPopup()
 #endif
 
     subject->touchPointPressed(mousePos, touchId);
-    QVERIFY(subject->isPopupActive());
+    QVERIFY(subject->popup().isVisible());
     subject->touchPointReleased(mousePos, touchId);
 }
 

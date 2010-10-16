@@ -80,6 +80,7 @@ MVirtualKeyboard::MVirtualKeyboard(const LayoutsManager &layoutsManager,
       activeState(MInputMethod::OnScreen),
       eventHandler(this)
 {
+    setFlag(QGraphicsItem::ItemHasNoContents);
     setObjectName("MVirtualKeyboard");
     hide();
 
@@ -176,42 +177,6 @@ MVirtualKeyboard::finalizeOrientationChange()
     }
 
     showKeyboard(true);
-}
-
-void
-MVirtualKeyboard::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
-{
-    mTimestamp("MVirtualKeyboard", "start");
-
-    // The second item in layout holds the currently used keyboard. Draw under it.
-    const QRectF backgroundGeometry = layout()->itemAt(KeyboardIndex)->geometry();
-
-    if (MApplication::softwareRendering()) {
-        if (backgroundPixmap.isNull()
-            || backgroundPixmap->size() != backgroundGeometry.size().toSize()) {
-            const MScalableImage *background = style()->backgroundImage();
-            QPainter pixmapPainter;
-
-            backgroundPixmap = QSharedPointer<QPixmap>(
-                                   new QPixmap(backgroundGeometry.size().toSize()));
-
-            backgroundPixmap->fill(QColor(1, 1, 1, 0));
-            pixmapPainter.begin(backgroundPixmap.data());
-            background->draw(backgroundPixmap->rect(), &pixmapPainter);
-            pixmapPainter.end();
-        }
-
-        QRectF mappedRect = option->exposedRect;
-        mappedRect.translate(-backgroundGeometry.left(), -backgroundGeometry.top());
-        painter->drawPixmap(option->exposedRect, *backgroundPixmap, mappedRect);
-    } else {
-        const MScalableImage *background = style()->backgroundImage();
-
-        if (background) {
-            background->draw(backgroundGeometry.toRect(), painter);
-        }
-    }
-    mTimestamp("MVirtualKeyboard", "end");
 }
 
 bool MVirtualKeyboard::isFullyVisible() const
@@ -481,14 +446,14 @@ void MVirtualKeyboard::organizeContentAndSendRegion()
 }
 
 
-void MVirtualKeyboard::sendVKBRegion()
+void MVirtualKeyboard::sendVKBRegion(const QRegion &extraRegion)
 {
     regionUpdateRequested = true;
 
     if (!sendRegionUpdates)
         return;
 
-    emit regionUpdated(region(true));
+    emit regionUpdated(region(true) |= extraRegion);
     emit inputMethodAreaUpdated(region(true));
 }
 
@@ -838,6 +803,8 @@ KeyButtonArea * MVirtualKeyboard::createSectionView(const QString &layout,
     connect(view, SIGNAL(flickDown()), this, SIGNAL(userInitiatedHide()));
     connect(view, SIGNAL(flickUp(KeyBinding)),
             this, SLOT(flickUpHandler(KeyBinding)));
+    connect(view, SIGNAL(regionUpdated(QRegion)),
+            this, SLOT(sendVKBRegion(QRegion)));
 
     return view;
 }

@@ -17,6 +17,7 @@
 
 
 #include "mimoverlay.h"
+#include "mvirtualkeyboard.h"
 
 #include <MSceneManager>
 #include <MScene>
@@ -24,6 +25,7 @@
 #include <MGConfItem>
 #include <mplainwindow.h>
 
+#include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QString>
 #include <float.h>
@@ -32,12 +34,27 @@ namespace
 {
     // This GConf item defines whether multitouch is enabled or disabled
     const char * const MultitouchSetting = "/meegotouch/inputmethods/multitouch/enabled";
-};
+
+    MVirtualKeyboard *findVKB(const QGraphicsScene *scene)
+    {
+        MVirtualKeyboard *found = 0;
+
+        foreach (QGraphicsItem *item, scene->items()) {
+            found = dynamic_cast<MVirtualKeyboard *>(item);
+
+            if (found) {
+                break;
+            }
+        }
+
+        return found;
+    }
+}
 
 
 MImOverlay::MImOverlay()
-    : MWidget(),
-      parentWindow(new MSceneWindow)
+    : MWidget()
+    , parentWindow(new MSceneWindow)
 {
     setParentItem(parentWindow);
     parentWindow->setManagedManually(true);
@@ -52,9 +69,16 @@ MImOverlay::MImOverlay()
 
     connect(this, SIGNAL(visibleChanged()),
             this, SLOT(handleVisibilityChanged()));
+
     connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChanged(M::Orientation)),
             this, SLOT(handleOrientationChanged()));
+
+    MVirtualKeyboard *vkb = findVKB(MPlainWindow::instance()->scene());
+    connect(this, SIGNAL(regionUpdated(QRegion)),
+            vkb,  SLOT(sendVKBRegion(QRegion)));
+
     hide();
+
 }
 
 MImOverlay::~MImOverlay()

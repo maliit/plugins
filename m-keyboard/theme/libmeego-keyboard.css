@@ -2,8 +2,6 @@
 @const HEIGHT_TOOLBARITEM: 4mm;
 
 MVirtualKeyboardStyle {
-    background-image: "meegotouch-keyboard-background" 15px 15px 15px 15px;
-
     font-opacity: 0.9;
     font-color: #00FF00;
     text-color: #0000FF;
@@ -33,6 +31,8 @@ MVirtualKeyboardStyle.Landscape {
 }
 
 KeyButtonAreaStyle {
+    background-image: "meegotouch-keyboard-background" 15px 15px 15px 15px;
+
     font: "Nokia Sans Light" 28;
     font-color: #000000;
     secondary-font: $FONT_SMALL;

@@ -19,7 +19,9 @@
 
 #include <MWidget>
 
+class MVirtualKeyboard;
 class MSceneWindow;
+class QGraphicsScene;
 
 /*!
   * \brief The MImOverLay class could be used to show an plain translucent overlay widget.

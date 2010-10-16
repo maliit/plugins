@@ -89,7 +89,7 @@ private:
     typedef ButtonRowList::const_iterator ConstRowIterator;
 
     ButtonRowList rowList;
-    const qreal widgetHeight;
+    qreal widgetHeight;
     qreal mMaxNormalizedWidth;
 
     QVector<QPair<int, int> > rowOffsets;

@@ -14,9 +14,6 @@
  * of this file.
  */
 
-
-
-
 #include "popupfactory.h"
 #include "popupbase.h"
 #include "popupplugin.h"
@@ -25,33 +22,58 @@
 #include <QPluginLoader>
 #include <QDebug>
 
-
 namespace
 {
     const char * const PluginDir = "/usr/lib/meego-im-plugins/meego-keyboard/";
 }
 
-
 // dummy popup to be used if no plugin is found
 class DummyPopup: public PopupBase
 {
 public:
-    DummyPopup();
-    ~DummyPopup();
+    explicit DummyPopup(KeyButtonArea *mainArea)
+        : PopupBase(mainArea)
+    {}
+
+    virtual ~DummyPopup()
+    {}
 
     //! \reimp
-    virtual void updatePos(QPointF keyPos, QPoint screenPos, const QSize &keySize);
-    virtual void hidePopup();
-    virtual void showPopup();
-    virtual bool isPopupVisible() const;
-    virtual void setFingerPos(const QPointF &pos);
+    virtual void updatePos(const QPointF &,
+                           const QPoint &,
+                           const QSize &)
+    {}
+
+    virtual void setFingerPos(const QPointF &)
+    {}
+
+    virtual KeyButtonArea* mainArea() const
+    {
+        return 0;
+    }
+
+    virtual void handleInvalidKeyPressedOnMainArea()
+    {}
+
+    virtual void handleKeyPressedOnMainArea(const IKeyButton *,
+                                            const QString &,
+                                            bool)
+    {}
+
+    virtual void handleLongKeyPressedOnMainArea(const IKeyButton *,
+                                                const QString &,
+                                                bool)
+    {}
+
+    virtual bool isVisible() const
+    {
+        return false;
+    }
+
+    virtual void setEnabled(bool)
+    {}
     //! \reimp_end
-
-private:
-    bool visible;
 };
-
-
 
 PopupFactory *PopupFactory::instance()
 {
@@ -59,21 +81,11 @@ PopupFactory *PopupFactory::instance()
     return &instance;
 }
 
-
-PopupBase *
-PopupFactory::createPopup(QGraphicsItem *parent) const
+PopupBase *PopupFactory::createPopup(KeyButtonArea *mainArea) const
 {
-    // if plugin present, use it to create popup, otherwise return dummy popup
-    PopupBase *popup;
-    if (plugin) {
-        popup = plugin->createPopup(parent);
-    } else {
-        popup = new DummyPopup;
-    }
-
-    return popup;
+    return (plugin ? plugin->createPopup(mainArea)
+                   : new DummyPopup(mainArea));
 }
-
 
 PopupFactory::PopupFactory()
     : plugin(0)
@@ -92,55 +104,12 @@ PopupFactory::PopupFactory()
         QObject *pluginInstance = loader.instance();
 
         plugin = qobject_cast<PopupPlugin *>(pluginInstance);
-        
+
         if (!plugin) {
             qDebug() << "Error loading mvkb sub-plugin:" << loader.errorString();
         }
     }
 }
 
-
 PopupFactory::~PopupFactory()
-{
-}
-
-
-/////////////////////////////////
-// Dummy popup implementation
-DummyPopup::DummyPopup()
-    : visible(false)
-{
-    // nothing
-}
-
-DummyPopup::~DummyPopup()
-{
-    // nothing
-}
-
-void DummyPopup::updatePos(QPointF /*keyPos*/, QPoint /*screenPos*/, const QSize &/*keySize*/)
-{
-    // nothing
-}
-
-void DummyPopup::hidePopup()
-{
-    visible = false;
-}
-
-
-void DummyPopup::showPopup()
-{
-    visible = true;
-}
-
-
-bool DummyPopup::isPopupVisible() const
-{
-    return visible;
-}
-
-void DummyPopup::setFingerPos(const QPointF &pos)
-{
-    Q_UNUSED(pos)
-}
+{}
