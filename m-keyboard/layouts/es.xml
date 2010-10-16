@@ -134,7 +134,7 @@
 
           <row>
             <key style="special" width="xx-large">
-              <binding action="sym" label="CAR"/>
+              <binding action="sym" label="CAR" extended_labels="&quot;$&amp;%€&lt;()&gt;/"/>
             </key>
 
             <key>
@@ -295,7 +295,7 @@
 
           <row>
             <key style="special" width="xx-large">
-              <binding action="sym" label="CAR"/>
+              <binding action="sym" label="CAR" extended_labels="&quot;$&amp;%€&lt;()&gt;/"/>
             </key>
 
             <key>

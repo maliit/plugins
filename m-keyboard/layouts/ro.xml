@@ -146,7 +146,7 @@
 
         <row>
           <key style="special" width="x-large">
-            <binding action="sym" label="SYM"/>
+            <binding action="sym" label="SYM" extended_labels="&quot;$&amp;%€&lt;()&gt;/"/>
           </key>
 
           <key><binding label="-"/></key>
@@ -311,7 +311,7 @@
 
         <row>
           <key style="special" width="x-large">
-            <binding action="sym" label="SYM"/>
+            <binding action="sym" label="SYM" extended_labels="&quot;$&amp;%€&lt;()&gt;/"/>
           </key>
 
           <key><binding label=","/></key>
