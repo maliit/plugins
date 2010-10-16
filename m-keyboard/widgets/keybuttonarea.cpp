@@ -63,15 +63,15 @@ KeyButtonArea::KeyButtonArea(const LayoutData::SharedLayoutSection &sectionModel
                              bool usePopup,
                              QGraphicsWidget *parent)
     : MStylableWidget(parent),
+      mRelativeButtonBaseWidth(0),
       currentLevel(0),
-      popup(PopupFactory::instance()->createPopup(this)),
+      mPopup(usePopup ? PopupFactory::instance()->createPopup(this) : 0),
       newestTouchPointId(-1),
       wasGestureTriggered(false),
       enableMultiTouch(MGConfItem(MultitouchSettings).value().toBool()),
       activeDeadkey(0),
       feedbackPlayer(0),
-      section(sectionModel),
-      usePopup(usePopup)
+      section(sectionModel)
 {
     // By default multi-touch is disabled
     if (enableMultiTouch) {
@@ -79,30 +79,31 @@ KeyButtonArea::KeyButtonArea(const LayoutData::SharedLayoutSection &sectionModel
     }
 
     grabGesture(FlickGestureRecognizer::sharedGestureType());
-
-    popup->setKeyboardFont(style()->font());
-    popup->hidePopup();
-
     feedbackPlayer = MComponentData::feedbackPlayer();
-
-    connect(MTheme::instance(), SIGNAL(themeChangeCompleted()),
-            this, SLOT(onThemeChangeCompleted()),
-            Qt::UniqueConnection);
 
     longPressTimer.setSingleShot(true);
     longPressTimer.setInterval(LongPressTimeOut);
+
     connect(&longPressTimer, SIGNAL(timeout()),
             this, SLOT(handleLongKeyPressed()));
+
+    connect(MTheme::instance(), SIGNAL(themeChangeCompleted()),
+            this, SLOT(onThemeChangeCompleted()));
 }
 
 KeyButtonArea::~KeyButtonArea()
 {
-    delete popup;
+    delete mPopup;
 }
 
 void KeyButtonArea::setInputMethodMode(M::InputMethodMode inputMethodMode)
 {
     InputMethodMode = inputMethodMode;
+}
+
+qreal KeyButtonArea::relativeButtonBaseWidth() const
+{
+    return mRelativeButtonBaseWidth;
 }
 
 const LayoutData::SharedLayoutSection &KeyButtonArea::sectionModel() const
@@ -112,13 +113,18 @@ const LayoutData::SharedLayoutSection &KeyButtonArea::sectionModel() const
 
 void KeyButtonArea::updatePopup(const QPoint &pointerPosition, const IKeyButton *key)
 {
+    if (!mPopup) {
+        return;
+    }
+
     // Use prefetched key if given.
     if (!key) {
+        // TODO: use gravitationalKeyAt() instead?
         key = keyAt(pointerPosition);
     }
 
-    if (!key || key->label().isEmpty() || key->key().style() != VKBDataKey::NormalStyle) {
-        popup->hidePopup();
+    if (!key) {
+        mPopup->handleInvalidKeyPressedOnMainArea();
         longPressTimer.stop();
         return;
     }
@@ -128,21 +134,18 @@ void KeyButtonArea::updatePopup(const QPoint &pointerPosition, const IKeyButton 
     // screen position, so we can use mapToScene to calculate screen position
     const QPoint pos = mapToScene(buttonRect.topLeft()).toPoint();
 
-    popup->updatePos(buttonRect.topLeft(), pos, buttonRect.toRect().size());
+    mPopup->updatePos(buttonRect.topLeft(), pos, buttonRect.toRect().size());
 
     // Get direction for finger position from key center and normalize components.
     QPointF direction(pointerPosition - buttonRect.center());
     direction.rx() /= buttonRect.width();
     direction.ry() /= buttonRect.height();
-    popup->setFingerPos(direction);
-    popup->setTargetButton(key);
 
-    popup->showPopup();
-
-    // start timer if finger is moved to other key
-    if (touchPoints[newestTouchPointId].activeKey != key) {
-        longPressTimer.start();
-    }
+    longPressTimer.start();
+    mPopup->setFingerPos(direction);
+    mPopup->handleKeyPressedOnMainArea(key,
+                                       activeDeadkey ? activeDeadkey->label() : QString(),
+                                       level() % 2);
 }
 
 int KeyButtonArea::maxColumns() const
@@ -156,10 +159,16 @@ int KeyButtonArea::rowCount() const
 }
 
 void
-KeyButtonArea::onHide()
+KeyButtonArea::handleVisibilityChanged(bool visible)
 {
-    clearActiveKeys();
-    unlockDeadkeys();
+    if (mPopup) {
+        mPopup->setEnabled(visible);
+    }
+
+    if (!visible) {
+        clearActiveKeys();
+        unlockDeadkeys();
+    }
 }
 
 void
@@ -295,9 +304,15 @@ void KeyButtonArea::click(IKeyButton *key, const QPoint &touchPoint)
 
 QVariant KeyButtonArea::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == QGraphicsItem::ItemVisibleChange && !value.toBool()) {
-        onHide();
+    switch (change) {
+    case QGraphicsItem::ItemVisibleChange:
+        handleVisibilityChanged(value.toBool());
+        break;
+
+    default:
+        break;
     }
+
     return QGraphicsItem::itemChange(change, value);
 }
 
@@ -319,11 +334,13 @@ void KeyButtonArea::grabMouseEvent(QEvent */*event*/)
     FlickGestureRecognizer::instance()->setTimeout(Timeout);
 }
 
-void KeyButtonArea::ungrabMouseEvent(QEvent */*event*/)
+void KeyButtonArea::ungrabMouseEvent(QEvent *)
 {
-    // Make sure popup is hidden even if mouse grab
-    // is lost without mouse release event.
-    popup->hidePopup();
+    // Make sure popup can respond to mouse grab removal:
+    if (mPopup) {
+        mPopup->handleInvalidKeyPressedOnMainArea();
+    }
+
     longPressTimer.stop();
 }
 
@@ -352,13 +369,13 @@ bool KeyButtonArea::event(QEvent *e)
 
             switch (tp.state()) {
             case Qt::TouchPointPressed:
-                touchPointPressed(tp.pos().toPoint(), tp.id());
+                touchPointPressed(mapFromScene(tp.screenPos()).toPoint(), tp.id());
                 break;
             case Qt::TouchPointMoved:
-                touchPointMoved(tp.pos().toPoint(), tp.id());
+                touchPointMoved(mapFromScene(tp.screenPos()).toPoint(), tp.id());
                 break;
             case Qt::TouchPointReleased:
-                touchPointReleased(tp.pos().toPoint(), tp.id());
+                touchPointReleased(mapFromScene(tp.screenPos()).toPoint(), tp.id());
                 break;
             default:
                 break;
@@ -379,7 +396,10 @@ void KeyButtonArea::handleFlickGesture(FlickGesture *gesture)
 
     // Any flick gesture, complete or not, resets active keys etc.
     if (!wasGestureTriggered && (gesture->state() != Qt::NoGesture)) {
-        popup->hidePopup();
+        if (mPopup) {
+            mPopup->handleInvalidKeyPressedOnMainArea();
+        }
+
         longPressTimer.stop();
         clearActiveKeys();
 
@@ -437,7 +457,7 @@ void KeyButtonArea::touchPointPressed(const QPoint &pos, int id)
     tpi.initialKey = key;
     tpi.fingerInsideArea = true;
 
-    if (usePopup && (id == newestTouchPointId)) {
+    if (id == newestTouchPointId) {
         updatePopup(pos, key);
     }
 
@@ -470,8 +490,7 @@ void KeyButtonArea::touchPointMoved(const QPoint &pos, int id)
         }
 
         // If popup is visible, always update the position.
-        if (usePopup
-            && (id == newestTouchPointId)) {
+        if (id == newestTouchPointId) {
             updatePopup(pos, key);
         }
     } else {
@@ -479,8 +498,8 @@ void KeyButtonArea::touchPointMoved(const QPoint &pos, int id)
             feedbackPlayer->play(MFeedbackPlayer::Cancel);
         }
         // Finger has slid off the keys
-        if (tpi.fingerInsideArea && (id == newestTouchPointId)) {
-            popup->hidePopup();
+        if (mPopup && tpi.fingerInsideArea && (id == newestTouchPointId)) {
+            mPopup->handleInvalidKeyPressedOnMainArea();
             longPressTimer.stop();
         }
 
@@ -500,9 +519,9 @@ void KeyButtonArea::touchPointReleased(const QPoint &pos, int id)
         return;
     }
 
-    // Hide popup otherwise it could be shown on another touch point.
-    if (id == newestTouchPointId) {
-        popup->hidePopup();
+    // We're finished with this touch point, inform popup:
+    if (mPopup && (id == newestTouchPointId)) {
+        mPopup->handleInvalidKeyPressedOnMainArea();
         longPressTimer.stop();
     }
 
@@ -574,20 +593,14 @@ KeyButtonArea::unlockDeadkeys()
     }
 }
 
-bool
-KeyButtonArea::isPopupActive() const
-{
-    return popup->isPopupVisible();
-}
-
 void KeyButtonArea::drawReactiveAreas(MReactionMap */*reactionMap*/, QGraphicsView */*view*/)
 {
     // Empty default implementation. Geometries of buttons are known by derived classes.
 }
 
-const PopupBase &KeyButtonArea::popupWidget() const
+const PopupBase &KeyButtonArea::popup() const
 {
-    return *popup;
+    return *mPopup;
 }
 
 void KeyButtonArea::updateButtonModifiers()
@@ -610,7 +623,6 @@ void KeyButtonArea::modifiersChanged(bool /*shift*/, const QChar /*accent*/)
 void KeyButtonArea::onThemeChangeCompleted()
 {
     updateButtonGeometriesForWidth(size().width());
-    popup->setKeyboardFont(style()->font());
 }
 
 const KeyButtonAreaStyleContainer &KeyButtonArea::baseStyle() const
@@ -620,6 +632,8 @@ const KeyButtonAreaStyleContainer &KeyButtonArea::baseStyle() const
 
 void KeyButtonArea::handleLongKeyPressed()
 {
+    activelyPressedTouchPointId = -1;
+
     QString accent;
 
     if (activeDeadkey) {
@@ -628,6 +642,9 @@ void KeyButtonArea::handleLongKeyPressed()
 
     TouchPointInfo &tpi = touchPoints[newestTouchPointId];
     if (tpi.activeKey) {
+        if (mPopup) {
+            mPopup->handleLongKeyPressedOnMainArea(tpi.activeKey, accent, level() % 2);
+        }
         emit longKeyPressed(tpi.activeKey, accent, level() % 2);
     }
 }

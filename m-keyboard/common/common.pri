@@ -3,6 +3,8 @@ COMMON_DIR = ./common
 INSTALL_HEADERS += \
     $$COMMON_DIR/vkbdatakey.h \
     $$COMMON_DIR/keyevent.h \
+    $$COMMON_DIR/layoutdata.h \
+    $$COMMON_DIR/mkeyboardcommon.h \
 
 HEADERS += \
     $$COMMON_DIR/mkeyboardcommon.h \

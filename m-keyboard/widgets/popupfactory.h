@@ -14,22 +14,19 @@
  * of this file.
  */
 
-
-
 #ifndef POPUPFACTORY_H
 #define POPUPFACTORY_H
 
 #include "popupbase.h"
 
-class QGraphicsItem;
 class PopupPlugin;
-
+class KeyButtonArea;
 
 class PopupFactory
 {
 public:
     static PopupFactory *instance();
-    PopupBase *createPopup(QGraphicsItem *parent) const;
+    PopupBase *createPopup(KeyButtonArea *mainArea) const;
 
 private:
     PopupFactory();

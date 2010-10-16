@@ -83,10 +83,6 @@ public:
     //! Destructor
     ~MVirtualKeyboard();
 
-    //! \reimp
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-    //! \reimp_end
-
     //! \brief Tells whether keyboard is opened and not in the middle of show or hide animation.
     bool isFullyVisible() const;
 
@@ -262,7 +258,7 @@ private slots:
      * current region of this widget and its children combined, unless \a
      * suppressRegionUpdate has been used to suppress updates.
      */
-    void sendVKBRegion();
+    void sendVKBRegion(const QRegion &extraRegion = QRegion());
 
     //! \brief Call organizeContent() and sendVKBRegion() if the vkb is visible
     void organizeContentAndSendRegion();

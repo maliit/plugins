@@ -307,6 +307,12 @@ qreal SingleWidgetButtonArea::computeWidgetHeight() const
 
 void SingleWidgetButtonArea::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    const MScalableImage *background = baseStyle()->backgroundImage();
+
+    if (background) {
+        background->draw(boundingRect().toRect(), painter);
+    }
+
     // Draw images first.
     foreach (const ButtonRow &row, rowList) {
         foreach (const SingleWidgetButton *button, row.buttons) {
@@ -450,6 +456,7 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
         return;
     }
 
+    widgetHeight = computeWidgetHeight();
     rowOffsets.clear();
 
     const qreal HorizontalSpacing = baseStyle()->spacingHorizontal();
@@ -461,7 +468,8 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
 
     const qreal normalizedWidth = qMax<qreal>(1.0, mMaxNormalizedWidth);
     const qreal availableWidthForButtons = availableWidth - ((normalizedWidth - 1) * HorizontalSpacing);
-    const qreal equalButtonWidth = availableWidthForButtons / normalizedWidth;
+    mRelativeButtonBaseWidth = availableWidthForButtons / normalizedWidth;
+    emit relativeButtonBaseWidthChanged(mRelativeButtonBaseWidth);
 
     // This is used to update the button rectangles
     qreal y = baseStyle()->paddingTop();
@@ -473,16 +481,17 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
     const qreal bottomMargin = VerticalSpacing - topMargin;
 
     QRectF br; // button bounding rectangle
+    const qreal rowListFactor = (rowList.count() > 1 ? 1 : 0);
 
     for (RowIterator row(rowList.begin()); row != rowList.end(); ++row) {
         const qreal rowHeight = preferredRowHeight(row - rowList.begin());
-        br.setHeight(rowHeight + baseStyle()->spacingVertical());
+        br.setHeight(rowHeight + baseStyle()->spacingVertical() * rowListFactor);
 
         row->buttonOffsets.clear();
 
         // Store the row offsets for fast key lookup:
         const int lastRowOffset = (rowOffsets.isEmpty()) ? baseStyle()->paddingTop()
-                                                           - baseStyle()->spacingVertical() / 2
+                                                           - (baseStyle()->spacingVertical() / 2) * rowListFactor
                                                          : rowOffsets.at(rowOffsets.count() - 1).second;
 
         rowOffsets.append(QPair<int, int>(lastRowOffset,
@@ -491,7 +500,7 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
         // Update row width
         qreal rowWidth = 0;
         foreach (SingleWidgetButton *button, row->buttons) {
-            button->width = button->preferredWidth(equalButtonWidth, HorizontalSpacing);
+            button->width = button->preferredWidth(mRelativeButtonBaseWidth, HorizontalSpacing);
             rowWidth += button->width + HorizontalSpacing;
         }
         rowWidth -= HorizontalSpacing;
@@ -521,7 +530,7 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
         }
 
         // We can precalculate button rectangles.
-        br.moveTop(y - topMargin);
+        br.moveTop(y - (rowList.count() > 1 ? topMargin : 0));
 
         // A spacer with an index of -1 means it was put before any button in that row.
         // Also add layout padding:
@@ -558,11 +567,7 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
 
 QRectF SingleWidgetButtonArea::boundingRect() const
 {
-    // Extend the bounding rectangle to all directions by the amount of spacing.
-    // FIXME: Currently, spacingHorizontal works like a button *padding*, hence
-    // we need to 2x it to get the *intended* spacing:
-    return QRectF(-QPoint(baseStyle()->spacingHorizontal(), baseStyle()->spacingVertical() / 2),
-                  size() + QSizeF(baseStyle()->spacingHorizontal() * 2, baseStyle()->spacingVertical()));
+    return QRectF(0, 0, size().width(), widgetHeight);
 }
 
 qreal SingleWidgetButtonArea::preferredRowHeight(int row) const
