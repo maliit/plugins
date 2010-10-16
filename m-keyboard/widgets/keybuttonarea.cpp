@@ -55,6 +55,9 @@ namespace
 
     // Minimal distance for touch point from key button edge.
     const int CorrectionDistanceThreshold = 2;
+
+    // Refuse to process more than X touchpoints at the same time:
+    const int TouchPointLimit = 20;
 }
 
 M::InputMethodMode KeyButtonArea::InputMethodMode;
@@ -71,7 +74,8 @@ KeyButtonArea::KeyButtonArea(const LayoutData::SharedLayoutSection &sectionModel
       enableMultiTouch(MGConfItem(MultitouchSettings).value().toBool()),
       activeDeadkey(0),
       feedbackPlayer(0),
-      section(sectionModel)
+      section(sectionModel),
+      activelyPressedTouchPointId(-1)
 {
     // By default multi-touch is disabled
     if (enableMultiTouch) {
@@ -244,6 +248,10 @@ void KeyButtonArea::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void KeyButtonArea::setActiveKey(IKeyButton *key, TouchPointInfo &tpi)
 {
+    if (tpi.invalid) {
+        return;
+    }
+
     // Selected buttons are currently skipped.
     QString accent;
 
@@ -277,6 +285,10 @@ void KeyButtonArea::clearActiveKeys()
 
 void KeyButtonArea::click(IKeyButton *key, const QPoint &touchPoint)
 {
+    if (!key) {
+        return;
+    }
+
     if (!key->isDeadKey()) {
         QString accent;
 
@@ -361,10 +373,6 @@ bool KeyButtonArea::event(QEvent *e)
                || e->type() == QEvent::TouchEnd) {
         QTouchEvent *touch = static_cast<QTouchEvent*>(e);
 
-        if (e->type() == QEvent::TouchBegin) {
-            touchPoints.clear();
-        }
-
         foreach (const QTouchEvent::TouchPoint &tp, touch->touchPoints()) {
 
             switch (tp.state()) {
@@ -436,16 +444,38 @@ void KeyButtonArea::handleFlickGesture(FlickGesture *gesture)
 
 void KeyButtonArea::touchPointPressed(const QPoint &pos, int id)
 {
-    newestTouchPointId = id;
-
-    // Create new TouchPointInfo structure and overwrite any previous one.
-    touchPoints[id] = TouchPointInfo();
-    TouchPointInfo &tpi = touchPoints[id];
-    tpi.pos = pos;
-    tpi.initialPos = pos;
+    if (id < 0 || id >= TouchPointLimit) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Too many touchpoints - giving up.";
+        return;
+    }
 
     // Reset gesture checks.
     wasGestureTriggered = false;
+
+    // Create new TouchPointInfo structure and overwrite any previous one.
+    if (id >= touchPoints.size()) {
+        touchPoints.append(TouchPointInfo());
+    }
+
+    if (activelyPressedTouchPointId > -1) {
+        TouchPointInfo &pressedKeyTpi = touchPoints[activelyPressedTouchPointId];
+
+        if (pressedKeyTpi.initialKey) {
+            pressedKeyTpi.initialKey->setDownState(false);
+            click(pressedKeyTpi.initialKey);
+            pressedKeyTpi.initialKey = 0;
+            pressedKeyTpi.invalid = true;
+            activelyPressedTouchPointId = -1;
+        }
+    }
+
+    newestTouchPointId = id;
+    TouchPointInfo &tpi = touchPoints[id];
+    tpi.reset();
+
+    tpi.pos = pos;
+    tpi.initialPos = pos;
 
     IKeyButton *key = keyAt(pos);
     if (!key) {
@@ -454,21 +484,30 @@ void KeyButtonArea::touchPointPressed(const QPoint &pos, int id)
 
     mTimestamp("KeyButtonArea", key->label());
 
-    tpi.initialKey = key;
     tpi.fingerInsideArea = true;
+    tpi.initialKey = key;
 
-    if (id == newestTouchPointId) {
-        updatePopup(pos, key);
-    }
-
+    updatePopup(pos, key);
     setActiveKey(key, tpi);
+
+    activelyPressedTouchPointId = id;
 }
 
 void KeyButtonArea::touchPointMoved(const QPoint &pos, int id)
 {
+    if (id < 0 || id >= TouchPointLimit) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Too many touchpoints - giving up.";
+        return;
+    }
+
+    if (id >= touchPoints.size()) {
+        touchPoints.append(TouchPointInfo());
+    }
+
     TouchPointInfo &tpi = touchPoints[id];
 
-    if (!isObservableMove(tpi.pos, pos))
+    if (!isObservableMove(tpi.pos, pos) || tpi.invalid)
         return;
 
     tpi.pos = pos;
@@ -511,11 +550,25 @@ void KeyButtonArea::touchPointMoved(const QPoint &pos, int id)
 
 void KeyButtonArea::touchPointReleased(const QPoint &pos, int id)
 {
+    if (id < 0 || id >= TouchPointLimit) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Too many touchpoints - giving up.";
+        return;
+    }
+
+    if (id >= touchPoints.size()) {
+        touchPoints.append(TouchPointInfo());
+    }
+
+    if (activelyPressedTouchPointId == id) {
+        activelyPressedTouchPointId = -1;
+    }
+
     TouchPointInfo &tpi = touchPoints[id];
 
     tpi.fingerInsideArea = false;
 
-    if (wasGestureTriggered) {
+    if (wasGestureTriggered || tpi.invalid) {
         return;
     }
 
@@ -655,6 +708,18 @@ KeyButtonArea::TouchPointInfo::TouchPointInfo()
       initialKey(0),
       initialPos(),
       pos(),
-      checkGravity(true)
+      checkGravity(true),
+      invalid(false)
 {
+}
+
+void KeyButtonArea::TouchPointInfo::reset()
+{
+    fingerInsideArea = false;
+    activeKey = 0;
+    initialKey = 0;
+    initialPos = QPoint();
+    pos = QPoint();
+    checkGravity = true;
+    invalid = false;
 }
