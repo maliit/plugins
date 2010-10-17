@@ -99,6 +99,11 @@ KeyButtonAreaStyle {
     key-shift-icon-id: "icon-m-input-methods-shift";
     key-shift-uppercase-icon-id: "icon-m-input-methods-capslock";
     /* End of single widget keyboard button styling */
+
+    /* debugging-related attributes */
+    draw-button-bounding-rects: false;
+    draw-button-rects: false;
+    draw-touchpoints: false;
 }
 
 KeyButtonAreaStyle.Portrait {

@@ -98,6 +98,10 @@ public:
     M_STYLE_ATTRIBUTE(QSize, keyShiftIconSize, KeyShiftIconSize)
     M_STYLE_ATTRIBUTE(QString, keyShiftIconId, KeyShiftIconId)
     M_STYLE_ATTRIBUTE(QString, keyShiftUppercaseIconId, KeyShiftUppercaseIconId)
+
+    M_STYLE_ATTRIBUTE(bool, drawButtonBoundingRects, DrawButtonBoundingRects)
+    M_STYLE_ATTRIBUTE(bool, drawButtonRects, DrawButtonRects)
+    M_STYLE_ATTRIBUTE(bool, drawTouchpoints, DrawTouchpoints)
 };
 
 class M_EXPORT KeyButtonAreaStyleContainer : public MWidgetStyleContainer

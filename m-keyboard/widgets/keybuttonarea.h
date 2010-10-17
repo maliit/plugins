@@ -256,7 +256,11 @@ protected:
 
     void clearActiveKeys();
 
+    //! Relative button base width in currently active layout
     qreal mRelativeButtonBaseWidth;
+
+    //! Stored (and active) QTouchEvent::TouchPoint
+    QVector<TouchPointInfo> touchPoints;
 
 protected slots:
     //! Update background images, text layouts, etc. when the theme changed.
@@ -308,10 +312,6 @@ private:
 
     //! Whether a gesture was already triggered for any active touch point.
     bool wasGestureTriggered;
-
-    //! Keys are QTouchEvent::TouchPoint id
-    QVector<TouchPointInfo> touchPoints;
-
     bool enableMultiTouch;
 
     //! Activated dead key

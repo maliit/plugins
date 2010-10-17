@@ -326,6 +326,30 @@ void SingleWidgetButtonArea::paint(QPainter *painter, const QStyleOptionGraphics
 
             // Draw icon.
             button->drawIcon(button->cachedButtonRect.toRect(), painter);
+
+            QPen lastPen = painter->pen();
+            QBrush lastBrush = painter->brush();
+
+            if (baseStyle()->drawButtonBoundingRects()) {
+                painter->setPen(Qt::red);
+                painter->setBrush(QBrush(QColor(64, 0, 0, 64)));
+                painter->drawRect(button->buttonBoundingRect());
+                painter->drawText(button->buttonRect().adjusted(4, 4, -4, -4),
+                                  QString("%1x%2").arg(button->buttonRect().width())
+                                                  .arg(button->buttonRect().height()));
+            }
+
+            if (baseStyle()->drawButtonRects()) {
+                painter->setPen(Qt::green);
+                painter->setBrush(QBrush(QColor(0, 64, 0, 64)));
+                painter->drawRect(button->buttonRect());
+                painter->drawText(button->buttonRect().adjusted(4, 16, -4, -16),
+                                  QString("%1x%2").arg(button->buttonRect().width())
+                                                  .arg(button->buttonRect().height()));
+            }
+
+            painter->setPen(lastPen);
+            painter->setBrush(lastBrush);
         }
     }
 
@@ -335,6 +359,26 @@ void SingleWidgetButtonArea::paint(QPainter *painter, const QStyleOptionGraphics
     // Draw text next.
     painter->setPen(baseStyle()->fontColor());
     textLayout.draw(painter, QPoint());
+
+    if (baseStyle()->drawTouchpoints()) {
+        QPen lastPen = painter->pen();
+        QBrush lastBrush = painter->brush();
+
+        painter->setPen(Qt::darkYellow);
+        painter->setBrush(QBrush(QColor(Qt::darkYellow)));
+
+        for (int index = 0; index < touchPoints.size(); ++index) {
+            const QPoint pos = touchPoints.at(index).pos;
+            painter->drawEllipse(pos, 4, 4);
+            painter->drawText(QRectF(pos.x() + 8, pos.y() - 8, 16, 16), QString("%1").arg(index));
+        }
+        foreach(const TouchPointInfo &tpi, touchPoints) {
+            painter->drawEllipse(tpi.pos, 4, 4);
+        }
+
+        painter->setPen(lastPen);
+        painter->setBrush(lastBrush);
+    }
 }
 
 void SingleWidgetButtonArea::drawKeyBackground(QPainter *painter,
