@@ -141,7 +141,7 @@
             </key>
 
             <key width="stretched">
-              <binding action="space"/>
+              <binding action="space" extended_labels="0123456789"/>
             </key>
 
             <key>
@@ -302,7 +302,7 @@
             </key>
 
             <key width="stretched">
-              <binding action="space"/>
+              <binding action="space" extended_labels="0123456789"/>
             </key>
 
             <key>

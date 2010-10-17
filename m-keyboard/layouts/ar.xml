@@ -127,7 +127,7 @@
          <key><binding label="،"/></key>
 
          <key width="stretched">
-           <binding action="space"/>
+           <binding action="space" extended_labels="0123456789"/>
          </key>
 
          <key><binding label="."/></key>

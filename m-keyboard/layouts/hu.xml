@@ -140,7 +140,7 @@
           <key><binding label=","/></key>
 
           <key width="stretched">
-            <binding action="space" label=""/>
+            <binding action="space" extended_labels="0123456789" label=""/>
           </key>
 
           <key><binding label="."/></key>
@@ -291,7 +291,7 @@
           <key><binding label=","/></key>
 
           <key width="stretched">
-            <binding action="space" label=""/>
+            <binding action="space" extended_labels="0123456789" label=""/>
           </key>
 
           <key><binding label="."/></key>
