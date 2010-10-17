@@ -100,6 +100,10 @@ KeyButtonAreaStyle {
     key-shift-uppercase-icon-id: "icon-m-input-methods-capslock";
     /* End of single widget keyboard button styling */
 
+    /* touch behaviour */
+    button-bounding-rect-top-adjustment: -12;
+    button-bounding-rect-bottom-adjustment: 12;
+
     /* debugging-related attributes */
     draw-button-bounding-rects: false;
     draw-button-rects: false;
@@ -115,7 +119,7 @@ KeyButtonAreaStyle.Portrait {
     padding-left: $MARGIN_DOUBLE;
     padding-right:$MARGIN_DOUBLE;
 
-    touchpoint-horizontal-gravity: 24px;
+    touchpoint-horizontal-gravity: 32px;
     touchpoint-vertical-gravity: 24px;
 
     key-height: 6.4mm;
@@ -132,7 +136,7 @@ KeyButtonAreaStyle.Landscape {
     padding-left: $MARGIN_DOUBLE;
     padding-right: $MARGIN_DOUBLE;
 
-    touchpoint-horizontal-gravity: 48px;
+    touchpoint-horizontal-gravity: 64px;
     touchpoint-vertical-gravity: 48px;
 
     key-height: 4.8mm;

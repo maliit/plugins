@@ -534,12 +534,19 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
         row->buttonOffsets.clear();
 
         // Store the row offsets for fast key lookup:
-        const int lastRowOffset = (rowOffsets.isEmpty()) ? baseStyle()->paddingTop()
+        const int prevRowOffset = (rowOffsets.isEmpty()) ? baseStyle()->paddingTop()
                                                            - (baseStyle()->spacingVertical() / 2) * rowListFactor
+                                                           + baseStyle()->buttonBoundingRectTopAdjustment()
                                                          : rowOffsets.at(rowOffsets.count() - 1).second;
 
-        rowOffsets.append(QPair<int, int>(lastRowOffset,
-                                          lastRowOffset + static_cast<int>(br.height() + 0.5)));
+        const int nextRowOffset = prevRowOffset
+                                  + br.height()
+                                  - baseStyle()->buttonBoundingRectTopAdjustment()
+                                  + baseStyle()->buttonBoundingRectBottomAdjustment()
+                                  + 0.5;
+
+        // TODO: also resolve overlapping conflicts in bounding boxes, not only lookup list ...
+        rowOffsets.append(QPair<int, int>(prevRowOffset, qMax<int>(prevRowOffset, nextRowOffset)));
 
         // Update row width
         qreal rowWidth = 0;
@@ -587,7 +594,9 @@ void SingleWidgetButtonArea::updateButtonGeometriesForWidth(const int newAvailab
             br.setWidth(button->width + leftMargin + rightMargin);
 
             // save it (but cover up for rounding errors, ie, extra spacing pixels):
-            button->cachedBoundingRect = br.adjusted(-1, 0, 1, 0);
+            button->cachedBoundingRect = br.adjusted(-1, baseStyle()->buttonBoundingRectTopAdjustment(),
+                                                      1, baseStyle()->buttonBoundingRectBottomAdjustment());
+
             button->cachedButtonRect = br.adjusted(leftMargin, topMargin, -rightMargin, -bottomMargin);
 
             // Store the button offsets for fast key lookup:
