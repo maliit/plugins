@@ -460,7 +460,11 @@ Qt::Alignment KeyboardData::alignment(const QString &alignmentString, bool verti
 
 void KeyboardData::parseTagSection(const QDomElement &element, ParseParameters &params)
 {
-    LayoutData::SharedLayoutSection section(new LayoutSection);
+    // For the strange way of initializing things here, check
+    // NB#198833 - Qt forgets to initialize members of QSharedPointer and its helpers.
+    LayoutData::SharedLayoutSection section;
+    section = LayoutData::SharedLayoutSection(new LayoutSection);
+
     section->movable = toBoolean(element.attribute(VKBTagMovable));
     section->sectionName = element.attribute(VKBTagID);
     section->sectionType = (element.attribute(VKBTagType) == VKBTagTypeNonsloppy) ? LayoutSection::NonSloppy : LayoutSection::Sloppy;
@@ -472,7 +476,7 @@ void KeyboardData::parseTagSection(const QDomElement &element, ParseParameters &
 void KeyboardData::parseTagRow(const QDomElement &element, ParseParameters &params)
 {
     LayoutSection::Row *row = new LayoutSection::Row;
-    row->heightType = toHeightType(element.attribute(HeightTypeString, HeightTypeStringDefValue)); 
+    row->heightType = toHeightType(element.attribute(HeightTypeString, HeightTypeStringDefValue));
     params.currentSection->rows.append(row);
     params.currentRow = row;
 
