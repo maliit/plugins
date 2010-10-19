@@ -238,9 +238,9 @@ WidgetBarStyle {
     margin-bottom: 0;
 
     padding-top: 9;
-    padding-bottom: 10;
-    padding-left: 11;
-    padding-right: 11;
+    padding-bottom: 25;
+    padding-left: 20;
+    padding-right: 20;
 }
 
 WidgetBarStyle:shaped-toolbar {
