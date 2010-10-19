@@ -1,3 +1,9 @@
+meego-keyboard (0.5.5-2) unstable; urgency=low
+
+  * Increase spacing between toolbar buttons and toolbar borders
+
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 19 Oct 2010 16:19:45 +0300
+
 meego-keyboard (0.5.5-1) unstable; urgency=low
 
   * New: KeyButtonArea detects long key press
