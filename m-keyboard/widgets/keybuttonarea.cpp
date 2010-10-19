@@ -67,6 +67,7 @@ KeyButtonArea::KeyButtonArea(const LayoutData::SharedLayoutSection &sectionModel
                              QGraphicsWidget *parent)
     : MStylableWidget(parent),
       mRelativeButtonBaseWidth(0),
+      debugTouchpoints(style()->drawTouchpoints()),
       currentLevel(0),
       mPopup(usePopup ? PopupFactory::instance()->createPopup(this) : 0),
       newestTouchPointId(-1),
@@ -387,6 +388,15 @@ bool KeyButtonArea::event(QEvent *e)
                 break;
             default:
                 break;
+            }
+
+            if (debugTouchpoints) {
+                qDebug() << "Qt TP (id, state, screenPos):"
+                        << tp.id()
+                        << tp.state()
+                        << tp.screenPos();
+
+                touchPoints[tp.id()].print(tp.id());
             }
         }
 
@@ -722,4 +732,17 @@ void KeyButtonArea::TouchPointInfo::reset()
     pos = QPoint();
     checkGravity = true;
     invalid = false;
+}
+
+void KeyButtonArea::TouchPointInfo::print(int id) const
+{
+    qDebug() << "KBA TP - "
+             << "id: " << id << ", "
+             << "fingerInsideArea:" << fingerInsideArea << ","
+             << "activeKey:" << activeKey << ","
+             << "initialKey:" << initialKey << ","
+             << "initialPos:" << initialPos << ","
+             << "pos:" << pos << ","
+             << "checkGravity:" << checkGravity << ","
+             << "invalid:" << invalid;
 }

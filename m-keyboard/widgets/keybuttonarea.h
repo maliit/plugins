@@ -172,6 +172,7 @@ protected:
         TouchPointInfo();
 
         void reset();
+        void print(int id) const;
 
         //! True if finger is held down and is inside the layout's area.
         bool fingerInsideArea;
@@ -268,6 +269,8 @@ protected:
 
     //! Stored (and active) QTouchEvent::TouchPoint
     QVector<TouchPointInfo> touchPoints;
+
+    bool debugTouchpoints;
 
 protected slots:
     //! Update background images, text layouts, etc. when the theme changed.
