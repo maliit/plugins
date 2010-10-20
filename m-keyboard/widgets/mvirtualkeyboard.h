@@ -27,6 +27,7 @@
 #include <minputmethodnamespace.h>
 #include <MWidget>
 #include <MNamespace>
+#include <mimenginetypes.h>
 #include <QPixmap>
 #include <QSharedPointer>
 #include <QTimeLine>
@@ -168,6 +169,11 @@ public:
      * \brief If \a hidden is true, hides active keyboard. Otherwise, shows temporarily inactive keyboard.
      */
     void setTemporarilyHidden(bool hidden);
+
+    /*!
+     * \brief Returns the keys in the main layout.
+     */
+    QList<M::KeyboardLayoutKey> mainLayoutKeys() const;
 
 public slots:
     /*!

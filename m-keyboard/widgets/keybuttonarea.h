@@ -81,6 +81,9 @@ public:
     //! Set input method mode for all KeyButtonArea instances
     static void setInputMethodMode(M::InputMethodMode inputMethodMode);
 
+    //! Returns all keys.
+    virtual QList<const IKeyButton *> keys() = 0;
+
 public slots:
     /*!
      * This slot is used to switch levels

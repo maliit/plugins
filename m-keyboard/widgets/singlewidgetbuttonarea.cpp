@@ -641,3 +641,14 @@ void SingleWidgetButtonArea::onThemeChangeCompleted()
     KeyButtonArea::onThemeChangeCompleted();
     buildTextLayout();
 }
+
+QList<const IKeyButton *> SingleWidgetButtonArea::keys()
+{
+    QList<const IKeyButton *> keyList;
+    foreach (const ButtonRow &row, rowList) {
+        foreach (const SingleWidgetButton *button, row.buttons) {
+            keyList << button;
+        }
+    }
+    return keyList;
+}
