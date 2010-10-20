@@ -18,6 +18,7 @@
 #include <QTimer>
 #include <QFontMetricsF>
 #include <QGraphicsSceneMouseEvent>
+#include <QTapAndHoldGesture>
 #include <QDebug>
 
 namespace {
@@ -65,14 +66,25 @@ void MImCorrectionCandidateItem::setSelected(bool select)
         style().setModeDefault();
 }
 
-bool MImCorrectionCandidateItem::selected() const
+bool MImCorrectionCandidateItem::isSelected() const
 {
     return mSelected;
 }
 
 void MImCorrectionCandidateItem::click()
 {
+    qDebug() << __PRETTY_FUNCTION__;
     emit clicked();
+}
+
+void MImCorrectionCandidateItem::longTap()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    // Clear down state and update style.
+    mDown = false;
+    updateStyleMode();
+
+    emit longTapped();
 }
 
 void MImCorrectionCandidateItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -89,8 +101,9 @@ void MImCorrectionCandidateItem::mousePressEvent(QGraphicsSceneMouseEvent *event
 void MImCorrectionCandidateItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
-    if (!mDown)
+    if (!mDown) {
         return;
+    }
     
     mDown = false;
     updateStyleMode();
@@ -127,6 +140,15 @@ void MImCorrectionCandidateItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         updateStyleMode();
     }
 }
+
+void MImCorrectionCandidateItem::tapAndHoldGestureEvent(QGestureEvent *event, QTapAndHoldGesture *gesture)
+{
+    if (gesture->state() == Qt::GestureFinished)
+        longTap();
+
+    event->accept(gesture);
+}
+
 
 void MImCorrectionCandidateItem::updateStyleMode()
 {
@@ -184,3 +206,26 @@ qreal MImCorrectionCandidateItem::idealWidth() const
              + style()->paddingRight() + style()->paddingLeft();
     return width;
 }
+
+void MImCorrectionCandidateItem::connectNotify(const char *signal)
+{
+    if (QLatin1String(signal) == SIGNAL(longTapped())) {
+        updateLongTapConnections();
+    }
+}
+
+void MImCorrectionCandidateItem::disconnectNotify(const char *signal)
+{
+    if (QLatin1String(signal) == SIGNAL(longTapped())) {
+        updateLongTapConnections();
+    }
+}
+
+void MImCorrectionCandidateItem::updateLongTapConnections()
+{
+    if (receivers(SIGNAL(longTapped())) > 0)
+        grabGesture(Qt::TapAndHoldGesture);
+    else
+        ungrabGesture(Qt::TapAndHoldGesture);
+}
+

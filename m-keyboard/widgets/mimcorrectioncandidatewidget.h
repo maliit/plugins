@@ -197,6 +197,8 @@ protected slots:
 
     void select();
 
+    void longTap();
+
 private:
     QRegion region() const;
 

@@ -206,11 +206,13 @@ void MImCorrectionCandidateWidget::showWidget(MImCorrectionCandidateWidget::Cand
         candidateItems[0]->setTitle(suggestionString);
         candidateItems[0]->setSelected(false);
         candidateItems[0]->setVisible(true);
+        connect(candidateItems[0], SIGNAL(longTapped()), this, SLOT(longTap()));
         for (int i = 1; i < MaxCandidateCount; i++) {
             mainLayout->removeItem(candidateItems[i]);
             candidateItems[i]->setVisible(false);
         }
     } else {
+        disconnect(candidateItems[0], SIGNAL(longTapped()), this, SLOT(longTap()));
         for (int i = 0; i < candidates.count(); i++) {
             candidateItems[i]->setSelected(false);
             mainLayout->addItem(candidateItems[i]);
@@ -409,6 +411,12 @@ void MImCorrectionCandidateWidget::handleOrientationChanged()
 
 void MImCorrectionCandidateWidget::select()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+    if (showHideTimeline.state() == QTimeLine::Running) {
+        // Ignore select actions during animation.
+        return;
+    }
+
     MImCorrectionCandidateItem *item = qobject_cast<MImCorrectionCandidateItem *> (sender());
     if (item) {
         for (int i = 0; i < candidates.count(); i++) {
@@ -416,11 +424,18 @@ void MImCorrectionCandidateWidget::select()
                 candidateItems[i]->setSelected(false);
         }
         item->setSelected(true);
-        qDebug() << "select item:" << item->title();
-        qDebug() << "select?" << item->selected();
         const QString candidate = item->title();
         suggestionString = candidate;
         emit candidateClicked(candidate);
     }
     hideWidget();
+}
+
+void MImCorrectionCandidateWidget::longTap()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    if (!isVisible())
+        return;
+
+    showWidget(SuggestionListMode);
 }

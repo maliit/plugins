@@ -32,8 +32,14 @@ public:
 
     virtual ~MImCorrectionCandidateItem();
 
+    /*
+     * \brief Sets title label.
+     */
     void setTitle(const QString &);
 
+    /*
+     * \brief Returns current title label.
+     */
     QString title() const;
 
     /*!
@@ -43,9 +49,15 @@ public:
      */
     qreal idealWidth() const;
     
+    /*!
+     * \brief Select item.
+     */
     void setSelected(bool);
 
-    bool selected() const;
+    /*
+     * \brief Returns selected state.
+     */
+    bool isSelected() const;
 
 public Q_SLOTS:
     /*!
@@ -53,31 +65,54 @@ public Q_SLOTS:
      */
      void click();
 
+    /*!
+     *\brief Makes the list cell to send longTapped signal.
+     *\param pos The position of the tap.
+     */
+    void longTap();
+
 protected:
     //!reimp
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    virtual void tapAndHoldGestureEvent(QGestureEvent *event, QTapAndHoldGesture *gesture);
     virtual void drawContents(QPainter *painter, const QStyleOptionGraphicsItem *option) const;
+
+    /*!
+     * Handler of notifications of new receivers connected to MImCorrectionCandidateItem signals.
+     */
+    virtual void connectNotify(const char *signal);
+
+    /*!
+     * Handler of notifications of receivers disconnecting from MImCorrectionCandidateItem signals.
+     */
+    virtual void disconnectNotify(const char *signal);
     //!reimp_end
 
 Q_SIGNALS:
-     /*!
-      \brief The signal is emitted when the item is clicked.
-      */
+    /*!
+     * \brief The signal is emitted when the item is clicked.
+     */
     void clicked();
+
+    /*!
+     * \brief The signal is emitted when the item has been tapped and holded.
+     */
+    void longTapped();
 
 private Q_SLOTS:
     void applyQueuedStyleModeChange();
 
 private:
+    void updateStyleMode();
+    void updateLongTapConnections();
+
     bool mSelected;
     bool mDown;
     QString mTitle;
     QTimer *styleModeChangeTimer;
     bool queuedStyleModeChange;
-
-    void updateStyleMode();
 
     M_STYLABLE_WIDGET(MImCorrectionCandidateItemStyle)
 };
