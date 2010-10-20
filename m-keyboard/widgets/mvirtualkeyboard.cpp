@@ -1033,3 +1033,46 @@ void MVirtualKeyboard::updateMainLayoutAtKeyboardIndex()
     // resize and update keyboards if needed
     organizeContentAndSendRegion();
 }
+
+QList<M::KeyboardLayoutKey> MVirtualKeyboard::mainLayoutKeys() const
+{
+    QList<M::KeyboardLayoutKey> keys;
+    KeyButtonArea *mainKb = keyboardWidget();
+    foreach (const IKeyButton *ikey, mainKb->keys()) {
+        // only care about the keys which insert characters.
+        if (ikey->key().binding()->action() == KeyBinding::ActionInsert) {
+            bool isPunctuation = false;
+            bool isSymbol = false;
+            QList<QChar> symbols;
+            foreach (const QChar &c, ikey->key().binding()->label()) {
+                symbols << c;
+                if (c.isPunct())
+                    isPunctuation = true;
+                if (c.isSymbol())
+                    isSymbol = true;
+            }
+            // Ignore symbols
+            if (isSymbol)
+                continue;
+
+            foreach (const QChar &c, ikey->key().binding()->accentedLabels()) {
+                symbols << c;
+            }
+
+            M::KeyboardLayoutKey key;
+            if (isPunctuation) {
+                key.type = M::KeyboardLayoutKey_NonRegional;
+            } else {
+                key.type = M::KeyboardLayoutKey_Regional;
+            }
+            QRect rect = ikey->buttonRect().toRect();
+            key.x = rect.x();
+            key.y = rect.y();
+            key.width = rect.width();
+            key.height = rect.height();
+            key.symbols = symbols;
+            keys << key;
+        }
+    }
+    return keys;
+}

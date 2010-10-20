@@ -42,6 +42,7 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *view);
     virtual QRectF boundingRect() const;
     virtual void setShiftState(ModifierState newShiftState);
+    virtual QList<const IKeyButton *> keys();
     //! \reimp_end
 
 protected:
