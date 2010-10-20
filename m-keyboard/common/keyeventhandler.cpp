@@ -41,8 +41,8 @@ void KeyEventHandler::addEventSource(KeyButtonArea *eventSource)
                  this, SLOT(handleKeyRelease(const IKeyButton *, const QString &, bool)));
     Q_ASSERT(ok);
 
-    ok = connect(eventSource, SIGNAL(keyClicked(const IKeyButton *, const QString &, bool)),
-                 this, SLOT(handleKeyClick(const IKeyButton *, const QString &, bool)));
+    ok = connect(eventSource, SIGNAL(keyClicked(const IKeyButton *, const QString &, bool, const QPoint &)),
+                 this, SLOT(handleKeyClick(const IKeyButton *, const QString &, bool, const QPoint &)));
     Q_ASSERT(ok);
 }
 
@@ -71,9 +71,10 @@ void KeyEventHandler::handleKeyRelease(const IKeyButton *key, const QString &acc
     }
 }
 
-void KeyEventHandler::handleKeyClick(const IKeyButton *key, const QString &accent, bool upperCase)
+void KeyEventHandler::handleKeyClick(const IKeyButton *key, const QString &accent, bool upperCase,
+                                     const QPoint &touchPoint)
 {
-    const KeyEvent event = keyToKeyEvent(*key, QEvent::KeyRelease, accent, upperCase);
+    const KeyEvent event = keyToKeyEvent(*key, QEvent::KeyRelease, accent, upperCase, touchPoint);
 
     if (event.qtKey() == Qt::Key_Shift && ignoreShiftClick) {
         ignoreShiftClick = false; // ignore this event
@@ -83,7 +84,7 @@ void KeyEventHandler::handleKeyClick(const IKeyButton *key, const QString &accen
 }
 
 KeyEvent KeyEventHandler::keyToKeyEvent(const IKeyButton &key, QKeyEvent::Type eventType,
-                                         const QString &accent, bool upperCase) const
+                                         const QString &accent, bool upperCase, const QPoint &touchPoint) const
 {
     KeyEvent event;
 
@@ -95,6 +96,7 @@ KeyEvent KeyEventHandler::keyToKeyEvent(const IKeyButton &key, QKeyEvent::Type e
     } else {
         event = key.key().toKeyEvent(eventType, accent.at(0), upperCase);
     }
+    event.setTouchPoint(touchPoint);
 
     return event;
 }

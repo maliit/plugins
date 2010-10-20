@@ -1066,6 +1066,7 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
         preedit += text;
 
         candidates.clear();
+        qDebug() << "event touch point:" << event.touchPoint();
         imCorrectionEngine->appendCharacter(text.at(0));
         candidates = imCorrectionEngine->candidates();
 

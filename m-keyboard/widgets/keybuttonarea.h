@@ -124,8 +124,9 @@ signals:
      * \param key describes clicked button
      * \param accent label of pressed dead key if any
      * \param upperCase contains true if key is in uppercase state
+     * \param touchPoint the touch point for the key
      */
-    void keyClicked(const IKeyButton *key, const QString &accent, bool upperCase);
+    void keyClicked(const IKeyButton *key, const QString &accent, bool upperCase, const QPoint &touchPoint);
 
     /*!
      * \brief Emitted when long press is detected.
@@ -174,6 +175,9 @@ protected:
 
         //! Last known position of the touch point
         QPoint pos;
+
+        //! Corrected touch point for key click.
+        QPoint correctedTouchPoint;
 
         //! Whether to perform gravity checks for this touchpoint.
         bool checkGravity;
@@ -278,7 +282,7 @@ private:
     //! \param id Touch point indentifier defined by the system.
     IKeyButton *gravitationalKeyAt(const QPoint &pos, int id);
 
-    void click(IKeyButton *key);
+    void click(IKeyButton *key, const QPoint &touchPoint = QPoint());
 
     //! Current level
     int currentLevel;

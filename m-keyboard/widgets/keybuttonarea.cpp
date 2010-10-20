@@ -52,6 +52,9 @@ namespace
 
     // Timeout for long press
     const int LongPressTimeOut = 500;
+
+    // Minimal distance for touch point from key button edge.
+    const int CorrectionDistanceThreshold = 2;
 }
 
 M::InputMethodMode KeyButtonArea::InputMethodMode;
@@ -263,7 +266,7 @@ void KeyButtonArea::clearActiveKeys()
     }
 }
 
-void KeyButtonArea::click(IKeyButton *key)
+void KeyButtonArea::click(IKeyButton *key, const QPoint &touchPoint)
 {
     if (!key->isDeadKey()) {
         QString accent;
@@ -274,7 +277,7 @@ void KeyButtonArea::click(IKeyButton *key)
 
         unlockDeadkeys();
 
-        emit keyClicked(key, accent, level() % 2);
+        emit keyClicked(key, accent, level() % 2, touchPoint);
     } else if (key == activeDeadkey) {
         unlockDeadkeys();
     } else {
@@ -516,7 +519,7 @@ void KeyButtonArea::touchPointReleased(const QPoint &pos, int id)
         setActiveKey(key, tpi); // in most cases, does nothing
         setActiveKey(0, tpi); // release key
 
-        click(key);
+        click(key, tpi.correctedTouchPoint);
     } else {
         setActiveKey(0, tpi);
     }
@@ -539,9 +542,24 @@ KeyButtonArea::gravitationalKeyAt(const QPoint &pos, int id)
         && (pos.x() < br.right() + hGravity)
         && (pos.y() > br.top() - vGravity)
         && (pos.y() < br.bottom() + vGravity)) {
+
+        QPoint correctedPos = pos;
+        if (pos.x() < br.left()) {
+            correctedPos.setX(br.left() + CorrectionDistanceThreshold);
+        } else if (pos.x() > br.right()) {
+            correctedPos.setX(br.right() - CorrectionDistanceThreshold);
+        }
+        if (pos.y() < br.top()) {
+            correctedPos.setY(br.top() + CorrectionDistanceThreshold);
+        } else if (pos.y() > br.bottom()) {
+            correctedPos.setY(br.bottom() - CorrectionDistanceThreshold);
+        }
+        tpi.correctedTouchPoint = correctedPos;
+
         return tpi.initialKey;
     } else {
         tpi.checkGravity = false;
+        tpi.correctedTouchPoint = pos;
         return keyAt(pos);
     }
 }
