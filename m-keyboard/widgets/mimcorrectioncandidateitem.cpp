@@ -199,7 +199,7 @@ qreal MImCorrectionCandidateItem::idealWidth() const
 {
     qreal width = 0.0;
     if (!mTitle.isEmpty()) {
-        QFontMetricsF fm(QFont(style()->font().family(), style()->font().pixelSize()));
+        QFontMetricsF fm(style()->font());
         width = fm.width(mTitle);
     }
     width += style()->marginLeft() + style()->marginRight()

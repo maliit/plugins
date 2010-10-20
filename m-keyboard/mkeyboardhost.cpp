@@ -435,7 +435,7 @@ void MKeyboardHost::createCorrectionCandidateWidget()
             this, SLOT(handleRegionUpdate(const QRegion &)));
 #endif
     connect(correctionCandidateWidget, SIGNAL(candidateClicked(const QString &)),
-            this, SLOT(confirmPreedit(const QString &)));
+            this, SLOT(commitPreedit(const QString &)));
 }
 
 
@@ -821,7 +821,7 @@ void MKeyboardHost::appOrientationChanged(int angle)
 }
 
 
-void MKeyboardHost::confirmPreedit(const QString &updatedString)
+void MKeyboardHost::commitPreedit(const QString &updatedString)
 {
     qDebug() << __PRETTY_FUNCTION__;
 

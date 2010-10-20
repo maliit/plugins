@@ -99,9 +99,9 @@ private slots:
     void updateReactionMaps();
 
     /*!
-     * Confirm \a string to replace preedit
+     * \brief Updates \a string as preedit and commits it.
      */
-    void confirmPreedit(const QString &string);
+    void commitPreedit(const QString &string);
 
     /*! \brief Prepares vkb for orientation change when application is about to rotate.
      *
