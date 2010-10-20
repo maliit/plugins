@@ -20,6 +20,7 @@
 #define VKB_KEYEVENT_H
 
 #include <QKeyEvent>
+#include <QPoint>
 #include <Qt>
 
 //! Internal keyboard event class, basically a superset of QKeyEvent
@@ -44,7 +45,8 @@ public:
              QKeyEvent::Type type = QEvent::KeyRelease,
              Qt::Key qtKey = Qt::Key_unknown,
              SpecialKey specialKey = NotSpecial,
-             Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+             Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+             const QPoint &touchPoint = QPoint());
 
     //! Constructor that copies another event, except for type
     KeyEvent(const KeyEvent &other, QKeyEvent::Type type);
@@ -79,12 +81,17 @@ public:
 
     bool operator==(const KeyEvent &other) const;
 
+    void setTouchPoint(const QPoint &point);
+
+    QPoint touchPoint() const;
+
 protected:
     QKeyEvent::Type m_type;
     Qt::Key m_qtKey;
     SpecialKey m_specialKey;
     QString m_text;
     Qt::KeyboardModifiers m_modifiers;
+    QPoint m_touchPoint;
 };
 
 #endif

@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QKeyEvent>
+#include <QPoint>
 
 class KeyButtonArea;
 class KeyEvent;
@@ -89,12 +90,12 @@ private slots:
     /*!
      * \brief Generates KeyEvent for given \a key and emits keyClicked
      */
-    void handleKeyClick(const IKeyButton *key, const QString &accent, bool upperCase);
+    void handleKeyClick(const IKeyButton *key, const QString &accent, bool upperCase, const QPoint &touchPoint);
 
 private:
     //! Turn key button into a KeyEvent, considering current accent and modifier state
     KeyEvent keyToKeyEvent(const IKeyButton &key, QKeyEvent::Type eventType,
-                           const QString &accent, bool upperCase) const;
+                           const QString &accent, bool upperCase, const QPoint &touchPoint = QPoint()) const;
 
 private:
     //! Keeps track of shift up/down status.
