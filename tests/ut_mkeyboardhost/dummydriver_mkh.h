@@ -100,7 +100,9 @@ public:
 
     virtual M::DictionaryType candidateSource(int index);
 
-    virtual void loadKeyboardLayout(const QList<M::KeyboardLayoutKey> &keys);
+    virtual bool setKeyboardLayoutKeys(const QList<M::KeyboardLayoutKey> &keys);
+
+    virtual QList<M::KeyboardLayoutKey> keyboardLayoutKeys();
 
     virtual void clearEngineBuffer();
 

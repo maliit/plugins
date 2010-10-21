@@ -170,9 +170,16 @@ M::DictionaryType DummyDriverMkh::candidateSource(int index)
     return M::DictionaryTypeInvalid;
 }
 
-void DummyDriverMkh::loadKeyboardLayout(const QList<M::KeyboardLayoutKey> &keys)
+bool DummyDriverMkh::setKeyboardLayoutKeys(const QList<M::KeyboardLayoutKey> &keys)
 {
     Q_UNUSED(keys);
+    return true;
+}
+
+QList<M::KeyboardLayoutKey> DummyDriverMkh::keyboardLayoutKeys()
+{
+    QList<M::KeyboardLayoutKey> keys;
+    return keys;
 }
 
 void DummyDriverMkh::clearEngineBuffer()
