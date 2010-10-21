@@ -181,6 +181,9 @@ private slots:
     //! Handle active layout is changed to \a layout for virtual keyboard.
     void handleVirtualKeyboardLayoutChanged(const QString &layout);
 
+    //! long tap on space key.
+    void longTapSpace();
+
 private:
     //! \brief Reset internal state, used by reset() and others
     void resetInternalState();
@@ -318,6 +321,7 @@ private:
     int inputMethodMode;
 
     QTimer backSpaceTimer;
+    QTimer spaceTimer;
 
     KeyEvent lastClickEvent;
 

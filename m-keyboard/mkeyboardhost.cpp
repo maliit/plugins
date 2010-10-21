@@ -69,6 +69,7 @@ namespace
     const int MaximumErrorCorrectionCandidate = 5;
     const int RotationDuration = 750; //! After vkb hidden, how long to wait until shown again
     const int AutoBackspaceDelay = 500;      // in ms
+    const int LongTapspaceDelay = 1000;      // in ms
     const int BackspaceRepeatInterval = 100; // in ms
     const int MultitapTime = 1500;           // in ms
     const Qt::KeyboardModifier FnLevelModifier = Qt::GroupSwitchModifier;
@@ -164,6 +165,7 @@ MKeyboardHost::MKeyboardHost(MInputContextConnection *icConnection, QObject *par
       cursorPos(-1),
       inputMethodMode(M::InputMethodModeNormal),
       backSpaceTimer(),
+      spaceTimer(),
       shiftHeldDown(false),
       activeState(MInputMethod::OnScreen),
       modifierLockOnBanner(0),
@@ -355,6 +357,9 @@ MKeyboardHost::MKeyboardHost(MInputContextConnection *icConnection, QObject *par
 
     backSpaceTimer.setSingleShot(true);
     connect(&backSpaceTimer, SIGNAL(timeout()), this, SLOT(autoBackspace()));
+
+    spaceTimer.setSingleShot(true);
+    connect(&spaceTimer, SIGNAL(timeout()), this, SLOT(longTapSpace()));
 
     // hide main layout when symbol view is shown to improve performance
     connect(symbolView, SIGNAL(opened()), vkbWidget, SLOT(hideMainArea()));
@@ -891,6 +896,11 @@ void MKeyboardHost::handleKeyPress(const KeyEvent &event)
 
     } else if (event.qtKey() == Qt::Key_Backspace) {
         backSpaceTimer.start(AutoBackspaceDelay);
+    } else if (event.qtKey() == Qt::Key_Space
+               && correctionEnabled
+               && correctionCandidateWidget->isVisible()
+               && correctionCandidateWidget->candidateMode() == MImCorrectionCandidateWidget::PopupMode) {
+        spaceTimer.start(LongTapspaceDelay);
     }
 
     inputContextConnection()->sendKeyEvent(event.toQKeyEvent(), signalOnly);
@@ -922,6 +932,8 @@ void MKeyboardHost::handleKeyRelease(const KeyEvent &event)
         } else {
             doBackspace();
         }
+    } else if (event.qtKey() == Qt::Key_Space && correctionEnabled) {
+        spaceTimer.stop();
     }
 
     inputContextConnection()->sendKeyEvent(event.toQKeyEvent(), signalOnly);
@@ -1095,11 +1107,15 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
 
     } else if ((event.qtKey() == Qt::Key_Space) || (event.qtKey() == Qt::Key_Return) || (event.qtKey() == Qt::Key_Tab)) {
         // commit suggestion if correction candidate widget is visible and with popupMode
+        // or ignore it if correction widget is visible and with suggestionlist mode
         // otherwise commit preedit
         if (event.qtKey() == Qt::Key_Space
-            && correctionCandidateWidget->isVisible()
-            && correctionCandidateWidget->candidateMode() == MImCorrectionCandidateWidget::PopupMode) {
-            inputContextConnection()->sendCommitString(correctionCandidateWidget->suggestion());
+            && correctionCandidateWidget->isVisible()) {
+            if (correctionCandidateWidget->candidateMode() == MImCorrectionCandidateWidget::PopupMode) {
+                inputContextConnection()->sendCommitString(correctionCandidateWidget->suggestion());
+            } else {
+                return;
+            }
         } else {
             inputContextConnection()->sendCommitString(preedit);
         }
@@ -1630,4 +1646,16 @@ void MKeyboardHost::updatePreeditStyle()
     }
 
     inputContextConnection()->sendPreeditString(preedit, face);
+}
+
+void MKeyboardHost::longTapSpace()
+{
+    if (!correctionCandidateWidget->isVisible()
+        || correctionCandidateWidget->candidateMode() != MImCorrectionCandidateWidget::PopupMode
+        || candidates.size() <= 0)
+        return;
+
+    correctionCandidateWidget->setPreeditString(preedit);
+    correctionCandidateWidget->setCandidates(candidates);
+    correctionCandidateWidget->showWidget(MImCorrectionCandidateWidget::SuggestionListMode);
 }
