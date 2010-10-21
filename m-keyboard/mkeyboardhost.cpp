@@ -513,6 +513,7 @@ void MKeyboardHost::setPreedit(const QString &preeditString)
         imCorrectionEngine->appendString(preeditString, true);
         candidates = imCorrectionEngine->candidates();
     }
+    updatePreeditStyle();
 }
 
 
@@ -849,7 +850,6 @@ void MKeyboardHost::doBackspace()
     if (preedit.length() > 0) {
         if (!backSpaceTimer.isActive()) {
             setPreedit(preedit.left(preedit.length() - 1));
-            updatePreeditStyle();
         } else {
             resetInternalState();
             inputContextConnection()->sendCommitString("");
@@ -1139,7 +1139,14 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
 
         candidates.clear();
         qDebug() << "event touch point:" << event.touchPoint();
-        imCorrectionEngine->tapKeyboard(event.touchPoint(), vkbWidget->shiftStatus() != ModifierClearState);
+
+        // send touch point to engine if not accented character
+        // otherwise send character to engine.
+        if ( !symbolView->isActive() && text.at(0).decomposition().length() <= 0)
+            imCorrectionEngine->tapKeyboard(event.touchPoint(), vkbWidget->shiftStatus() != ModifierClearState);
+        else
+            imCorrectionEngine->appendCharacter(text.at(0));
+
         candidates = imCorrectionEngine->candidates();
         M::DictionaryType sourceDictionaryType = imCorrectionEngine->candidateSource(0);
 

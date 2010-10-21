@@ -192,7 +192,8 @@ void MImCorrectionCandidateWidget::showWidget(MImCorrectionCandidateWidget::Cand
 {
     currentMode = mode;
 
-    if (candidates.isEmpty()) {
+    int selectedIndex = candidates.indexOf(m_preeditString);
+    if (candidates.isEmpty() || selectedIndex < 0) {
         hideWidget(false);
         return;
     }
@@ -213,13 +214,17 @@ void MImCorrectionCandidateWidget::showWidget(MImCorrectionCandidateWidget::Cand
         }
     } else {
         disconnect(candidateItems[0], SIGNAL(longTapped()), this, SLOT(longTap()));
-        for (int i = 0; i < candidates.count(); i++) {
-            candidateItems[i]->setSelected(false);
-            mainLayout->addItem(candidateItems[i]);
-            candidateItems[i]->setTitle(candidates.at(i));
-            candidateItems[i]->setVisible(true);
+        for (int i = 0; i < MaxCandidateCount; i++) {
+            if (i < candidates.count()) {
+                candidateItems[i]->setSelected(false);
+                mainLayout->addItem(candidateItems[i]);
+                candidateItems[i]->setTitle(candidates.at(i));
+                candidateItems[i]->setVisible(true);
+            } else {
+                mainLayout->removeItem(candidateItems[i]);
+                candidateItems[i]->setVisible(false);
+            }
         }
-        int selectedIndex = candidates.indexOf(m_preeditString);
         candidateItems[selectedIndex]->setSelected(true);
     }
     
@@ -346,10 +351,6 @@ bool MImCorrectionCandidateWidget::sceneEvent(QEvent *e)
 
     if (e->type() == QEvent::GraphicsSceneMouseRelease) {
         hideWidget();
-    } else if (e->type() == QEvent::GraphicsSceneMouseMove) {
-        qDebug() << "mouse move!";
-        int selectedIndex = candidates.indexOf(m_preeditString);
-        candidateItems[selectedIndex]->setSelected(true);
     }
     return MImOverlay::sceneEvent(e);
 }
