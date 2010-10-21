@@ -3,8 +3,6 @@
 
 MVirtualKeyboardStyle {
     font-opacity: 0.9;
-    font-color: #00FF00;
-    text-color: #0000FF;
 
     deadkey-locked-color: #FFA500;
 
@@ -33,7 +31,7 @@ MVirtualKeyboardStyle.Landscape {
 KeyButtonAreaStyle {
     background-image: "meegotouch-keyboard-background" 15px 15px 15px 15px;
 
-    font: "Nokia Sans Light" 28;
+    font: $FONT_KEYBOARD;
     font-color: #000000;
     secondary-font: $FONT_SMALL;
 
@@ -101,8 +99,8 @@ KeyButtonAreaStyle {
     /* End of single widget keyboard button styling */
 
     /* touch behaviour */
-    button-bounding-rect-top-adjustment: -12;
-    button-bounding-rect-bottom-adjustment: 12;
+    button-bounding-rect-top-adjustment: 0;
+    button-bounding-rect-bottom-adjustment: 0;
 
     /* debugging-related attributes */
     draw-button-bounding-rects: false;
@@ -207,7 +205,7 @@ KeyButtonAreaStyle.Landscape {
     text-left-offset: 12;
     text-right-offset: 12;
 
-    font: "Nokia Sans" 20;
+    font: $FONT_DEFAULT;
     text-color: #000000;
 
     preferred-size: 414 56;
@@ -305,7 +303,6 @@ MImCorrectionCandidateItemStyle {
     title-object-name: "CorrectionCandidateItemTitle";
     background-opacity: 1.0;
 
-    /*font: "Nokia Sans Light" 24; */
     font: $FONT_DEFAULT; 
     font-color: $COLOR_INVERTED_FOREGROUND;
 
