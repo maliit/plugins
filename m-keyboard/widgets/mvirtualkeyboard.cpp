@@ -1032,11 +1032,7 @@ QList<M::KeyboardLayoutKey> MVirtualKeyboard::mainLayoutKeys() const
             } else {
                 key.type = M::KeyboardLayoutKey_Regional;
             }
-            QRect rect = ikey->buttonRect().toRect();
-            key.x = rect.x();
-            key.y = rect.y();
-            key.width = rect.width();
-            key.height = rect.height();
+            key.rect = ikey->buttonRect().toRect();
             key.symbols = symbols;
             keys << key;
         }

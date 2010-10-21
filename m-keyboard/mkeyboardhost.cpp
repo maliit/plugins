@@ -705,7 +705,7 @@ void MKeyboardHost::finalizeOrientationChange()
     }
     // reload keyboard layout for engine when orientation is changed
     if (vkbWidget->isVisible()) {
-        imCorrectionEngine->loadKeyboardLayout(vkbWidget->mainLayoutKeys());
+        imCorrectionEngine->setKeyboardLayoutKeys(vkbWidget->mainLayoutKeys());
     }
 
     rotationInProgress = false;
@@ -1187,7 +1187,7 @@ void MKeyboardHost::initializeInputEngine()
         // TODO: maybe we should check return values here and in case of failure
         // be always in accurate mode, for example
         imCorrectionEngine->setLanguage(language, M::LanguagePriorityPrimary);
-        imCorrectionEngine->loadKeyboardLayout(vkbWidget->mainLayoutKeys());
+        imCorrectionEngine->setKeyboardLayoutKeys(vkbWidget->mainLayoutKeys());
         synchronizeCorrectionSetting();
         imCorrectionEngine->disablePrediction();
         imCorrectionEngine->enableCompletion();
