@@ -28,10 +28,11 @@
 namespace
 {
     const QString LayoutListSettingName("/meegotouch/inputmethods/virtualkeyboard/layouts");
-    const QString NumberFormatSettingName("/meegotouch/inputmethods/numberformat");
-    const QString DisplayLanguageSettingName("/meegotouch/i18n/language");
+    //const QString NumberFormatSettingName("/meegotouch/inputmethods/numberformat");
+    const QString NumberFormatSettingName("/meegotouch/i18n/lc_numeric");
     const QString LatinNumberFormat("latin");
-    const QString ArabicNumberFormat("arabic");
+    const QString ArabicNumberFormat("ar");
+    const QString RussianNumberFormat("ru");
     const QString NumberKeyboardFileArabic("number_ar.xml");
     const QString NumberKeyboardFileLatin("number.xml");
     const QString PhoneNumberKeyboardFileArabic("phonenumber_ar.xml");
@@ -121,6 +122,11 @@ void Ut_LayoutsManager::testLayouts()
 
 void Ut_LayoutsManager::testNumberLayouts()
 {
+    // region number setting decide the number/phone number format
+    // Number layout:
+    //
+    // - Regional number setting: Arabic -> Arabic layout
+    // - Any other regional number setting -> Latin layout
     std::auto_ptr<LayoutsManager> subject(new LayoutsManager);
     MGConfItem numberFormatSetting(NumberFormatSettingName);
 
@@ -199,9 +205,13 @@ void Ut_LayoutsManager::testNumberLayouts()
 
 void Ut_LayoutsManager::testPhoneNumberLayouts()
 {
-    MGConfItem displayLanguageSetting(DisplayLanguageSettingName);
-    displayLanguageSetting.set("en");
-
+    // region number setting decide the phone number format
+    // Phone number layout:
+    //
+    // - Regional number setting: Arabic -> Arabic layout
+    // - Regional number setting: Russian -> Russian layout
+    // - Otherwise -> Latin layout
+    //
     MGConfItem numberFormatSetting(NumberFormatSettingName);
     LoadableKeyboards << NumberKeyboardFileLatin << NumberKeyboardFileArabic;
 
@@ -212,11 +222,8 @@ void Ut_LayoutsManager::testPhoneNumberLayouts()
                                         subject->layout("fi.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(!layout);
 
-    // If we can load latin phone number keyboard, that's what we get with all
-    // display languages (requested layout language doesn't matter),
-    // whether our number format is Arabic...
+    // our number format is Arabic...
     numberFormatSetting.set(QVariant(ArabicNumberFormat));
-    displayLanguageSetting.set("ru");
     LoadableKeyboards << PhoneNumberKeyboardFileLatin;
     subject.reset(new LayoutsManager);
     layout = dynamic_cast<const TestLayoutModel *>(
@@ -230,7 +237,6 @@ void Ut_LayoutsManager::testPhoneNumberLayouts()
                  subject->layout("ru.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
     QCOMPARE(layout->modelId, PhoneNumberKeyboardFileLatin);
-    displayLanguageSetting.set("fi.xml");
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("fi.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
@@ -240,46 +246,34 @@ void Ut_LayoutsManager::testPhoneNumberLayouts()
     // In normal operation with Latin number format we get...
     LoadableKeyboards << PhoneNumberKeyboardFileArabic << PhoneNumberKeyboardFileRussian;
     subject.reset(new LayoutsManager);
-    // ...Russian phone numbers for Russian display language
-    displayLanguageSetting.set("ru");
+    // ...Russian phone numbers for Russian number format
+    numberFormatSetting.set(QVariant(RussianNumberFormat));
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("ru.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
     QCOMPARE(layout->modelId, PhoneNumberKeyboardFileRussian);
-    // (... even if we request with different language, i.e. display language
-    // setting is all that matters)
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("fi.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
     QCOMPARE(layout->modelId, PhoneNumberKeyboardFileRussian);
-    // ...and Latin for others
-    displayLanguageSetting.set("fi");
-    layout = dynamic_cast<const TestLayoutModel *>(
-                 subject->layout("fi.xml", LayoutData::PhoneNumber, M::Landscape));
-    QVERIFY(layout);
-    QCOMPARE(layout->modelId, PhoneNumberKeyboardFileLatin);
-    displayLanguageSetting.set("ar");
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("ar.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
-    QCOMPARE(layout->modelId, PhoneNumberKeyboardFileLatin);
+    QCOMPARE(layout->modelId, PhoneNumberKeyboardFileRussian);
 
     // But if we switch to Arabic number format, we always get Arabic phone numbers
     numberFormatSetting.set(QVariant(ArabicNumberFormat));
     // That is, for Russian language...
-    displayLanguageSetting.set("ru");
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("ru.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
     QCOMPARE(layout->modelId, PhoneNumberKeyboardFileArabic);
     // ...and, say, Finnish...
-    displayLanguageSetting.set("fi");
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("fi.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
     QCOMPARE(layout->modelId, PhoneNumberKeyboardFileArabic);
     // ...and of course for Arabic.
-    displayLanguageSetting.set("ar");
     layout = dynamic_cast<const TestLayoutModel *>(
                  subject->layout("ar.xml", LayoutData::PhoneNumber, M::Landscape));
     QVERIFY(layout);
