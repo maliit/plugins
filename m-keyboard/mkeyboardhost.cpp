@@ -39,6 +39,7 @@
 #include <mkeyoverride.h>
 #include <mgconfitem.h>
 
+#include <MOnDisplayChangeEvent>
 #include <QApplication>
 #include <QDebug>
 #include <QKeyEvent>
@@ -585,6 +586,15 @@ void MKeyboardHost::show()
     if (visualizationPriority) {
         return;
     }
+
+    // TO BE REMOVED
+    // Workaround to resolve the plugin switching issue, should be
+    // removed after imframework has proper solution.
+    const QRect sceneRect(QPoint(0, 0), MDeviceProfile::instance()->resolution());
+    MOnDisplayChangeEvent ev(true, sceneRect);
+    QCoreApplication::sendEvent (MPlainWindow::instance(), &ev);
+    MPlainWindow::instance()->show();
+
     RegionTracker::instance().enableSignals(false);
 
     // This will add scene window as child of MSceneManager's root element
@@ -672,6 +682,11 @@ void MKeyboardHost::handleAnimationFinished()
         // just having it here without any two-phase show/hide protocol that considers
         // plugin switching might result to odd situations as well.
         MPlainWindow::instance()->sceneManager()->disappearSceneWindowNow(sceneWindow);
+
+        // TO BE REMOVED
+        // Workaround to resolve the plugin switching issue, should be
+        // removed after imframework has proper solution.
+        MPlainWindow::instance()->hide();
     } else {
         vkbWidget->showFinished();
     }

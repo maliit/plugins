@@ -67,6 +67,11 @@ MPlainWindow::MPlainWindow(const MAbstractInputMethodHost *newHost,
     ungrabGesture(Qt::PanGesture);
     ungrabGesture(Qt::SwipeGesture);
     ungrabGesture(Qt::TapGesture);
+
+    // TO BE REMOVED
+    // Workaround to resolve the plugin switching issue, should be
+    // removed after imframework has proper solution.
+    hide();
 }
 
 MPlainWindow::~MPlainWindow()
