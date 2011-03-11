@@ -1,3 +1,9 @@
+meego-keyboard (0.5.33-2) unstable; urgency=low
+
+  * Fixes: MPlainWindow should be hidden in the constructor.
+
+ -- Ning Chi <ext-chi.ning@nokia.com>  Fri, 11 Mar 2011 11:43:49 +0200
+
 meego-keyboard (0.5.33-1) unstable; urgency=low
 
   * Fixes: NB#234589 - Word tracker shows up on phone number text edit
