@@ -146,6 +146,8 @@ void Ut_SymbolView::testReactiveButtonAreas_data()
 
 void Ut_SymbolView::testReactiveButtonAreas()
 {
+    QSKIP( "skipping testReactiveButtonAreas", SkipSingle );
+
     QFETCH(int, orientationAngle);;
 
     rotateToAngle(static_cast<M::OrientationAngle>(orientationAngle));
