@@ -1,9 +1,9 @@
-meego-keyboard (0.5.35~1) unstable; urgency=low
+meego-keyboard (0.5.34-2) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Fixes: NB#228917 - meego-keyboard provides dev package with missing dependencies
   * Fixes: NB#237202 - Completely transparent assets are referenced
 
- -- Ning Chi <ext-chi.2.ning@nokia.com>  Wed, 16 Mar 2011 16:21:39 +0200
+ -- Ning Chi <ext-chi.2.ning@nokia.com>  Mon, 21 Mar 2011 16:31:13 +0200
 
 meego-keyboard (0.5.34-1) unstable; urgency=low
 
