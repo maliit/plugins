@@ -24,15 +24,17 @@ CONFIG(docs) {
 
 }
 
-#error-correction 
-GCONF_DATA = meego-keyboard.schemas
-isEmpty(GCONF_SCHEMAS_DIR) {
-    GCONF_SCHEMAS_DIR = /usr/share/gconf/schemas
-}
-gconf_data.path = $$GCONF_SCHEMAS_DIR
-gconf_data.files = $$GCONF_DATA
+!nomeegotouch {
+    #error-correction
+    GCONF_DATA = meego-keyboard.schemas
+    isEmpty(GCONF_SCHEMAS_DIR) {
+        GCONF_SCHEMAS_DIR = /usr/share/gconf/schemas
+    }
+    gconf_data.path = $$GCONF_SCHEMAS_DIR
+    gconf_data.files = $$GCONF_DATA
 
-INSTALLS += gconf_data \ 
+    INSTALLS += gconf_data \
+}
 
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
