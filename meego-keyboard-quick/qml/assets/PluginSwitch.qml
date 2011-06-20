@@ -30,48 +30,20 @@
  */
 
 import Qt 4.7
+import com.meego.maliitquick 1.0
 
-Rectangle {
-    KeyStyle {
-        id: keyStyle
-    }
+//! This component is used to swith between plugins by horizontally flicking on QML keyboard
+Flickable {
+    id: flickablePluginSwitch
 
-    property string caption: ""
-    property string captionShifted: ""
-    property int fontSize: keyStyle.fontSize
-    property string symView: ""
+    property int variationY: 25
+    anchors.fill: parent
+    flickableDirection: Flickable.HorizontalFlick
 
-    radius:  8
-    color: mouse_area.containsMouse ? keyStyle.backgroundPressed
-                                    : keyStyle.background
-
-    MouseArea {
-        id: mouse_area
-        anchors.fill: parent
-
-        onPressed: {
-            parent.state = "mouse_down";
-            MInputMethodQuick.sendPreedit(key_label.text);
-        }
-
-        onReleased: {
-            MInputMethodQuick.sendCommit(key_label.text)
-            isShifted = false
-        }
-
-        PluginClose{}
-
-    }
-
-    Text {
-        id: key_label
-        anchors.centerIn: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.family: "sans"
-        font.pixelSize: keyStyle.fontSize
-        color: keyStyle.fontColor
-        text: (inSymView && symView.length) > 0 ? symView
-                                                : (isShifted ? captionShifted : caption)
+    onFlickStarted: {
+        Math.abs(contentY) < variationY ? ( contentX > 0 ? MInputMethodQuick.pluginSwitchRequired(Maliit.SwitchForward)
+                                                         : MInputMethodQuick.pluginSwitchRequired(Maliit.SwitchBackward) )
+                                        : false
     }
 }
+
