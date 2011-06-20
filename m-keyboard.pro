@@ -1,3 +1,5 @@
+include(config.pri)
+
 CONFIG += ordered 
 TARGET = meego-im-plugins
 TEMPLATE = subdirs
@@ -6,12 +8,6 @@ SUBDIRS = \
 
 CONFIG(docs) {
     include (doc/doc.pri)
-}
-
-!enable-meegotouch {
-    CONFIG+=nomeegotouch
-} else {
-    CONFIG-=nomeegotouch
 }
 
 !notests:!nomeegotouch {

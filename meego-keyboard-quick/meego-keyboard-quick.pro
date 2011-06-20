@@ -1,3 +1,5 @@
+include(../config.pri)
+
 VERSION = 0.1.0
 TARGET = meego-keyboard-quick
 TEMPLATE = lib
