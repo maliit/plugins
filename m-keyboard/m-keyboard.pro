@@ -1,4 +1,4 @@
-include(../mconfig.pri)
+include(../config.pri)
 
 # Revert linker optimization for release build of the this target.
 # It causes problem in the integration.
