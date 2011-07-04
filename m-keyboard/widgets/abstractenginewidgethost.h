@@ -32,8 +32,7 @@
 #ifndef ABSTRACTENGINEWIDGETHOST_H
 #define ABSTRACTENGINEWIDGETHOST_H
 
-#include <MWidget>
-
+#include <QGraphicsWidget>
 #include <QObject>
 #include <QString>
 #include <QStringList>
