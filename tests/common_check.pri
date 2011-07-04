@@ -17,12 +17,16 @@ QMAKE_CXXFLAGS += -Werror
 
 DEFINES += UNIT_TEST
 
+# allows us to use hidden Maliit FW API, such as MImSetting:
+DEFINES += MALIIT_FRAMEWORK_USE_INTERNAL_API
+
 QT += testlib
 
 INCLUDEPATH += \
+    $$MKEYBOARD_DIR \
     $$WIDGETS_DIR \
     $$COMMON_DIR \
-    $$MKEYBOARD_DIR \
+    $$STYLE_DIR \
     $$UTILS_DIR \
     $$STUBS_DIR \
 
@@ -46,7 +50,25 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 QMAKE_CLEAN += *.gcno *.gcda
 
 LIBS += -lmeegoimengine
-CONFIG += meegoimframework meegoimengine
+CONFIG += meegoimengine
+
+!nomeegotouch {
+    CONFIG += meegoimframework meegotouch
+    DEFINES += HAVE_MEEGOTOUCH
+} else {
+    PKGCONFIG += maliit-plugins-0.80
+    # moc needs the include path
+    INCLUDEPATH += $$system(pkg-config --cflags maliit-plugins-0.80 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+    DEFINES += HAVE_MALIIT
+}
+
+!noreactionmap {
+    DEFINES += HAVE_REACTIONMAP
+    CONFIG += meegoreactionmap
+}
+
+CONFIG += link_pkgconfig
+PKGCONFIG += gconf-2.0 xkbfile
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

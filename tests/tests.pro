@@ -35,12 +35,6 @@ SUBDIRS = \
           ut_mimfontpool \
           ut_magnifier \
 
-contains(CONFIG, nomeegotouch) {
-} else {
-    DEFINES += HAVE_MEEGOTOUCH
-    CONFIG += meegotouch
-}
-
 include (test-layouts/test-layouts.pri)
 
 target.commands += $$system(touch tests.xml)
