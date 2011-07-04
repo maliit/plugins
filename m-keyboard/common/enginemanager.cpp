@@ -73,12 +73,14 @@ public:
     {
     }
 
-    virtual ~EngineHandlerDefault() {
+    virtual ~EngineHandlerDefault()
+    {
         delete mEngineWidgetHost;
         mEngineWidgetHost = 0;
     }
     
-    static QStringList supportedLanguages() {
+    static QStringList supportedLanguages()
+    {
         return QStringList();
     }
 
