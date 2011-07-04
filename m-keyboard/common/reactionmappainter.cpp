@@ -36,7 +36,6 @@
 #ifdef HAVE_REACTIONMAP
 #include <mreactionmap.h>
 #endif
-#include <mscene.h>
 
 #include "reactionmappaintable.h"
 
