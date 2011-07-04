@@ -29,6 +29,7 @@
 
  */
 
+#ifdef HAVE_MEEGOTOUCH
 #include "handle.h"
 #include "mimtoolbar.h"
 #include "sharedhandlearea.h"
@@ -189,3 +190,4 @@ bool SharedHandleArea::event(QEvent *e)
     }
     return MWidget::event(e);
 }
+#endif // HAVE_MEEGOTOUCH

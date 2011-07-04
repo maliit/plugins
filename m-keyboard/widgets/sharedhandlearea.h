@@ -32,6 +32,13 @@
 #ifndef SHAREDHANDLEAREA_H
 #define SHAREDHANDLEAREA_H
 
+#ifndef HAVE_MEEGOTOUCH
+#include <QGraphicsWidget>
+
+class SharedHandleArea
+    : public QGraphicsWidget
+{};
+#else
 #include <MWidget>
 #include <MNamespace>
 
@@ -128,5 +135,6 @@ private:
 
     M::InputMethodMode inputMethodMode;
 };
+#endif // HAVE_MEEGOTOUCH
 
 #endif

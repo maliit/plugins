@@ -29,6 +29,7 @@
 
  */
 
+#ifdef HAVE_MEEGOTOUCH
 #include "wordribbonhost.h"
 #include "wordribbon.h"
 #include "wordribbondialog.h"
@@ -336,3 +337,5 @@ QGraphicsWidget * WordRibbonHost::inlineWidget() const
 {
     return qobject_cast<QGraphicsWidget *>(wordRibbon);
 }
+
+#endif // HAVE_MEEGOTOUCH
