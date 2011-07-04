@@ -59,6 +59,7 @@ include(common/common.pri)
 include(widgets/widgets.pri)
 include(theme/theme.pri)
 include(layouts/layouts.pri)
+include(style/style.pri)
 
 HEADERS += \
     mkeyboardhost.h \
