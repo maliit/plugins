@@ -34,7 +34,7 @@
 #ifndef LAYOUTDATA_H
 #define LAYOUTDATA_H
 
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 #include <QHash>
 #include <QList>
 #include <QSharedPointer>
@@ -203,10 +203,10 @@ public:
     LayoutType type() const;
 
     //! \return layout orientation
-    M::Orientation orientation() const;
+    MInputMethod::Orientation orientation() const;
 
 protected:
-    M::Orientation layoutOrientation;
+    MInputMethod::Orientation layoutOrientation;
     LayoutType layoutType;
     //! this is the top level data structure of a layout
     QList<SharedLayoutSection> sections;

@@ -78,7 +78,7 @@ public:
 
     //! \brief Sets input method mode for all MImAbstractKeyArea instances.
     //! \param inputMethodMode the new input method mode
-    static void setInputMethodMode(M::InputMethodMode inputMethodMode);
+    static void setInputMethodMode(MInputMethod::InputMethodMode inputMethodMode);
 
     //! \brief Returns relative button base width
     qreal relativeKeyBaseWidth() const;
@@ -137,7 +137,7 @@ public slots:
     /*!
      * \brief Sets the current content type (handles email/url overrides).
      */
-    virtual void setContentType(M::TextContentType type) = 0;
+    virtual void setContentType(MInputMethod::TextContentType type) = 0;
 
     /*!
      * \brief Sets the state of on off toggle key.

@@ -45,7 +45,7 @@
 #include "hwkbcharloopsmanager.h"
 #include "hwkbdeadkeymapper.h"
 #include "mkeyboardcommon.h"
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 
 class MAbstractInputMethodHost;
 
@@ -74,10 +74,10 @@ public:
     ~MHardwareKeyboard();
 
     //! \brief Set keyboard type according text entry type.
-    void setKeyboardType(M::TextContentType type);
+    void setKeyboardType(MInputMethod::TextContentType type);
 
     //! \brief Return current keyboard type.
-    M::TextContentType keyboardType() const;
+    MInputMethod::TextContentType keyboardType() const;
 
     //! \return current state for \a modifier key in hardware keyboard.
     ModifierState modifierState(Qt::KeyboardModifier modifier) const;
@@ -139,10 +139,10 @@ public:
     bool autoCapsEnabled() const;
 
     //! Set input method mode
-    void setInputMethodMode(M::InputMethodMode mode);
+    void setInputMethodMode(MInputMethod::InputMethodMode mode);
 
     //! \return current input method mode
-    M::InputMethodMode inputMethodMode() const;
+    MInputMethod::InputMethodMode inputMethodMode() const;
 
 signals:
 
@@ -320,7 +320,7 @@ private:
     //! calling this method can switch the script.
     void switchKeyMap();
 
-    M::TextContentType currentKeyboardType;
+    MInputMethod::TextContentType currentKeyboardType;
     MXkb mXkb;
     bool autoCaps;
     HwKbCharLoopsManager hwkbCharLoopsManager;
@@ -368,7 +368,7 @@ private:
     quint32 longPressModifiers; // X modifier mask
     bool longPressFnPressState; // Status of Fn key for accepted character
 
-    M::InputMethodMode imMode;
+    MInputMethod::InputMethodMode imMode;
 
     //! \brief Is Fn key pressed at the moment?
     bool fnPressed;

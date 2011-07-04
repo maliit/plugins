@@ -68,7 +68,7 @@ MImOverlay::MImOverlay()
     if (MPlainWindow::instance()) {
 #ifdef HAVE_MEEGOTOUCH
         setGeometry(QRectF(QPointF(0, 0), MPlainWindow::instance()->sceneManager()->visibleSceneSize()));
-        connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChanged(M::Orientation)),
+        connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChanged(MInputMethod::Orientation)),
 #else
         setGeometry(QRectF(QPointF(0, 0), MKeyboardHost::instance()->rootWidget()->size()));
         connect(MKeyboardHost::instance()->rootWidget(), SIGNAL(orientationChanged(MInputMethod::Orientation)),

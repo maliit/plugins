@@ -94,7 +94,7 @@ public:
      * \param portraitFallback if true and if no landscape layout is available, return
      * portrait layout instead (if available)
      */
-    const LayoutData *layout(LayoutData::LayoutType type, M::Orientation orientation,
+    const LayoutData *layout(LayoutData::LayoutType type, MInputMethod::Orientation orientation,
                              bool portraitFallback = true) const;
 
 private:
@@ -110,7 +110,7 @@ private:
     bool findLayoutFile(QString &foundAbsoluteFilename) const;
 
     //! \brief Get layout model by type and orientation
-    LayoutData *layoutPrivate(LayoutData::LayoutType type, M::Orientation orientation,
+    LayoutData *layoutPrivate(LayoutData::LayoutType type, MInputMethod::Orientation orientation,
                               bool portraitFallback = true) const;
 
     /*!
@@ -119,9 +119,9 @@ private:
     static Qt::Alignment alignment(const QString &alignmentString, bool vertical);
 
     /*!
-    * \brief Translate orientationString to M::Orientation
+    * \brief Translate orientationString to MInputMethod::Orientation
     */
-    static M::Orientation orientation(const QString &orientationString);
+    static MInputMethod::Orientation orientation(const QString &orientationString);
 
     //! \brief Translate key action string into a MImKeyBinding::KeyAction
     static MImKeyBinding::KeyAction keyActionFromString(const QString &typeStr);

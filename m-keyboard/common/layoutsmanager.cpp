@@ -183,7 +183,7 @@ QString LayoutsManager::keyboardLanguage(const QString &layoutFile) const
 
 const LayoutData *LayoutsManager::layout(const QString &layoutFile,
         LayoutData::LayoutType type,
-        M::Orientation orientation) const
+        MInputMethod::Orientation orientation) const
 {
     const LayoutData *lm = 0;
 
@@ -208,7 +208,7 @@ const LayoutData *LayoutsManager::layout(const QString &layoutFile,
 }
 
 const LayoutData *LayoutsManager::hardwareLayout(LayoutData::LayoutType type,
-                                                 M::Orientation orientation) const
+                                                 MInputMethod::Orientation orientation) const
 {
     return hwKeyboard.layout(type, orientation);
 }

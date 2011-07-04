@@ -52,7 +52,7 @@ SharedHandleArea::SharedHandleArea(MImToolbar &toolbar, QGraphicsWidget *parent)
       keyboardShadow(*new KeyboardShadow(this)),
       zeroSizeInvisibleHandle(*new QGraphicsWidget(this)),
       toolbar(toolbar),
-      inputMethodMode(M::InputMethodModeNormal)
+      inputMethodMode(MInputMethod::InputMethodModeNormal)
 {
     setObjectName("SharedHandleArea");
     hide();
@@ -111,7 +111,7 @@ void SharedHandleArea::updateInvisibleHandleVisibility()
     // meaningful.
 #if 0
     // Toggle invisible gesture handle area on/off
-    const bool showInvisibleHandle(inputMethodMode == M::InputMethodModeDirect
+    const bool showInvisibleHandle(inputMethodMode == MInputMethod::InputMethodModeDirect
                                    && !standardToolbar);
     QGraphicsWidget &previousItem(*dynamic_cast<QGraphicsWidget *>(
                                       mainLayout.itemAt(InvisibleHandleIndex)));
@@ -124,7 +124,7 @@ void SharedHandleArea::updateInvisibleHandleVisibility()
 #endif
 }
 
-void SharedHandleArea::setInputMethodMode(const M::InputMethodMode mode)
+void SharedHandleArea::setInputMethodMode(const MInputMethod::InputMethodMode mode)
 {
     inputMethodMode = mode;
     updateInvisibleHandleVisibility();

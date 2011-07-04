@@ -192,7 +192,7 @@ public:
     bool wasGestureTriggered; //!< whether a gesture was already triggered for any active touch point
     MFeedback feedbackSliding; //!< Sliding feedback
     const LayoutData::SharedLayoutSection section; //!< layout section shown by this key area
-    static M::InputMethodMode InputMethodMode; //!< used input method mode (same for all key areas)
+    static MInputMethod::InputMethodMode InputMethodMode; //!< used input method mode (same for all key areas)
     QTimer longPressTimer; //!< used to recognize long press
     QTimer idleVkbTimer;  //!< Whenever this key area of the VKB idles, gestures are activated.
     QTime lastTouchPointPressEvent; //!< measures elapsed time between two touchpoint press events

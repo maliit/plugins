@@ -65,6 +65,7 @@
 #include <QTextBoundaryFinder>
 
 #ifdef HAVE_MEEGOTOUCH
+#include <MNamespace>
 #include <MCancelEvent>
 #include <MComponentData>
 #include <MDeviceProfile>
@@ -230,7 +231,7 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
       preeditCursorPos(-1),
       hasSelection(false),
       preeditHasBeenEdited(false),
-      inputMethodMode(M::InputMethodModeNormal),
+      inputMethodMode(MInputMethod::InputMethodModeNormal),
       backspaceTimer(),
       shiftHeldDown(false),
       activeState(MInputMethod::OnScreen),
@@ -251,7 +252,7 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
       toolbarHidePending(false),
       keyOverrideClearPending(false),
       regionUpdatesEnabledBeforeOrientationChange(true),
-      appOrientationAngle(M::Angle90), // shouldn't matter, see handleAppOrientationChanged comment
+      appOrientationAngle(MInputMethod::Angle90), // shouldn't matter, see handleAppOrientationChanged comment
       mRootWidget(new MImRootWidget)
 {
     Q_ASSERT(host != 0);
@@ -347,7 +348,7 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
     vkbWidget = new MVirtualKeyboard(LayoutsManager::instance(), vkbStyleContainer, rootWidget());
 #endif
 
-    vkbWidget->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
+    vkbWidget->setInputMethodMode(static_cast<MInputMethod::InputMethodMode>(inputMethodMode));
 
     connect(vkbWidget, SIGNAL(geometryChanged()),
             this, SLOT(handleVirtualKeyboardGeometryChange()));
@@ -405,7 +406,7 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
 #else
     sharedHandleArea = new SharedHandleArea(*imToolbar, rootWidget());
 #endif
-    sharedHandleArea->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
+    sharedHandleArea->setInputMethodMode(static_cast<MInputMethod::InputMethodMode>(inputMethodMode));
 
     // Set z value below default level (0.0) so popup will be on top of shared handle area.
     sharedHandleArea->setZValue(-1.0);
@@ -444,7 +445,7 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
     sharedHandleArea->watchOnWidget(symbolView);
 
 #ifdef HAVE_MEEGOTOUCH
-    connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChangeFinished(M::Orientation)),
+    connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChangeFinished(MInputMethod::Orientation)),
             this, SLOT(finalizeOrientationChange()));
 #endif
 
@@ -902,7 +903,7 @@ void MKeyboardHost::update()
 
     const int type = inputMethodHost()->contentType(valid);
     if (valid) {
-        hardwareKeyboard->setKeyboardType(static_cast<M::TextContentType>(type));
+        hardwareKeyboard->setKeyboardType(static_cast<MInputMethod::TextContentType>(type));
         vkbWidget->setKeyboardType(type);
         if (EngineManager::instance().handler()
             && EngineManager::instance().handler()->hasErrorCorrection()) {
@@ -923,9 +924,9 @@ void MKeyboardHost::update()
     const int inputMethodModeValue = inputMethodHost()->inputMethodMode(valid);
     if (valid) {
         inputMethodMode = inputMethodModeValue;
-        hardwareKeyboard->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
-        vkbWidget->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
-        sharedHandleArea->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
+        hardwareKeyboard->setInputMethodMode(static_cast<MInputMethod::InputMethodMode>(inputMethodMode));
+        vkbWidget->setInputMethodMode(static_cast<MInputMethod::InputMethodMode>(inputMethodMode));
+        sharedHandleArea->setInputMethodMode(static_cast<MInputMethod::InputMethodMode>(inputMethodMode));
     }
 }
 
@@ -963,8 +964,8 @@ void MKeyboardHost::updateAutoCapitalization()
     const int type = inputMethodHost()->contentType(valid);
     autoCapsEnabled = (autoCapsEnabled
                        && valid
-                       && (type != M::NumberContentType)
-                       && (type != M::PhoneNumberContentType));
+                       && (type != MInputMethod::NumberContentType)
+                       && (type != MInputMethod::PhoneNumberContentType));
     autoCapsEnabled = (autoCapsEnabled
                        && inputMethodHost()->autoCapitalizationEnabled(valid)
                        && valid);
@@ -1013,8 +1014,8 @@ void MKeyboardHost::updateContext()
 
     bool valid = false;
     const int type = inputMethodHost()->contentType(valid);
-    if (!valid || (type == M::NumberContentType)
-        || (type == M::PhoneNumberContentType)) {
+    if (!valid || (type == MInputMethod::NumberContentType)
+        || (type == MInputMethod::PhoneNumberContentType)) {
         return;
     }
 
@@ -1161,10 +1162,10 @@ void MKeyboardHost::handleVisualizationPriorityChange(bool priority)
 
 void MKeyboardHost::handleAppOrientationAboutToChange(int angle)
 {
-    appOrientationAngle = static_cast<M::OrientationAngle>(angle);
+    appOrientationAngle = static_cast<MInputMethod::OrientationAngle>(angle);
     if ((
 #ifdef HAVE_MEEGOTOUCH
-        MPlainWindow::instance()->sceneManager()->orientationAngle()
+        static_cast<MInputMethod::OrientationAngle>(MPlainWindow::instance()->sceneManager()->orientationAngle())
 #else
         rootWidget()->orientationAngle()
 #endif
@@ -1179,7 +1180,7 @@ void MKeyboardHost::handleAppOrientationAboutToChange(int angle)
     // Disable the transition animation for rotation so that we can rotate fast and get
     // the right snapshot for the rotation animation.
 #ifdef HAVE_MEEGOTOUCH
-    MPlainWindow::instance()->sceneManager()->setOrientationAngle(appOrientationAngle,
+    MPlainWindow::instance()->sceneManager()->setOrientationAngle(static_cast<M::OrientationAngle>(appOrientationAngle),
                                                                   MSceneManager::ImmediateTransition);
 #else
     rootWidget()->setOrientationAngle(appOrientationAngle);
@@ -1354,7 +1355,7 @@ void MKeyboardHost::handleKeyPress(const KeyEvent &event)
     }
 
     MInputMethod::EventRequestType requestType = MInputMethod::EventRequestSignalOnly;
-    if ((inputMethodMode == M::InputMethodModeDirect)
+    if ((inputMethodMode == MInputMethod::InputMethodModeDirect)
          && (event.specialKey() == KeyEvent::NotSpecial)) {
 
         requestType = MInputMethod::EventRequestBoth;
@@ -1399,7 +1400,7 @@ void MKeyboardHost::handleKeyRelease(const KeyEvent &event)
         }
     }
 
-    if ((inputMethodMode == M::InputMethodModeDirect)
+    if ((inputMethodMode == MInputMethod::InputMethodModeDirect)
          && (event.specialKey() == KeyEvent::NotSpecial)) {
 
         inputMethodHost()->sendKeyEvent(event.toQKeyEvent(), MInputMethod::EventRequestBoth);
@@ -1433,7 +1434,7 @@ void MKeyboardHost::handleKeyClick(const KeyEvent &event)
 
     // Don't need send key events for Direct input mode here.
     // already send in handleKeyPress and handleKeyRelease.
-    if (activeState == MInputMethod::Hardware && inputMethodMode != M::InputMethodModeDirect) {
+    if (activeState == MInputMethod::Hardware && inputMethodMode != MInputMethod::InputMethodModeDirect) {
         // In hardware keyboard mode symbol view is just another source for
         // events that will be handled by duihardwarekeyboard.  The native
         // modifiers may not be correct (depending on the current hwkbd modifier
@@ -1442,7 +1443,7 @@ void MKeyboardHost::handleKeyClick(const KeyEvent &event)
                         event.text(), false, 1, 0, 0, 0);
         processKeyEvent(QEvent::KeyRelease, event.qtKey(), event.modifiers(),
                         event.text(), false, 1, 0, 0, 0);
-    } else if ((inputMethodMode != M::InputMethodModeDirect)) {
+    } else if ((inputMethodMode != MInputMethod::InputMethodModeDirect)) {
         handleTextInputKeyClick(event);
     }
 
@@ -1768,10 +1769,10 @@ void MKeyboardHost::updateCorrectionState()
         // Don't use correction for certain types.
         bool enabledByContent = true, ctValid;
         int contentType = inputMethodHost()->contentType(ctValid);
-        if (ctValid && (contentType == M::NumberContentType
-                        || contentType == M::PhoneNumberContentType
-                        || contentType == M::EmailContentType
-                        || contentType == M::UrlContentType)) {
+        if (ctValid && (contentType == MInputMethod::NumberContentType
+                        || contentType == MInputMethod::PhoneNumberContentType
+                        || contentType == MInputMethod::EmailContentType
+                        || contentType == MInputMethod::UrlContentType)) {
             enabledByContent = false;
         }
 
@@ -2161,8 +2162,8 @@ void MKeyboardHost::handleHwKeyboardStateChanged()
     }
     if (!lockOnNotificationLabel.isEmpty()
         && !previousIndicatorDeadKey
-        && hardwareKeyboard->keyboardType() != M::NumberContentType
-        && hardwareKeyboard->keyboardType() != M::PhoneNumberContentType) {
+        && hardwareKeyboard->keyboardType() != MInputMethod::NumberContentType
+        && hardwareKeyboard->keyboardType() != MInputMethod::PhoneNumberContentType) {
         // notify the modifier is changed to locked state
         // number and phone number content type always force FN key to be locked,
         // don't need indicator lock notification.

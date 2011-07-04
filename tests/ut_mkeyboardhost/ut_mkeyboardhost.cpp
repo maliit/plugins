@@ -30,6 +30,12 @@
  */
 
 
+#include "mgconfitem_stub.h"
+#include "minputmethodhoststub.h"
+#include "ut_mkeyboardhost.h"
+#include "utils.h"
+#include "dummydriver_mkh.h"
+#include "mplainwindow.h"
 
 #include <mvirtualkeyboard.h>
 #include <mhardwarekeyboard.h>
@@ -44,18 +50,12 @@
 #include <regiontracker.h>
 #include <enginemanager.h>
 #include <abstractenginewidgethost.h>
+#include <minputmethodnamespace.h>
 
-#include "mgconfitem_stub.h"
-#include "minputmethodhoststub.h"
-#include "ut_mkeyboardhost.h"
-#include "utils.h"
-#include "dummydriver_mkh.h"
-
+#include <MNamespace>
 #include <MApplication>
 #include <MSceneManager>
 #include <MTheme>
-#include "mplainwindow.h"
-#include <mnamespace.h>
 #include <MWidgetController>
 #include <MDialog>
 
@@ -185,7 +185,7 @@ void Ut_MKeyboardHost::initTestCase()
 
     MImSettings(MultitouchSettings).set(true);
 
-    qRegisterMetaType<M::Orientation>("M::Orientation");
+    qRegisterMetaType<MInputMethod::Orientation>("MInputMethod::Orientation");
     qRegisterMetaType<TestOpList>("TestOpList");
 }
 
@@ -218,7 +218,7 @@ void Ut_MKeyboardHost::init()
     window->show();
     window->sceneManager()->setOrientationAngle(M::Angle0, MSceneManager::ImmediateTransition);
     QCOMPARE(window->orientationAngle(), M::Angle0);
-    subject->handleAppOrientationChanged(M::Angle0);
+    subject->handleAppOrientationChanged(MInputMethod::Angle0);
 }
 
 void Ut_MKeyboardHost::cleanup()
@@ -357,7 +357,7 @@ void Ut_MKeyboardHost::testDirectMode()
     expectedKeys << Qt::Key_Backspace << Qt::Key_Return << Qt::Key_Space;
     QVERIFY(testData.count() == expectedKeys.count());
 
-    subject->inputMethodMode = M::InputMethodModeDirect;
+    subject->inputMethodMode = MInputMethod::InputMethodModeDirect;
 
     for (int n = 0; n < testData.count(); ++n) {
         inputMethodHost->clear();
@@ -411,15 +411,15 @@ void Ut_MKeyboardHost::testCorrectionOptions()
     // check when content type is changed
     stubEngine.enableCorrection();
     subject->updateCorrectionState();
-    inputMethodHost->contentType_ = M::FreeTextContentType;
+    inputMethodHost->contentType_ = MInputMethod::FreeTextContentType;
     subject->update();
     QCOMPARE(subject->correctionEnabled, true);
 
-    inputMethodHost->contentType_ = M::NumberContentType;
+    inputMethodHost->contentType_ = MInputMethod::NumberContentType;
     subject->update();
     QCOMPARE(subject->correctionEnabled, false);
 
-    inputMethodHost->contentType_ = M::PhoneNumberContentType;
+    inputMethodHost->contentType_ = MInputMethod::PhoneNumberContentType;
     subject->update();
     QCOMPARE(subject->correctionEnabled, false);
 
@@ -464,7 +464,7 @@ void Ut_MKeyboardHost::testCorrectionSettings()
 
     stubEngine.enableCompletion();
     stubEngine.enableCorrection();
-    inputMethodHost->contentType_ = M::FreeTextContentType;
+    inputMethodHost->contentType_ = MInputMethod::FreeTextContentType;
 
     subject->show();
 
@@ -484,27 +484,27 @@ void Ut_MKeyboardHost::testCorrectionSettings()
 
 void Ut_MKeyboardHost::testCorrectionContentTypes_data()
 {
-    QTest::addColumn<M::TextContentType>("contentType");
+    QTest::addColumn<MInputMethod::TextContentType>("contentType");
     QTest::addColumn<bool>("result");
 
     QTest::newRow("Number field")
-            << M::NumberContentType << false;
+            << MInputMethod::NumberContentType << false;
     QTest::newRow("Phone number field")
-            << M::PhoneNumberContentType << false;
+            << MInputMethod::PhoneNumberContentType << false;
     QTest::newRow("Email field")
-            << M::EmailContentType << false;
+            << MInputMethod::EmailContentType << false;
     QTest::newRow("URL field")
-            << M::UrlContentType << false;
+            << MInputMethod::UrlContentType << false;
     QTest::newRow("Free text field")
-            << M::FreeTextContentType << true;
+            << MInputMethod::FreeTextContentType << true;
     QTest::newRow("Custom field")
-            << M::CustomContentType << true;
+            << MInputMethod::CustomContentType << true;
 
 }
 
 void Ut_MKeyboardHost::testCorrectionContentTypes()
 {
-    QFETCH(M::TextContentType, contentType);
+    QFETCH(MInputMethod::TextContentType, contentType);
     QFETCH(bool, result);
 
     stubEngine.enableCompletion();
@@ -526,7 +526,7 @@ void Ut_MKeyboardHost::testAutoCaps()
     inputMethodHost->surroundingString = "Test string. You can using it!    ";
     inputMethodHost->autoCapitalizationEnabled_ = true;
     subject->correctionEnabled = true;
-    inputMethodHost->contentType_ = M::FreeTextContentType;
+    inputMethodHost->contentType_ = MInputMethod::FreeTextContentType;
 
     subject->show();
 
@@ -764,15 +764,15 @@ void Ut_MKeyboardHost::testAutoCaps()
 void Ut_MKeyboardHost::testApplicationOrientationChanged()
 {
     MAbstractInputMethod *im = subject;
-    M::OrientationAngle angles[] = { M::Angle0, M::Angle90, M::Angle180, M::Angle270 };
+    MInputMethod::OrientationAngle angles[] = { MInputMethod::Angle0, MInputMethod::Angle90, MInputMethod::Angle180, MInputMethod::Angle270 };
 
     subject->show();
 
     for (int i = 0; i < 5; ++i) {
-        M::OrientationAngle currentAngle = angles[i % 4];
+        MInputMethod::OrientationAngle currentAngle = angles[i % 4];
         im->handleAppOrientationChanged(static_cast<int>(currentAngle));
         QTest::qWait(1500);
-        QCOMPARE(currentAngle, MPlainWindow::instance()->orientationAngle());
+        QCOMPARE(currentAngle, static_cast<MInputMethod::OrientationAngle>(MPlainWindow::instance()->orientationAngle()));
     }
 }
 
@@ -869,8 +869,8 @@ void Ut_MKeyboardHost::testRegionSignals()
     // The test is disabed just like the invisible handle code itself (this
     // needs to be updated if it is enabled)
 #if 0
-    subject->vkbWidget->setInputMethodMode(M::InputMethodModeDirect);
-    subject->sharedHandleArea->setInputMethodMode(M::InputMethodModeDirect);
+    subject->vkbWidget->setInputMethodMode(MInputMethod::InputMethodModeDirect);
+    subject->sharedHandleArea->setInputMethodMode(MInputMethod::InputMethodModeDirect);
     ++c1;
     ++c2;
     QCOMPARE(inputMethodHost->setScreenRegionCalls, c1);
@@ -886,8 +886,8 @@ void Ut_MKeyboardHost::testRegionSignals()
 
     QCOMPARE(region(ScreenRegion, c1 - 1), region(InputMethodArea, c2 - 1) + invisibleHandleRegion);
 
-    subject->vkbWidget->setInputMethodMode(M::InputMethodModeNormal);
-    subject->sharedHandleArea->setInputMethodMode(M::InputMethodModeNormal);
+    subject->vkbWidget->setInputMethodMode(MInputMethod::InputMethodModeNormal);
+    subject->sharedHandleArea->setInputMethodMode(MInputMethod::InputMethodModeNormal);
     ++c1;
     ++c2;
     QCOMPARE(inputMethodHost->setScreenRegionCalls, c1);
@@ -964,7 +964,7 @@ void Ut_MKeyboardHost::testRegionSignals()
     // Preparation: store 270deg-angle region obtained as safely as possible
     inputMethodHost->clear();
 
-    rotateToAngle(M::Angle270);
+    rotateToAngle(MInputMethod::Angle270);
     subject->show();
     QTest::qWait(MKeyboardHost::OnScreenAnimationTime + 50);
 
@@ -975,9 +975,9 @@ void Ut_MKeyboardHost::testRegionSignals()
     QRegion region270(region(ScreenRegion, 0));
     subject->hide();
     QTest::qWait(MKeyboardHost::OnScreenAnimationTime + 50);
-    rotateToAngle(M::Angle0);
+    rotateToAngle(MInputMethod::Angle0);
 
-    QSignalSpy orientationSpy(window, SIGNAL(orientationChangeFinished(M::Orientation)));
+    QSignalSpy orientationSpy(window, SIGNAL(orientationChangeFinished(MInputMethod::Orientation)));
 
     subject->show();
     QTest::qWait(MKeyboardHost::OnScreenAnimationTime + 50);
@@ -988,12 +988,12 @@ void Ut_MKeyboardHost::testRegionSignals()
     // Rotate three times repeatedly with long and short waits in between.  We
     // should end up with a region identical to that stored in region270.  The
     // wait times mimic user operations that have been found to cause a problem.
-    window->setOrientationAngle(M::Angle90);
+    window->setOrientationAngle(MInputMethod::Angle90);
     QTest::qWait(800);
     qDebug() << "Orientations finished:" << orientationSpy.count();
-    window->setOrientationAngle(M::Angle180);
+    window->setOrientationAngle(MInputMethod::Angle180);
     QTest::qWait(5);
-    window->setOrientationAngle(M::Angle270);
+    window->setOrientationAngle(MInputMethod::Angle270);
     qDebug() << "Orientations finished:" << orientationSpy.count();
     qDebug() << "Waiting for rotation animation to finish...";
     QTest::qWait(SceneRotationTime); // wait until rotation animation is finished
@@ -1002,7 +1002,7 @@ void Ut_MKeyboardHost::testRegionSignals()
     // Sanity checks
     qDebug() << "Orientations finished:" << orientationSpy.count();
 
-    QCOMPARE(window->orientationAngle(), M::Angle270);
+    QCOMPARE(window->orientationAngle(), MInputMethod::Angle270);
     QVERIFY(inputMethodHost->setScreenRegionCalls > 0);
     QCOMPARE(inputMethodHost->setInputMethodAreaCalls, inputMethodHost->setScreenRegionCalls);
 
@@ -1565,7 +1565,7 @@ void Ut_MKeyboardHost::testShiftStateOnLayoutChanged()
     QCOMPARE(subject->vkbWidget->shiftStatus(), expectedShiftState);
 }
 
-void Ut_MKeyboardHost::rotateToAngle(M::OrientationAngle angle)
+void Ut_MKeyboardHost::rotateToAngle(MInputMethod::OrientationAngle angle)
 {
     subject->handleAppOrientationChanged(angle);
     QTest::qWait(SceneRotationTime); // wait until rotation animation is finished
@@ -1577,7 +1577,7 @@ void Ut_MKeyboardHost::triggerAutoCaps()
     gAutoCapsEnabled = true;
     subject->preedit.clear();
     subject->cursorPos = 0;
-    inputMethodHost->contentType_ = M::FreeTextContentType;
+    inputMethodHost->contentType_ = MInputMethod::FreeTextContentType;
     inputMethodHost->autoCapitalizationEnabled_ = true;
 
     // Update
@@ -1801,7 +1801,7 @@ struct TestSignalEvent {
     int expectedReleaseSignal;
 };
 
-void Ut_MKeyboardHost::testSignals(M::InputMethodMode inputMethodMode, const TestSignalEvent *testEvents)
+void Ut_MKeyboardHost::testSignals(MInputMethod::InputMethodMode inputMethodMode, const TestSignalEvent *testEvents)
 {
     subject->inputMethodMode = inputMethodMode;
 
@@ -1833,7 +1833,7 @@ void Ut_MKeyboardHost::testSignalsInNormalMode()
         { 0, Qt::Key_unknown, 0, 0 }
     };
 
-    testSignals(M::InputMethodModeNormal, testEvents);
+    testSignals(MInputMethod::InputMethodModeNormal, testEvents);
 }
 
 void Ut_MKeyboardHost::testSignalsInDirectMode()
@@ -1847,7 +1847,7 @@ void Ut_MKeyboardHost::testSignalsInDirectMode()
         { 0, Qt::Key_unknown, 0, 0 }
     };
 
-    testSignals(M::InputMethodModeDirect, testEvents);
+    testSignals(MInputMethod::InputMethodModeDirect, testEvents);
 }
 
 void Ut_MKeyboardHost::testShowLanguageNotification_data()
@@ -1942,14 +1942,14 @@ void Ut_MKeyboardHost::testToolbarPosition()
 {
     // Position after portrait vkb -> hwkb (landscape) transition
 
-    rotateToAngle(M::Angle90);
+    rotateToAngle(MInputMethod::Angle90);
     subject->show();
 
     QSet<MInputMethod::HandlerState> states;
     states << MInputMethod::Hardware;
     subject->setState(states);
 
-    rotateToAngle(M::Angle0);
+    rotateToAngle(MInputMethod::Angle0);
     QCOMPARE(subject->sharedHandleArea->pos(),
              QPointF(0, (MPlainWindow::instance()->visibleSceneSize().height()
                          - subject->sharedHandleArea->size().height())));

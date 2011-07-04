@@ -303,7 +303,7 @@ private:
 
     QPointer<HorizontalSwitcher> pageSwitcher;
 
-    M::Orientation currentOrientation;
+    MInputMethod::Orientation currentOrientation;
 
     QString currentLayout;
 

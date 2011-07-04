@@ -60,7 +60,7 @@ public:
     virtual MImAbstractKey * findKey(const QString &);
     virtual MImAbstractKey *keyAt(const QPoint &) const;
     virtual void updateKeyGeometries(int);
-    virtual void setContentType(M::TextContentType);
+    virtual void setContentType(MInputMethod::TextContentType);
     virtual void setToggleKeyState(bool on);
     virtual void setComposeKeyState(bool isComposing);
     virtual void resetActiveKeys();

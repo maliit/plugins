@@ -334,7 +334,7 @@ void MImKey::updateLabelPos() const
         const int secondarySeparation = styleContainer->secondaryLabelSeparation();
         const bool landscape = (
 #ifdef HAVE_MEEGOTOUCH
-                    MPlainWindow::instance()->orientation() == M::Landscape
+                    static_cast<MInputMethod::Orientation>(MPlainWindow::instance()->orientation()) == MInputMethod::Landscape
 #else
                     MKeyboardHost::instance()->rootWidget()->orientation() == MInputMethod::Landscape
 #endif

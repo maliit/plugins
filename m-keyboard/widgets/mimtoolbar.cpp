@@ -47,7 +47,7 @@
 #include <mtoolbarlayout.h>
 #include <minputmethodnamespace.h>
 
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 #include <QKeySequence>
 #include <QGraphicsLinearLayout>
 #include <QDebug>
@@ -222,9 +222,9 @@ void MImToolbar::loadCustomWidgets()
     }
 
 #ifdef HAVE_MEEGOTOUCH
-    const M::Orientation orientation = MPlainWindow::instance()->sceneManager()->orientation();
+    const MInputMethod::Orientation orientation = static_cast<MInputMethod::Orientation>(MPlainWindow::instance()->sceneManager()->orientation());
 #else
-    const M::Orientation orientation = MKeyboardHost::instance()->rootWidget()->orientation();
+    const MInputMethod::Orientation orientation = MKeyboardHost::instance()->rootWidget()->orientation();
 #endif
 
     QSharedPointer<const MToolbarLayout> layout = currentToolbar->layout(static_cast<MInputMethod::Orientation>(orientation));

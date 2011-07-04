@@ -34,12 +34,7 @@
 
 #include "mwidget-wrapper.h"
 
-#ifdef HAVE_MALIIT
-#include <maliit/namespace.h>
-#else
-#include <MNamespace>
-#endif
-
+#include <minputmethodnamespace.h>
 #include <QList>
 #include <QPointer>
 
@@ -73,7 +68,7 @@ public:
     virtual ~SharedHandleArea();
 
     //! Set input method mode
-    void setInputMethodMode(M::InputMethodMode mode);
+    void setInputMethodMode(MInputMethod::InputMethodMode mode);
 
     /*!
      * \brief Ask handle area to watch on position and visibility of given \a widget.
@@ -131,7 +126,7 @@ private:
 
     MImToolbar &toolbar;
 
-    M::InputMethodMode inputMethodMode;
+    MInputMethod::InputMethodMode inputMethodMode;
 };
 
 #endif

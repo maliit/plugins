@@ -53,6 +53,7 @@
 #include <MSceneWindow>
 #include <MScene>
 #include <MSceneManager>
+#include <MNamespace>
 
 #include <QDir>
 #include <QtGlobal>
@@ -230,7 +231,7 @@ void Bm_Painting::benchmarkPaintDuringKeyPresses()
 
     KeyboardData *keyboard = new KeyboardData;
     Q_ASSERT(keyboard->loadNokiaKeyboard(filename));
-    MImKeyArea *subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    MImKeyArea *subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                              false, 0);
     MImAbstractKeyArea *abstract = subject;
 
@@ -356,7 +357,7 @@ void Bm_Painting::benchmarkPaintDuringHorizontalLayoutChange()
     KeyboardData *keyboardData = new KeyboardData;
     Q_ASSERT(keyboardData->loadNokiaKeyboard(filename));
     const LayoutData::SharedLayoutSection &section = keyboardData->
-            layout(LayoutData::General, M::Landscape)->
+            layout(LayoutData::General, MInputMethod::Landscape)->
             section(LayoutData::mainSection);
 
     HorizontalSwitcher *subject = new HorizontalSwitcher();

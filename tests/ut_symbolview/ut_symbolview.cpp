@@ -168,7 +168,7 @@ void Ut_SymbolView::testReactiveButtonAreas()
 #ifdef HAVE_REACTIONMAP
     QFETCH(int, orientationAngle);;
 
-    rotateToAngle(static_cast<M::OrientationAngle>(orientationAngle));
+    rotateToAngle(static_cast<MInputMethod::OrientationAngle>(orientationAngle));
 
     MReactionMapTester tester;
     gMReactionMapStub = &tester;
@@ -188,9 +188,9 @@ void Ut_SymbolView::testReactiveButtonAreas()
     QVERIFY(tester.testChildButtonReactiveAreas(view, subject));
 
     // Check if the symbol view is aware about the right orientation
-    if ((orientationAngle == M::Angle0
+    if ((orientationAngle == MInputMethod::Angle0
         && subject->boundingRect().width() != view->width())
-        || (orientationAngle == M::Angle90
+        || (orientationAngle == MInputMethod::Angle90
             && subject->boundingRect().width() != view->height())) {
         QSKIP("The orientation of the symbol view is wrong (MWindow is broken)", SkipSingle);
     }
@@ -225,7 +225,7 @@ void Ut_SymbolView::testReactiveWholeScreen()
 #ifdef HAVE_REACTIONMAP
     QFETCH(int, orientationAngle);
 
-    rotateToAngle(static_cast<M::OrientationAngle>(orientationAngle));
+    rotateToAngle(static_cast<MInputMethod::OrientationAngle>(orientationAngle));
 
     MReactionMapTester tester;
     gMReactionMapStub = &tester;
@@ -339,7 +339,7 @@ void Ut_SymbolView::testHardwareState()
     QCOMPARE(subject->activeState, MInputMethod::OnScreen);
 
     // Make sure were in landscape mode when in hardware state
-    rotateToAngle(M::Angle0);
+    rotateToAngle(MInputMethod::Angle0);
 
     subject->setKeyboardState(MInputMethod::Hardware);
     QCOMPARE(subject->activeState, MInputMethod::Hardware);
@@ -424,10 +424,10 @@ void Ut_SymbolView::testAutomaticCloseOnKeyClick()
     QCOMPARE(subject->isActive(), expectedIsActive);
 }
 
-void Ut_SymbolView::rotateToAngle(M::OrientationAngle angle)
+void Ut_SymbolView::rotateToAngle(MInputMethod::OrientationAngle angle)
 {
     subject->prepareToOrientationChange();
-    MPlainWindow::instance()->setOrientationAngle(angle);
+    MPlainWindow::instance()->setOrientationAngle(static_cast<M::OrientationAngle>(angle));
     QTest::qWait(SceneRotationTime);// wait until MSceneManager::orientationAngle() is updated.
     subject->finalizeOrientationChange();
 }

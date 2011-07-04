@@ -34,7 +34,7 @@
 #ifndef HWKBCHARLOOPS_H
 #define HWKBCHARLOOPS_H
 
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 #include <QString>
 #include <QHash>
 

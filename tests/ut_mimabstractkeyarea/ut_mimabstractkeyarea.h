@@ -32,13 +32,12 @@
 #ifndef UT_MIMABSTRACTKEYAREA_H
 #define UT_MIMABSTRACTKEYAREA_H
 
+#include "flickgesture.h"
+
 #include <QList>
 #include <QObject>
 #include <QtTest/QtTest>
-
-#include "mnamespace.h"
-#include "flickgesture.h"
-
+#include <minputmethodnamespace.h>
 #include <set>
 
 class MApplication;
@@ -117,7 +116,7 @@ private:
                     const std::set<int> &activeTouchPoints,
                     TouchEvent event,
                     int id, QPoint pos);
-    void changeOrientation(M::OrientationAngle angle);
+    void changeOrientation(MInputMethod::OrientationAngle angle);
     QSize defaultLayoutSize();
 
     MImAbstractKey *keyAt(unsigned int row,

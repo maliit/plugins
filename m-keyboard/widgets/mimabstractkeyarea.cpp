@@ -135,7 +135,7 @@ namespace
     }
 }
 
-M::InputMethodMode MImAbstractKeyAreaPrivate::InputMethodMode;
+MInputMethod::InputMethodMode MImAbstractKeyAreaPrivate::InputMethodMode;
 
 MImAbstractKeyAreaPrivate::MImAbstractKeyAreaPrivate(const LayoutData::SharedLayoutSection &newSection,
                                                      MImAbstractKeyArea *owner)
@@ -193,7 +193,7 @@ void MImAbstractKeyAreaPrivate::handleFlickGesture(int direction,
 {
     Q_Q(MImAbstractKeyArea);
 
-    if (InputMethodMode == M::InputMethodModeDirect) {
+    if (InputMethodMode == MInputMethod::InputMethodModeDirect) {
         return;
     }
 
@@ -793,7 +793,7 @@ void MImAbstractKeyArea::init()
     debugTouchPoints = style()->debugTouchPoints();
 }
 
-void MImAbstractKeyArea::setInputMethodMode(M::InputMethodMode inputMethodMode)
+void MImAbstractKeyArea::setInputMethodMode(MInputMethod::InputMethodMode inputMethodMode)
 {
     MImAbstractKeyAreaPrivate::InputMethodMode = inputMethodMode;
 }

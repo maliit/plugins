@@ -97,7 +97,7 @@ namespace
 
 MHardwareKeyboard::MHardwareKeyboard(MAbstractInputMethodHost& imHost, QObject *parent)
     : QObject(parent),
-      currentKeyboardType(M::FreeTextContentType),
+      currentKeyboardType(MInputMethod::FreeTextContentType),
       autoCaps(false),
       inputMethodHost(imHost),
       lastEventType(QEvent::KeyRelease),
@@ -109,7 +109,7 @@ MHardwareKeyboard::MHardwareKeyboard(MAbstractInputMethodHost& imHost, QObject *
       shiftsPressed(0),
       shiftShiftCapsLock(false),
       longPressTimer(this),
-      imMode(M::InputMethodModeNormal),
+      imMode(MInputMethod::InputMethodModeNormal),
       fnPressed(false),
       numberContentCharacterMatcher(NumberContentCharacterSetRegexp),
       phoneNumberContentCharacterMatcher(PhoneNumberContentCharacterSetRegexp)
@@ -128,7 +128,7 @@ MHardwareKeyboard::~MHardwareKeyboard()
 }
 
 
-void MHardwareKeyboard::setKeyboardType(M::TextContentType type)
+void MHardwareKeyboard::setKeyboardType(MInputMethod::TextContentType type)
 {
     if (currentKeyboardType == type)
         return;
@@ -138,8 +138,8 @@ void MHardwareKeyboard::setKeyboardType(M::TextContentType type)
     // for modifiers according current keyboard type.
     latchModifiers(LockMask | FnModifierMask, 0);
     switch (currentKeyboardType) {
-    case M::NumberContentType:
-    case M::PhoneNumberContentType:
+    case MInputMethod::NumberContentType:
+    case MInputMethod::PhoneNumberContentType:
         // With number and phone number content type Fn must be permanently locked
         lockModifiers(FnModifierMask, FnModifierMask);
         stateTransitionsDisabled = true;
@@ -152,7 +152,7 @@ void MHardwareKeyboard::setKeyboardType(M::TextContentType type)
     }
 }
 
-M::TextContentType MHardwareKeyboard::keyboardType() const
+MInputMethod::TextContentType MHardwareKeyboard::keyboardType() const
 {
     return currentKeyboardType;
 }
@@ -216,7 +216,7 @@ void MHardwareKeyboard::enable()
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    if (imMode != M::InputMethodModeDirect) {
+    if (imMode != MInputMethod::InputMethodModeDirect) {
         connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(handleClipboardDataChange()));
         enableCustomAutoRepeat();
 
@@ -234,8 +234,8 @@ void MHardwareKeyboard::enable()
         currentLatchedMods = 0;
         scanCodeWithLatchedModifiers = 0;
         switch (currentKeyboardType) {
-        case M::NumberContentType:
-        case M::PhoneNumberContentType:
+        case MInputMethod::NumberContentType:
+        case MInputMethod::PhoneNumberContentType:
             // With number and phone number content type Fn must be permanently locked
             currentLockedMods = FnModifierMask;
             mXkb.lockModifiers(FnModifierMask, FnModifierMask);
@@ -461,7 +461,7 @@ void MHardwareKeyboard::correctToAcceptedCharacter(QString &text, quint32 native
     const unsigned int shiftLevel(((shiftAndLock == ShiftMask) || (shiftAndLock == LockMask)
                                    ? 1 : 0) + shiftLevelBase);
 
-    if (currentKeyboardType == M::NumberContentType
+    if (currentKeyboardType == MInputMethod::NumberContentType
         && numberContentCharacterMatcher.exactMatch(text) == false) {
         QString candidate(keycodeToString(nativeScanCode, shiftLevel));
 
@@ -469,7 +469,7 @@ void MHardwareKeyboard::correctToAcceptedCharacter(QString &text, quint32 native
             text = candidate;
             fnPressState = !fnPressState;
         }
-    } else if (currentKeyboardType == M::PhoneNumberContentType
+    } else if (currentKeyboardType == MInputMethod::PhoneNumberContentType
                && phoneNumberContentCharacterMatcher.exactMatch(text) == false) {
         QString candidate(keycodeToString(nativeScanCode, shiftLevel));
 
@@ -562,7 +562,7 @@ bool MHardwareKeyboard::filterKeyPress(Qt::Key keyCode, Qt::KeyboardModifiers mo
         return true;
     }
 
-    if (imMode == M::InputMethodModeDirect) {
+    if (imMode == MInputMethod::InputMethodModeDirect) {
         // eat the sym key.
         if (keyCode == SymKey) {
             eaten = true;
@@ -694,7 +694,7 @@ bool MHardwareKeyboard::filterKeyRelease(Qt::Key keyCode, Qt::KeyboardModifiers 
         return true;
     }
 
-    if (imMode == M::InputMethodModeDirect) {
+    if (imMode == MInputMethod::InputMethodModeDirect) {
         if (keyCode == SymKey) {
             eaten = handleReleaseWithSymModifier(keyCode);
         }
@@ -920,7 +920,7 @@ bool MHardwareKeyboard::handleReleaseWithSymModifier(Qt::Key keyCode)
     if ((lastKeyCode == SymKey) && (keyCode == SymKey)) {
         emit symbolKeyClicked();
         return true;
-    } else if (imMode == M::InputMethodModeDirect) { // ...which is all we do for direct mode.
+    } else if (imMode == MInputMethod::InputMethodModeDirect) { // ...which is all we do for direct mode.
         return false;
     }
 
@@ -988,8 +988,8 @@ QChar MHardwareKeyboard::deadKeyState() const
 
 bool MHardwareKeyboard::symViewAvailable() const
 {
-    return (currentKeyboardType != M::NumberContentType)
-        && (currentKeyboardType != M::PhoneNumberContentType);
+    return (currentKeyboardType != MInputMethod::NumberContentType)
+        && (currentKeyboardType != MInputMethod::PhoneNumberContentType);
 }
 
 bool MHardwareKeyboard::autoCapsEnabled() const
@@ -997,12 +997,12 @@ bool MHardwareKeyboard::autoCapsEnabled() const
     return LayoutsManager::instance().hardwareKeyboardAutoCapsEnabled();
 }
 
-void MHardwareKeyboard::setInputMethodMode(M::InputMethodMode mode)
+void MHardwareKeyboard::setInputMethodMode(MInputMethod::InputMethodMode mode)
 {
     imMode = mode;
 }
 
-M::InputMethodMode MHardwareKeyboard::inputMethodMode() const
+MInputMethod::InputMethodMode MHardwareKeyboard::inputMethodMode() const
 {
     return imMode;
 }

@@ -37,7 +37,7 @@
 #include <QtTest/QTest>
 #include <QObject>
 
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 
 class MApplication;
 class MImAbstractKey;
@@ -81,7 +81,7 @@ private slots:
     void testAutomaticCloseOnKeyClick();
 
 private:
-    void rotateToAngle(M::OrientationAngle angle);
+    void rotateToAngle(MInputMethod::OrientationAngle angle);
     MImAbstractKey *keyAt(MImAbstractKeyArea *symPage,
                           unsigned int row,
                           unsigned int column) const;

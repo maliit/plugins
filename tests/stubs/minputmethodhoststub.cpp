@@ -31,7 +31,7 @@
 
 #include "minputmethodhoststub.h"
 
-#include <mnamespace.h>
+#include <minputmethodnamespace.h>
 #include <mimplugindescription.h>
 #include <QKeyEvent>
 #include <QDebug>
@@ -45,7 +45,7 @@ MInputMethodHostStub::MInputMethodHostStub()
     correctionEnabled_ = true;
     autoCapitalizationEnabled_ = true;
     contentType_ = 0;
-    inputmethodMode_ = M::InputMethodModeNormal;
+    inputmethodMode_ = MInputMethod::InputMethodModeNormal;
     keyRedirectionEnabled = false;
     indicator = MInputMethod::NoIndicator;
 }

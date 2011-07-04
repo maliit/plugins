@@ -42,8 +42,6 @@
 #include "mwidget-wrapper.h"
 
 #include <minputmethodnamespace.h>
-#include <MWidget>
-#include <MNamespace>
 #include <mimenginetypes.h>
 #include <QSharedPointer>
 #include <QPointer>
@@ -125,7 +123,8 @@ public:
      */
     QString selectedLayout() const;
 
-    //! Sets keyboard type according text entry type, type matches M::TextContentType
+    //! Sets keyboard type according text entry type, type matches MInputMethod::TextContentType
+    // TODO: Fix up API to actually use the enum.
     void setKeyboardType(const int type);
 
     // for unit tests
@@ -152,7 +151,7 @@ public:
     void switchLayout(MInputMethod::SwitchDirection direction, bool enableAnimation);
 
     //! Set input method mode
-    void setInputMethodMode(M::InputMethodMode mode);
+    void setInputMethodMode(MInputMethod::InputMethodMode mode);
 
     //! Returns whether autocaps is enabled.
     bool autoCapsEnabled() const;
@@ -200,10 +199,10 @@ public slots:
 
     /*!
      * Method to change the orientation
-     * \param orientation M::Orientation
+     * \param orientation MInputMethod::Orientation
      * \param force reorganize even when not visible
      */
-    void organizeContent(M::Orientation orientation, bool force = false);
+    void organizeContent(MInputMethod::Orientation orientation, bool force = false);
 
     void setLayout(int layoutIndex);
 
@@ -366,13 +365,13 @@ private:
     //! Creates a new section widget of given layout/layout type and orientation.
     MImAbstractKeyArea *createMainSectionView(const QString &layout,
                                          LayoutData::LayoutType,
-                                         M::Orientation orientation,
+                                         MInputMethod::Orientation orientation,
                                          QGraphicsWidget *parent = 0);
 
     // creates a new section widget
     MImAbstractKeyArea *createSectionView(const QString &layout,
                                      LayoutData::LayoutType layoutType,
-                                     M::Orientation orientation,
+                                     MInputMethod::Orientation orientation,
                                      const QString &section,
                                      bool usePopup,
                                      QGraphicsWidget *parent = 0);
@@ -388,7 +387,7 @@ private:
     void connectHandle(const T &handleLike);
 
     //! Sets the current content type (handles email/url overrides):
-    void setContentType(M::TextContentType type);
+    void setContentType(MInputMethod::TextContentType type);
 
     //! Play the vertical animation when VKB height is changed.
     void playVerticalAnimation(int animLine);
@@ -421,7 +420,7 @@ private:
 
     LayoutData::LayoutType currentLayoutType;
 
-    M::Orientation currentOrientation;
+    MInputMethod::Orientation currentOrientation;
 
     QString currentLayout;
 
@@ -450,7 +449,7 @@ private:
     QMap<QString, QSharedPointer<MKeyOverride> > overrides;
 
     //! Currently active content type for general layout:
-    M::TextContentType generalContentType;
+    MInputMethod::TextContentType generalContentType;
 
     bool toggleKeyState;
     bool composeKeyState;

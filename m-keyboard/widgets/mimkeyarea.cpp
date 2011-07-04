@@ -1031,7 +1031,7 @@ void MImKeyArea::releaseKey(MImKey *key)
                                 finder.deadKey() ? finder.deadKey()->label() : QString()));
 }
 
-void MImKeyArea::setContentType(M::TextContentType type)
+void MImKeyArea::setContentType(MInputMethod::TextContentType type)
 {
     static const MImKeyBinding bindAt("@");
     static const MImKeyBinding bindSlash("/");
@@ -1040,10 +1040,10 @@ void MImKeyArea::setContentType(M::TextContentType type)
     MImKey *key = static_cast<MImKey *>(findKey(emailUrlKey));
     if (key) {
         switch(type) {
-        case M::UrlContentType:
+        case MInputMethod::UrlContentType:
             key->overrideBinding(&bindSlash);
             break;
-        case M::EmailContentType:
+        case MInputMethod::EmailContentType:
             key->overrideBinding(&bindAt);
             break;
         default:
@@ -1056,8 +1056,8 @@ void MImKeyArea::setContentType(M::TextContentType type)
     MImKey *dotKey = static_cast<MImKey *>(findKey(emailUrlDotKey));
     if (dotKey) {
         switch(type) {
-        case M::UrlContentType:
-        case M::EmailContentType:
+        case MInputMethod::UrlContentType:
+        case MInputMethod::EmailContentType:
             dotKey->overrideBinding(&bindDot);
             break;
         default:

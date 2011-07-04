@@ -34,7 +34,7 @@
 #ifndef HWKBCHARLOOPSMANAGER_H
 #define HWKBCHARLOOPSMANAGER_H
 
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 #include <mimsettings.h>
 #include <QObject>
 #include <QHash>

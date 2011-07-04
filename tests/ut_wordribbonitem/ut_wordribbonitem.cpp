@@ -68,8 +68,8 @@ void Ut_WordRibbonItem::init()
 {
     subject = new WordRibbonItem(WordRibbon::RibbonStyleMode, 0);
 
-//    if (MPlainWindow::instance()->orientationAngle() != M::Angle0)
-//        rotateToAngle(M::Angle0);
+//    if (MPlainWindow::instance()->orientationAngle() != MInputMethod::Angle0)
+//        rotateToAngle(MInputMethod::Angle0);
 }
 
 
@@ -363,9 +363,9 @@ void Ut_WordRibbonItem::checkSize()
 }
 
 
-void Ut_WordRibbonItem::rotateToAngle(M::OrientationAngle angle)
+void Ut_WordRibbonItem::rotateToAngle(MInputMethod::OrientationAngle angle)
 {
-    MPlainWindow::instance()->setOrientationAngle(angle);
+    MPlainWindow::instance()->setOrientationAngle(static_cast<M::OrientationAngle>(angle));
     // wait until MSceneManager::orientationAngle() is updated.
     QTest::qWait(SceneRotationTime);
 }

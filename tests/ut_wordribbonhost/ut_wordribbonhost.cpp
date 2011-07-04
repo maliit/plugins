@@ -43,6 +43,7 @@
 #include <MLabel>
 #include <MSceneManager>
 #include <MSceneWindow>
+#include <MNamespace>
 
 #include <QGraphicsLayout>
 #include <mtoolbaritem.h>

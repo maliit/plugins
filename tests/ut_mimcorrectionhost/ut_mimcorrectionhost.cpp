@@ -40,8 +40,8 @@
 #include "reactionmappainter.h"
 #include "utils.h"
 #include "minputmethodhoststub.h"
+#include "mplainwindow.h"
 
-#include <mplainwindow.h>
 #include <QtTest/QTest>
 #include <QObject>
 #include <QDebug>
@@ -49,6 +49,7 @@
 #include <QSignalSpy>
 #include <MSceneManager>
 #include <MSceneWindow>
+#include <MNamespace>
 
 Q_DECLARE_METATYPE(AbstractEngineWidgetHost::DisplayMode)
 

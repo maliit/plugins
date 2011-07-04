@@ -34,7 +34,7 @@
 #include "ft_mxkb.h"
 #include <MApplication>
 #include <mplainwindow.h>
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 #include <QDebug>
 #include <QSignalSpy>
 #include <QKeyEvent>

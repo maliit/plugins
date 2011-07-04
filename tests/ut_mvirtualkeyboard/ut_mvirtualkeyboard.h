@@ -91,7 +91,7 @@ signals:
     void fade(int);
 
 private:
-    void rotateToAngle(M::OrientationAngle angle);
+    void rotateToAngle(MInputMethod::OrientationAngle angle);
 };
 
 #endif

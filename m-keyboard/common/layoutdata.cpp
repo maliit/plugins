@@ -47,7 +47,7 @@ LayoutSection::Row::~Row()
 }
 
 LayoutData::LayoutData()
-    : layoutOrientation(M::Landscape),
+    : layoutOrientation(MInputMethod::Landscape),
       layoutType(General),
       isUniformFontSize(false)
 {
@@ -62,7 +62,7 @@ LayoutData::LayoutType LayoutData::type() const
     return layoutType;
 }
 
-M::Orientation LayoutData::orientation() const
+MInputMethod::Orientation LayoutData::orientation() const
 {
     return layoutOrientation;
 }

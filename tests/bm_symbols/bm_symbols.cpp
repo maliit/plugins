@@ -100,7 +100,7 @@ void Bm_Symbols::benchmarkDraw()
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(filename));
 
-    const LayoutData::SharedLayoutSection section = keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::symbolsSymSection);
+    const LayoutData::SharedLayoutSection section = keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::symbolsSymSection);
     QVERIFY(!section.isNull());
 
     subject = MImKeyArea::create(section, false, 0);

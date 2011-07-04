@@ -2,8 +2,10 @@
 #ifndef UT_WORDRIBBONITEM_H
 #define UT_WORDRIBBONITEM_H
 
-#include "mapplication.h"
 #include "wordribbonitem.h"
+
+#include <MApplication>
+#include <minputmethodnamespace.h>
 #include <QtTest/QTest>
 #include <QObject>
 
@@ -36,7 +38,7 @@ private slots:
     void checkSize();
 
 private:
-    void rotateToAngle(M::OrientationAngle angle);
+    void rotateToAngle(MInputMethod::OrientationAngle angle);
 
 private:
     MApplication *app;

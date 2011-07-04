@@ -67,7 +67,7 @@ public slots:
     bool handleKeyRelease(const KeyEvent &event);
     bool handleKeyClick(const KeyEvent &event);
 
-    void handleOrientationChange(M::Orientation orientation);
+    void handleOrientationChange(MInputMethod::Orientation orientation);
 
     void resetWithCommitStringToApp();
 
@@ -176,7 +176,7 @@ public:
      */
     virtual void shutDown(bool needCommitString) = 0;
 
-    virtual void handleOrientationChange(M::Orientation orientation) = 0;
+    virtual void handleOrientationChange(MInputMethod::Orientation orientation) = 0;
     virtual void handleCandidateClicked(const QString &candStr, int wordIndex) = 0;
 
     virtual void handleLayoutMenuKey(const KeyEvent &event) = 0;
@@ -209,7 +209,7 @@ public:
     virtual void initState();
     virtual void clearState();
     virtual void shutDown(bool needCommitString);
-    virtual void handleOrientationChange(M::Orientation orientation);
+    virtual void handleOrientationChange(MInputMethod::Orientation orientation);
     virtual void handleCandidateClicked(const QString &candStr, int wordIndex);
 
     virtual void handleLayoutMenuKey(const KeyEvent &event);
@@ -238,7 +238,7 @@ public:
     virtual void initState();
     virtual void clearState();
     virtual void shutDown(bool needCommitString);
-    virtual void handleOrientationChange(M::Orientation orientation);
+    virtual void handleOrientationChange(MInputMethod::Orientation orientation);
     virtual void handleCandidateClicked(const QString &candStr, int wordIndex);
 
     virtual void handleLayoutMenuKey(const KeyEvent &event);
@@ -280,7 +280,7 @@ public:
     virtual void initState();
     virtual void clearState();
     virtual void shutDown(bool needCommitString);
-    virtual void handleOrientationChange(M::Orientation orientation);
+    virtual void handleOrientationChange(MInputMethod::Orientation orientation);
     virtual void handleCandidateClicked(const QString &candStr, int wordIndex);
 
     virtual void handleLayoutMenuKey(const KeyEvent &event);
@@ -310,7 +310,7 @@ public:
     virtual void initState();
     virtual void clearState();
     virtual void shutDown(bool needCommitString);
-    virtual void handleOrientationChange(M::Orientation orientation);
+    virtual void handleOrientationChange(MInputMethod::Orientation orientation);
     virtual void handleCandidateClicked(const QString &candStr, int wordIndex);
 
     virtual void handleLayoutMenuKey(const KeyEvent &event);
@@ -345,7 +345,7 @@ public:
     virtual void initState();
     virtual void clearState();
     virtual void shutDown(bool needCommitString);
-    virtual void handleOrientationChange(M::Orientation orientation);
+    virtual void handleOrientationChange(MInputMethod::Orientation orientation);
     virtual void handleCandidateClicked(const QString &candStr, int wordIndex);
 
     virtual void handleLayoutMenuKey(const KeyEvent &event);

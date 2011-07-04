@@ -38,12 +38,7 @@
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
 #include <QMap>
-
-#ifdef HAVE_MALIIT
-#include <maliit/namespace.h>
-#else
-#include <MNamespace>
-#endif
+#include <minputmethodnamespace.h>
 
 class MKeyOverride;
 
@@ -142,7 +137,7 @@ public:
      /*!
      * \brief Sets the current content type (handles email/url overrides).
      */
-    void setContentType(M::TextContentType type);
+    void setContentType(MInputMethod::TextContentType type);
 
     //! \brief Enable or disable gesture recognitions during horizontal movement.
     //! Gestures are always enabled if we have more than one widget in switcher.

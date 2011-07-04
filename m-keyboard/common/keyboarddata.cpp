@@ -240,14 +240,14 @@ inline bool KeyboardData::toBoolean(const QString &attributeValue)
 }
 
 const LayoutData *KeyboardData::layout(LayoutData::LayoutType type,
-                                       M::Orientation orientation,
+                                       MInputMethod::Orientation orientation,
                                        bool portaitFallback) const
 {
     return layoutPrivate(type, orientation, portaitFallback);
 }
 
 LayoutData *KeyboardData::layoutPrivate(LayoutData::LayoutType type,
-                                        M::Orientation orientation,
+                                        MInputMethod::Orientation orientation,
                                         bool portraitFallback) const
 {
     LayoutData *bestMatch = NULL;
@@ -437,11 +437,11 @@ void KeyboardData::parseTagImport(const QDomElement &element, ParseParameters &p
     }
 }
 
-M::Orientation KeyboardData::orientation(const QString &orientationString)
+MInputMethod::Orientation KeyboardData::orientation(const QString &orientationString)
 {
-    M::Orientation orient = M::Portrait;
+    MInputMethod::Orientation orient = MInputMethod::Portrait;
     if (orientationString == VKBTagOrientationLandscape)
-        orient = M::Landscape;
+        orient = MInputMethod::Landscape;
     return orient;
 }
 
@@ -465,7 +465,7 @@ void KeyboardData::parseTagLayout(const QDomElement &element, ParseParameters &p
     // same type and different orientation (copy sections to a new
     // layout model), if available.
 
-    const M::Orientation orient = orientation(element.attribute(VKBTagOrientation));
+    const MInputMethod::Orientation orient = orientation(element.attribute(VKBTagOrientation));
     LayoutData *layoutModel = layoutPrivate(type, orient, false);
 
     if (layoutModel == NULL) {
@@ -474,11 +474,11 @@ void KeyboardData::parseTagLayout(const QDomElement &element, ParseParameters &p
         layoutModel->layoutType = type;
         layoutModel->layoutOrientation = orient;
 
-        M::Orientation otherOrientation;
-        if (orient == M::Portrait) {
-            otherOrientation = M::Landscape;
+        MInputMethod::Orientation otherOrientation;
+        if (orient == MInputMethod::Portrait) {
+            otherOrientation = MInputMethod::Landscape;
         } else {
-            otherOrientation = M::Portrait;
+            otherOrientation = MInputMethod::Portrait;
         }
         const LayoutData *const parentLayout = layoutPrivate(type, otherOrientation, false);
         if (parentLayout) {

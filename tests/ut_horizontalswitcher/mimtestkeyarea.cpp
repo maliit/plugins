@@ -64,7 +64,7 @@ void MImTestKeyArea::updateKeyGeometries(int)
 {
 }
 
-void MImTestKeyArea::setContentType(M::TextContentType)
+void MImTestKeyArea::setContentType(MInputMethod::TextContentType)
 {
 }
 

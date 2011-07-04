@@ -48,6 +48,7 @@
 #include "reactionmappainter.h"
 
 #include <minputmethodnamespace.h>
+#include <MNamespace>
 #include <MScene>
 #include <MSceneManager>
 #include <MSceneWindow>
@@ -161,7 +162,7 @@ void Ut_MVirtualKeyboard::init()
     m_vkb = new MVirtualKeyboard(LayoutsManager::instance(), vkbStyleContainer, vkbParent);
 
     if (MPlainWindow::instance()->orientationAngle() != M::Angle0)
-        rotateToAngle(M::Angle0);
+        rotateToAngle(MInputMethod::Angle0);
 }
 
 void Ut_MVirtualKeyboard::cleanup()
@@ -514,22 +515,22 @@ void Ut_MVirtualKeyboard::errorCorrectionTest()
 
 void Ut_MVirtualKeyboard::setKeyboardType()
 {
-    m_vkb->setKeyboardType(M::NumberContentType);
+    m_vkb->setKeyboardType(MInputMethod::NumberContentType);
     QCOMPARE(m_vkb->currentLayoutType, LayoutData::Number);
 
-    m_vkb->setKeyboardType(M::PhoneNumberContentType);
+    m_vkb->setKeyboardType(MInputMethod::PhoneNumberContentType);
     QCOMPARE(m_vkb->currentLayoutType, LayoutData::PhoneNumber);
 
-    m_vkb->setKeyboardType(M::FreeTextContentType);
+    m_vkb->setKeyboardType(MInputMethod::FreeTextContentType);
     QCOMPARE(m_vkb->currentLayoutType, LayoutData::General);
 
-    m_vkb->setKeyboardType(M::EmailContentType);
+    m_vkb->setKeyboardType(MInputMethod::EmailContentType);
     QCOMPARE(m_vkb->currentLayoutType, LayoutData::General);
 
-    m_vkb->setKeyboardType(M::UrlContentType);
+    m_vkb->setKeyboardType(MInputMethod::UrlContentType);
     QCOMPARE(m_vkb->currentLayoutType, LayoutData::General);
 
-    m_vkb->setKeyboardType(M::CustomContentType);
+    m_vkb->setKeyboardType(MInputMethod::CustomContentType);
     QCOMPARE(m_vkb->currentLayoutType, LayoutData::General);
 }
 
@@ -812,10 +813,10 @@ void Ut_MVirtualKeyboard::testReactionMaps()
 
 // End of test functions!
 
-void Ut_MVirtualKeyboard::rotateToAngle(M::OrientationAngle angle)
+void Ut_MVirtualKeyboard::rotateToAngle(MInputMethod::OrientationAngle angle)
 {
     m_vkb->prepareToOrientationChange();
-    MPlainWindow::instance()->setOrientationAngle(angle);
+    MPlainWindow::instance()->setOrientationAngle(static_cast<M::OrientationAngle>(angle));
     QTest::qWait(SceneRotationTime);// wait until MSceneManager::orientationAngle() is updated.
     m_vkb->finalizeOrientationChange();
 }

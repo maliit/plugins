@@ -83,7 +83,7 @@ SymbolView::SymbolView(const LayoutsManager &layoutsManager, const MVirtualKeybo
       layoutsMgr(layoutsManager),
       pageSwitcher(0),
 #ifdef HAVE_MEEGOTOUCH
-      currentOrientation(sceneManager.orientation()),
+      currentOrientation(static_cast<MInputMethod::Orientation>(sceneManager.orientation())),
 #else
       currentOrientation(MKeyboardHost::instance()->rootWidget()->orientation()),
 #endif
@@ -171,11 +171,11 @@ void SymbolView::reloadContent()
 
         loadSwitcherPages(layoutData, activePage);
         setShiftState(shiftState);
-    } else if (activeState == MInputMethod::Hardware && currentOrientation == M::Landscape) {
-        const LayoutData *layoutData = layoutsMgr.hardwareLayout(LayoutData::General, M::Landscape);
+    } else if (activeState == MInputMethod::Hardware && currentOrientation == MInputMethod::Landscape) {
+        const LayoutData *layoutData = layoutsMgr.hardwareLayout(LayoutData::General, MInputMethod::Landscape);
         if (!layoutData) {
             // Get it by layout then.
-            layoutData = layoutsMgr.layout(currentLayout, LayoutData::General, M::Landscape);
+            layoutData = layoutsMgr.layout(currentLayout, LayoutData::General, MInputMethod::Landscape);
         }
 
         loadSwitcherPages(layoutData, activePage);
@@ -388,7 +388,7 @@ MImAbstractKeyArea *SymbolView::createMImAbstractKeyArea(const LayoutData::Share
 void SymbolView::organizeContent()
 {
 #ifdef HAVE_MEEGOTOUCH
-    const M::Orientation orientation(sceneManager.orientation());
+    const MInputMethod::Orientation orientation(static_cast<MInputMethod::Orientation>(sceneManager.orientation()));
     resize(sceneManager.visibleSceneSize().width(), size().height());
 #else
     const MInputMethod::Orientation orientation(MKeyboardHost::instance()->rootWidget()->orientation());

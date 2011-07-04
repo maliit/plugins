@@ -38,7 +38,7 @@
 #include "mplainwindow.h"
 #include "symbolview.h"
 
-#include <MNamespace>
+#include <minputmethodnamespace.h>
 
 #include <QTimer>
 #include <QPointer>
@@ -465,7 +465,7 @@ private:
     bool toolbarHidePending;
     bool keyOverrideClearPending;
     bool regionUpdatesEnabledBeforeOrientationChange;
-    M::OrientationAngle appOrientationAngle;
+    MInputMethod::OrientationAngle appOrientationAngle;
     bool engineWidgetHostTemporarilyHidden;
 
     //! Contains current keyboard overrides

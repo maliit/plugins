@@ -98,7 +98,7 @@ MVirtualKeyboard::MVirtualKeyboard(const LayoutsManager &layoutsManager,
       shiftState(ModifierClearState),
       currentLayoutType(LayoutData::General),
 #ifdef HAVE_MEEGOTOUCH
-      currentOrientation(sceneManager->orientation()),
+      currentOrientation(static_cast<MInputMethod::Orientation>(sceneManager->orientation())),
 #else
       currentOrientation(MKeyboardHost::instance()->rootWidget()->orientation()),
 #endif
@@ -108,7 +108,7 @@ MVirtualKeyboard::MVirtualKeyboard(const LayoutsManager &layoutsManager,
       numberKeyboard(0),
       phoneNumberKeyboard(0),
       eventHandler(this),
-      generalContentType(M::FreeTextContentType),
+      generalContentType(MInputMethod::FreeTextContentType),
       toggleKeyState(false),
       composeKeyState(false),
       verticalAnimation(NULL),
@@ -340,7 +340,7 @@ void MVirtualKeyboard::enableSinglePageHorizontalFlick(bool enable)
     mainKeyboardSwitcher->enableSinglePageHorizontalFlick(enable);
 }
 
-void MVirtualKeyboard::organizeContent(M::Orientation orientation, const bool force)
+void MVirtualKeyboard::organizeContent(MInputMethod::Orientation orientation, const bool force)
 {
     if (!isVisible() && !force) {
         return;
@@ -442,11 +442,11 @@ void MVirtualKeyboard::setKeyboardType(const int type)
     LayoutData::LayoutType newLayoutType = LayoutData::General;
 
     switch (type) {
-    case M::NumberContentType:
+    case MInputMethod::NumberContentType:
         newLayoutType = LayoutData::Number;
         break;
 
-    case M::PhoneNumberContentType:
+    case MInputMethod::PhoneNumberContentType:
         newLayoutType = LayoutData::PhoneNumber;
         break;
     }
@@ -456,14 +456,14 @@ void MVirtualKeyboard::setKeyboardType(const int type)
         updateMainLayoutAtKeyboardIndex();
     }
 
-    setContentType(static_cast<M::TextContentType>(type));
+    setContentType(static_cast<MInputMethod::TextContentType>(type));
 
     // (1) If current content type is Email/Url and current active VKB is a Chinese VKB,
     //     ensure an English keyboard is available.
     //     ("English (UK)" keyboard would be inserted temporarily when necessary.)
     // (2) If current content type is not Email/Url, release the temporary "English (UK)" keyboard
     //     if it exists.
-    if ((type == M::EmailContentType) || (type == M::UrlContentType)) {
+    if ((type == MInputMethod::EmailContentType) || (type == MInputMethod::UrlContentType)) {
         if (layoutLanguage().startsWith(ChineseLanguagePrefix, Qt::CaseSensitive))
             LayoutsManager::instance().ensureEnglishKeyboardAvailable();
     } else {
@@ -666,7 +666,7 @@ void MVirtualKeyboard::reloadSwitcherContent()
 
 MImAbstractKeyArea *MVirtualKeyboard::createMainSectionView(const QString &layout,
                                                             LayoutData::LayoutType layoutType,
-                                                            M::Orientation orientation,
+                                                            MInputMethod::Orientation orientation,
                                                             QGraphicsWidget *parent)
 {
     MImAbstractKeyArea *keyArea = createSectionView(layout, layoutType, orientation,
@@ -683,7 +683,7 @@ MImAbstractKeyArea *MVirtualKeyboard::createMainSectionView(const QString &layou
 
 MImAbstractKeyArea * MVirtualKeyboard::createSectionView(const QString &layout,
                                                          LayoutData::LayoutType layoutType,
-                                                         M::Orientation orientation,
+                                                         MInputMethod::Orientation orientation,
                                                          const QString &section,
                                                          bool usePopup,
                                                          QGraphicsWidget *parent)
@@ -811,7 +811,7 @@ void MVirtualKeyboard::switchLayout(MInputMethod::SwitchDirection direction, boo
 }
 
 
-void MVirtualKeyboard::setInputMethodMode(M::InputMethodMode mode)
+void MVirtualKeyboard::setInputMethodMode(MInputMethod::InputMethodMode mode)
 {
     MImAbstractKeyArea::setInputMethodMode(mode);
 }
@@ -921,7 +921,7 @@ void MVirtualKeyboard::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOv
     this->overrides = overrides;
 }
 
-void MVirtualKeyboard::setContentType(M::TextContentType type)
+void MVirtualKeyboard::setContentType(MInputMethod::TextContentType type)
 {
     if( currentLayoutType != LayoutData::General
         || generalContentType == type )

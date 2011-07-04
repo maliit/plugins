@@ -208,7 +208,7 @@ bool CJKLogicStateMachine::handleKeyEvent(const KeyEvent &event)
     return val;
 }
 
-void CJKLogicStateMachine::handleOrientationChange(M::Orientation orientation)
+void CJKLogicStateMachine::handleOrientationChange(MInputMethod::Orientation orientation)
 {
     currentState->handleOrientationChange(orientation);
 }
@@ -579,7 +579,7 @@ void StandbyState::shutDown(bool needCommitString)
     return ;
 }
 
-void StandbyState::handleOrientationChange(M::Orientation orientation)
+void StandbyState::handleOrientationChange(MInputMethod::Orientation orientation)
 {
     Q_UNUSED(orientation);
     return ;
@@ -753,7 +753,7 @@ void MatchState::shutDown(bool needCommitString)
     return ;
 }
 
-void MatchState::handleOrientationChange(M::Orientation orientation)
+void MatchState::handleOrientationChange(MInputMethod::Orientation orientation)
 {
     currentMatchState->handleOrientationChange(orientation);
 }
@@ -875,7 +875,7 @@ void MatchNotStartedState::shutDown(bool needCommitString)
     return ;
 }
 
-void MatchNotStartedState::handleOrientationChange(M::Orientation orientation)
+void MatchNotStartedState::handleOrientationChange(MInputMethod::Orientation orientation)
 {
     Q_UNUSED(orientation);
     stateMachine->inputMethodHost.sendCommitString(matchStateMachine->inputPreedit);
@@ -1106,7 +1106,7 @@ void MatchStartedState::shutDown(bool needCommitString)
     return ;
 }
 
-void MatchStartedState::handleOrientationChange(M::Orientation orientation)
+void MatchStartedState::handleOrientationChange(MInputMethod::Orientation orientation)
 {
     Q_UNUSED(orientation);
     stateMachine->inputMethodHost.sendCommitString(matchStateMachine->inputPreedit);
@@ -1382,7 +1382,7 @@ void PredictionState::shutDown(bool needCommitString)
     return ;
 }
 
-void PredictionState::handleOrientationChange(M::Orientation orientation)
+void PredictionState::handleOrientationChange(MInputMethod::Orientation orientation)
 {
     Q_UNUSED(orientation);
     stateMachine->changeState(StandByStateString);

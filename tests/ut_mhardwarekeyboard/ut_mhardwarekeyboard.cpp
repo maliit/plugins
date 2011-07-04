@@ -179,8 +179,8 @@ void Ut_MHardwareKeyboard::init()
     m_hkb = new MHardwareKeyboard(*inputMethodHost, 0);
     m_hkb->reset();
     m_hkb->enable();
-    m_hkb->setKeyboardType(M::FreeTextContentType);
-    m_hkb->setInputMethodMode(M::InputMethodModeNormal);
+    m_hkb->setKeyboardType(MInputMethod::FreeTextContentType);
+    m_hkb->setInputMethodMode(MInputMethod::InputMethodModeNormal);
 }
 
 void Ut_MHardwareKeyboard::cleanup()
@@ -421,7 +421,7 @@ void Ut_MHardwareKeyboard::testAutoCaps()
     shiftSpy.clear();
 
     // Autocaps is ignored in [phone] number keyboard state
-    m_hkb->setKeyboardType(M::PhoneNumberContentType);
+    m_hkb->setKeyboardType(MInputMethod::PhoneNumberContentType);
     int countBeforeAutoCaps = modifierSpy.count();
     m_hkb->setAutoCapitalization(true);
     QVERIFY(!m_hkb->autoCaps);
@@ -432,7 +432,7 @@ void Ut_MHardwareKeyboard::testAutoCaps()
     modifierSpy.clear();
 
     m_hkb->enable();
-    m_hkb->setKeyboardType(M::NumberContentType);
+    m_hkb->setKeyboardType(MInputMethod::NumberContentType);
     countBeforeAutoCaps = modifierSpy.count();
     m_hkb->setAutoCapitalization(true);
     QVERIFY(!m_hkb->autoCaps);
@@ -441,7 +441,7 @@ void Ut_MHardwareKeyboard::testAutoCaps()
     QCOMPARE(modifierSpy.count(), countBeforeAutoCaps);
     QCOMPARE(shiftSpy.count(), 0);
     m_hkb->enable();
-    m_hkb->setKeyboardType(M::FreeTextContentType);
+    m_hkb->setKeyboardType(MInputMethod::FreeTextContentType);
     modifierSpy.clear();
 
     // Autocaps is ignored when Sym+ccc... is in progress
@@ -539,14 +539,14 @@ void Ut_MHardwareKeyboard::testStateReset()
 
 void Ut_MHardwareKeyboard::testModifierInNonTextContentType_data()
 {
-    QTest::addColumn<M::TextContentType>("contentType");
-    QTest::newRow("Number") << M::NumberContentType;
-    QTest::newRow("PhoneNumber") << M::PhoneNumberContentType;
+    QTest::addColumn<MInputMethod::TextContentType>("contentType");
+    QTest::newRow("Number") << MInputMethod::NumberContentType;
+    QTest::newRow("PhoneNumber") << MInputMethod::PhoneNumberContentType;
 }
 
 void Ut_MHardwareKeyboard::testModifierInNonTextContentType()
 {
-    QFETCH(M::TextContentType, contentType);
+    QFETCH(MInputMethod::TextContentType, contentType);
 
     m_hkb->setKeyboardType(contentType);
     QVERIFY(checkLatchedState(LockMask | FnModifierMask, 0));
@@ -833,8 +833,8 @@ void Ut_MHardwareKeyboard::testDelete()
 
 void Ut_MHardwareKeyboard::testDirectInputMode()
 {
-    m_hkb->setInputMethodMode(M::InputMethodModeDirect);
-    QCOMPARE(m_hkb->inputMethodMode(), M::InputMethodModeDirect);
+    m_hkb->setInputMethodMode(MInputMethod::InputMethodModeDirect);
+    QCOMPARE(m_hkb->inputMethodMode(), MInputMethod::InputMethodModeDirect);
 
     QSignalSpy symSpy(m_hkb, SIGNAL(symbolKeyClicked()));
     QVERIFY(symSpy.isValid());
@@ -1053,9 +1053,9 @@ void Ut_MHardwareKeyboard::testControlModifier()
 
 void Ut_MHardwareKeyboard::testCorrectToAcceptedCharacter()
 {
-    m_hkb->setKeyboardType(M::NumberContentType);
+    m_hkb->setKeyboardType(MInputMethod::NumberContentType);
 
-    // Test M::NumberContentType:
+    // Test MInputMethod::NumberContentType:
     // Long pressing a number must not commit a letter
     QVERIFY(filterKeyPress(Qt::Key_Q, Qt::GroupSwitchModifier, "1", KeycodeCharacter1, FnModifierMask));
     QCOMPARE(inputMethodHost->lastPreeditString().length(), 1);
@@ -1101,9 +1101,9 @@ void Ut_MHardwareKeyboard::testCorrectToAcceptedCharacter()
     QCOMPARE(inputMethodHost->lastCommitString(), QString("."));
     QCOMPARE(inputMethodHost->lastCommitString().length(), 1);
 
-    m_hkb->setKeyboardType(M::PhoneNumberContentType);
+    m_hkb->setKeyboardType(MInputMethod::PhoneNumberContentType);
 
-    // Test M::PhoneNumberContentType:
+    // Test MInputMethod::PhoneNumberContentType:
     // Long pressing a number over "p" must commit "p"
     QVERIFY(filterKeyPress(Qt::Key_P, Qt::GroupSwitchModifier, "0", KeycodeCharacter0, FnModifierMask));
     QCOMPARE(inputMethodHost->lastPreeditString().length(), 1);

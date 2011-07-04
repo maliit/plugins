@@ -39,7 +39,7 @@
 #include <QObject>
 #include <QWidget>
 
-#include <mnamespace.h>
+#include <minputmethodnamespace.h>
 
 class MApplication;
 class MKeyboardHost;
@@ -136,9 +136,9 @@ private slots:
     void testPreeditFormat();
 
 private:
-    void rotateToAngle(M::OrientationAngle);
+    void rotateToAngle(MInputMethod::OrientationAngle);
     void triggerAutoCaps();
-    void testSignals(M::InputMethodMode inputMode, const TestSignalEvent *testEvents);
+    void testSignals(MInputMethod::InputMethodMode inputMode, const TestSignalEvent *testEvents);
 
 public:
     enum TestOperation {

@@ -349,8 +349,8 @@ void WordRibbon::finalizeOrientationChange()
 {
     // Force the style orientation mode to be right.
 #ifdef HAVE_MEEGOTOUCH
-    const M::Orientation orientation = MPlainWindow::instance()->sceneManager()->orientation();
-    if (orientation == M::Landscape)
+    const MInputMethod::Orientation orientation = static_cast<MInputMethod::Orientation>(MPlainWindow::instance()->sceneManager()->orientation());
+    if (orientation == MInputMethod::Landscape)
 #else
     const MInputMethod::Orientation orientation = MKeyboardHost::instance()->rootWidget()->orientation();
     if (orientation == MInputMethod::Landscape)

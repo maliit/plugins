@@ -79,7 +79,7 @@ signals:
 
 private:
     WordRibbonDialogModel *dataModel;
-    //M::Orientation orientation;
+    //MInputMethod::Orientation orientation;
     QString titleString;
     MList   *listWidget;
     QStringList candidatesList;

@@ -98,7 +98,7 @@ void Bm_MImAbstractKeyArea::benchmarkPreDraw()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(filename));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     QBENCHMARK {

@@ -77,11 +77,11 @@ public:
 
     //! \brief Get layout model by layoutFile, type, and orientation
     const LayoutData *layout(const QString &layoutFile, LayoutData::LayoutType type,
-                             M::Orientation orientation) const;
+                             MInputMethod::Orientation orientation) const;
 
     //! \brief Get layout model specific to current hardware keyboard layout.
     const LayoutData *hardwareLayout(LayoutData::LayoutType type,
-                                     M::Orientation orientation) const;
+                                     MInputMethod::Orientation orientation) const;
 
     //! \brief Returns currently set default layout file name.
     QString defaultLayoutFile() const;

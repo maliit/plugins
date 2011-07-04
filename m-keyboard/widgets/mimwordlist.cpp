@@ -41,6 +41,7 @@
 #include <QString>
 
 #ifdef HAVE_MEEGOTOUCH
+#include <MNamespace>
 #include <mwidgetcreator.h>
 #include <MSeparator>
 M_REGISTER_WIDGET_NO_CREATE(MImWordList)

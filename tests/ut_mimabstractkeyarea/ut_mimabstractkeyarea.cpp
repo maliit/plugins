@@ -49,6 +49,7 @@
 #include <MSceneWindow>
 #include <MSceneManager>
 #include <MTheme>
+#include <MNamespace>
 
 #include <QDir>
 #include <QGraphicsLayout>
@@ -210,7 +211,7 @@ void Ut_MImAbstractKeyArea::testLandscapeBoxSize()
     QStringList filters;
     int fileCount = 0;
 
-    changeOrientation(M::Angle0);
+    changeOrientation(MInputMethod::Angle0);
 
     filters << "??.xml";
     foreach(QFileInfo info, dir.entryInfoList(filters)) {
@@ -220,7 +221,7 @@ void Ut_MImAbstractKeyArea::testLandscapeBoxSize()
         keyboard = new KeyboardData;
         qDebug() << "Loading layout file" << info.absoluteFilePath();
         QVERIFY(keyboard->loadNokiaKeyboard(info.absoluteFilePath()));
-        subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+        subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                      false, 0);
         MPlainWindow::instance()->scene()->addItem(subject);
 
@@ -248,7 +249,7 @@ void Ut_MImAbstractKeyArea::testPortraitBoxSize()
     QStringList filters;
     int fileCount = 0;
 
-    changeOrientation(M::Angle90);
+    changeOrientation(MInputMethod::Angle90);
 
     filters << "??.xml";
     foreach(QFileInfo info, dir.entryInfoList(filters)) {
@@ -258,7 +259,7 @@ void Ut_MImAbstractKeyArea::testPortraitBoxSize()
         keyboard = new KeyboardData;
         qDebug() << "Loading layout file" << info.absoluteFilePath();
         QVERIFY(keyboard->loadNokiaKeyboard(info.absoluteFilePath()));
-        subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Portrait)->section(LayoutData::mainSection),
+        subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Portrait)->section(LayoutData::mainSection),
                                      false, 0);
         MPlainWindow::instance()->scene()->addItem(subject);
 
@@ -286,7 +287,7 @@ void Ut_MImAbstractKeyArea::testPaint()
     //initialization
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "en_us.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
     subject->resize(defaultLayoutSize());
     MPlainWindow::instance()->scene()->addItem(subject);
@@ -312,7 +313,7 @@ void Ut_MImAbstractKeyArea::testDeadkeys()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-deadkey.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
     MPlainWindow::instance()->scene()->addItem(subject);
     subject->resize(defaultLayoutSize());
@@ -417,7 +418,7 @@ void Ut_MImAbstractKeyArea::testSelectedDeadkeys()
 {
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-deadkey.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
     MPlainWindow::instance()->scene()->addItem(subject);
 
@@ -484,7 +485,7 @@ void Ut_MImAbstractKeyArea::testTwoDeadInOne()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-layout.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     MImAbstractKey *deadkey = keyAt(2, 8); // accents ´ and ¨
@@ -518,7 +519,7 @@ void Ut_MImAbstractKeyArea::testExtendedLabels()
 {
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-layout.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     const MImAbstractKey *eKey(keyAt(0, 2)); // e, ...
@@ -530,7 +531,7 @@ void Ut_MImAbstractKeyArea::testKeyId()
 {
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-layout.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     const MImAbstractKey *enterKey(keyAt(3, 6));
@@ -561,20 +562,20 @@ void Ut_MImAbstractKeyArea::testContentType_data()
 void Ut_MImAbstractKeyArea::testContentType()
 {
     QFETCH(QSharedPointer<KeyboardData>, keyboardData);
-    subject = MImKeyArea::create(keyboardData->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboardData->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     const MImAbstractKey *key = subject->findKey("emailUrlKey");
     QVERIFY(key);
-    subject->setContentType(M::FreeTextContentType);
+    subject->setContentType(MInputMethod::FreeTextContentType);
     QCOMPARE(key->model().binding(false)->label(), QString("z"));
     QCOMPARE(key->model().binding(true)->label(),  QString("Z"));
 
-    subject->setContentType(M::EmailContentType);
+    subject->setContentType(MInputMethod::EmailContentType);
     QCOMPARE(key->model().binding(false)->label(), QString("@"));
     QCOMPARE(key->model().binding(true)->label(),  QString("@"));
 
-    subject->setContentType(M::UrlContentType);
+    subject->setContentType(MInputMethod::UrlContentType);
     QCOMPARE(key->model().binding(false)->label(), QString("/"));
     QCOMPARE(key->model().binding(true)->label(),  QString("/"));
 }
@@ -587,7 +588,7 @@ void Ut_MImAbstractKeyArea::testImportedLayouts()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-importer.xml")));
-    const LayoutData *model = keyboard->layout(LayoutData::General, M::Landscape);
+    const LayoutData *model = keyboard->layout(LayoutData::General, MInputMethod::Landscape);
     QVERIFY(model);
     subject = MImKeyArea::create(model->section(LayoutData::mainSection),
                                  false, 0);
@@ -598,17 +599,17 @@ void Ut_MImAbstractKeyArea::testImportedLayouts()
 
     // First imported defines landscape layout with key labeled "1".
     // Second one doesn't define landscape layout.
-    changeOrientation(M::Angle0);
+    changeOrientation(MInputMethod::Angle0);
     QCOMPARE(keyAt(0, 0)->label(), QString("1"));
     QCOMPARE(model->section(LayoutData::mainSection)->keyModel(1, 0)->binding(false)->label(),
              QString("func1"));
 
     // Second imported defines portrait layout with key labeled "2"
     delete subject;
-    model = keyboard->layout(LayoutData::General, M::Portrait);
+    model = keyboard->layout(LayoutData::General, MInputMethod::Portrait);
     subject = MImKeyArea::create(model->section(LayoutData::mainSection),
                                  false, 0);
-    changeOrientation(M::Angle90);
+    changeOrientation(MInputMethod::Angle90);
     QCOMPARE(keyAt(0, 0)->label(), QString("2"));
     QCOMPARE(model->section(LayoutData::mainSection)->keyModel(1, 0)->binding(false)->label(),
              QString("func2"));
@@ -619,7 +620,7 @@ void Ut_MImAbstractKeyArea::testPopup()
     TpCreator createTp = &createTouchPoint;
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "en_us.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
     subject->setPopup(new TestPopup);
     MPlainWindow::instance()->scene()->addItem(subject);
@@ -676,7 +677,7 @@ void Ut_MImAbstractKeyArea::testInitialization()
 {
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "en_us.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
     subject->resize(defaultLayoutSize());
 }
@@ -686,7 +687,7 @@ void Ut_MImAbstractKeyArea::testShiftCapsLock()
     // Load any layout that has shift
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "en_us.xml")));
-    const LayoutData *layout = keyboard->layout(LayoutData::General, M::Landscape);
+    const LayoutData *layout = keyboard->layout(LayoutData::General, MInputMethod::Landscape);
     QVERIFY(layout);
     const LayoutData::SharedLayoutSection section = layout->section(LayoutData::mainSection);
 
@@ -756,7 +757,7 @@ void Ut_MImAbstractKeyArea::testOverridenKey()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-normalkey.xml")));
-    const LayoutData *layout = keyboard->layout(LayoutData::General, M::Landscape);
+    const LayoutData *layout = keyboard->layout(LayoutData::General, MInputMethod::Landscape);
     QVERIFY(layout);
     const LayoutData::SharedLayoutSection section = layout->section(LayoutData::mainSection);
 
@@ -929,7 +930,7 @@ void Ut_MImAbstractKeyArea::testOverridenKey()
 
 void Ut_MImAbstractKeyArea::testRtlKeys_data()
 {
-    QTest::addColumn<M::Orientation>("orientation");
+    QTest::addColumn<MInputMethod::Orientation>("orientation");
     QTest::addColumn<QString>("fileName");
     QTest::addColumn<QList<MImKeyBinding::KeyAction> >("expectedRtlKeys");
 
@@ -941,29 +942,29 @@ void Ut_MImAbstractKeyArea::testRtlKeys_data()
     rtlKeys << MImKeyBinding::ActionBackspace;
 
     QTest::newRow("SingleWidgetArea Landscape Arabic")
-        << M::Landscape
+        << MInputMethod::Landscape
         << ar
         << rtlKeys;
 
     QTest::newRow("SingleWidgetArea Portrait Arabic" )
-        << M::Portrait
+        << MInputMethod::Portrait
         << ar
         << rtlKeys;
 
     QTest::newRow("SingleWidgetArea Landscape English")
-        << M::Landscape
+        << MInputMethod::Landscape
         << en_gb
         << nothing;
 
     QTest::newRow("SingleWidgetArea Portrait English" )
-        << M::Portrait
+        << MInputMethod::Portrait
         << en_gb
         << nothing;
 }
 
 void Ut_MImAbstractKeyArea::testRtlKeys()
 {
-    QFETCH(M::Orientation, orientation);
+    QFETCH(MInputMethod::Orientation, orientation);
     QFETCH(QString, fileName);
     QFETCH(QList<MImKeyBinding::KeyAction>, expectedRtlKeys);
 
@@ -998,7 +999,7 @@ void Ut_MImAbstractKeyArea::testLongKeyPress()
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "en_us.xml")));
 
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  true, 0);
 
     MPlainWindow::instance()->scene()->addItem(subject);
@@ -1481,7 +1482,7 @@ void Ut_MImAbstractKeyArea::testFlickEvent()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-layout.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     QSignalSpy spy(subject, SIGNAL(keyCancelled(const MImAbstractKey*, const KeyContext &)));
@@ -1555,7 +1556,7 @@ void Ut_MImAbstractKeyArea::testTouchPointCount()
 
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-layout.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
 
     MWindow *window = MPlainWindow::instance();
@@ -1655,7 +1656,7 @@ void Ut_MImAbstractKeyArea::testResetActiveKeys()
 {
     keyboard = new KeyboardData;
     QVERIFY(keyboard->loadNokiaKeyboard(QString(TestLayoutFilePath + "test-deadkey.xml")));
-    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, M::Landscape)->section(LayoutData::mainSection),
+    subject = MImKeyArea::create(keyboard->layout(LayoutData::General, MInputMethod::Landscape)->section(LayoutData::mainSection),
                                  false, 0);
     MPlainWindow::instance()->scene()->addItem(subject);
     subject->resize(defaultLayoutSize());
@@ -1770,10 +1771,10 @@ void Ut_MImAbstractKeyArea::touchEvent(QWidget *window,
 #undef TOUCH_SEQUENCE_STATIONARY
 }
 
-void Ut_MImAbstractKeyArea::changeOrientation(M::OrientationAngle angle)
+void Ut_MImAbstractKeyArea::changeOrientation(MInputMethod::OrientationAngle angle)
 {
-    if (MPlainWindow::instance()->orientationAngle() != angle) {
-        MPlainWindow::instance()->setOrientationAngle(angle);
+    if (MPlainWindow::instance()->orientationAngle() != static_cast<M::OrientationAngle>(angle)) {
+        MPlainWindow::instance()->setOrientationAngle(static_cast<M::OrientationAngle>(angle));
         //timeout depends on duration of orientation animation
         QTest::qWait(1000);
     }
