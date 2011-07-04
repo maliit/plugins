@@ -11,15 +11,10 @@ CONFIG(docs) {
 }
 
 !notests:!nomeegotouch {
-    SUBDIRS += \
-        tests \
-        fixture_virtualkeyboard \
-
 }
 
 !nomeegotouch {
     SUBDIRS += \
-        m-keyboard \
         translations \
 
 }
@@ -34,6 +29,11 @@ CONFIG(docs) {
     gconf_data.files = $$GCONF_DATA
 
     INSTALLS += gconf_data \
+}
+
+!noreactionmap {
+    DEFINES += HAVE_REACTIONMAP
+    CONFIG += meegoreactionmap
 }
 
 QMAKE_EXTRA_TARGETS += check-xml
