@@ -33,6 +33,7 @@
 #ifndef WORDRIBBONDIALOG_H
 #define WORDRIBBONDIALOG_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MDialog>
 #include <MList>
 #include <MAbstractCellCreator>
@@ -90,4 +91,5 @@ private:
     friend class Ut_WordRibbonDialog;
 };
 
+#endif // HAVE_MEEGOTOUCH
 #endif // WORDRIBBONDIALOG_H

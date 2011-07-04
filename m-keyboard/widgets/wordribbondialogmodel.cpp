@@ -29,6 +29,8 @@
 
  */
 
+#ifdef HAVE_MEEGOTOUCH
+
 #include "wordribbondialogmodel.h"
 #include "wordribbon.h"
 
@@ -137,3 +139,5 @@ QStringList WordRibbonDialogModel::candidates()
 {
     return listOrginal;
 }
+
+#endif // HAVE_MEEGOTOUCH

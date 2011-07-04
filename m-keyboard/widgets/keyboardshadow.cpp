@@ -31,8 +31,12 @@
 
 #include "keyboardshadow.h"
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MWidgetModel>
 #include <MScalableImage>
+#else
+#include "style-wrapper.h"
+#endif
 
 #include <QDebug>
 
@@ -51,6 +55,9 @@ KeyboardShadow::~KeyboardShadow()
 // has been changed and some stylistic conventions.
 void KeyboardShadow::drawBackground(QPainter *painter, const QStyleOptionGraphicsItem */*option*/) const
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(painter)
+#else
     const MWidgetStyle *s(static_cast<const MWidgetStyle*>(style().operator ->()));
 
     if (!s->backgroundTiles().isValid() && !s->backgroundImage() && !s->backgroundColor().isValid())
@@ -72,14 +79,20 @@ void KeyboardShadow::drawBackground(QPainter *painter, const QStyleOptionGraphic
                           QBrush(s->backgroundColor()));
     }
     painter->setOpacity(oldOpacity);
+#endif
 }
 
 
 QRectF KeyboardShadow::boundingRect() const
 {
+#ifdef HAVE_MEEGOTOUCH
     const MWidgetStyle *s(static_cast<const MWidgetStyle*>(style().operator ->()));
     return QRectF(0, -s->preferredSize().height(),
                   s->preferredSize().width(), s->preferredSize().height());
+#else
+    static QRectF r;
+    return r;
+#endif
 }
 
 void KeyboardShadow::applyStyle()

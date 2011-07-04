@@ -33,7 +33,9 @@
 #include "mtoolbarlabel.h"
 
 MToolbarLabelView::MToolbarLabelView(MToolbarLabel *controller)
+#ifdef HAVE_MEEGOTOUCH
     : MLabelView(controller)
+#endif
 {
 }
 

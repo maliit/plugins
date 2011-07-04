@@ -33,6 +33,8 @@
 #ifndef WORDRIBBONDIALOGMODEL_H
 #define WORDRIBBONDIALOGMODEL_H
 
+#ifdef HAVE_MEEGOTOUCH
+
 #include <QObject>
 #include <QAbstractListModel>
 #include <QStringList>
@@ -68,4 +70,5 @@ private:
     friend class Ut_FullCandidate;
 };
 
+#endif // HAVE_MEEGOTOUCH
 #endif // WORDRIBBONDIALOGMODEL_H

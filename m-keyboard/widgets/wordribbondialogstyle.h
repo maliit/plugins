@@ -33,6 +33,7 @@
 #ifndef WORDRIBBONDIALOGSTYLE_H
 #define WORDRIBBONDIALOGSTYLE_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mdialogstyle.h>
 
 class WordRibbonDialogStyle: public MDialogStyle
@@ -48,4 +49,5 @@ class M_EXPORT WordRibbonDialogStyleContainer : public MDialogStyleContainer
     friend class WordRibbonDialog;
 };
 
+#endif // HAVE_MEEGOTOUCH
 #endif // WORDRIBBONDIALOGSTYLE_H

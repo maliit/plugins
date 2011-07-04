@@ -31,11 +31,16 @@
 
 
 
-#include "mimtoolbar.h"
+#ifdef HAVE_MEEGOTOUCH
 #include "mtoolbarbutton.h"
 #include "mtoolbarlabel.h"
+#endif
+
+#include "mimtoolbar.h"
 #include "reactionmapwrapper.h"
 #include "mplainwindow.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 
 #include <mtoolbardata.h>
 #include <mtoolbaritem.h>
@@ -46,7 +51,10 @@
 #include <QKeySequence>
 #include <QGraphicsLinearLayout>
 #include <QDebug>
+
+#ifdef HAVE_MEEGOTOUCH
 #include <MSceneManager>
+#endif
 
 namespace
 {
@@ -73,9 +81,11 @@ MImToolbar::MImToolbar(QGraphicsWidget *parent)
 
     setupLayout();
 
+#ifdef HAVE_MEEGOTOUCH
     connect(this, SIGNAL(visibleChanged()), this, SLOT(arrangeWidgets()));
     connect(MTheme::instance(), SIGNAL(themeChangeCompleted()),
             this, SLOT(updateFromStyle()));
+#endif
 
     // Request a reaction map painting if it appears
     connect(this, SIGNAL(displayEntered()), &signalForwarder, SIGNAL(requestRepaint()));
@@ -211,7 +221,12 @@ void MImToolbar::loadCustomWidgets()
         return;
     }
 
+#ifdef HAVE_MEEGOTOUCH
     const M::Orientation orientation = MPlainWindow::instance()->sceneManager()->orientation();
+#else
+    const M::Orientation orientation = MKeyboardHost::instance()->rootWidget()->orientation();
+#endif
+
     QSharedPointer<const MToolbarLayout> layout = currentToolbar->layout(static_cast<MInputMethod::Orientation>(orientation));
 
     if (layout.isNull()) {
@@ -228,6 +243,9 @@ void MImToolbar::loadCustomWidgets()
 
 void MImToolbar::createAndAppendWidget(const QSharedPointer<MToolbarItem> &item)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(item)
+#else
     MWidget *widget = 0;
     WidgetBar *sidebar = 0;
 
@@ -262,6 +280,7 @@ void MImToolbar::createAndAppendWidget(const QSharedPointer<MToolbarItem> &item)
         sidebar->show();
     }
     sidebar->append(widget, item->isVisible());
+#endif
 }
 
 void MImToolbar::unloadCustomWidgets()

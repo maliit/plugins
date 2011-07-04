@@ -39,8 +39,10 @@
 #include <QPixmap>
 
 // No use for us but prevents MClassFactory bitching about it.
+#ifdef HAVE_MEEGOTOUCH
 #include <MWidgetCreator>
 M_REGISTER_WIDGET_NO_CREATE(WidgetBar)
+#endif
 
 WidgetBar::WidgetBar(QGraphicsItem *parent)
     : MStylableWidget(parent),

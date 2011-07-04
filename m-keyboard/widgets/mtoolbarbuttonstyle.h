@@ -32,6 +32,7 @@
 #ifndef TOOLBAR_BUTTON_H
 #define TOOLBAR_BUTTON_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mbuttoniconstyle.h>
 
 // Inheriting from MWidgetStyle crashes when it tries to set the button's label font!
@@ -46,5 +47,6 @@ class M_EXPORT MToolbarButtonStyleContainer : public MButtonIconStyleContainer
     M_STYLE_CONTAINER(MToolbarButtonStyle)
 };
 
+#endif // HAVE_MEEGOTOUCH
 #endif
 

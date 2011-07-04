@@ -39,8 +39,11 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMargins>
 #include <QAnimationGroup>
+
+#ifdef HAVE_MEEGOTOUCH
 #include <MFeedback>
 #include <MCancelEvent>
+#endif
 
 namespace {
     QSize queryKeyAreaSize(const MImAbstractKeyArea *keyArea,
@@ -149,7 +152,9 @@ void ExtendedKeys::showExtendedArea(const QPointF &origin,
     LayoutData::SharedLayoutSection section(new LayoutSection(labels));
 
     // Custom haptic feedback for this popup being appeared
+#ifdef HAVE_MEEGOTOUCH
     MFeedback::play("priority2_vkb_popup_press");
+#endif
     // TODO: disable swipe gestures from extended keys area
     extKeysArea.reset(ExtendedKeysArea::create(section, this));
     extKeysArea->setStyleName("ExtendedKeys");
@@ -207,8 +212,10 @@ void ExtendedKeys::showExtendedArea(const QPointF &origin,
     // * We don't need to reset touch point counts of active keys here
     // * What should be reset in MImAbstractKeyArea::ungrabMouseEvent and why is not
     // really well defined at the moment.
+#ifdef HAVE_MEEGOTOUCH
     MCancelEvent cancel;
     mainArea->scene()->sendEvent(mainArea, &cancel);
+#endif
 
     // Grab will be removed when widget is hidden.
     extKeysArea->grabMouse();

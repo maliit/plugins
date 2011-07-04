@@ -31,3 +31,23 @@
 
 #include "mwidget-wrapper.h"
 
+#ifndef HAVE_MEEGOTOUCH
+MWidget::MWidget(QGraphicsItem *item)
+    : QGraphicsWidget(item)
+{}
+
+void MWidget::appear()
+{}
+
+void MWidget::disappear()
+{}
+
+MWidgetStyleContainer &MWidget::style() const
+{
+    static MWidgetStyleContainer container;
+    return container;
+}
+
+void MWidget::applyStyle()
+{}
+#endif

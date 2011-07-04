@@ -32,7 +32,13 @@
 #include "mtoolbarbutton.h"
 #include "mtoolbarbuttonview.h"
 #include <mtoolbaritem.h>
+
+#ifdef HAVE_MEEGOTOUCH
 #include <MButton>
+#else
+#include <QGraphicsWidget>
+#endif
+
 #include <QFileInfo>
 #include <QPixmap>
 #include <QDebug>
@@ -45,15 +51,21 @@ namespace {
 
 MToolbarButton::MToolbarButton(QSharedPointer<MToolbarItem> item,
                                QGraphicsItem *parent)
-    : MButton(parent),
-      icon(0),
-      sizePercent(100),
-      itemPtr(item)
+#ifdef HAVE_MEEGOTOUCH
+    : MButton(parent)
+#else
+    : QGraphicsWidget(parent)
+#endif
+    , icon(0)
+    , sizePercent(100)
+    , itemPtr(item)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(item)
+    Q_UNUSED(parent)
+#else
     MToolbarButtonView* view = new MToolbarButtonView(this);
-
     setView(view);
-
     updateStyleName();
     // Store the original minimum size coming from the style
     originalMinSize = minimumSize();
@@ -89,6 +101,7 @@ MToolbarButton::MToolbarButton(QSharedPointer<MToolbarItem> item,
             this, SLOT(onClick()));
     connect(itemPtr.data(), SIGNAL(propertyChanged(const QString&)),
             this, SLOT(updateData(const QString&)));
+#endif
 }
 
 MToolbarButton::~MToolbarButton()
@@ -126,6 +139,11 @@ void MToolbarButton::setIconPercent(int percent)
 
 void MToolbarButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(painter)
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+#else
     // kludge controller shouldn't really do painting.
     // but this is necessary now to support drawing the custom icon on the button.
     MButton::paint(painter, option, widget);
@@ -142,6 +160,7 @@ void MToolbarButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
         painter->drawPixmap(iconRect, *icon, QRectF(icon->rect()));
     }
+#endif
 }
 
 QSharedPointer<MToolbarItem> MToolbarButton::item()
@@ -151,6 +170,7 @@ QSharedPointer<MToolbarItem> MToolbarButton::item()
 
 void MToolbarButton::updateStyleName()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!item()) {
         return;
     }
@@ -173,10 +193,14 @@ void MToolbarButton::updateStyleName()
         }
         setStyleName(styleName);
     }
+#endif
 }
 
 void MToolbarButton::updateData(const QString &attribute)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(attribute)
+#else
     if (attribute == "icon") {
         setIconFile(itemPtr->icon());
     } else if (attribute == "iconId") {
@@ -198,10 +222,14 @@ void MToolbarButton::updateData(const QString &attribute)
     }
     // highlighting is handled by styling
     updateStyleName();
+#endif
 }
 
 void MToolbarButton::setText(const QString &text)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(text)
+#else
     if (text.isEmpty())
         return;
     // Do what needs to be done in MButton
@@ -216,6 +244,7 @@ void MToolbarButton::setText(const QString &text)
     else
         // Restore the original minimum size if needed
         setMinimumSize(originalMinSize);
+#endif
 }
 
 void MToolbarButton::onClick()

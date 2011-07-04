@@ -33,8 +33,8 @@
 #ifndef WORDRIBBONSTYLE_H
 #define WORDRIBBONSTYLE_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mwidgetstyle.h>
-#include <QDebug>
 
 class WordRibbonStyle: public MWidgetStyle
 {
@@ -54,5 +54,6 @@ class WordRibbonStyleContainer : public MWidgetStyleContainer
 
     friend class WordRibbon;
 };
+#endif
 
 #endif // WORDRIBBONSTYLE_H

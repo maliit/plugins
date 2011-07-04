@@ -37,11 +37,27 @@
 #include "mimreactionmap.h"
 #include "mplainwindow.h"
 #include "reactionmapwrapper.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 
 #include <QtGui>
 #include <QtCore>
+
+#ifdef HAVE_MEEGOTOUCH
 #include <MButton>
 #include <MSceneManager>
+#else
+class MButton : public QGraphicsWidget
+{
+public:
+    enum ViewType {
+        iconType
+    };
+
+    explicit MButton(QObject *) : QGraphicsWidget() {}
+    void setViewType(ViewType) {}
+};
+#endif
 
 namespace {
     static const int CacheSize = 10;
@@ -332,8 +348,13 @@ void WordRibbon::paintReactionMap(MReactionMap *reactionMap, QGraphicsView *view
 void WordRibbon::finalizeOrientationChange()
 {
     // Force the style orientation mode to be right.
+#ifdef HAVE_MEEGOTOUCH
     const M::Orientation orientation = MPlainWindow::instance()->sceneManager()->orientation();
     if (orientation == M::Landscape)
+#else
+    const MInputMethod::Orientation orientation = MKeyboardHost::instance()->rootWidget()->orientation();
+    if (orientation == MInputMethod::Landscape)
+#endif
         style().setModeLandscape();
     else
         style().setModePortrait();

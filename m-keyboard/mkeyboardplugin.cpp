@@ -31,14 +31,18 @@
 
 
 
-#include <MLocale>
 #include "mkeyboardplugin.h"
 #include "mkeyboardhost.h"
 #include "mkeyboardsettings.h"
 
 #include <QtPlugin>
 
+#ifdef HAVE_MEEGOTOUCH
+#include <MLocale>
 #include <mtimestamp.h>
+#else
+#define mTimestamp(x, y)
+#endif
 
 MKeyboardPlugin::MKeyboardPlugin()
     : translationIsLoaded(false)
@@ -85,6 +89,7 @@ QSet<MInputMethod::HandlerState> MKeyboardPlugin::supportedStates() const
 
 void MKeyboardPlugin::loadTranslation()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!translationIsLoaded) {
         MLocale locale;
         // add virtual-keyboard and hardware-keyboard catalog
@@ -95,6 +100,7 @@ void MKeyboardPlugin::loadTranslation()
         MLocale::setDefault(locale);
         translationIsLoaded = true;
     }
+#endif
 }
 
 Q_EXPORT_PLUGIN2(meego-keyboard, MKeyboardPlugin)

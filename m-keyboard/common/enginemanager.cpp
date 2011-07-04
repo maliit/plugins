@@ -45,6 +45,10 @@
 #include "mkeyboardhost.h"
 #include "mwidget-wrapper.h"
 
+#ifdef HAVE_MEEGOTOUCH
+#include <MSceneWindow>
+#endif
+
 #include <mimenginefactory.h>
 #include <mimsettings.h>
 

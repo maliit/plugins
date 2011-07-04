@@ -37,9 +37,12 @@
 #include <algorithm>
 
 #include <mplainwindow.h>
+#include <mabstractinputmethodhost.h>
+
+#ifdef HAVE_MEEGOTOUCH
 #include <MSceneWindow>
 #include <MBanner>
-#include <mabstractinputmethodhost.h>
+#endif
 
 #include "mhardwarekeyboard.h"
 #include "layoutsmanager.h"
@@ -302,6 +305,7 @@ void MHardwareKeyboard::handleClipboardDataChange()
     }
     lastCtrlCTime = QTime();
 
+#ifdef HAVE_MEEGOTOUCH
     MBanner &textCopiedBanner(*new MBanner);
     // It is needed to set the proper style name to have properly wrapped, multiple lines
     // with too much content. The MBanner documentation also emphasises to specify the
@@ -309,6 +313,7 @@ void MHardwareKeyboard::handleClipboardDataChange()
     textCopiedBanner.setStyleName("InformationBanner");
     textCopiedBanner.setTitle(qtTrId("qtn_comm_text_copied"));
     textCopiedBanner.appear(MPlainWindow::instance(), MSceneWindow::DestroyWhenDone);
+#endif
 }
 
 

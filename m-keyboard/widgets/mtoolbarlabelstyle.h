@@ -32,9 +32,11 @@
 #ifndef TOOLBAR_LABEL_H
 #define TOOLBAR_LABEL_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mlabelstyle.h>
 
-class M_EXPORT MToolbarLabelStyle : public MLabelStyle
+class M_EXPORT MToolbarLabelStyle
+    : public MLabelStyle
 {
     Q_OBJECT
     M_STYLE(MToolbarLabelStyle)
@@ -44,6 +46,6 @@ class M_EXPORT MToolbarLabelStyleContainer : public MLabelStyleContainer
 {
     M_STYLE_CONTAINER(MToolbarLabelStyle)
 };
-
-#endif
+#endif // HAVE_MEEGOTOUCH
+#endif // TOOLBAR_LABEL_H
 

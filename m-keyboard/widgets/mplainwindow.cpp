@@ -32,10 +32,13 @@
 #include "mplainwindow.h"
 
 #include <mabstractinputmethodhost.h>
+#include <mimsettings.h>
+
+#ifdef HAVE_MEEGOTOUCH
 #include <MSceneManager>
 #include <MTimestamp>
-#include <mimsettings.h>
 #include <MComponentData>
+#endif
 
 #include <QDebug>
 
@@ -54,7 +57,11 @@ MPlainWindow *MPlainWindow::instance()
 
 MPlainWindow::MPlainWindow(const MAbstractInputMethodHost *newHost,
                            QWidget *parent)
+#ifdef HAVE_MEEGOTOUCH
     : MWindow(parent)
+#else
+    : MImGraphicsView(parent)
+#endif
     , host(newHost)
 {
     if (m_instance)
@@ -87,9 +94,13 @@ MPlainWindow::MPlainWindow(const MAbstractInputMethodHost *newHost,
 MPlainWindow::~MPlainWindow()
 {
     m_instance = 0;
+
+#ifdef HAVE_MEEGOTOUCH
     delete sceneManager();
+#endif
 }
 
+#ifdef HAVE_MEEGOTOUCH
 bool MPlainWindow::viewportEvent(QEvent *event)
 {
 #ifdef M_TIMESTAMP
@@ -121,3 +132,4 @@ void MPlainWindow::drawBackground(QPainter *painter, const QRectF &rect)
         painter->drawPixmap(rect, bg, rect);
     }
 }
+#endif

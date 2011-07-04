@@ -32,15 +32,26 @@
 #ifndef MTOOLBARLABELVIEW_H
 #define MTOOLBARLABELVIEW_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MLabelView>
+#else
+#include <QObject>
+#endif
 #include "mtoolbarlabelstyle.h"
 
 class MToolbarLabel;
 
-class MToolbarLabelView : public MLabelView
+class MToolbarLabelView
+#ifdef HAVE_MEEGOTOUCH
+    : public MLabelView
+#else
+    : public QObject
+#endif
 {
     Q_OBJECT
+#ifdef HAVE_MEEGOTOUCH
     M_VIEW(MLabelModel, MToolbarLabelStyle)
+#endif
 
 public:
     explicit MToolbarLabelView(MToolbarLabel *controller);

@@ -32,15 +32,13 @@
 #ifndef SHAREDHANDLEAREA_H
 #define SHAREDHANDLEAREA_H
 
-#ifndef HAVE_MEEGOTOUCH
-#include <QGraphicsWidget>
-
-class SharedHandleArea
-    : public QGraphicsWidget
-{};
-#else
 #include "mwidget-wrapper.h"
+
+#ifdef HAVE_MALIIT
+#include <maliit/namespace.h>
+#else
 #include <MNamespace>
+#endif
 
 #include <QList>
 #include <QPointer>
@@ -135,6 +133,5 @@ private:
 
     M::InputMethodMode inputMethodMode;
 };
-#endif // HAVE_MEEGOTOUCH
 
 #endif

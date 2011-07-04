@@ -29,6 +29,7 @@
 
  */
 
+#ifdef HAVE_MEEGOTOUCH
 #include "wordribbondialog.h"
 #include "wordribbondialogmodel.h"
 #include "regiontracker.h"
@@ -178,3 +179,4 @@ void WordRibbonDialog::paintReactionMap(MReactionMap *reactionMap, QGraphicsView
     reactionMap->fillRectangle(0, 0, reactionMap->width(), reactionMap->height());
 #endif // HAVE_REACTIONMAP
 }
+#endif // HAVE_MEEGOTOUCH

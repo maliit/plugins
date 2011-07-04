@@ -34,11 +34,15 @@
 
 #include "layoutdata.h"
 
-#include <MFeedback>
-
 #include <QTouchEvent>
 #include <QTimer>
 #include <QTime>
+
+#ifdef HAVE_MEEGOTOUCH
+#include <MFeedback>
+#else
+#include "style-types.h"
+#endif
 
 struct KeyContext;
 class MImAbstractKey;

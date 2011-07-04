@@ -37,8 +37,11 @@
 #include "mimabstractkeyareastyle.h"
 #include "layoutdata.h"
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MStylableWidget>
 #include <MFeedback>
+#endif
+
 #include <QList>
 #include <QStringList>
 #include <QTouchEvent>
@@ -241,7 +244,10 @@ protected:
 
     virtual void grabMouseEvent(QEvent *event);
     virtual void ungrabMouseEvent(QEvent *event);
+// TODO: We need a new way to handle cancel events from e.g., gestures.
+#ifdef HAVE_MEEGOTOUCH
     virtual void cancelEvent(MCancelEvent *);
+#endif
     virtual bool event(QEvent *event);
     //! \reimp_end
 
@@ -320,7 +326,9 @@ protected:
     MImAbstractKeyAreaPrivate * const d_ptr;
 
 private:
+#ifdef HAVE_MEEGOTOUCH
     M_STYLABLE_WIDGET(MImAbstractKeyAreaStyle)
+#endif
 
 #ifdef UNIT_TEST
     friend class MReactionMapTester;

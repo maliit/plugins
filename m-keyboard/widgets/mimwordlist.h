@@ -33,7 +33,12 @@
 #ifndef MIMWORDLIST_H
 #define MIMWORDLIST_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MDialog>
+#else
+#include <QGraphicsWidget>
+#include <QGraphicsView>
+#endif
 
 class QGraphicsLinearLayout;
 class MSeparator;
@@ -45,7 +50,12 @@ class MReactionMap;
  *
  * MImWordList shows a dialog which list the suggested candidates.
  */
-class MImWordList : public MDialog
+class MImWordList
+#ifdef HAVE_MEEGOTOUCH
+    : public MDialog
+#else
+    : public QGraphicsWidget
+#endif
 {
     Q_OBJECT
     friend class Ut_MImWordList;

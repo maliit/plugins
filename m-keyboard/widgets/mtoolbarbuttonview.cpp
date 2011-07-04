@@ -33,13 +33,18 @@
 #include "mtoolbarbutton.h"
 
 MToolbarButtonView::MToolbarButtonView(MToolbarButton *controller)
+#ifdef HAVE_MEEGOTOUCH
     : MButtonView(controller)
+#endif
 {
 }
 
 
 QSizeF MToolbarButtonView::optimalSize(const QSizeF& maxSize)
 {
+#ifndef HAVE_MEEGOTOUCH
+    return maxSize;
+#else
     // Let the MButtonView implementation to calculate the right preferred size
     QSizeF preferredSize = sizeHint(Qt::PreferredSize);
 
@@ -54,4 +59,5 @@ QSizeF MToolbarButtonView::optimalSize(const QSizeF& maxSize)
         return maxSize;
     }
     return preferredSize;
+#endif
 }

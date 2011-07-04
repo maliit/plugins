@@ -29,7 +29,7 @@
 
  */
 
-
+#ifdef HAVE_MEEGOTOUCH
 #include "mkeyboardsettingslistitem.h"
 
 #include <MLabel>
@@ -78,3 +78,4 @@ void MKeyboardSettingsListItem::clearLayout()
     }
 }
 
+#endif // HAVE_MEEGOTOUCH

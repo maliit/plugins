@@ -44,12 +44,17 @@
 #include "flickgesturerecognizer.h"
 #include "magnifierhost.h"
 
-#include <mkeyoverride.h>
-
+#ifdef HAVE_MEEGOTOUCH
 #include <MCancelEvent>
 #include <MSceneManager>
 #include <MScalableImage>
+#else
+#include "style-wrapper.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
+#endif
 
+#include <mkeyoverride.h>
 #include <QDebug>
 #include <QGraphicsSceneResizeEvent>
 #include <QGraphicsLinearLayout>
@@ -69,13 +74,19 @@ SymbolView::SymbolView(const LayoutsManager &layoutsManager, const MVirtualKeybo
     : MWidget(parent),
       ReactionMapPaintable(),
       styleContainer(style),
+#ifdef HAVE_MEEGOTOUCH
       sceneManager(*MPlainWindow::instance()->sceneManager()),
+#endif
       activity(Inactive),
       activePage(0),
       shiftState(ModifierClearState),
       layoutsMgr(layoutsManager),
       pageSwitcher(0),
+#ifdef HAVE_MEEGOTOUCH
       currentOrientation(sceneManager.orientation()),
+#else
+      currentOrientation(MKeyboardHost::instance()->rootWidget()->orientation()),
+#endif
       currentLayout(layout),
       mainLayout(new QGraphicsLinearLayout(Qt::Vertical, this)),
       activeState(MInputMethod::OnScreen),
@@ -373,11 +384,16 @@ MImAbstractKeyArea *SymbolView::createMImAbstractKeyArea(const LayoutData::Share
     return keyArea;
 }
 
+// TODO: bind to MImRootWidget's (about to come) orientation and geometry properties?
 void SymbolView::organizeContent()
 {
+#ifdef HAVE_MEEGOTOUCH
     const M::Orientation orientation(sceneManager.orientation());
-
     resize(sceneManager.visibleSceneSize().width(), size().height());
+#else
+    const MInputMethod::Orientation orientation(MKeyboardHost::instance()->rootWidget()->orientation());
+    resize(MKeyboardHost::instance()->rootWidget()->size());
+#endif
 
     if (currentOrientation != orientation) {
         currentOrientation = orientation;
@@ -628,6 +644,7 @@ void SymbolView::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride
     this->overrides = overrides;
 }
 
+#ifdef HAVE_MEEGOTOUCH
 void SymbolView::cancelEvent(MCancelEvent *event)
 {
     QGraphicsWidget *keyArea(pageSwitcher->currentWidget());
@@ -635,3 +652,4 @@ void SymbolView::cancelEvent(MCancelEvent *event)
         scene()->sendEvent(keyArea, event);
     }
 }
+#endif

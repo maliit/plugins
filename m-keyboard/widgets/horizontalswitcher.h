@@ -38,7 +38,12 @@
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
 #include <QMap>
+
+#ifdef HAVE_MALIIT
+#include <maliit/namespace.h>
+#else
 #include <MNamespace>
+#endif
 
 class MKeyOverride;
 

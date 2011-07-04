@@ -47,8 +47,10 @@
 #include <QPixmap>
 
 class QWidget;
+#ifdef HAVE_MEEGOTOUCH
 class MSceneWindow;
 class MBanner;
+#endif
 class MAbstractInputMethodHost;
 class MVirtualKeyboard;
 class MVirtualKeyboardStyleContainer;
@@ -413,12 +415,16 @@ private:
     //! Keeps track of shift up/down status.
     bool shiftHeldDown;
 
+#ifdef HAVE_MEEGOTOUCH
     MSceneWindow *sceneWindow;
+#endif
 
     //! current active state
     MInputMethod::HandlerState activeState;
 
+#ifdef HAVE_MEEGOTOUCH
     QPointer<MBanner> modifierLockOnBanner; //! widget to notify modifier is in locked state
+#endif
 
     //! Indicates whether focus is in a widget according to focusChanged calls
     //! \sa focusChanged

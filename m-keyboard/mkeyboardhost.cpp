@@ -47,13 +47,13 @@
 #include "enginemanager.h"
 #include "abstractenginewidgethost.h"
 #include "mimrootwidget.h"
+#include "mplainwindow.h"
 
 #include <mimenginefactory.h>
 #include <mabstractinputmethodhost.h>
-#include <mplainwindow.h>
 #include <mtoolbardata.h>
 #include <mkeyoverride.h>
-#include <mgconfitem.h>
+#include <mimsettings.h>
 #include <mimplugindescription.h>
 
 #include <QApplication>
@@ -64,6 +64,7 @@
 #include <QEasingCurve>
 #include <QTextBoundaryFinder>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MCancelEvent>
 #include <MComponentData>
 #include <MDeviceProfile>
@@ -74,6 +75,7 @@
 #include <MLibrary>
 
 M_LIBRARY
+#endif
 
 namespace
 {
@@ -93,7 +95,9 @@ namespace
     const char *const MImTouchPointsLogfile = "touchpoints.csv";
     const char PlusSign('+');
     const char MinusSign('-');
+#ifdef HAVE_MEEGOTOUCH
     bool gOwnsComponentData = false;
+#endif
 
     QSize defaultScreenSize(QWidget *w)
     {
@@ -115,8 +119,13 @@ MKeyboardHost::SlideUpAnimation::SlideUpAnimation(QObject *parent)
 void MKeyboardHost::SlideUpAnimation::updateCurrentTime(int currentTime)
 {
     QGraphicsWidget &widget(*dynamic_cast<QGraphicsWidget *>(targetObject()));
+#ifdef HAVE_MEEGOTOUCH
     const qreal wantedEndY(MPlainWindow::instance()->visibleSceneSize().height()
                            - widget.size().height());
+#else
+    const qreal wantedEndY(MKeyboardHost::instance()->rootWidget()->size().height()
+                           - widget.size().height());
+#endif
 
     if (endValue().toPointF().y() != wantedEndY) {
         setEndValue(QPointF(0, wantedEndY));
@@ -225,7 +234,9 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
       backspaceTimer(),
       shiftHeldDown(false),
       activeState(MInputMethod::OnScreen),
+#ifdef HAVE_MEEGOTOUCH
       modifierLockOnBanner(0),
+#endif
       haveFocus(false),
       sipRequested(false),
       visualizationPriority(false),
@@ -246,12 +257,14 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
     Q_ASSERT(host != 0);
     Q_ASSERT(mainWindow != 0);
 
+#ifdef HAVE_MEEGOTOUCH
     if (!MComponentData::instance()) {
         static int argc = qApp->argc();
         static char **argv = qApp->argv();
         MComponentData::createInstance(argc, argv, qApp->applicationName());
         gOwnsComponentData = true;
     }
+#endif
 
     qRegisterMetaType<KeyContext>("KeyContext");
 
@@ -261,10 +274,13 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
     // TODO: Stuff root widget into MPlainWindow's scene.
     // TODO: Remove scene window member, superseded root widget.
     view = new MPlainWindow(host, mainWindow);
+
+#ifdef HAVE_MEEGOTOUCH
     // MSceneManager's of MWindow's are lazy-initialized. However, their
     //implict creation does resize the scene rect of our view, so we trigger
     // the lazy-initialization right here, to stay in control of things:
     (void *) view->sceneManager();
+#endif
 
     // Once MComponentData is alive, it keeps resizing our QWidgets to wrong
     // dimensions, so we fix it right back here:
@@ -287,11 +303,21 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
     // Create the reaction map painter
     ReactionMapPainter::createInstance();
 
+#ifdef HAVE_MEEGOTOUCH
     displayHeight = MPlainWindow::instance()->visibleSceneSize(M::Landscape).height();
     displayWidth  = MPlainWindow::instance()->visibleSceneSize(M::Landscape).width();
+#else
+    displayHeight = rootWidget()->size().height();
+    displayWidth  = rootWidget()->size().width();
+#endif
 
+#ifdef HAVE_MEEGOTOUCH
     sceneWindow = new MSceneWindow;
     sceneWindow->setManagedManually(true); // we want the scene window to remain in origin
+#else
+    MPlainWindow::instance()->scene()->addItem(rootWidget());
+    rootWidget()->hide();
+#endif
 
     MPlainWindow::instance()->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
@@ -315,7 +341,12 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
 
     FlickGestureRecognizer::registerSharedRecognizer();
 
+#ifdef HAVE_MEEGOTOUCH
     vkbWidget = new MVirtualKeyboard(LayoutsManager::instance(), vkbStyleContainer, sceneWindow);
+#else
+    vkbWidget = new MVirtualKeyboard(LayoutsManager::instance(), vkbStyleContainer, rootWidget());
+#endif
+
     vkbWidget->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
 
     connect(vkbWidget, SIGNAL(geometryChanged()),
@@ -369,19 +400,29 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
                  this, SLOT(userHide()));
     Q_ASSERT(ok);
 
+#ifdef HAVE_MEEGOTOUCH
     sharedHandleArea = new SharedHandleArea(*imToolbar, sceneWindow);
+#else
+    sharedHandleArea = new SharedHandleArea(*imToolbar, rootWidget());
+#endif
     sharedHandleArea->setInputMethodMode(static_cast<M::InputMethodMode>(inputMethodMode));
 
     // Set z value below default level (0.0) so popup will be on top of shared handle area.
     sharedHandleArea->setZValue(-1.0);
     sharedHandleArea->watchOnWidget(vkbWidget);
 
+#ifdef HAVE_MEEGOTOUCH
     // Don't listen to device orientation.  Applications can be in different orientation
     // than the device (especially plain qt apps). See NB#185013 - Locking VKB orientation.
     MPlainWindow::instance()->lockOrientationAngle();
+#endif
 
     symbolView = new SymbolView(LayoutsManager::instance(), vkbStyleContainer,
+#ifdef HAVE_MEEGOTOUCH
                                 vkbWidget->selectedLayout(), sceneWindow);
+#else
+                                vkbWidget->selectedLayout(), rootWidget());
+#endif
     connect(symbolView, SIGNAL(geometryChanged()),
             this, SLOT(handleSymbolViewGeometryChange()));
     connect(symbolView, SIGNAL(visibleChanged()), this, SLOT(handleSymbolViewVisibleChanged()));
@@ -402,8 +443,10 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
 
     sharedHandleArea->watchOnWidget(symbolView);
 
+#ifdef HAVE_MEEGOTOUCH
     connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChangeFinished(M::Orientation)),
             this, SLOT(finalizeOrientationChange()));
+#endif
 
     connect(vkbWidget, SIGNAL(layoutChanged(const QString &)),
             this, SLOT(handleVirtualKeyboardLayoutChanged(const QString &)));
@@ -451,8 +494,10 @@ MKeyboardHost::~MKeyboardHost()
     vkbWidget = 0;
     delete symbolView;
     symbolView = 0;
+#ifdef HAVE_MEEGOTOUCH
     delete sceneWindow;
     sceneWindow = 0;
+#endif
     delete vkbStyleContainer;
     vkbStyleContainer = 0;
     delete touchPointLogHandle;
@@ -464,10 +509,12 @@ MKeyboardHost::~MKeyboardHost()
     RegionTracker::destroyInstance();
     currentInstance = 0;
 
+#ifdef HAVE_MEEGOTOUCH
     if (gOwnsComponentData) {
         delete MComponentData::instance();
         gOwnsComponentData = false;
     }
+#endif
 }
 
 MKeyboardHost* MKeyboardHost::instance()
@@ -521,8 +568,13 @@ void MKeyboardHost::sendRegionEstimate()
     // Region is calculated from widget geometries so this method assumes relevant layouts
     // to have been activated beforehand. A QGraphicsItem::show() will do, for example.
 
+#ifdef HAVE_MEEGOTOUCH
     QRectF stackedRects(0.0f, MPlainWindow::instance()->visibleSceneSize().height(),
                         0.0f, 0.0f);
+#else
+    QRectF stackedRects(0.0f, rootWidget()->size().height(),
+                        0.0f, 0.0f);
+#endif
 
     // Add vkb rect if vkb is visible.
     if (vkbWidget->isVisible()) {
@@ -536,7 +588,11 @@ void MKeyboardHost::sendRegionEstimate()
     toolbarRect.moveBottom(stackedRects.top());
     stackedRects |= toolbarRect;
 
+#ifdef HAVE_MEEGOTOUCH
     const QRegion region(sceneWindow->mapRectToScene(stackedRects).toRect());
+#else
+    const QRegion region(rootWidget()->mapRectToScene(stackedRects).toRect());
+#endif
 
     RegionTracker::instance().sendInputMethodAreaEstimate(region);
     RegionTracker::instance().sendRegionEstimate(region);
@@ -564,12 +620,16 @@ void MKeyboardHost::show()
 
     handleAppOrientationChanged(appOrientationAngle);
 
+#ifdef HAVE_MEEGOTOUCH
     // This will add scene window as child of MSceneManager's root element
     // which is the QGraphicsItem that is rotated when orientation changes.
     // It uses animation to carry out the orientation change transform
     // (e.g. rotation and position animation). We do this because transform
     // happens in the scene, not in the view (MWindow) anymore.
     MPlainWindow::instance()->sceneManager()->appearSceneWindowNow(sceneWindow);
+#else
+    rootWidget()->show();
+#endif
 
     sharedHandleArea->show();
 
@@ -590,6 +650,7 @@ void MKeyboardHost::show()
         && EngineManager::instance().handler()->hasErrorCorrection())
         updateCorrectionState();
 
+#ifdef HAVE_MEEGOTOUCH
     // If view's scene rect is larger than scene window, and fully contains it,
     // then dock scene window (and therefore, VKB) to the bottom center of scene:
     if (not view->sceneRect().intersected(sceneWindow->mapRectToScene(sceneWindow->rect())).contains(view->rect())) {
@@ -603,6 +664,7 @@ void MKeyboardHost::show()
     } else {
         sceneWindow->setPos(0, 0);
     }
+#endif
 
     sendRegionEstimate();
     slideUpAnimation.setDirection(QAbstractAnimation::Forward);
@@ -622,7 +684,11 @@ void MKeyboardHost::prepareHideShowAnimation()
     if (activeState == MInputMethod::Hardware) {
         slideUpAnimation.setDuration(HardwareAnimationTime);
         slideUpAnimation.setTargetObject(sharedHandleArea);
+#ifdef HAVE_MEEGOTOUCH
         slideUpAnimation.setStartValue(QPointF(0, MPlainWindow::instance()->visibleSceneSize().height()));
+#else
+        slideUpAnimation.setStartValue(QPointF(0, rootWidget()->size().height()));
+#endif
     } else {
         slideUpAnimation.setDuration(OnScreenAnimationTime);
 
@@ -631,7 +697,11 @@ void MKeyboardHost::prepareHideShowAnimation()
         } else {
             slideUpAnimation.setTargetObject(vkbWidget);
         }
+#ifdef HAVE_MEEGOTOUCH
         slideUpAnimation.setStartValue(QPointF(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+        slideUpAnimation.setStartValue(QPointF(0, rootWidget()->size().height()
+#endif
                                                + sharedHandleArea->size().height()));
     }
 }
@@ -691,11 +761,16 @@ void MKeyboardHost::handleAnimationFinished()
                 engineWidgetHost->hideEngineWidget();
             }
         }
+
+#ifdef HAVE_MEEGOTOUCH
         // TODO: the following line which was added to improve plugin switching (see the
         // commit comment) would cause animation not to be seen if it was in ::hide() but
         // just having it here without any two-phase show/hide protocol that considers
         // plugin switching might result to odd situations as well.
         MPlainWindow::instance()->sceneManager()->disappearSceneWindowNow(sceneWindow);
+#else
+        rootWidget()->hide();
+#endif
     }
 
     RegionTracker::instance().enableSignals(true);
@@ -706,7 +781,12 @@ void MKeyboardHost::handleVirtualKeyboardGeometryChange()
 {
     if (slideUpAnimation.state() == QAbstractAnimation::Stopped
          && !vkbWidget->isPlayingAnimation()) {
-        vkbWidget->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - vkbWidget->size().height());
+#ifdef HAVE_MEEGOTOUCH
+        vkbWidget->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+        vkbWidget->setPos(0, rootWidget()->size().height()
+#endif
+                             - vkbWidget->size().height());
     }
 }
 
@@ -714,7 +794,12 @@ void MKeyboardHost::handleVirtualKeyboardGeometryChange()
 void MKeyboardHost::handleSymbolViewGeometryChange()
 {
     if (symbolView->isVisible()) {
-        symbolView->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - symbolView->size().height());
+#ifdef HAVE_MEEGOTOUCH
+        symbolView->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+        symbolView->setPos(0, rootWidget()->size().height()
+#endif
+                              - symbolView->size().height());
     }
 }
 
@@ -727,7 +812,12 @@ void MKeyboardHost::handleSymbolViewVisibleChanged()
             vkbWidget->show();
         } else {
             // SharedHandleArea no longer tracks anything, reposition it to the bottom of the screen
-            sharedHandleArea->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - sharedHandleArea->size().height());
+#ifdef HAVE_MEEGOTOUCH
+            sharedHandleArea->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+            sharedHandleArea->setPos(0, rootWidget()->size().height()
+#endif
+                                        - sharedHandleArea->size().height());
         }
     }
 }
@@ -998,7 +1088,12 @@ void MKeyboardHost::finalizeOrientationChange()
     if (sharedHandleArea) {
         sharedHandleArea->finalizeOrientationChange();
         if (activeState == MInputMethod::Hardware) {
-            sharedHandleArea->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - sharedHandleArea->size().height());
+#ifdef HAVE_MEEGOTOUCH
+            sharedHandleArea->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+            sharedHandleArea->setPos(0, rootWidget()->size().height()
+#endif
+                                        - sharedHandleArea->size().height());
         }
     }
 
@@ -1048,10 +1143,18 @@ void MKeyboardHost::handleVisualizationPriorityChange(bool priority)
     // TODO: hide/show by fading?
     if (sipRequested) {
         if (priority) {
+#ifdef HAVE_MEEGOTOUCH
             MPlainWindow::instance()->sceneManager()->disappearSceneWindowNow(sceneWindow);
+#else
+            rootWidget()->hide();
+#endif
         } else {
             handleAppOrientationAboutToChange(appOrientationAngle);
+#ifdef HAVE_MEEGOTOUCH
             MPlainWindow::instance()->sceneManager()->appearSceneWindowNow(sceneWindow);
+#else
+            rootWidget()->show();
+#endif
         }
     }
 }
@@ -1059,7 +1162,13 @@ void MKeyboardHost::handleVisualizationPriorityChange(bool priority)
 void MKeyboardHost::handleAppOrientationAboutToChange(int angle)
 {
     appOrientationAngle = static_cast<M::OrientationAngle>(angle);
-    if ((MPlainWindow::instance()->sceneManager()->orientationAngle() == appOrientationAngle)
+    if ((
+#ifdef HAVE_MEEGOTOUCH
+        MPlainWindow::instance()->sceneManager()->orientationAngle()
+#else
+        rootWidget()->orientationAngle()
+#endif
+        == appOrientationAngle)
         || !sipRequested || visualizationPriority) {
         return;
     }
@@ -1069,8 +1178,12 @@ void MKeyboardHost::handleAppOrientationAboutToChange(int angle)
     // The application receiving input has changed its orientation. Let's change ours.
     // Disable the transition animation for rotation so that we can rotate fast and get
     // the right snapshot for the rotation animation.
+#ifdef HAVE_MEEGOTOUCH
     MPlainWindow::instance()->sceneManager()->setOrientationAngle(appOrientationAngle,
                                                                   MSceneManager::ImmediateTransition);
+#else
+    rootWidget()->setOrientationAngle(appOrientationAngle);
+#endif
 }
 
 void MKeyboardHost::handleAppOrientationChanged(int angle)
@@ -1423,9 +1536,11 @@ void MKeyboardHost::handleLongKeyPress(const KeyEvent &event)
         && engineWidgetHost->isActive()
         && engineWidgetHost->displayMode() == AbstractEngineWidgetHost::FloatingMode
         && engineWidgetHost->candidates().size() > 0) {
+#ifdef HAVE_MEEGOTOUCH
         // This press event is done. Current touch events are still being
         // delivered to vkb/symbol view (actually, to one of its children) so
         // we send cancel event to it.
+
         MCancelEvent cancel;
 
         if (symbolView->isActive()) {
@@ -1433,6 +1548,7 @@ void MKeyboardHost::handleLongKeyPress(const KeyEvent &event)
         } else {
             vkbWidget->scene()->sendEvent(vkbWidget, &cancel);
         }
+#endif
         engineWidgetHost->showEngineWidget(AbstractEngineWidgetHost::DialogMode);
     }
 }
@@ -1860,7 +1976,12 @@ void MKeyboardHost::setState(const QSet<MInputMethod::HandlerState> &state)
         }
         if (sipRequested) {
             slideUpAnimation.stop();
-            vkbWidget->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - vkbWidget->size().height());
+#ifdef HAVE_MEEGOTOUCH
+            vkbWidget->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+            vkbWidget->setPos(0, rootWidget()->size().height()
+#endif
+                                 - vkbWidget->size().height());
             vkbWidget->show();
         }
     } else {
@@ -1878,7 +1999,12 @@ void MKeyboardHost::setState(const QSet<MInputMethod::HandlerState> &state)
         vkbWidget->resetState();
         if (sipRequested) {
             slideUpAnimation.stop();
-            sharedHandleArea->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - sharedHandleArea->size().height());
+#ifdef HAVE_MEEGOTOUCH
+            sharedHandleArea->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+            sharedHandleArea->setPos(0, rootWidget()->size().height()
+#endif
+                                        - sharedHandleArea->size().height());
         }
     }
 
@@ -1938,10 +2064,17 @@ void MKeyboardHost::showSymbolView(SymbolView::ShowMode showMode,
     // touchpoint.  Also in this case we want to reset the active key area so that when
     // the symbol view is exited, keys won't be in level 1 even when shift key state is
     // normal.
+#ifdef HAVE_MEEGOTOUCH
     MCancelEvent cancel;
     vkbWidget->scene()->sendEvent(vkbWidget, &cancel);
+#endif
 
-    symbolView->setPos(0, MPlainWindow::instance()->visibleSceneSize().height() - symbolView->size().height());
+#ifdef HAVE_MEEGOTOUCH
+    symbolView->setPos(0, MPlainWindow::instance()->visibleSceneSize().height()
+#else
+    symbolView->setPos(0, rootWidget()->size().height()
+#endif
+                          - symbolView->size().height());
     symbolView->showSymbolView(showMode, initialScenePress);
     //give the symbolview right shift level(for hardware state)
     updateSymbolViewLevel();
@@ -2034,13 +2167,22 @@ void MKeyboardHost::handleHwKeyboardStateChanged()
         // number and phone number content type always force FN key to be locked,
         // don't need indicator lock notification.
         showLockOnInfoBanner(lockOnNotificationLabel);
-    } else if (modifierLockOnBanner) {
+    } else if (
+#ifdef HAVE_MEEGOTOUCH
+        modifierLockOnBanner
+#else
+        false
+#endif
+    ) {
         hideLockOnInfoBanner();
     }
 }
 
 void MKeyboardHost::showLockOnInfoBanner(const QString &notification)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(notification)
+#else
     if (modifierLockOnBanner) {
         modifierLockOnBanner->setTitle(notification);
     } else {
@@ -2055,14 +2197,17 @@ void MKeyboardHost::showLockOnInfoBanner(const QString &notification)
         modifierLockOnBanner->setTitle(notification);
         modifierLockOnBanner->appear(MSceneWindow::DestroyWhenDone);
     }
+#endif
 }
 
 void MKeyboardHost::hideLockOnInfoBanner()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (modifierLockOnBanner) {
         modifierLockOnBanner->disappear();
     }
     modifierLockOnBanner = 0;
+#endif
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
@@ -2194,9 +2339,17 @@ void MKeyboardHost::setEngineWidgetHostPosition(AbstractEngineWidgetHost *engine
     // invalid cursorRectangle should not be ignored, wordTracker must hide itself in that case
     QRect rect;
     if (success && rectVsScene.isValid()) {
+#ifdef HAVE_MEEGOTOUCH
         rect = sceneWindow->mapRectFromScene(rectVsScene).toRect();
+#else
+        rect = rootWidget()->mapRectFromScene(rectVsScene).toRect();
+#endif
         // hide wordtracker if cursor is covered by keyboard
+#ifdef HAVE_MEEGOTOUCH
         if (rect.top() > MPlainWindow::instance()->sceneManager()->visibleSceneSize().height() - keyboardHeight()) {
+#else
+        if (rect.top() > rootWidget()->size().height() - keyboardHeight()) {
+#endif
             rect = QRect();
         }
     }

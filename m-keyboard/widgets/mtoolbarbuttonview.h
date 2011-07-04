@@ -32,15 +32,27 @@
 #ifndef MTOOLBARBUTTONVIEW_H
 #define MTOOLBARBUTTONVIEW_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MButtonView>
 #include "mtoolbarbuttonstyle.h"
+#else
+#include <QObject>
+#include <QSize>
+#endif
 
 class MToolbarButton;
 
-class MToolbarButtonView : public MButtonView
+class MToolbarButtonView
+#ifdef HAVE_MEEGOTOUCH
+    : public MButtonView
+#else
+    : public QObject
+#endif
 {
     Q_OBJECT
+#ifdef HAVE_MEEGOTOUCH
     M_VIEW(MButtonModel, MToolbarButtonStyle)
+#endif
 
 public:
     explicit MToolbarButtonView(MToolbarButton *controller);

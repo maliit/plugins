@@ -34,14 +34,21 @@
 #include "mimkey.h"
 #include "mimkeyarea.h"
 #include "mvirtualkeyboardstyle.h"
+#include "mplainwindow.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
+
+#ifdef HAVE_MEEGOTOUCH
 #include "getcssproperty.h"
-
-#include <mplainwindow.h>
-
 #include <MTheme>
 #include <MScalableImage>
 #include <MTimestamp>
+#else
+#define mTimestamp(x, y)
+#include "style-wrapper.h"
+#endif
 
+#include <QDebug>
 #include <QPainter>
 #include <QFileInfo>
 
@@ -147,9 +154,11 @@ MImKey::IconInfo::IconInfo()
 
 MImKey::IconInfo::~IconInfo()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (pixmap) {
         MTheme::releasePixmap(pixmap);
     }
+#endif
 }
 
 MImKey::Geometry::Geometry()
@@ -323,7 +332,13 @@ void MImKey::updateLabelPos() const
         const int topMargin = styleContainer->labelMarginTop();
         const int labelLeftWithSecondary = styleContainer->labelMarginLeftWithSecondary();
         const int secondarySeparation = styleContainer->secondaryLabelSeparation();
-        const bool landscape = (MPlainWindow::instance()->orientation() == M::Landscape);
+        const bool landscape = (
+#ifdef HAVE_MEEGOTOUCH
+                    MPlainWindow::instance()->orientation() == M::Landscape
+#else
+                    MKeyboardHost::instance()->rootWidget()->orientation() == MInputMethod::Landscape
+#endif
+        );
 
         // In landscape the secondary labels are below the primary ones. In portrait,
         // secondary labels are horizontally next to primary labels.
@@ -593,7 +608,9 @@ const MScalableImage * MImKey::backgroundImage() const
         backgroundProperty.append(HighlightedName);
     }
 
+#ifdef HAVE_MEEGOTOUCH
     background = getCSSProperty<const MScalableImage *>(styleContainer, backgroundProperty, false);
+#endif
     return background;
 }
 
@@ -608,7 +625,9 @@ const MScalableImage *MImKey::normalBackgroundImage() const
 
     // this method ignores overriden attributes
 
+#ifdef HAVE_MEEGOTOUCH
     background = getCSSProperty<const MScalableImage *>(styleContainer, backgroundProperty, false);
+#endif
     return background;
 }
 
@@ -879,6 +898,9 @@ const QRectF & MImKey::secondaryLabelRect() const
 
 void MImKey::loadIcon(bool shift)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(shift)
+#else
     IconInfo &normalIconInfo(shift ? upperCaseIcon : lowerCaseIcon);
     IconInfo &normalIconInfoSelected(shift ? upperCaseIconSelected : lowerCaseIconSelected);
     IconInfo &normalIconInfoHighlighted(shift ? upperCaseIconHighlighted : lowerCaseIconHighlighted);
@@ -987,6 +1009,7 @@ void MImKey::loadIcon(bool shift)
             compactIconInfoHighlighted.pixmap = MTheme::pixmap(compactIconInfoHighlighted.id, size);
         }
     }
+#endif
 }
 
 void MImKey::loadOverrideIcon(const QString& icon)

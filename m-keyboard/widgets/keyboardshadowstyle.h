@@ -34,7 +34,7 @@
 #ifndef KEYBOARDSTYLE_H
 #define KEYBOARDSTYLE_H
 
-#include <mwidgetstyle.h>
+#include "style-wrapper.h"
 
 class KeyboardShadowStyle : public MWidgetStyle
 {

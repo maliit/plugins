@@ -33,6 +33,8 @@
 #include "mimkeyarea_p.h"
 #include "mimkeyvisitor.h"
 #include "mplainwindow.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 #include "reactionmapwrapper.h"
 #include "magnifierhost.h"
 
@@ -46,8 +48,12 @@
 
 #include <mkeyoverride.h>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MScalableImage>
 #include <MTimestamp>
+#else
+#define mTimestamp(x, y)
+#endif
 
 namespace {
     template<class T>
@@ -326,8 +332,13 @@ namespace {
                             qreal spacerWidth)
         {
             int index = 0;
+#ifdef HAVE_MEEGOTOUCH
             const int visibleWidth(MPlainWindow::instance() ? MPlainWindow::instance()->visibleSceneSize().width()
                                                             : availableWidth);
+#else
+            const int visibleWidth(MPlainWindow::instance() ? MKeyboardHost::instance()->rootWidget()->size().width()
+                                                            : availableWidth);
+#endif
 
             currentPos.rx() = (style->autoPadding() ? (visibleWidth - availableWidth) / 2
                                                     : 0);

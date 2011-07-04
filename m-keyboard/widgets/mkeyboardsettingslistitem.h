@@ -32,6 +32,8 @@
 #ifndef MKEYBOARDSETTINGSLISTITEM_H
 #define MKEYBOARDSETTINGSLISTITEM_H
 
+#ifdef HAVE_MEEGOTOUCH
+
 #include <QObject>
 #include <MBasicListItem>
 
@@ -41,8 +43,10 @@ class QGraphicsWidget;
 /*!
  * A simple list item widget that shows icon in the right side of the labels.
  */
-class MKeyboardSettingsListItem : public MBasicListItem {
-Q_OBJECT
+class MKeyboardSettingsListItem
+    : public MBasicListItem
+{
+    Q_OBJECT
 
 public:
     MKeyboardSettingsListItem(MBasicListItem::ItemStyle style = IconWithTitleAndSubtitle,
@@ -60,4 +64,5 @@ private:
     QGraphicsWidget *stretchItem;
 };
 
-#endif
+#endif // HAVE_MEEGOTOUCH
+#endif // MKEYBOARDSETTINGSLISTITEM_H

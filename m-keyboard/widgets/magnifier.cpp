@@ -32,9 +32,14 @@
 #include "magnifier.h"
 #include "magnifierhost.h"
 #include "mkeyboardmagnifierstyle.h"
-#include <mtimestamp.h>
 
+#ifdef HAVE_MEEGOTOUCH
+#include <mtimestamp.h>
 #include <MScalableImage>
+#else
+#include "style-types.h"
+#define mTimestamp(x, y)
+#endif
 
 #include <QFont>
 #include <QPainter>

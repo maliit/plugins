@@ -41,7 +41,9 @@
 #include <QObject>
 #include <cctype>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MTimestamp>
+#endif
 
 namespace {
     const int AutoBackspaceDelay = 500;      // in ms
@@ -152,8 +154,10 @@ bool CJKLogicStateMachine::handleKeyClick(const KeyEvent &event)
 }
 
 bool CJKLogicStateMachine::handleKeyEvent(const KeyEvent &event)
-{    
+{
+#ifdef HAVE_MEEGOTOUCH
     mTimestamp("handleKeyEvent", "start");
+#endif
     qDebug()<<Q_FUNC_INFO;
     bool val = false;
     if (event.specialKey() == KeyEvent::LayoutMenu) {
@@ -197,7 +201,10 @@ bool CJKLogicStateMachine::handleKeyEvent(const KeyEvent &event)
         else
             qDebug() <<"Warning (in CJKLogicStateMachine::handleKeyEvent): Key event is not handled.";
     }
+
+#ifdef HAVE_MEEGOTOUCH
     mTimestamp("handleKeyEvent", "start");
+#endif
     return val;
 }
 

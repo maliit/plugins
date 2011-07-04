@@ -32,16 +32,15 @@
 #ifndef EXTENDEDKEYS_H
 #define EXTENDEDKEYS_H
 
+#include "reactionmappaintable.h"
+
 #include <mimoverlay.h>
 #include <mimkeyarea.h>
 #include <mimabstractkeyarea.h>
-#include <MTheme>
 #include <QSize>
 #include <QPointer>
 #include <QPropertyAnimation>
 #include <memory>
-
-#include "reactionmappaintable.h"
 
 class MagnifierHost;
 class MImAbstractKey;

@@ -34,7 +34,8 @@
 #ifndef MVIRTUALKEYBOARDSTYLE_H
 #define MVIRTUALKEYBOARDSTYLE_H
 
-#include <mwidgetstyle.h>
+#include "style-wrapper.h"
+
 #include <QFont>
 #include <QEasingCurve>
 

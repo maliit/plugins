@@ -32,7 +32,12 @@
 #ifndef MTOOLBARBUTTON_H
 #define MTOOLBARBUTTON_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MButton>
+#else
+#include <QGraphicsWidget>
+#endif
+
 #include <QSharedPointer>
 
 /*!
@@ -46,7 +51,12 @@
 class QPixmap;
 class MToolbarItem;
 
-class MToolbarButton : public MButton
+class MToolbarButton
+#ifdef HAVE_MEEGOTOUCH
+    : public MButton
+#else
+    : public QGraphicsWidget
+#endif
 {
     Q_OBJECT
     Q_DISABLE_COPY(MToolbarButton)

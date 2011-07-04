@@ -37,7 +37,9 @@
 #include <QPainter>
 #include <QDebug>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MTheme>
+#endif
 
 namespace {
     const int DefaultPressTimeout = 250;
@@ -45,8 +47,10 @@ namespace {
     const int DefaultLongTapTimeout = 600;
 }
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mwidgetcreator.h>
 M_REGISTER_WIDGET_NO_CREATE(MImCorrectionCandidateItem)
+#endif
 
 MImCorrectionCandidateItem::MImCorrectionCandidateItem(const QString &title, QGraphicsItem *parent)
     : MStylableWidget(parent),
@@ -65,9 +69,12 @@ MImCorrectionCandidateItem::MImCorrectionCandidateItem(const QString &title, QGr
             this, SLOT(handleVisibilityChanged()));
 
     setupLongTapTimer();
+
+#ifdef HAVE_MEEGOTOUCH
     connect(MTheme::instance(), SIGNAL(themeChangeCompleted()),
             this, SLOT(onThemeChangeCompleted()),
             Qt::UniqueConnection);
+#endif
 }
 
 MImCorrectionCandidateItem::~MImCorrectionCandidateItem()

@@ -29,15 +29,15 @@
 
  */
 
-#ifdef HAVE_MEEGOTOUCH
 #include "handle.h"
 #include "mimtoolbar.h"
 #include "sharedhandlearea.h"
 #include "regiontracker.h"
 #include "keyboardshadow.h"
-
-#include <mplainwindow.h>
-#include <MStylableWidget>
+#include "mplainwindow.h"
+#include "style-wrapper.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 
 #include <QDebug>
 #include <QGraphicsLinearLayout>
@@ -167,8 +167,13 @@ void SharedHandleArea::watchOnWidget(QGraphicsWidget *widget)
 void SharedHandleArea::finalizeOrientationChange()
 {
     //set proper width
+#ifdef HAVE_MEEGOTOUCH
     resize(MPlainWindow::instance()->visibleSceneSize().width(),
            size().height());
+#else
+    resize(MKeyboardHost::instance()->rootWidget()->size().width(),
+           size().height());
+#endif
     updatePosition();
 }
 
@@ -190,4 +195,3 @@ bool SharedHandleArea::event(QEvent *e)
     }
     return MWidget::event(e);
 }
-#endif // HAVE_MEEGOTOUCH

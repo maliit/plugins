@@ -29,6 +29,8 @@
 
  */
 
+#ifdef HAVE_MEEGOTOUCH
+
 #include "wordribbondialogview.h"
 #include "wordribbondialog.h"
 
@@ -39,3 +41,5 @@ WordRibbonDialogView::WordRibbonDialogView(WordRibbonDialog *controller)
 {
     setObjectName("WordRibbonDialogViewObj");
 }
+
+#endif // HAVE_MEEGOTOUCH

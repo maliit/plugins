@@ -37,8 +37,14 @@
 #include "mkeyboardhost.h"
 #include "mimabstractpopup.h"
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MCancelEvent>
 #include <MFeedback>
+#include <mtimestamp.h>
+#else
+#define mTimestamp(x, y)
+#endif
+
 #include <mimsettings.h>
 #include <QEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -46,7 +52,6 @@
 #include <QTextStream>
 #include <QDir>
 #include <QCoreApplication>
-#include <mtimestamp.h>
 
 #ifdef unix
 #include <time.h>
@@ -984,6 +989,7 @@ void MImAbstractKeyArea::ungrabMouseEvent(QEvent *)
     d->longPressTimer.stop();
 }
 
+#ifdef HAVE_MEEGOTOUCH
 void MImAbstractKeyArea::cancelEvent(MCancelEvent *)
 {
     Q_D(MImAbstractKeyArea);
@@ -993,6 +999,7 @@ void MImAbstractKeyArea::cancelEvent(MCancelEvent *)
     // but popup interaction requires it at the moment.
     d->ignoreTouchEventsUntilNewBegin = true;
 }
+#endif
 
 bool MImAbstractKeyArea::event(QEvent *ev)
 {

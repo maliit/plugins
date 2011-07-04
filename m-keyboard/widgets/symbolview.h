@@ -42,7 +42,9 @@
 #include <QPointer>
 
 class MReactionMap;
+#ifdef HAVE_MEEGOTOUCH
 class MSceneManager;
+#endif
 class MVirtualKeyboardStyleContainer;
 class HorizontalSwitcher;
 class LayoutsManager;
@@ -207,7 +209,9 @@ signals:
 
 protected:
     /*! \reimp */
+#ifdef HAVE_MEEGOTOUCH
     virtual void cancelEvent(MCancelEvent *event);
+#endif
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -281,8 +285,10 @@ private:
     //! Current style being used.
     const MVirtualKeyboardStyleContainer *styleContainer;
 
+#ifdef HAVE_MEEGOTOUCH
     //! scene manager
     const MSceneManager &sceneManager;
+#endif
 
     //! To check if symbol view is opened
     Activity activity;

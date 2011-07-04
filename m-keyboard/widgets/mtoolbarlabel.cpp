@@ -32,12 +32,20 @@
 #include "mtoolbarlabel.h"
 #include "mtoolbarlabelview.h"
 #include <mtoolbaritem.h>
+#include <QLabel>
 
 MToolbarLabel::MToolbarLabel(QSharedPointer<MToolbarItem> item,
                              QGraphicsItem *parent)
-    : MLabel(parent),
-      itemPtr(item)
+#ifdef HAVE_MEEGOTOUCH
+    : MLabel(parent)
+#else
+    : QLabel()
+#endif
+    ,  itemPtr(item)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(parent)
+#else
     setView(new MToolbarLabelView(this));
 
     if (item->name().isEmpty()) {
@@ -53,6 +61,7 @@ MToolbarLabel::MToolbarLabel(QSharedPointer<MToolbarItem> item,
 
     connect(item.data(), SIGNAL(propertyChanged(const QString&)),
             this, SLOT(updateData(const QString&)));
+#endif
 }
 
 MToolbarLabel::~MToolbarLabel()
@@ -66,6 +75,9 @@ QSharedPointer<MToolbarItem> MToolbarLabel::item()
 
 void MToolbarLabel::updateData(const QString &attribute)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(attribute)
+#else
     if (attribute == "text") {
         setText(itemPtr->text());
     } else if (attribute == "textId") {
@@ -74,5 +86,6 @@ void MToolbarLabel::updateData(const QString &attribute)
         setVisible(itemPtr->isVisible());
         emit availabilityChanged();
     }
+#endif
 }
 

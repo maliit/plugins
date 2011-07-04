@@ -32,11 +32,15 @@
 
 
 #include "mimoverlay.h"
+#include "mplainwindow.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MSceneManager>
-#include <mimsettings.h>
-#include <mplainwindow.h>
+#endif
 
+#include <mimsettings.h>
 #include <QString>
 #include <float.h>
 
@@ -49,10 +53,12 @@ namespace
 MImOverlay::MImOverlay()
     : MSceneWindow()
 {
+#ifdef HAVE_MEEGOTOUCH
     setManagedManually(true);
     if (MPlainWindow::instance()) {
         MPlainWindow::instance()->sceneManager()->appearSceneWindowNow(this);
     }
+#endif
     // The z-value should always be more than vkb and text widget's z-value
     setZValue(FLT_MAX);
 
@@ -60,8 +66,13 @@ MImOverlay::MImOverlay()
     setAcceptTouchEvents(acceptTouchEventsSetting());
 
     if (MPlainWindow::instance()) {
+#ifdef HAVE_MEEGOTOUCH
         setGeometry(QRectF(QPointF(0, 0), MPlainWindow::instance()->sceneManager()->visibleSceneSize()));
         connect(MPlainWindow::instance()->sceneManager(), SIGNAL(orientationChanged(M::Orientation)),
+#else
+        setGeometry(QRectF(QPointF(0, 0), MKeyboardHost::instance()->rootWidget()->size()));
+        connect(MKeyboardHost::instance()->rootWidget(), SIGNAL(orientationChanged(MInputMethod::Orientation)),
+#endif
                 this, SLOT(handleOrientationChanged()));
     }
     hide();
@@ -85,9 +96,13 @@ bool MImOverlay::sceneEvent(QEvent *e)
 
 void MImOverlay::handleOrientationChanged()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (MPlainWindow::instance()) {
         setGeometry(QRectF(QPointF(0, 0), MPlainWindow::instance()->sceneManager()->visibleSceneSize()));
     }
+#else
+    setGeometry(QRectF(QPointF(0, 0), MKeyboardHost::instance()->rootWidget()->size()));
+#endif
 }
 
 bool MImOverlay::acceptTouchEventsSetting()

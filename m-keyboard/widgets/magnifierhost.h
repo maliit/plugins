@@ -37,14 +37,13 @@
 #include "mimoverlay.h"
 #include "magnifier.h"
 #include "extendedkeys.h"
-#include <mimabstractkeyarea.h>
+#include "mimabstractkeyarea.h"
 
 #include <QObject>
 #include <QWeakPointer>
 #include <QMargins>
 #include <QGraphicsItem>
 #include <QPointF>
-#include <MTheme>
 #include <QSequentialAnimationGroup>
 
 class MagnifierHost

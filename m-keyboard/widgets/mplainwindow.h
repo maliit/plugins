@@ -31,14 +31,22 @@
 #ifndef MPLAINWINDOW_H
 #define MPLAINWINDOW_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MWindow>
+#else
+#include <mimgraphicsview.h>
+#endif
 #include <QPixmap>
 
 class QRegion;
 class MAbstractInputMethodHost;
 
 class MPlainWindow
+#ifdef HAVE_MEEGOTOUCH
     : public MWindow
+#else
+    : public MImGraphicsView
+#endif
 {
     Q_OBJECT
 
@@ -50,9 +58,11 @@ public:
 
 protected:
     //! \reimp
+#ifdef HAVE_MEEGOTOUCH
     virtual bool viewportEvent(QEvent *event);
     virtual void drawBackground(QPainter *painter,
                                 const QRectF &rect);
+#endif
     //! \reimp_end
 
 private:

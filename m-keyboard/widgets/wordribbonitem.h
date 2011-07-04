@@ -1,7 +1,7 @@
 #ifndef WORDRIBBONITEM_H
 #define WORDRIBBONITEM_H
 
-#include <mstylablewidget.h>
+#include "style-wrapper.h"
 #include "wordribbonitemstyle.h"
 #include "wordribbon.h"
 
@@ -33,7 +33,9 @@ public:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
+#ifdef HAVE_MEEGOTOUCH
     virtual void cancelEvent(MCancelEvent *event);
+#endif
     virtual void applyStyle();
     //! reimp_end
 

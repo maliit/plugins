@@ -33,7 +33,9 @@
 #ifndef WORDRIBBONDIALOGVIEW_H
 #define WORDRIBBONDIALOGVIEW_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include "wordribbondialogstyle.h"
+
 #include <mdialogview.h>
 
 class WordRibbonDialog;
@@ -54,4 +56,5 @@ public:
     }
 };
 
+#endif // HAVE_MEEGOTOUCH
 #endif // WORDRIBBONDIALOGVIEW_H

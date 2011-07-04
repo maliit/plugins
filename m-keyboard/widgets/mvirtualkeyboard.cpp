@@ -46,6 +46,9 @@
 #include "reactionmappainter.h"
 #include "regiontracker.h"
 #include "reactionmapwrapper.h"
+#include "mplainwindow.h"
+#include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 
 #include <mtoolbardata.h>
 #include <mkeyoverride.h>
@@ -58,13 +61,14 @@
 #include <QPropertyAnimation>
 #include <QPixmap>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MCancelEvent>
 #include <MButton>
 #include <MScalableImage>
 #include <MSceneManager>
 #include <mtimestamp.h>
-#include <mplainwindow.h>
 #include <MApplication>
+#endif
 
 
 namespace
@@ -88,10 +92,16 @@ MVirtualKeyboard::MVirtualKeyboard(const LayoutsManager &layoutsManager,
       mainLayout(new QGraphicsLinearLayout(Qt::Vertical, this)),
       currentLevel(0),
       numLevels(2),
+#ifdef HAVE_MEEGOTOUCH
       sceneManager(MPlainWindow::instance()->sceneManager()),
+#endif
       shiftState(ModifierClearState),
       currentLayoutType(LayoutData::General),
+#ifdef HAVE_MEEGOTOUCH
       currentOrientation(sceneManager->orientation()),
+#else
+      currentOrientation(MKeyboardHost::instance()->rootWidget()->orientation()),
+#endif
       layoutsMgr(layoutsManager),
       mainKeyboardSwitcher(0),
       notification(0),
@@ -202,7 +212,12 @@ MVirtualKeyboard::prepareToOrientationChange()
 void
 MVirtualKeyboard::finalizeOrientationChange()
 {
-    M::Orientation newOrientation = sceneManager->orientation();
+    MInputMethod::Orientation
+#ifdef HAVE_MEEGOTOUCH
+    newOrientation = static_cast<MInputMethod::Orientation>(sceneManager->orientation());
+#else
+    newOrientation = MKeyboardHost::instance()->rootWidget()->orientation();
+#endif
     // Force-mode required to update orientation even when we're not shown
     // and e.g. symbol view is active.
     // This makes sure keyboard is correctly layed out after rotation and
@@ -308,7 +323,11 @@ void MVirtualKeyboard::showLanguageNotification()
     if ((mainKeyboardSwitcher->current() != -1) && (currentLayoutType == LayoutData::General)) {
         QGraphicsWidget *const widget = mainKeyboardSwitcher->currentWidget();
         const QRectF br = widget ? mainKeyboardSwitcher->mapRectToItem(this, widget->boundingRect())
-                          : QRectF(QPointF(), MPlainWindow::instance()->visibleSceneSize());
+#ifdef HAVE_MEEGOTOUCH
+                                 : QRectF(QPointF(), MPlainWindow::instance()->visibleSceneSize());
+#else
+                                 : QRectF(QPointF(), MKeyboardHost::instance()->rootWidget()->size());
+#endif
         const QString layoutFile(layoutsMgr.layoutFileList()[mainKeyboardSwitcher->current()]);
 
         notification->displayText(layoutsMgr.keyboardTitle(layoutFile), br);
@@ -330,10 +349,18 @@ void MVirtualKeyboard::organizeContent(M::Orientation orientation, const bool fo
         currentOrientation = orientation;
         // Reload for portrait/landscape
         int index = mainKeyboardSwitcher->current();
+        const int width(
+#ifdef HAVE_MEEGOTOUCH
+            MPlainWindow::instance()->visibleSceneSize().width()
+#else
+            MKeyboardHost::instance()->rootWidget()->size().width()
+#endif
+        );
+
         // RecreateKeyboards() will lead to all slides being removed from switcher and a call to updateGeometry().
         // So we need to set the new preferredWidth first.
-        setPreferredWidth(MPlainWindow::instance()->visibleSceneSize().width());
-        mainKeyboardSwitcher->setPreferredWidth(MPlainWindow::instance()->visibleSceneSize().width());
+        setPreferredWidth(width);
+        mainKeyboardSwitcher->setPreferredWidth(width);
         recreateKeyboards();
         // Since all keyboards were reset, we reactive the current keyboard and adjust its size.
         mainKeyboardSwitcher->setCurrent(index);
@@ -343,7 +370,7 @@ void MVirtualKeyboard::organizeContent(M::Orientation orientation, const bool fo
         // from portrait to landscape. Adjusting size here explicitly, after setting
         // preferredWidth. If preferredWidth is not set, adjustSize() leads to
         // mainKeyboardSwitcher becoming as wide as landscape on first start in portrait.
-        setPreferredWidth(MPlainWindow::instance()->visibleSceneSize().width());
+        setPreferredWidth(width);
         adjustSize();
     }
 }
@@ -522,6 +549,7 @@ void MVirtualKeyboard::numberKeyboardReset()
     recreateSpecialKeyboards(); // number and phone number keyboard
 }
 
+#ifdef HAVE_MEEGOTOUCH
 void MVirtualKeyboard::cancelEvent(MCancelEvent *event)
 {
     QGraphicsWidget *keyArea(mainKeyboardSwitcher->currentWidget());
@@ -529,6 +557,7 @@ void MVirtualKeyboard::cancelEvent(MCancelEvent *event)
         scene()->sendEvent(keyArea, event);
     }
 }
+#endif
 
 void MVirtualKeyboard::resizeEvent(QGraphicsSceneResizeEvent *)
 {
@@ -556,8 +585,11 @@ void MVirtualKeyboard::onSectionSwitchStarting(int current, int next)
     if ((current != -1) && (currentLayoutType == LayoutData::General)) {
         QGraphicsWidget *const nextWidget = mainKeyboardSwitcher->widget(next);
         QRectF br = nextWidget ? mainKeyboardSwitcher->mapRectToItem(this, nextWidget->boundingRect())
+#ifdef HAVE_MEEGOTOUCH
                                : QRectF(QPointF(), MPlainWindow::instance()->visibleSceneSize());
-
+#else
+                               : QRectF(QPointF(), MKeyboardHost::instance()->rootWidget()->size());
+#endif
         notification->displayText(layoutsMgr.keyboardTitle(layoutsMgr.layoutFileList()[next]), br);
         notification->setParentItem(nextWidget ? nextWidget : this);
     }
@@ -591,7 +623,11 @@ void MVirtualKeyboard::createSwitcher()
     delete mainKeyboardSwitcher; // Delete previous views
     mainKeyboardSwitcher = new HorizontalSwitcher(this);
     mainKeyboardSwitcher->setLooping(true);
+#ifdef HAVE_MEEGOTOUCH
     mainKeyboardSwitcher->setPreferredWidth(MPlainWindow::instance()->visibleSceneSize().width());
+#else
+    mainKeyboardSwitcher->setPreferredWidth(MKeyboardHost::instance()->rootWidget()->size().width());
+#endif
     mainKeyboardSwitcher->setDuration(style()->layoutChangeDuration());
     mainKeyboardSwitcher->setEasingCurve(style()->layoutChangeEasingCurve());
 
@@ -618,7 +654,11 @@ void MVirtualKeyboard::reloadSwitcherContent()
         MImAbstractKeyArea *mainSection = createMainSectionView(layoutFile, LayoutData::General,
                                                                 currentOrientation);
         mainSection->setObjectName("VirtualKeyboardMainRow");
+#ifdef HAVE_MEEGOTOUCH
         mainSection->setPreferredWidth(MPlainWindow::instance()->visibleSceneSize().width());
+#else
+        mainSection->setPreferredWidth(MKeyboardHost::instance()->rootWidget()->size().width());
+#endif
         mainKeyboardSwitcher->addWidget(mainSection);
     }
 }

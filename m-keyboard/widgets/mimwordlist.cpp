@@ -34,19 +34,23 @@
 #include "mimwordlist.h"
 #include "mimwordlistitem.h"
 #include "reactionmapwrapper.h"
+#include "mwidget-wrapper.h"
 
 #include <QGraphicsLinearLayout>
 #include <QDebug>
 #include <QString>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mwidgetcreator.h>
 #include <MSeparator>
 M_REGISTER_WIDGET_NO_CREATE(MImWordList)
+#endif
 
 namespace
 {
     const char * const WordListObjectName = "CorrectionWordList";
 
+#ifdef HAVE_MEEGOTOUCH
     void addItem(QGraphicsLinearLayout *layout, MWidgetController *item, int position)
     {
         item->setSelected(false);
@@ -61,16 +65,21 @@ namespace
         layout->removeItem(item);
         item->setVisible(false);
     }
-};
-
+#endif // HAVE_MEEGOTOUCH
+}
 
 MImWordList::MImWordList()
+#ifdef HAVE_MEEGOTOUCH
     : MDialog()
+#else
+    : QGraphicsWidget()
+#endif
 {
     RegionTracker::instance().addRegion(*this);
     // for MATTI
     setObjectName(WordListObjectName);
 
+#ifdef HAVE_MEEGOTOUCH
     MWidget *contentWidget = new MWidget(this);
     mainLayout = new QGraphicsLinearLayout(Qt::Vertical);
     mainLayout->setSpacing(0);
@@ -96,6 +105,7 @@ MImWordList::MImWordList()
         mainLayout->addItem(candidateItems[i]);
     }
     setCentralWidget(contentWidget);
+#endif
     hide();
 }
 
@@ -105,6 +115,10 @@ MImWordList::~MImWordList()
 
 void MImWordList::setCandidates(const QStringList &candidates, bool typedWordIsInDictionary)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(candidates)
+    Q_UNUSED(typedWordIsInDictionary)
+#else
     if (candidates.isEmpty()) {
         qWarning() << __PRETTY_FUNCTION__ << "empty candidates list";
     } else {
@@ -135,6 +149,7 @@ void MImWordList::setCandidates(const QStringList &candidates, bool typedWordIsI
         }
     }
     mainLayout->invalidate();
+#endif
 }
 
 QStringList MImWordList::candidates() const
@@ -144,6 +159,7 @@ QStringList MImWordList::candidates() const
 
 void MImWordList::select()
 {
+#ifdef HAVE_MEEGOTOUCH
     // ignore the select actions during animation
     if (!isVisible() || sceneWindowState() == MSceneWindow::Appearing
         || sceneWindowState() == MSceneWindow::Disappearing) {
@@ -154,6 +170,7 @@ void MImWordList::select()
         const QString candidate = (item == addToDictionaryItem) ? title() : item->title();
         emit candidateClicked(candidate);
     }
+#endif
 }
 
 void MImWordList::paintReactionMap(MReactionMap *reactionMap, QGraphicsView *)

@@ -1,6 +1,11 @@
 #include "wordribbonitem.h"
 
-#include "mscalableimage.h"
+#ifdef HAVE_MEEGOTOUCH
+#include <MScalableImage>
+#else
+#include "style-types.h"
+#endif
+
 #include <QString>
 #include <QtCore>
 #include <QtGui>
@@ -31,10 +36,11 @@ WordRibbonItem::~WordRibbonItem()
 {
 }
 
-void WordRibbonItem::drawBackground(QPainter *painter, const QStyleOptionGraphicsItem *option) const
+void WordRibbonItem::drawBackground(QPainter *painter, const QStyleOptionGraphicsItem *) const
 {
-    Q_UNUSED(option);
-
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(painter)
+#else
     const WordRibbonItemStyle *s = static_cast<const WordRibbonItemStyle *>(style().operator ->());
 
     if (!s->backgroundImage() && !s->backgroundImagePressed() && !s->backgroundImageSelected())
@@ -62,10 +68,15 @@ void WordRibbonItem::drawBackground(QPainter *painter, const QStyleOptionGraphic
         break;
     }
     painter->setOpacity(oldOpacity);
+#endif
 }
 
 void WordRibbonItem::drawContents(QPainter *painter, const QStyleOptionGraphicsItem *option) const
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(painter)
+    Q_UNUSED(option)
+#else
     if (label.length() == 0) {
         //No content inside candidate item.
         MStylableWidget::drawContents(painter, option);
@@ -79,21 +90,27 @@ void WordRibbonItem::drawContents(QPainter *painter, const QStyleOptionGraphicsI
         painter->drawText(contentRect, Qt::AlignCenter, label);
     else
         painter->drawText(contentRect, Qt::AlignLeft, label);
+#endif
 }
 
-QSizeF WordRibbonItem::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
+QSizeF WordRibbonItem::sizeHint(Qt::SizeHint which, const QSizeF &) const
 {
-    Q_UNUSED(constraint);
-
-    QSizeF size ;
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(which)
+    static QSize s;
+    return s;
+#else
+    QSizeF size;
 
     switch (which) {
     case Qt::MinimumSize:
         size = minimumSize;
         break;
+
     case Qt::PreferredSize:
         size = preferredSize;
         break;
+
     case Qt::MaximumSize:
         if (forceMaxWidth > 0) {
             size = preferredSize;
@@ -103,13 +120,16 @@ QSizeF WordRibbonItem::sizeHint(Qt::SizeHint which, const QSizeF & constraint) c
             size = style()->maximumSize();
         }
         break;
+
     default:
         break;
     }
+
     return size;
+#endif
 }
 
-void WordRibbonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void WordRibbonItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!paddingRect.contains(event->pos().toPoint())) {
         isMousePressCancelled = true;
@@ -122,9 +142,9 @@ void WordRibbonItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
     emit mousePressed();
 }
 
-void WordRibbonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+void WordRibbonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    Q_UNUSED(event);
+#ifdef HAVE_MEEGOTOUCH
     if (isMousePressCancelled)
         return ;
     else {
@@ -134,10 +154,14 @@ void WordRibbonItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
         emit mouseReleased();
     }
+#endif
 }
 
-void WordRibbonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+void WordRibbonItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(event)
+#else
     if (isMousePressCancelled)
         return ;
 
@@ -162,18 +186,20 @@ void WordRibbonItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
             highlight();
         }
     }
+#endif
 }
 
-void WordRibbonItem::cancelEvent(MCancelEvent *event)
+#ifdef HAVE_MEEGOTOUCH
+void WordRibbonItem::cancelEvent(MCancelEvent *)
 {
-    Q_UNUSED(event);
     isMousePressCancelled = true;
     clearPress();
 }
+#endif
 
-void WordRibbonItem::setText(const QString& str)
+void WordRibbonItem::setText(const QString &text)
 {
-    label = str;
+    label = text;
     applyStyle();
     recalculateItemSize();
     update();
@@ -182,7 +208,7 @@ void WordRibbonItem::setText(const QString& str)
 
 void WordRibbonItem::clearText()
 {
-    setText ("");
+    setText("");
 }
 
 QString WordRibbonItem::text()
@@ -253,6 +279,7 @@ int WordRibbonItem::positionIndex() const
 
 void WordRibbonItem::applyStyle()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (mode == WordRibbon::DialogStyleMode) {
         // In WordRibbon::DialogStyleMode the margins and paddings are depending
         // on the length of the label
@@ -285,10 +312,12 @@ void WordRibbonItem::applyStyle()
             break;
         }
     }
+#endif
 }
 
 void WordRibbonItem::recalculateItemSize()
 {
+#ifdef HAVE_MEEGOTOUCH
     int paddingLeft, paddingRight, paddingTop, paddingBottom;
     int marginLeft, marginRight, marginTop, marginBottom;
 
@@ -370,6 +399,7 @@ void WordRibbonItem::recalculateItemSize()
                         tmpSize.height());
 
     resize(preferredSize);
+#endif
 }
 
 void WordRibbonItem::updateStyleState(ItemState newState)

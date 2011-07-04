@@ -326,7 +326,9 @@ signals:
 
 protected:
     //! \reimp
+#ifdef HAVE_MEEGOTOUCH
     virtual void cancelEvent(MCancelEvent *event);
+#endif
     virtual void resizeEvent(QGraphicsSceneResizeEvent *);
     //! \reimp_end
 
@@ -409,8 +411,10 @@ private:
     //! Max number of layout levels
     int numLevels;
 
+#ifdef HAVE_MEEGOTOUCH
     //! Scene manager to get the device width and height
     MSceneManager *sceneManager;
+#endif
 
     //! Shift key status
     ModifierState shiftState;

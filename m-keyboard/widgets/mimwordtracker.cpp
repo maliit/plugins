@@ -43,12 +43,14 @@
 #include <QtGlobal>
 #include <QDebug>
 
-#include <MScalableImage>
-#include <MSceneManager>
 #include <mimsettings.h>
 
+#ifdef HAVE_MEEGOTOUCH
+#include <MScalableImage>
+#include <MSceneManager>
 #include <mwidgetcreator.h>
 M_REGISTER_WIDGET_NO_CREATE(MImWordTracker)
+#endif
 
 namespace
 {
@@ -66,8 +68,14 @@ namespace
     {
         const int wordTrackerBottom = cursorRect.bottom() + wordTrackerHeight;
 
-        const int vkbTop = MPlainWindow::instance()->sceneManager()->visibleSceneSize().height()
-                           - keyboardHeight;
+        const int vkbTop(
+#ifdef HAVE_MEEGOTOUCH
+            MPlainWindow::instance()->sceneManager()->visibleSceneSize().height() - keyboardHeight
+#else
+            // FIXME: just an educated guess, for now.
+            854 - keyboardHeight
+#endif
+        );
 
         return (wordTrackerBottom > vkbTop);
     };
@@ -102,9 +110,11 @@ MImWordTracker::MImWordTracker(QGraphicsWidget *container)
     connect(candidateItem, SIGNAL(clicked()), this, SLOT(select()));
     connect(candidateItem, SIGNAL(longTapped()), this, SLOT(longTap()));
 
+#ifdef HAVE_MEEGOTOUCH
     connect(MTheme::instance(), SIGNAL(themeChangeCompleted()),
             this, SLOT(onThemeChangeCompleted()),
             Qt::UniqueConnection);
+#endif
 
     setupTimeLine();
     containerWidget->hide();
@@ -189,7 +199,12 @@ QVariant MImWordTracker::itemChange(GraphicsItemChange change, const QVariant &v
     if ((change == QGraphicsItem::ItemVisibleChange && isVisible())
         || (change == QGraphicsItem::ItemScenePositionHasChanged))
         emit makeReactionMapDirty();
+
+#ifdef HAVE_MEEGOTOUCH
     return MWidgetController::itemChange(change, value);
+#else
+    return QGraphicsWidget::itemChange(change, value);
+#endif
 }
 
 void MImWordTracker::select()

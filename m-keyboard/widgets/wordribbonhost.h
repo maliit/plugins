@@ -34,11 +34,6 @@
 
 #include "reactionmappaintable.h"
 #include "abstractenginewidgethost.h"
-#ifndef HAVE_MEEGOTOUCH
-class WordRibbonHost
-    : public AbstractEngineWidgetHost, public ReactionMapPaintable
-{};
-#else
 #include "mwidget-wrapper.h"
 #include <QContiguousCache>
 #include <QGraphicsWidget>
@@ -111,5 +106,4 @@ private:
     QContiguousCache<QString> candidatesCache;
 };
 
-#endif // HAVE_MEEGOTOUCH
 #endif

@@ -31,13 +31,18 @@
 
 #include "reactionmappainter.h"
 #include "reactionmappainter_p.h"
+#include "reactionmappaintable.h"
+#include "mplainwindow.h"
 
-#include <mplainwindow.h>
 #ifdef HAVE_REACTIONMAP
 #include <mreactionmap.h>
 #endif
 
-#include "reactionmappaintable.h"
+#ifdef HAVE_MEEGOTOUCH
+#include <MScene>
+#else
+#include <QGraphicsScene>
+#endif
 
 // ReactionMapPainterPrivate......................................................
 

@@ -32,7 +32,6 @@
 #ifndef MKEYBOARDSETTINGSWIDGET_H
 #define MKEYBOARDSETTINGSWIDGET_H
 
-#include "mwidget-wrapper.h"
 #include "mkeyboardsettings.h"
 
 #include <QObject>
@@ -40,6 +39,8 @@
 
 class QGraphicsItem;
 class QGraphicsLayoutItem;
+
+#ifdef HAVE_MEEGOTOUCH
 class MBasicListItem;
 class MButton;
 class MDialog;
@@ -50,6 +51,9 @@ class MLinearLayoutPolicy;
 class MLabel;
 class MContainer;
 class MKeyboardSettingsListItem;
+#else
+#include "mwidget-wrapper.h"
+#endif
 
 class MKeyboardSettingsWidget : public MWidget
 {
@@ -86,6 +90,7 @@ private:
     void connectSlots();
     void createChineseTransliterationModel();
 
+#ifdef HAVE_MEEGOTOUCH
     MKeyboardSettings *settingsObject;
     MGridLayoutPolicy *landscapePolicy;
     MLinearLayoutPolicy *portraitPolicy;
@@ -105,6 +110,7 @@ private:
     MKeyboardSettingsListItem *chineseTransliterationItem;
     MDialog *chineseTransliterationDialog;
     MList *chineseTransliterationList;
+#endif
 
     friend class Ut_MKeyboardSettingsWidget;
 };

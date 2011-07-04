@@ -33,6 +33,7 @@
 #ifndef WORDRIBBONITEMSTYLE_H
 #define WORDRIBBONITEMSTYLE_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mwidgetstyle.h>
 
 class WordRibbonItemStyle: public MWidgetStyle
@@ -65,5 +66,6 @@ class WordRibbonItemStyleContainer : public MWidgetStyleContainer
     friend class WordRibbonItem;
 };
 
+#endif // HAVE_MEEGOTOUCH
 #endif // WORDRIBBONITEMSTYLE_H
 

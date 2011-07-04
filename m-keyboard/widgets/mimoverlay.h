@@ -32,7 +32,13 @@
 #ifndef MIMOVERLAY_H
 #define MIMOVERLAY_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MSceneWindow>
+#else
+#include <QGraphicsWidget>
+class MSceneWindow : public QGraphicsWidget
+{};
+#endif
 
 /*!
   * \brief The MImOverLay class could be used to show an plain translucent overlay widget.

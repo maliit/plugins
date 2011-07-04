@@ -33,10 +33,15 @@
 
 #include "mimwordlistitem.h"
 
+#ifdef HAVE_MEEGOTOUCH
 #include <mwidgetcreator.h>
 M_REGISTER_WIDGET_NO_CREATE(MImWordListItem)
 
 MImWordListItem::MImWordListItem(QGraphicsItem *parent)
     :  MContentItem(MContentItem::SingleTextLabel, parent)
-{
-}
+{}
+#else
+MImWordListItem::MImWordListItem(QGraphicsItem *parent)
+    : QGraphicsWidget(parent)
+{}
+#endif // HAVE_MEEGOTOUCH

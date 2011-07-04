@@ -30,9 +30,8 @@
  */
 
 #include "magnifierhost.h"
+#include "mimabstractkey.h"
 
-#include <mimabstractkey.h>
-#include <MScene>
 #include <QDebug>
 #include <QRectF>
 #include <QDebug>

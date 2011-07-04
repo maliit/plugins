@@ -31,6 +31,8 @@
 
 #include "mkeyboardsettingswidget.h"
 #include "layoutsmanager.h"
+
+#ifdef HAVE_MEEGOTOUCH
 #include "mkeyboardsettingslistitem.h"
 
 #include <MButton>
@@ -48,6 +50,7 @@
 #include <MContainer>
 #include <MAbstractCellCreator>
 #include <MImageWidget>
+#endif
 
 #include <QObject>
 #include <QGraphicsLinearLayout>
@@ -70,6 +73,7 @@ namespace
     const QString ChineseInputLanguage("zh_cn_*.xml");
 };
 
+#ifdef HAVE_MEEGOTOUCH
 class MChineseTransliterationCellCreator: public MAbstractCellCreator<MContentItem>
 {
 public:
@@ -97,13 +101,20 @@ void MChineseTransliterationCellCreator::updateCell(const QModelIndex &index, MW
 
     contentItem->setTitle(index.data(Qt::DisplayRole).toString());
 }
+#endif
 
 MKeyboardSettingsWidget::MKeyboardSettingsWidget(MKeyboardSettings *settings, QGraphicsItem *parent)
-    : MWidget(parent),
-      settingsObject(settings),
-      chineseTransliterationDialog(NULL),
-      chineseTransliterationList(NULL)
+    : MWidget(parent)
+#ifdef HAVE_MEEGOTOUCH
+    , settingsObject(settings)
+    , chineseTransliterationDialog(NULL)
+    , chineseTransliterationList(NULL)
+#endif
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(settings)
+    Q_UNUSED(parent)
+#else
     MLayout *layout = new MLayout(this);
 
     landscapePolicy = new MGridLayoutPolicy(layout);
@@ -127,17 +138,20 @@ MKeyboardSettingsWidget::MKeyboardSettingsWidget(MKeyboardSettings *settings, QG
     retranslateUi();
     updateChineseSettingPanel();
     connectSlots();
+#endif
 }
 
 MKeyboardSettingsWidget::~MKeyboardSettingsWidget()
 {
-
+#ifdef HAVE_MEEGOTOUCH
     delete chineseTransliterationDialog;
     chineseTransliterationDialog = NULL;
+#endif
 }
 
 void MKeyboardSettingsWidget::buildUi()
 {
+#ifdef HAVE_MEEGOTOUCH
     // Error correction settings
     MContainer *eCContainer = new MContainer(this);
     eCContainer->setContentsMargins(0, 0, 0, 0);
@@ -282,28 +296,42 @@ void MKeyboardSettingsWidget::buildUi()
     chineseContainer->setVisible(false);
 
     retranslateUi();
+#endif
 }
 
 void MKeyboardSettingsWidget::addItem(QGraphicsLayoutItem *item, int row, int column)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(item)
+    Q_UNUSED(row)
+    Q_UNUSED(column)
+#else
     landscapePolicy->addItem(item, row, column);
     portraitPolicy->addItem(item);
+#endif
 }
 
 void MKeyboardSettingsWidget::removeItem(QGraphicsLayoutItem *item)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(item)
+#else
     landscapePolicy->removeItem(item);
     portraitPolicy->removeItem(item);
+#endif
 }
 
 void MKeyboardSettingsWidget::retranslateUi()
 {
+#ifdef HAVE_MEEGOTOUCH
     updateTitle();
     MWidget::retranslateUi();
+#endif
 }
 
 void MKeyboardSettingsWidget::updateTitle()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!errorCorrectionTitle    || !errorCorrectionSubtitle
         || !correctionSpaceTitle || !correctionSpaceSubtitle
         || !chineseSettingHeader || !fuzzyTitle
@@ -332,10 +360,12 @@ void MKeyboardSettingsWidget::updateTitle()
     chineseTransliterationItem->setSubtitle(
                 settingsObject->chineseTransliterationOptions().value(
                     settingsObject->chineseTransliteration()));
+#endif
 }
 
 void MKeyboardSettingsWidget::connectSlots()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!settingsObject || !errorCorrectionSwitch || !correctionSpaceSwitch)
         return;
 
@@ -359,10 +389,12 @@ void MKeyboardSettingsWidget::connectSlots()
             this, SLOT(setWordPredictionState(bool)));
     connect(settingsObject, SIGNAL(wordPredictionStateChanged()),
             this, SLOT(syncWordPredictionState()));
+#endif
 }
 
 void MKeyboardSettingsWidget::updateChineseSettingPanel()
 {
+#ifdef HAVE_MEEGOTOUCH
     QStringList allKeyboardLayoutFiles = settingsObject->selectedKeyboards();
 
     QRegExp chineseLayoutExp(ChineseInputLanguage, Qt::CaseInsensitive);
@@ -381,10 +413,14 @@ void MKeyboardSettingsWidget::updateChineseSettingPanel()
             chineseContainer->setVisible(false);
         }
     }
+#endif
 }
 
 void MKeyboardSettingsWidget::setErrorCorrectionState(bool enabled)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(enabled)
+#else
     if (!settingsObject)
         return;
 
@@ -399,10 +435,12 @@ void MKeyboardSettingsWidget::setErrorCorrectionState(bool enabled)
             correctionSpaceSwitch->setEnabled(true);
         }
     }
+#endif
 }
 
 void MKeyboardSettingsWidget::syncErrorCorrectionState()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!settingsObject || !errorCorrectionSwitch)
         return;
 
@@ -419,19 +457,25 @@ void MKeyboardSettingsWidget::syncErrorCorrectionState()
         // Enable the "Select with Space" switch again
         correctionSpaceSwitch->setEnabled(true);
     }
+#endif
 }
 
 void MKeyboardSettingsWidget::setCorrectionSpaceState(bool enabled)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(enabled)
+#else
     if (!settingsObject)
         return;
 
     if (settingsObject->correctionSpace() != enabled)
         settingsObject->setCorrectionSpace(enabled);
+#endif
 }
 
 void MKeyboardSettingsWidget::syncCorrectionSpaceState()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!settingsObject)
         return;
 
@@ -440,17 +484,23 @@ void MKeyboardSettingsWidget::syncCorrectionSpaceState()
         && correctionSpaceSwitch->isChecked() != correctionSpaceState) {
         correctionSpaceSwitch->setChecked(correctionSpaceState);
     }
+#endif
 }
 
 void MKeyboardSettingsWidget::setFuzzyState(bool enabled)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(enabled)
+#else
     if (!settingsObject)
-          return;
-    settingsObject->setFuzzyPinyin(enabled) ;
+        return;
+    settingsObject->setFuzzyPinyin(enabled);
+#endif
 }
 
 void MKeyboardSettingsWidget::syncFuzzyState()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!settingsObject)
         return;
 
@@ -459,17 +509,23 @@ void MKeyboardSettingsWidget::syncFuzzyState()
         (fuzzySwitch->isChecked() != fuzzyState)) {
         fuzzySwitch->setChecked(fuzzyState);
     }
+#endif
 }
 
 void MKeyboardSettingsWidget::setWordPredictionState(bool enabled)
 {
+#ifndef HAVE_MEEGOTOUCH
+    Q_UNUSED(enabled)
+#else
     if (!settingsObject)
           return;
     settingsObject->setWordPrediction(enabled);
+#endif
 }
 
 void MKeyboardSettingsWidget::syncWordPredictionState()
 {
+#ifdef HAVE_MEEGOTOUCH
     if (!settingsObject)
         return;
 
@@ -478,10 +534,12 @@ void MKeyboardSettingsWidget::syncWordPredictionState()
         (wordPredictionSwitch->isChecked() != wordPredictionState)) {
         wordPredictionSwitch->setChecked(wordPredictionState);
     }
+#endif
 }
 
 void MKeyboardSettingsWidget::showChineseTransliterationOptions()
 {
+#ifdef HAVE_MEEGOTOUCH
     // Create the dialog when necessary.
     if (chineseTransliterationDialog == NULL) {
         chineseTransliterationDialog = new MDialog(qtTrId("qtn_ckb_convert_chinese"), M::OkButton);
@@ -498,10 +556,12 @@ void MKeyboardSettingsWidget::showChineseTransliterationOptions()
     updateChineseTransliterationModel();
     // Display the dialog.
     chineseTransliterationDialog->exec();
+#endif
 }
 
 void MKeyboardSettingsWidget::createChineseTransliterationModel()
 {
+#ifdef HAVE_MEEGOTOUCH
     if ((settingsObject == NULL) || (chineseTransliterationList == NULL))
         return;
 
@@ -522,10 +582,12 @@ void MKeyboardSettingsWidget::createChineseTransliterationModel()
     chineseTransliterationList->setItemModel(model);
     chineseTransliterationList->setSelectionModel(new QItemSelectionModel(model,
                                                                           chineseTransliterationList));
+#endif
 }
 
 void MKeyboardSettingsWidget::updateChineseTransliterationModel()
 {
+#ifdef HAVE_MEEGOTOUCH
     if ((settingsObject == NULL) || (chineseTransliterationList == NULL))
         return;
 
@@ -539,10 +601,12 @@ void MKeyboardSettingsWidget::updateChineseTransliterationModel()
     // Set the selected item as highlight.
     chineseTransliterationList->selectionModel()->select(items.at(0)->index(),
                                                          QItemSelectionModel::Select);
+#endif
 }
 
 void MKeyboardSettingsWidget::selectChineseTransliteration()
 {
+#ifdef HAVE_MEEGOTOUCH
     if ((settingsObject == NULL) || (chineseTransliterationDialog == NULL))
         return;
 
@@ -554,4 +618,5 @@ void MKeyboardSettingsWidget::selectChineseTransliteration()
     chineseTransliterationItem->setSubtitle(
                 settingsObject->chineseTransliterationOptions().value(
                     settingsObject->chineseTransliteration()));
+#endif
 }

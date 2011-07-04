@@ -32,7 +32,13 @@
 #ifndef MTOOLBARLABEL_H
 #define MTOOLBARLABEL_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MLabel>
+#else
+#include <QLabel>
+#endif
+
+#include <QGraphicsItem>
 #include <QSharedPointer>
 
 /*!
@@ -43,7 +49,12 @@
  */
 class MToolbarItem;
 
-class MToolbarLabel : public MLabel
+class MToolbarLabel
+#ifdef HAVE_MEEGOTOUCH
+    : public MLabel
+#else
+    : public QLabel
+#endif
 {
     Q_OBJECT
     Q_DISABLE_COPY(MToolbarLabel)

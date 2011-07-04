@@ -34,9 +34,18 @@
 #ifndef MIMWORDLISTITEM_H
 #define MIMWORDLISTITEM_H
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MContentItem>
+#else
+#include <QGraphicsWidget>
+#endif
 
-class MImWordListItem : public MContentItem
+class MImWordListItem
+#ifdef HAVE_MEEGOTOUCH
+    : public MContentItem
+#else
+    : public QGraphicsWidget
+#endif
 {
     Q_OBJECT
 public:
