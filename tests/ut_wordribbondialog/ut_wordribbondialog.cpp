@@ -38,6 +38,7 @@
 #include "mplainwindow.h"
 #include "utils.h"
 #include "regiontracker.h"
+#include "mwidget-wrapper.h"
 
 #include <MTheme>
 #include <MList>
@@ -53,8 +54,6 @@
 #include <QMetaType>
 #include <MApplication>
 #include <MApplicationWindow>
-
-#include <MWidget>
 
 #include <MButton>
 #include <MDialog>

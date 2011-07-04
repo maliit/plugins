@@ -39,7 +39,7 @@ class SharedHandleArea
     : public QGraphicsWidget
 {};
 #else
-#include <MWidget>
+#include "mwidget-wrapper.h"
 #include <MNamespace>
 
 #include <QList>

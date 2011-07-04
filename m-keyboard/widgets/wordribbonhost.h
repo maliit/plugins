@@ -39,12 +39,11 @@ class WordRibbonHost
     : public AbstractEngineWidgetHost, public ReactionMapPaintable
 {};
 #else
+#include "mwidget-wrapper.h"
 #include <QContiguousCache>
 #include <QGraphicsWidget>
 #include <QPointer>
 #include <QString>
-#include <MWidget>
-
 
 class WordRibbon;
 class WordRibbonDialog;

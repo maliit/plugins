@@ -32,8 +32,7 @@
 
 
 #include "widgetbar.h"
-
-#include <MWidget>
+#include "mwidget-wrapper.h"
 
 #include <QDebug>
 #include <QGraphicsLinearLayout>

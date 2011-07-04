@@ -32,12 +32,13 @@
 #ifndef ABSTRACTENGINEWIDGETHOST_H
 #define ABSTRACTENGINEWIDGETHOST_H
 
+#include "mwidget-wrapper.h"
+
 #include <QGraphicsWidget>
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QRect>
-
 /*!
   \class AbstractEngineWidgetHost
   \brief The AbstractEngineWidgetHost class is used to show error correction/prediction

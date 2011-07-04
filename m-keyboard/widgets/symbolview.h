@@ -36,10 +36,9 @@
 #include "mkeyboardcommon.h"
 #include "layoutdata.h"
 #include "reactionmappaintable.h"
+#include "mwidget-wrapper.h"
 
 #include <minputmethodnamespace.h>
-#include <MWidget>
-
 #include <QPointer>
 
 class MReactionMap;

@@ -32,8 +32,9 @@
 #ifndef MKEYBOARDSETTINGS_H
 #define MKEYBOARDSETTINGS_H
 
+#include "mwidget-wrapper.h"
+
 #include <QObject>
-#include <MWidget>
 #include <mimsettings.h>
 #include <mabstractinputmethodsettings.h>
 

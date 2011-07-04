@@ -42,8 +42,9 @@
 #include "mvirtualkeyboard.h"
 #include "symbolview.h"
 #include "keyevent.h"
-
 #include "mkeyboardhost.h"
+#include "mwidget-wrapper.h"
+
 #include <mimenginefactory.h>
 #include <mimsettings.h>
 #include <MSceneWindow>
@@ -65,7 +66,12 @@ public:
     EngineHandlerDefault(MKeyboardHost &keyboardHost)
         : EngineHandler(keyboardHost),
           mKeyboardHost(keyboardHost),
+// TODO: Use proper root item, instead of root scene window
+#ifdef HAVE_MEEGOTOUCH
           mEngineWidgetHost(new MImCorrectionHost(keyboardHost.sceneWindow, 0))
+#else
+          mEngineWidgetHost(new MImCorrectionHost(new MWidget, 0))
+#endif
     {
     }
 
@@ -217,7 +223,12 @@ public:
     EngineHandlerCJK(MKeyboardHost &keyboardHost)
         : EngineHandler(keyboardHost),
           mKeyboardHost(keyboardHost),
+// TODO: Use proper root item, instead of root scene window
+#ifdef HAVE_MEEGOTOUCH
           mEngineWidgetHost(new WordRibbonHost(keyboardHost.sceneWindow, 0)),
+#else
+          mEngineWidgetHost(new WordRibbonHost(new MWidget, 0)),
+#endif
           stateMachine(NULL)
     {
         // Create CJK logic state machine only when the engine is ready.

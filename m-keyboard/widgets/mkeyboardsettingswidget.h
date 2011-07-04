@@ -32,10 +32,11 @@
 #ifndef MKEYBOARDSETTINGSWIDGET_H
 #define MKEYBOARDSETTINGSWIDGET_H
 
+#include "mwidget-wrapper.h"
+#include "mkeyboardsettings.h"
+
 #include <QObject>
 #include <QWeakPointer>
-#include <MWidget>
-#include "mkeyboardsettings.h"
 
 class QGraphicsItem;
 class QGraphicsLayoutItem;
