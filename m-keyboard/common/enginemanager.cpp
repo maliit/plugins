@@ -47,8 +47,6 @@
 
 #include <mimenginefactory.h>
 #include <mimsettings.h>
-#include <MSceneWindow>
-
 
 #include <QDebug>
 
