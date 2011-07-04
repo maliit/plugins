@@ -32,7 +32,7 @@
 #include "enginecjk.h"
 
 #include <mimenginefactory.h>
-#include <MGConfItem>
+#include <mimsettings.h>
 
 #include <QDebug>
 
@@ -47,8 +47,8 @@ EngineCJK::EngineCJK(MAbstractInputMethodHost &imHost, const QString &engineName
     : AbstractEngine(imHost, engineName),
       inputMethodHost(imHost),
       mEngine(MImEngineFactory::instance()->createEngineWords(engineName)),
-      settingFuzzy(new MGConfItem(InputMethodFuzzySetting)),
-      settingWordPrediction(new MGConfItem(InputMethodWordPredictionSetting))
+      settingFuzzy(new MImSettings(InputMethodFuzzySetting)),
+      settingWordPrediction(new MImSettings(InputMethodWordPredictionSetting))
 {
     if (mEngine) {
         initializeEngine();

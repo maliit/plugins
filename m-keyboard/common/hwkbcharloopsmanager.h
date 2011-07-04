@@ -35,7 +35,7 @@
 #define HWKBCHARLOOPSMANAGER_H
 
 #include <MNamespace>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <QObject>
 #include <QHash>
 #include <QChar>
@@ -129,9 +129,9 @@ private:
     //! Loops for the current language
     const HwKbCharacterLoops *current;
 
-    //! MGConfItem for system display language.
+    //! MImSettings for system display language.
     //! The settings are set by control panel applet.
-    MGConfItem configLanguage;
+    MImSettings configLanguage;
 
     //! Current language for the character loop
     QString currentCharLoopLanguage;

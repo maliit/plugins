@@ -104,7 +104,7 @@ SymbolView::SymbolView(const LayoutsManager &layoutsManager, const MVirtualKeybo
     connect(&layoutsManager, SIGNAL(hardwareLayoutChanged()),
             this, SLOT(handleHwLayoutChange()));
 
-    enableMultiTouch = MGConfItem(MultitouchSettings).value().toBool();
+    enableMultiTouch = MImSettings(MultitouchSettings).value().toBool();
 
     hide();
     setupLayout();

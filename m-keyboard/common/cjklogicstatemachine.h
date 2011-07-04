@@ -37,7 +37,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include <MGConfItem>
+#include <mimsettings.h>
 
 class QString;
 class KeyEvent;
@@ -149,7 +149,7 @@ private:
 
     bool currentOnOffState;
 
-    MGConfItem chineseTransliterationConf;
+    MImSettings chineseTransliterationConf;
     QString chineseTransliteration;
 };
 

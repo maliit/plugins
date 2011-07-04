@@ -33,7 +33,7 @@
 #include "enginemanager.h"
 
 #include <mimenginefactory.h>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <QDebug>
 
 namespace
@@ -51,9 +51,9 @@ EngineDefault::EngineDefault(MAbstractInputMethodHost &imHost, const QString &en
     : AbstractEngine(imHost, engineName),
       inputMethodHost(imHost),
       mEngine(MImEngineFactory::instance()->createEngineWords(engineName)),
-      settingCorrection(new MGConfItem(CorrectionSetting)),
-      settingCorrectionSpace(new MGConfItem(CorrectionSettingWithSpace)),
-      settingNextWordPrediction(new MGConfItem(InputMethodNextWordPredictionSetting))
+      settingCorrection(new MImSettings(CorrectionSetting)),
+      settingCorrectionSpace(new MImSettings(CorrectionSettingWithSpace)),
+      settingNextWordPrediction(new MImSettings(InputMethodNextWordPredictionSetting))
 {
     if (mEngine) {
         initializeEngine();

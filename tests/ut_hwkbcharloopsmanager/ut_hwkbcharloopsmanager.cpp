@@ -91,7 +91,7 @@ void Ut_HwKbCharLoopsManager::testLoadLanguage()
 void Ut_HwKbCharLoopsManager::testSyncLanguage()
 {
     QCOMPARE(m_subject->currentCharLoopLanguage, QString("en_gb"));
-    MGConfItem systemDisplayLanguage(SystemDisplayLanguage);
+    MImSettings systemDisplayLanguage(SystemDisplayLanguage);
     systemDisplayLanguage.set(QVariant("fi"));
     QCOMPARE(m_subject->currentCharLoopLanguage, QString("fi"));
     systemDisplayLanguage.set(QVariant("ar"));

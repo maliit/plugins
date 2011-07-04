@@ -34,7 +34,7 @@
 
 #include <QObject>
 #include <MWidget>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <mabstractinputmethodsettings.h>
 
 class QGraphicsWidget;
@@ -125,13 +125,13 @@ private:
 
     //! all available keyboards
     QList<KeyboardInfo> availableKeyboardInfos;
-    MGConfItem keyboardErrorCorrectionConf;
-    MGConfItem keyboardCorrectionSpaceConf;
-    MGConfItem enabledKeyboardsConf;
+    MImSettings keyboardErrorCorrectionConf;
+    MImSettings keyboardCorrectionSpaceConf;
+    MImSettings enabledKeyboardsConf;
 
-    MGConfItem chineseKeyboardFuzzyConf;
-    MGConfItem chineseKeyboardWordPredictionConf;
-    MGConfItem chineseTransliterationConf;
+    MImSettings chineseKeyboardFuzzyConf;
+    MImSettings chineseKeyboardWordPredictionConf;
+    MImSettings chineseTransliterationConf;
 };
 
 #endif

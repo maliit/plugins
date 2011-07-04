@@ -79,7 +79,7 @@ void Ut_MToolbarButton::initTestCase()
     static char *dummyArgv[2] = { (char *) "./ut_mtoolbarbutton",
                                   (char *) "-software" };
     // this value is required by the theme daemon
-    MGConfItem(TargetSettingsName).set(DefaultTargetName);
+    MImSettings(TargetSettingsName).set(DefaultTargetName);
 
     disableQtPlugins();
     app = new MApplication(dummyArgc, dummyArgv);

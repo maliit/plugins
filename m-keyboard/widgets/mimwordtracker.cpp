@@ -44,7 +44,7 @@
 
 #include <MScalableImage>
 #include <MSceneManager>
-#include <MGConfItem>
+#include <mimsettings.h>
 
 #include <mwidgetcreator.h>
 M_REGISTER_WIDGET_NO_CREATE(MImWordTracker)
@@ -85,7 +85,7 @@ MImWordTracker::MImWordTracker(QGraphicsWidget *container)
     RegionTracker::instance().addRegion(*containerWidget);
 
     // By default multi-touch is disabled
-    setAcceptTouchEvents(MGConfItem(MultitouchSetting).value().toBool());
+    setAcceptTouchEvents(MImSettings(MultitouchSetting).value().toBool());
     // Listen for visibility and position changes
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);

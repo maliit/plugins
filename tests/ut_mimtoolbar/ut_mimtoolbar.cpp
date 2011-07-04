@@ -90,7 +90,7 @@ void Ut_MImToolbar::initTestCase()
     static char *dummyArgv[2] = { (char *) "./ut_mimtoolbar",
                                   (char *) "-software" };
     // this value is required by the theme daemon
-    MGConfItem(TargetSettingsName).set(DefaultTargetName);
+    MImSettings(TargetSettingsName).set(DefaultTargetName);
 
     disableQtPlugins();
     app = new MApplication(dummyArgc, dummyArgv);

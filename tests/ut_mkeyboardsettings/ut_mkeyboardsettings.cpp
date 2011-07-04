@@ -70,7 +70,7 @@ void Ut_MKeyboardSettings::testNoCrash()
 
 void Ut_MKeyboardSettings::testErrorCorrection()
 {
-    MGConfItem errorCorrectionSetting(SettingsImCorrection);
+    MImSettings errorCorrectionSetting(SettingsImCorrection);
 
     std::auto_ptr<MKeyboardSettings> subject(new MKeyboardSettings);
 
@@ -93,7 +93,7 @@ void Ut_MKeyboardSettings::testErrorCorrection()
 
 void Ut_MKeyboardSettings::testCorrectionSpace()
 {
-    MGConfItem correctionSpaceSetting(SettingsImCorrectionSpace);
+    MImSettings correctionSpaceSetting(SettingsImCorrectionSpace);
 
     std::auto_ptr<MKeyboardSettings> subject(new MKeyboardSettings);
 

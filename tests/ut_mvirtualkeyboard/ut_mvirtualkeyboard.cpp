@@ -105,14 +105,14 @@ void Ut_MVirtualKeyboard::initTestCase()
     static int argc = 2;
 
     // This value is required by the theme daemon
-    MGConfItem(TargetSettingsName).set(DefaultTargetName);
+    MImSettings(TargetSettingsName).set(DefaultTargetName);
 
     app = new MApplication(argc, argv);
     RegionTracker::createInstance();
     ReactionMapPainter::createInstance();
 
     QString InputMethodSetting(InputMethodSettingName);
-    MGConfItem item1(InputMethodSetting);
+    MImSettings item1(InputMethodSetting);
 
     QStringList layoutlist;
     layoutlist << "libmeego-keyboard.so"
@@ -124,7 +124,7 @@ void Ut_MVirtualKeyboard::initTestCase()
     item1.set(QVariant(layoutlist));
 
     QString DefaultLayoutSetting(DefaultLayoutSettingName);
-    MGConfItem item2(DefaultLayoutSetting);
+    MImSettings item2(DefaultLayoutSetting);
     QString defaultLayout = "/usr/lib/meego-keyboard-tests/layouts/en_gb.xml";
     item2.set(QVariant(defaultLayout));
 
@@ -368,7 +368,7 @@ void Ut_MVirtualKeyboard::testShiftLevelChange()
 
 void Ut_MVirtualKeyboard::flickRightHandlerTest()
 {
-    QStringList layoutList = MGConfItem(InputMethodSettingName).value().toStringList();
+    QStringList layoutList = MImSettings(InputMethodSettingName).value().toStringList();
     layoutList.removeAll("libmeego-keyboard.so");
     layoutList.sort();
     qDebug() << layoutList;
@@ -387,7 +387,7 @@ void Ut_MVirtualKeyboard::flickRightHandlerTest()
     QVERIFY(m_vkb->mainKeyboardSwitcher->current() != index);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).count(), 1);
-    //depends on the layouts set through MGConfItem
+    //depends on the layouts set through MImSettings
     QCOMPARE(spy.at(0).at(0).toString().toLower(), layoutList.at(0).toLower());
 
     QTest::qWait(550);
@@ -403,7 +403,7 @@ void Ut_MVirtualKeyboard::flickRightHandlerTest()
     QVERIFY(m_vkb->mainKeyboardSwitcher->current() != index);
     QCOMPARE(spy.count(), 2);
     QCOMPARE(spy.at(1).count(), 1);
-    //depends on the layouts set through MGConfItem
+    //depends on the layouts set through MImSettings
     QCOMPARE(spy.at(1).at(0).toString().toLower(), layoutList.at(2).toLower());
 
     QTest::qWait(550);
@@ -419,13 +419,13 @@ void Ut_MVirtualKeyboard::flickRightHandlerTest()
     QVERIFY(m_vkb->mainKeyboardSwitcher->current() != index);
     QCOMPARE(spy.count(), 3);
     QCOMPARE(spy.at(2).count(), 1);
-    //depends on the layouts set through MGConfItem
+    //depends on the layouts set through MImSettings
     QCOMPARE(spy.at(2).at(0).toString().toLower(), layoutList.at(1).toLower());
 }
 
 void Ut_MVirtualKeyboard::flickLeftHandlerTest()
 {
-    QStringList layoutList = MGConfItem(InputMethodSettingName).value().toStringList();
+    QStringList layoutList = MImSettings(InputMethodSettingName).value().toStringList();
     layoutList.removeAll("libmeego-keyboard.so");
     layoutList.sort();
 
@@ -450,7 +450,7 @@ void Ut_MVirtualKeyboard::flickLeftHandlerTest()
     QVERIFY(m_vkb->mainKeyboardSwitcher->current() != index);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).count(), 1);
-    //depends on the layouts set through MGConfItem
+    //depends on the layouts set through MImSettings
     QCOMPARE(spy.at(0).at(0).toString().toLower(), layoutList.at(2).toLower());
 
     QTest::qWait(550);
@@ -466,7 +466,7 @@ void Ut_MVirtualKeyboard::flickLeftHandlerTest()
     QVERIFY(m_vkb->mainKeyboardSwitcher->current() != index);
     QCOMPARE(spy.count(), 2);
     QCOMPARE(spy.at(1).count(), 1);
-    //depends on the layouts set through MGConfItem
+    //depends on the layouts set through MImSettings
     QCOMPARE(spy.at(1).at(0).toString().toLower(), layoutList.at(0).toLower());
 
     QTest::qWait(550);
@@ -482,7 +482,7 @@ void Ut_MVirtualKeyboard::flickLeftHandlerTest()
     QVERIFY(m_vkb->mainKeyboardSwitcher->current() != index);
     QCOMPARE(spy.count(), 3);
     QCOMPARE(spy.at(2).count(), 1);
-    //depends on the layouts set through MGConfItem
+    //depends on the layouts set through MImSettings
     QCOMPARE(spy.at(2).at(0).toString().toLower(), layoutList.at(1).toLower());
 }
 

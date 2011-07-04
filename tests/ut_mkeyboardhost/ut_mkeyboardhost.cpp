@@ -175,7 +175,7 @@ void Ut_MKeyboardHost::initTestCase()
 
     disableQtPlugins();
 
-    MGConfItem target(TargetSettingsName);
+    MImSettings target(TargetSettingsName);
     target.set(DefaultTargetName); // this value is required by the theme daemon
 
     app = new MApplication(argc, app_name);
@@ -183,7 +183,7 @@ void Ut_MKeyboardHost::initTestCase()
     window = 0;
     mainWindow = new QWidget;
 
-    MGConfItem(MultitouchSettings).set(true);
+    MImSettings(MultitouchSettings).set(true);
 
     qRegisterMetaType<M::Orientation>("M::Orientation");
     qRegisterMetaType<TestOpList>("TestOpList");
@@ -204,9 +204,9 @@ void Ut_MKeyboardHost::init()
     // Uses dummy driver
     stubEngine.enableCompletion();
     stubEngine.enableCorrection();
-    MGConfItem engineConfig(InputMethodCorrectionEngine);
+    MImSettings engineConfig(InputMethodCorrectionEngine);
     engineConfig.set(QVariant(QString("dummyimdriver")));
-    MGConfItem config(CorrectionSetting);
+    MImSettings config(CorrectionSetting);
     config.set(QVariant(false));
 
     subject = new MKeyboardHost(inputMethodHost, mainWindow);
@@ -242,7 +242,7 @@ void Ut_MKeyboardHost::testOrientationAngleLocked()
 
 void Ut_MKeyboardHost::testHandleClick()
 {
-    MGConfItem configCorrection(CorrectionSetting);
+    MImSettings configCorrection(CorrectionSetting);
 
     // Enable the corrections
     QVERIFY(subject->preedit.isEmpty());
@@ -1716,9 +1716,9 @@ void Ut_MKeyboardHost::testHandleHwKeyboardStateChanged()
     }
 
     if (deadKeyCharacterCode) {
-        MGConfItem layoutConfig(XkbLayoutSettingName);
+        MImSettings layoutConfig(XkbLayoutSettingName);
         layoutConfig.set(xkbLayout);
-        MGConfItem variantConfig(XkbVariantSettingName);
+        MImSettings variantConfig(XkbVariantSettingName);
         variantConfig.set(xkbVariant);
 
         subject->processKeyEvent(QEvent::KeyPress, Qt::Key_unknown, Qt::NoModifier,
@@ -1780,7 +1780,7 @@ void Ut_MKeyboardHost::testWYTIWYSErrorCorrection()
     // Pre-edit must not be auto-corrected
 
     subject->show();
-    MGConfItem config(CorrectionSetting);
+    MImSettings config(CorrectionSetting);
     config.set(QVariant(true));
 
     QStringList candidates;
@@ -1890,8 +1890,8 @@ void Ut_MKeyboardHost::testAutoPunctuation_data()
 
 void Ut_MKeyboardHost::testAutoPunctuation()
 {
-    MGConfItem configCorrection(CorrectionSetting);
-    MGConfItem configCorrectionSpace(CorrectionSettingWithSpace);
+    MImSettings configCorrection(CorrectionSetting);
+    MImSettings configCorrectionSpace(CorrectionSettingWithSpace);
 
     QVERIFY(EngineManager::instance().engine() != 0);
 
@@ -1906,7 +1906,7 @@ void Ut_MKeyboardHost::testAutoPunctuation()
     QFETCH(QChar, character);
     QFETCH(bool, autopunctuated);
 
-    MGConfItem config(CorrectionSetting);
+    MImSettings config(CorrectionSetting);
     config.set(QVariant(true));
 
     subject->show();

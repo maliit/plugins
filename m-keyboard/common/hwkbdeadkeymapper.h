@@ -32,7 +32,7 @@
 #ifndef HWKBDEADKEYMAPPER_H
 #define HWKBDEADKEYMAPPER_H
 
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <QObject>
 #include <QHash>
 #include <QChar>
@@ -142,8 +142,8 @@ private:
 
     QChar deadKey;
 
-    MGConfItem xkbPrimaryLayoutSetting;
-    MGConfItem xkbPrimaryVariantSetting;
+    MImSettings xkbPrimaryLayoutSetting;
+    MImSettings xkbPrimaryVariantSetting;
 
     friend class Ut_HwKbDeadKeyMapper;
 };

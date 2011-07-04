@@ -870,14 +870,14 @@ void Ut_MHardwareKeyboard::testSwitchLayout()
     const QString secondaryLayout("ru");
     const QString secondaryVariant("latin");
 
-    MGConfItem layoutConfig(XkbLayoutSettingName);
+    MImSettings layoutConfig(XkbLayoutSettingName);
     layoutConfig.set(QVariant(primaryLayout));
-    MGConfItem variantConfig(XkbVariantSettingName);
+    MImSettings variantConfig(XkbVariantSettingName);
     variantConfig.set(QVariant(primaryVariant));
 
-    MGConfItem secondaryLayoutConfig(XkbSecondaryLayoutSettingName);
+    MImSettings secondaryLayoutConfig(XkbSecondaryLayoutSettingName);
     secondaryLayoutConfig.set(QVariant(secondaryLayout));
-    MGConfItem secondaryVariantConfig(XkbSecondaryVariantSettingName);
+    MImSettings secondaryVariantConfig(XkbSecondaryVariantSettingName);
     secondaryVariantConfig.set(QVariant(secondaryVariant));
 
     LayoutsManager::createInstance();
@@ -1141,9 +1141,9 @@ void Ut_MHardwareKeyboard::testDeadKeys()
 {
     QSignalSpy deadKeyStateSpy(m_hkb, SIGNAL(deadKeyStateChanged(const QChar &)));
 
-    MGConfItem layoutConfig(XkbLayoutSettingName);
+    MImSettings layoutConfig(XkbLayoutSettingName);
     layoutConfig.set("fr");
-    MGConfItem variantConfig(XkbVariantSettingName);
+    MImSettings variantConfig(XkbVariantSettingName);
     variantConfig.set("");
 
     // The basic case, ^ + a => \^a

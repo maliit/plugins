@@ -108,7 +108,7 @@ void Ut_LayoutsManager::init()
 {
     LoadableKeyboards.clear();
     LoadableKeyboards << "fi.xml" << "ru.xml" << "ar.xml";
-    MGConfItem layoutListSetting(LayoutListSettingName);
+    MImSettings layoutListSetting(LayoutListSettingName);
     QStringList layoutList;
     layoutList << "libmeego-keyboard.so" << "fi.xml"
                << "libmeego-keyboard.so" << "ru.xml"
@@ -127,7 +127,7 @@ void Ut_LayoutsManager::testLayouts()
 {
     LoadableKeyboards.clear();
     LoadableKeyboards << "fi.xml" << "ru.xml" << "ar.xml" << "en_gb.xml";
-    MGConfItem layoutListSetting(LayoutListSettingName);
+    MImSettings layoutListSetting(LayoutListSettingName);
     QStringList layoutList;
     layoutList << "libmeego-keyboard.so" << "fi.xml"
                << "libmeego-keyboard.so" << "ru.xml"
@@ -148,7 +148,7 @@ void Ut_LayoutsManager::testNumberLayouts()
     // - Regional number setting: Arabic -> Arabic layout
     // - Any other regional number setting -> Latin layout
     std::auto_ptr<LayoutsManager> subject(new LayoutsManager);
-    MGConfItem numberFormatSetting(NumberFormatSettingName);
+    MImSettings numberFormatSetting(NumberFormatSettingName);
 
     // No default when nothing could be loaded
     const TestLayoutModel *layout = dynamic_cast<const TestLayoutModel *>(
@@ -232,7 +232,7 @@ void Ut_LayoutsManager::testPhoneNumberLayouts()
     // - Regional number setting: Russian -> Russian layout
     // - Otherwise -> Latin layout
     //
-    MGConfItem numberFormatSetting(NumberFormatSettingName);
+    MImSettings numberFormatSetting(NumberFormatSettingName);
     LoadableKeyboards << NumberKeyboardFileLatin << NumberKeyboardFileArabic;
 
     // If we can't load any phone number keyboard, we can't have a layout

@@ -90,8 +90,8 @@ void Ut_MKeyboardSettingsWidget::cleanup()
 
 void Ut_MKeyboardSettingsWidget::testKeyboardCorrectionSettings()
 {
-    MGConfItem errorCorrectionSetting(SettingsImCorrection);
-    MGConfItem correctionSpaceSetting(SettingsImCorrectionSpace);
+    MImSettings errorCorrectionSetting(SettingsImCorrection);
+    MImSettings correctionSpaceSetting(SettingsImCorrectionSpace);
 
     // Check the error correction setting alone
     settingsObject->setErrorCorrection(true);

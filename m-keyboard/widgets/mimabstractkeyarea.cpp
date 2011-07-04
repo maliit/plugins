@@ -39,7 +39,7 @@
 
 #include <MCancelEvent>
 #include <MFeedback>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <QEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QFile>
@@ -589,7 +589,7 @@ MImAbstractKeyAreaPrivate::multiTouchEnabled()
     static bool gConfRead = false;
     static bool touchEventsAccepted = false;
     if (!gConfRead) {
-        touchEventsAccepted = MGConfItem(MultitouchSettings).value().toBool();
+        touchEventsAccepted = MImSettings(MultitouchSettings).value().toBool();
         gConfRead = true;
     }
     return touchEventsAccepted;

@@ -34,7 +34,7 @@
 #include <mabstractinputmethodhost.h>
 #include <MSceneManager>
 #include <MTimestamp>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <MComponentData>
 
 #include <QDebug>
@@ -73,7 +73,7 @@ MPlainWindow::MPlainWindow(const MAbstractInputMethodHost *newHost,
     // what the documentation suggests [1].
     //
     // [1] http://doc.trolltech.com/4.6/qtouchevent.html#enabling-touch-events
-    if (MGConfItem(MultitouchSettings).value().toBool()) {
+    if (MImSettings(MultitouchSettings).value().toBool()) {
         setAttribute(Qt::WA_AcceptTouchEvents);
     }
 

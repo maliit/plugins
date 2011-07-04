@@ -45,7 +45,7 @@
 
 #include "mkeyboardhost.h"
 #include <mimenginefactory.h>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <MSceneWindow>
 
 
@@ -138,7 +138,7 @@ public:
 
     virtual bool correctionAcceptedWithSpaceEnabled() const
     {
-        return MGConfItem(CorrectionSettingWithSpace).value(DefaultCorrectionSettingAcceptedWithSpaceOption).toBool();
+        return MImSettings(CorrectionSettingWithSpace).value(DefaultCorrectionSettingAcceptedWithSpaceOption).toBool();
     }
 
     virtual bool isComposingInputMethod() const
@@ -459,7 +459,7 @@ void EngineManager::init()
                                  new EngineHandlerDefault(mKeyboardHost));
 
     // initialize the engine map
-    MGConfItem defaultEngineSetting(InputMethodCorrectionEngineRoot);
+    MImSettings defaultEngineSetting(InputMethodCorrectionEngineRoot);
     if (!defaultEngineSetting.value().isNull()) {
         engineMap.insert(DefaultInputLanguage,
                          new EngineDefault(*(mKeyboardHost.inputMethodHost()),
@@ -503,7 +503,7 @@ void EngineManager::updateLanguage(const QString &lang)
                                    : lang;
 
     AbstractEngine *matchedEngine = 0;
-    MGConfItem settingEngineByLang(InputMethodCorrectionEngineRoot + "/" + language);
+    MImSettings settingEngineByLang(InputMethodCorrectionEngineRoot + "/" + language);
     if (!settingEngineByLang.value().isNull()) {
         // find and create engine if it not exists in the map.
         matchedEngine = findOrCreateEngine(language, settingEngineByLang.value().toString());

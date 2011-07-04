@@ -38,7 +38,7 @@
 
 class MAbstractInputMethodHost;
 class MImEngineWordsInterface;
-class MGConfItem;
+class MImSettings;
 
 /*!
   \class AbstractEngine

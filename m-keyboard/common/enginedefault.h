@@ -36,7 +36,7 @@
 
 class MAbstractInputMethodHost;
 class MImEngineWordsInterface;
-class MGConfItem;
+class MImSettings;
 
 /*!
   \class EngineDefault
@@ -81,10 +81,10 @@ private:
 
     MImEngineWordsInterface *mEngine;
     //! default input method error correction setting
-    MGConfItem *settingCorrection;
-    MGConfItem *settingCorrectionSpace;
-    MGConfItem *settingNextWordPrediction;
-    MGConfItem *settingEngineName;
+    MImSettings *settingCorrection;
+    MImSettings *settingCorrectionSpace;
+    MImSettings *settingNextWordPrediction;
+    MImSettings *settingEngineName;
 
     QString engineLanguage;
 

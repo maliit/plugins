@@ -37,7 +37,7 @@
 #include "keyboardmapping.h"
 #include "layoutdata.h"
 
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <QMap>
 #include <QObject>
 #include <memory>
@@ -176,12 +176,12 @@ private slots:
 
 private:
 
-    //! MGConfItem for selected layouts available for vkb's use.
+    //! MImSettings for selected layouts available for vkb's use.
     //! The settings are set by control panel applet.
-    MGConfItem configLayouts;
+    MImSettings configLayouts;
 
     //! Setting that tells the xkb model.
-    MGConfItem xkbModelSetting;
+    MImSettings xkbModelSetting;
 
     //! Current xkb layout.
     QString xkbCurrentLayout;
@@ -208,7 +208,7 @@ private:
     KeyboardData phoneNumberKeyboard;
 
     //! System number format in gconf
-    MGConfItem numberFormatSetting;
+    MImSettings numberFormatSetting;
 
     HardwareKeyboardLayout currentHwkbLayoutType;
 

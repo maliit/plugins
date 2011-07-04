@@ -215,12 +215,12 @@ const LayoutData *LayoutsManager::hardwareLayout(LayoutData::LayoutType type,
 
 QString LayoutsManager::defaultLayoutFile() const
 {
-    return MGConfItem(InputMethodDefaultLayout).value(FallbackLayout).toString();
+    return MImSettings(InputMethodDefaultLayout).value(FallbackLayout).toString();
 }
 
 QString LayoutsManager::systemDisplayLanguage() const
 {
-    return MGConfItem(SystemDisplayLanguage).value().toString();
+    return MImSettings(SystemDisplayLanguage).value().toString();
 }
 
 void LayoutsManager::initXkbMap()
@@ -246,22 +246,22 @@ QString LayoutsManager::xkbVariant() const
 
 QString LayoutsManager::xkbPrimaryLayout() const
 {
-    return MGConfItem(XkbLayoutSettingName).value(FallbackXkbLayout).toString();
+    return MImSettings(XkbLayoutSettingName).value(FallbackXkbLayout).toString();
 }
 
 QString LayoutsManager::xkbPrimaryVariant() const
 {
-    return MGConfItem(XkbVariantSettingName).value().toString();
+    return MImSettings(XkbVariantSettingName).value().toString();
 }
 
 QString LayoutsManager::xkbSecondaryLayout() const
 {
-    return MGConfItem(XkbSecondaryLayoutSettingName).value().toString();
+    return MImSettings(XkbSecondaryLayoutSettingName).value().toString();
 }
 
 QString LayoutsManager::xkbSecondaryVariant() const
 {
-    return MGConfItem(XkbSecondaryVariantSettingName).value().toString();
+    return MImSettings(XkbSecondaryVariantSettingName).value().toString();
 }
 
 void LayoutsManager::setXkbMap(const QString &layout, const QString &variant)
@@ -285,7 +285,7 @@ void LayoutsManager::setXkbMap(const QString &layout, const QString &variant)
 bool LayoutsManager::hardwareKeyboardAutoCapsEnabled() const
 {
     // Arabic hwkb layout default disable autocaps.
-    QStringList autoCapsDisabledLayouts = MGConfItem(HardwareKeyboardAutoCapsDisabledLayouts)
+    QStringList autoCapsDisabledLayouts = MImSettings(HardwareKeyboardAutoCapsDisabledLayouts)
                                             .value(QStringList(DefaultHardwareKeyboardAutoCapsDisabledLayout))
                                             .toStringList();
     return !(autoCapsDisabledLayouts.contains(xkbLayout()));

@@ -53,7 +53,7 @@ void Ut_MImFontPool::initTestCase()
     static char *dummyArgv[2] = { (char *) "./ut_mimfontallocator",
                                   (char *) "-software" };
     // this value is required by the theme daemon
-    MGConfItem(TargetSettingsName).set(DefaultTargetName);
+    MImSettings(TargetSettingsName).set(DefaultTargetName);
 
     disableQtPlugins();
     app = new MApplication(dummyArgc, dummyArgv);

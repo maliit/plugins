@@ -94,7 +94,7 @@ void Ut_SymbolView::initTestCase()
 
     disableQtPlugins();
 
-    MGConfItem target(TargetSettingsName);
+    MImSettings target(TargetSettingsName);
     target.set(DefaultTargetName); // this value is required by the theme daemon
 
     app = new MApplication(argc, app_name);
@@ -103,7 +103,7 @@ void Ut_SymbolView::initTestCase()
 
     ReactionMapPainter::createInstance();
 
-    MGConfItem inputMethodSetting(InputMethodSettingName);
+    MImSettings inputMethodSetting(InputMethodSettingName);
 
     QStringList langlist;
     langlist << "libmeego-keyboard.so" << testLayoutFile;

@@ -34,7 +34,7 @@
 #include "mimoverlay.h"
 
 #include <MSceneManager>
-#include <MGConfItem>
+#include <mimsettings.h>
 #include <mplainwindow.h>
 
 #include <QString>
@@ -95,7 +95,7 @@ bool MImOverlay::acceptTouchEventsSetting()
     static bool gConfRead = false;
     static bool touchEventsAccepted = false;
     if (!gConfRead) {
-        touchEventsAccepted = MGConfItem(MultitouchSetting).value().toBool();
+        touchEventsAccepted = MImSettings(MultitouchSetting).value().toBool();
         gConfRead = true;
     }
     return touchEventsAccepted;

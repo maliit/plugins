@@ -81,8 +81,8 @@ private:
 
     MImEngineWordsInterface *mEngine;
 
-    MGConfItem *settingFuzzy;
-    MGConfItem *settingWordPrediction;
+    MImSettings *settingFuzzy;
+    MImSettings *settingWordPrediction;
 
     friend class Ut_MKeyboarEngineManager;
 };
