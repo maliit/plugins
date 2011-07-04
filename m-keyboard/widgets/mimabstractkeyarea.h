@@ -44,6 +44,7 @@
 #include <QTouchEvent>
 #include <QTimer>
 #include <QTime>
+#include <QGraphicsView>
 
 struct KeyContext;
 class FlickGesture;
