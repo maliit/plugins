@@ -32,7 +32,7 @@
 #ifndef HANDLESTYLE_H
 #define HANDLESTYLE_H
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 
 /*!
  * \brief This defines style that is common to all Handle class based widgets.

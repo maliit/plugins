@@ -32,7 +32,7 @@
 #ifndef GETCSSPROPERTY_H
 #define GETCSSPROPERTY_H
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 #include <QDebug>
 
 /*!

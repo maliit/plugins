@@ -43,9 +43,14 @@
 #include <QFontMetrics>
 #include <QSharedPointer>
 
+#ifdef HAVE_MEEGOTOUCH
 class MImAbstractKeyAreaStyleContainer;
-class MImKeyArea;
 class MScalableImage;
+#else
+#include "style-wrapper.h"
+#endif
+
+class MImKeyArea;
 
 //! Represents a key model with the key's current binding state, and also contains its visible area.
 class MImKey

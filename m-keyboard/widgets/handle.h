@@ -33,7 +33,7 @@
 #define HANDLE_H
 
 #include "handlestyle.h"
-#include <MStylableWidget>
+#include "style-wrapper.h"
 
 class QGraphicsLinearLayout;
 class FlickGesture;

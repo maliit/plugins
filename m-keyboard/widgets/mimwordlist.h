@@ -92,6 +92,11 @@ public:
      */
     void paintReactionMap(MReactionMap *reactionMap, QGraphicsView *view);
 
+#ifndef HAVE_MEEGOTOUCH
+    void appear() {show();}
+    void disappear() {disappear();}
+#endif
+
 signals:
     /*!
      * \brief This signal is emitted when clicking on a candidate.

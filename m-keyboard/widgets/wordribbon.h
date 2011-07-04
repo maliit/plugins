@@ -33,7 +33,7 @@
 #ifndef WORDRIBBON_H
 #define WORDRIBBON_H
 
-#include <MStylableWidget>
+#include "style-wrapper.h"
 #include "wordribbonstyle.h"
 #include "wordribbonhost.h"
 

@@ -29,21 +29,61 @@
 
  */
 
-#ifndef MIMTOOLBARSTYLE_H
-#define MIMTOOLBARSTYLE_H
+#ifndef STYLE_WRAPPER_H
+#define STYLE_WRAPPER_H
 
-#include "style-wrapper.h"
+#ifdef HAVE_MEEGOTOUCH
+#include <MStylableWidget>
+#include <MWidgetStyle>
+#else
+#include "style-types.h"
+#include "mwidget-wrapper.h"
 
-class MImToolbarStyle : public MWidgetStyle
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
+
+// Dummy macros:
+#define M_EXPORT
+#define M_STYLABLE_WIDGET(x)
+#define M_STYLE(x) \
+
+// Those macros expand correctly, but the created containers aren't used:
+#define M_STYLE_CONTAINER(STYLE) \
+public:\
+    const STYLE *operator->() const \
+    { \
+        static STYLE style; \
+        return &style; \
+    }
+
+#define M_STYLE_MODE(MODE) \
+public: \
+    void setMode ## MODE() {}
+
+#define M_STYLE_ATTRIBUTE(T, G, S) \
+public: \
+    T G () const { static T x; return x; } \
+    void set ## S ( const T& ) {}
+
+#define M_STYLE_PTR_ATTRIBUTE(T, G, S) \
+public: \
+    T G () const { T x = 0; return x; } \
+    void set ## S ( T ) {}
+
+class MStylableWidget
+    : public MWidget
 {
     Q_OBJECT
-    M_STYLE(MImToolbarStyle)
+
+public:
+    explicit MStylableWidget(QGraphicsItem *item)
+        : MWidget(item)
+    {}
+
+    void drawBackground(QPainter *, const QStyleOptionGraphicsItem *) const {}
+    void setStyleName(const QString &) {}
 };
 
-class M_EXPORT MImToolbarStyleContainer : public MWidgetStyleContainer
-{
-    M_STYLE_CONTAINER(MImToolbarStyle)
-};
-
-#endif
+#endif // HAVE_MEEGOTOUCH
+#endif // STYLE_WRAPPER_H
 

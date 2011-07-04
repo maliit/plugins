@@ -34,7 +34,7 @@
 #ifndef MIMTOOLBAR_H
 #define MIMTOOLBAR_H
 
-#include <MStylableWidget>
+#include "style-wrapper.h"
 #include "widgetbar.h"
 #include "mkeyboardcommon.h"
 #include "mimtoolbarstyle.h"

@@ -36,9 +36,9 @@
 #include "mimabstractkey.h"
 #include "mimabstractkeyareastyle.h"
 #include "layoutdata.h"
+#include "style-wrapper.h"
 
 #ifdef HAVE_MEEGOTOUCH
-#include <MStylableWidget>
 #include <MFeedback>
 #endif
 

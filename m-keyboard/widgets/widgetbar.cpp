@@ -128,7 +128,7 @@ QSizeF WidgetBar::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
 
 void WidgetBar::updateLayout()
 {
-    MWidget *widget = qobject_cast<MWidget *>(sender());
+    MWidget *widget = dynamic_cast<MWidget *>(sender());
 
     if (!widget) {
         return;

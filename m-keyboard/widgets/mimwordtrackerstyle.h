@@ -32,7 +32,7 @@
 #ifndef MIMWORDTRACKERSTYLE_H
 #define MIMWORDTRACKERSTYLE_H
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 
 class MImWordTrackerStyle : public MWidgetStyle
 {

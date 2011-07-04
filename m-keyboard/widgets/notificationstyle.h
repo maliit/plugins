@@ -33,7 +33,7 @@
 
 #include <QObject>
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 
 /*!
     \brief Style for language change notification

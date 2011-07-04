@@ -34,7 +34,7 @@
 #ifndef WIDGETBARSTYLE_H
 #define WIDGETBARSTYLE_H
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 
 /*!
     \brief This defines style that is common to all WidgetBar class based widgets.

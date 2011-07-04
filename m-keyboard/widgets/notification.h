@@ -36,7 +36,7 @@
 
 #include "notificationstyle.h"
 
-#include <MStylableWidget>
+#include "style-wrapper.h"
 #include <QTimeLine>
 #include <QTimer>
 

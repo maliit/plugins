@@ -32,7 +32,7 @@
 #ifndef MIMCORRECTIONCANDIDATEITEMSTYLE_H
 #define MIMCORRECTIONCANDIDATEITEMSTYLE_H
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 
 class MImCorrectionCandidateItemStyle : public MWidgetStyle
 {

@@ -33,7 +33,7 @@
 #define MIMCORRECTIONCANDIDATEITEM_H
 
 #include <QTimer>
-#include <MStylableWidget>
+#include "style-wrapper.h"
 #include "mimcorrectioncandidateitemstyle.h"
 
 class MImCorrectionCandidateItem: public MStylableWidget

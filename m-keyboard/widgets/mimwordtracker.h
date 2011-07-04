@@ -34,7 +34,7 @@
 #ifndef MIMWORDTRACKER_H
 #define MIMWORDTRACKER_H
 
-#include <MStylableWidget>
+#include "style-wrapper.h"
 #include "mimwordtrackerstyle.h"
 
 #include <QTimeLine>

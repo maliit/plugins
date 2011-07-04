@@ -773,9 +773,11 @@ MImAbstractKeyArea::MImAbstractKeyArea(MImAbstractKeyAreaPrivate *privateData,
     connect(&d->idleVkbTimer, SIGNAL(timeout()),
             this, SLOT(handleIdleVkb()));
 
+#ifdef HAVE_MEEGOTOUCH
     connect(MTheme::instance(), SIGNAL(themeChangeCompleted()),
             this, SLOT(onThemeChangeCompleted()),
             Qt::UniqueConnection);
+#endif
 }
 
 MImAbstractKeyArea::~MImAbstractKeyArea()

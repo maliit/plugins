@@ -31,7 +31,7 @@
 #ifndef MKEYBOARDMAGNIFIERSTYLE_H
 #define MKEYBOARDMAGNIFIERSTYLE_H
 
-#include <MWidgetStyle>
+#include "style-wrapper.h"
 #include <QFont>
 #include <QEasingCurve>
 

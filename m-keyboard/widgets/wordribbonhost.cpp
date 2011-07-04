@@ -40,7 +40,7 @@
 #include <mimenginewordsinterface.h>
 #include <MSceneManager>
 #include <mplainwindow.h>
-#include <MStylableWidget>
+#include "style-wrapper.h"
 
 #include <limits>
 #include <QtGui>

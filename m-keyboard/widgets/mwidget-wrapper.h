@@ -31,6 +31,8 @@
 
 #ifndef MWIDGET_WRAPPER_H
 #define MWIDGET_WRAPPER_H
+#include "style-types.h"
+
 #ifdef HAVE_MEEGOTOUCH
 #include <MWidget>
 #else
@@ -38,6 +40,14 @@
 
 class MWidget
     : public QGraphicsWidget
-{};
+{
+public:
+    explicit MWidget(QGraphicsItem *item = 0);
+    void appear();
+    void disappear();
+
+    MWidgetStyleContainer &style() const;
+    void applyStyle();
+};
 #endif // HAVE_MEEGOTOUCH
 #endif // MWIDGET_WRAPPER_H 

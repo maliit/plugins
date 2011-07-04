@@ -41,8 +41,10 @@ namespace
 #include <QFontMetrics>
 #include <QPainter>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MSceneManager>
 #include <MScalableImage>
+#endif
 #include <float.h>
 
 

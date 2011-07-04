@@ -34,7 +34,7 @@
 
 #include "keyboardshadowstyle.h"
 
-#include <MStylableWidget>
+#include "style-wrapper.h"
 
 /*!
   \brief Dummy widget for drawing keyboard shadow on top of the keyboard and over the

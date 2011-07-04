@@ -29,21 +29,4 @@
 
  */
 
-#ifndef MIMTOOLBARSTYLE_H
-#define MIMTOOLBARSTYLE_H
-
-#include "style-wrapper.h"
-
-class MImToolbarStyle : public MWidgetStyle
-{
-    Q_OBJECT
-    M_STYLE(MImToolbarStyle)
-};
-
-class M_EXPORT MImToolbarStyleContainer : public MWidgetStyleContainer
-{
-    M_STYLE_CONTAINER(MImToolbarStyle)
-};
-
-#endif
-
+#include "mimstylablewidget.h"

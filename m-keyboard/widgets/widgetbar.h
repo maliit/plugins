@@ -36,7 +36,7 @@
 
 #include "widgetbarstyle.h"
 
-#include <MStylableWidget>
+#include "style-wrapper.h"
 
 #include <QList>
 #include <QPointer>

@@ -31,7 +31,8 @@
 #ifndef MIMABSTRACTKEYAREASTYLE_H
 #define MIMABSTRACTKEYAREASTYLE_H
 
-#include <MWidgetStyle>
+#ifdef HAVE_MEEGOTOUCH
+#include "style-wrapper.h"
 
 /*!
     \brief Style for MImAbstractKeyArea derived classes.
@@ -231,5 +232,5 @@ class M_EXPORT MImAbstractKeyAreaStyleContainer : public MWidgetStyleContainer
 #endif
 };
 
-
+#endif // HAVE_MEEGOTOUCH
 #endif // MIMABSTRACTKEYAREASTYLE_H

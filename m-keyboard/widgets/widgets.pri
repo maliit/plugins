@@ -116,5 +116,8 @@ SOURCES += \
     $$WIDGETS_DIR/mwidget-wrapper.cpp \
     $$WIDGETS_DIR/mimrootwidget.cpp \
 
-INCLUDEPATH += $$WIDGETS_DIR
+INCLUDEPATH += \
+    $$WIDGETS_DIR \
+    $$STYLE_DIR \
+
 DEPENDPATH += $$WIDGETS_DIR
