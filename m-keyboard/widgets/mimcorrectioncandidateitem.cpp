@@ -34,6 +34,7 @@
 #include <QFontMetricsF>
 #include <QGraphicsSceneMouseEvent>
 #include <QTapAndHoldGesture>
+#include <QPainter>
 #include <QDebug>
 
 #include <MTheme>
