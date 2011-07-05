@@ -46,6 +46,7 @@
 #include "reactionmapwrapper.h"
 #include "enginemanager.h"
 #include "abstractenginewidgethost.h"
+#include "mimrootwidget.h"
 
 #include <mimenginefactory.h>
 #include <mabstractinputmethodhost.h>
@@ -239,7 +240,8 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
       toolbarHidePending(false),
       keyOverrideClearPending(false),
       regionUpdatesEnabledBeforeOrientationChange(true),
-      appOrientationAngle(M::Angle90) // shouldn't matter, see handleAppOrientationChanged comment
+      appOrientationAngle(M::Angle90), // shouldn't matter, see handleAppOrientationChanged comment
+      mRootWidget(new MImRootWidget)
 {
     Q_ASSERT(host != 0);
     Q_ASSERT(mainWindow != 0);
@@ -256,6 +258,8 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
     connect(host, SIGNAL(pluginsChanged()),
             this, SLOT(onPluginsChange()));
 
+    // TODO: Stuff root widget into MPlainWindow's scene.
+    // TODO: Remove scene window member, superseded root widget.
     view = new MPlainWindow(host, mainWindow);
     // MSceneManager's of MWindow's are lazy-initialized. However, their
     //implict creation does resize the scene rect of our view, so we trigger
@@ -2368,4 +2372,9 @@ int MKeyboardHost::keyboardHeight() const
         height += sharedHandleArea->size().height() - sharedHandleArea->shadowHeight();
     }
     return height;
+}
+
+MImRootWidget *MKeyboardHost::rootWidget() const
+{
+    return mRootWidget;
 }

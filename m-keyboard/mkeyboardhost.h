@@ -58,6 +58,7 @@ class SharedHandleArea;
 class MImToolbar;
 class SimpleFileLog;
 class AbstractEngineWidgetHost;
+class MImRootWidget;
 
 //! Logic class for virtual keyboard
 class MKeyboardHost: public MAbstractInputMethod
@@ -106,6 +107,10 @@ public:
     //! reimp_end
 
     int keyboardHeight() const;
+
+    //! Returns the root widget. All other QGraphics{Items,Widgets} should be
+    //! in this widget's hiearchy.
+    MImRootWidget *rootWidget() const;
 
 public slots:
     //! Toggle key state is changed to \a onOff.
@@ -459,6 +464,8 @@ private:
 
     //! Contains current keyboard overrides
     QMap<QString, QSharedPointer<MKeyOverride> > overrides;
+
+    MImRootWidget *mRootWidget; //!< the scene's root widget
 
     friend class EngineHandlerDefault;
     friend class EngineHandlerCJK;
