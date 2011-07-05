@@ -70,6 +70,7 @@ HEADERS += \
     $$WIDGETS_DIR/magnifier.h \
     $$WIDGETS_DIR/extendedkeys.h \
     $$WIDGETS_DIR/mwidget-wrapper.h \
+    $$WIDGETS_DIR/mimrootwidget.h \
 
 INSTALL_HEADERS += $$PUBLIC_HEADERS + $$PUBLIC_STYLE_HEADERS
 
@@ -113,6 +114,7 @@ SOURCES += \
     $$WIDGETS_DIR/magnifier.cpp \
     $$WIDGETS_DIR/extendedkeys.cpp \
     $$WIDGETS_DIR/mwidget-wrapper.cpp \
+    $$WIDGETS_DIR/mimrootwidget.cpp \
 
 INCLUDEPATH += $$WIDGETS_DIR
 DEPENDPATH += $$WIDGETS_DIR

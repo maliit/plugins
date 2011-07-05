@@ -37,6 +37,7 @@
 #include "reactionmapwrapper.h"
 #include "mplainwindow.h"
 #include "mkeyboardhost.h"
+#include "mimrootwidget.h"
 
 #include <QGraphicsLinearLayout>
 #include <QtGlobal>
@@ -170,7 +171,7 @@ void MImWordTracker::drawBackground(QPainter *painter, const QStyleOptionGraphic
             painter->save();
             QPointF widgetOrigin = QPointF(mapToScene(rect.x(), rect.y()));
             QTransform transform = QTransform::fromTranslate(widgetOrigin.x(), widgetOrigin.y());
-            const int angle = (MPlainWindow::instance()->sceneManager()->orientationAngle() + 180) % 360;
+            const int angle = (MKeyboardHost::instance()->rootWidget()->orientationAngle() + 180) % 360;
             transform.rotate(angle);
             painter->setTransform(transform, false);
             painter->drawPixmap(QRect(QPoint(0, 0), pointerSize), *style()->wordtrackerPointerImage()->pixmap());
@@ -286,7 +287,7 @@ void MImWordTracker::setPosition(const QRect &cursorRect)
         return;
 
     const QSize pointerSize = style()->wordtrackerPointerSize();
-    const int sceneWidth = MPlainWindow::instance()->sceneManager()->visibleSceneSize().width();
+    const int sceneWidth = MKeyboardHost::instance()->rootWidget()->geometry().width();
     QSizeF containerSize = preferredSize();
     containerSize.setHeight(containerSize.height() + pointerHeight());
 
@@ -308,7 +309,7 @@ void MImWordTracker::setPosition(const QRect &cursorRect)
     // TODO: limit the word tracker to visible widget part rather than to whole input area
     containerPositionY = qBound<int>(0,
                                      containerPositionY,
-                                     MPlainWindow::instance()->sceneManager()->visibleSceneSize().height()
+                                     MKeyboardHost::instance()->rootWidget()->geometry().height()
                                      - keyboardHeight
                                      - containerSize.height());
 
