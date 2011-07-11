@@ -5,12 +5,20 @@ TARGET = meego-im-plugins
 TEMPLATE = subdirs
 SUBDIRS = \
     meego-keyboard-quick \
+    m-keyboard \
 
 CONFIG(docs) {
     include (doc/doc.pri)
 }
 
+# allows us to use hidden Maliit FW API, such as MImSetting:
+DEFINES += MALIIT_FRAMEWORK_USE_INTERNAL_API
+
 !notests:!nomeegotouch {
+    SUBDIRS += \
+        tests \
+        fixture_virtualkeyboard \
+
 }
 
 !nomeegotouch {

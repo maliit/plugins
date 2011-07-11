@@ -17,6 +17,9 @@ QMAKE_CXXFLAGS += -Werror
 
 DEFINES += UNIT_TEST
 
+# allows us to use hidden Maliit FW API, such as MImSetting:
+DEFINES += MALIIT_FRAMEWORK_USE_INTERNAL_API
+
 QT += testlib
 
 INCLUDEPATH += \
