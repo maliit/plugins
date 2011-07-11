@@ -40,6 +40,11 @@ ifneq (,$(filter noreactionmap,$(TMP_BUILD_OPTS)))
     QMAKE_OPTIONS += CONFIG+=noreactionmap
 endif
 
+ifneq (,$(filter nomeegotouch,$(TMP_BUILD_OPTS)))
+    QMAKE_OPTIONS += CONFIG-=enable-meegotouch
+else
+    QMAKE_OPTIONS += CONFIG+=enable-meegotouch
+endif
 
 # shared library versions, option 1
 version=0.1.0
