@@ -33,6 +33,7 @@ HEADERS += \
     $$COMMON_DIR/enginehandler.h \
     $$COMMON_DIR/cjklogicstatemachine.h \
     $$COMMON_DIR/enginecjk.h \
+    $$COMMON_DIR/namespace.h \
 
 SOURCES += \
     $$COMMON_DIR/keyboarddata.cpp \
