@@ -46,6 +46,7 @@
 #include "reactionmapwrapper.h"
 #include "enginemanager.h"
 #include "abstractenginewidgethost.h"
+#include "mimrootwidget.h"
 
 #include <mimenginefactory.h>
 #include <mabstractinputmethodhost.h>
@@ -236,6 +237,7 @@ MKeyboardHost::MKeyboardHost(MAbstractInputMethodHost *host,
       spaceInsertedAfterCommitString(false),
       touchPointLogHandle(0),
       view(0),
+      mRootWidget(new MImRootWidget),
       toolbarHidePending(false),
       keyOverrideClearPending(false),
       regionUpdatesEnabledBeforeOrientationChange(true),
@@ -459,6 +461,9 @@ MKeyboardHost::~MKeyboardHost()
     ReactionMapPainter::destroyInstance();
     RegionTracker::destroyInstance();
     currentInstance = 0;
+    // TODO: let scene handle deletion of this widget:
+    delete mRootWidget;
+    mRootWidget = 0;
 
     if (gOwnsComponentData) {
         delete MComponentData::instance();

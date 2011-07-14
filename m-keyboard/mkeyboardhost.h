@@ -58,6 +58,7 @@ class SharedHandleArea;
 class MImToolbar;
 class SimpleFileLog;
 class AbstractEngineWidgetHost;
+class MImRootWidget;
 
 //! Logic class for virtual keyboard
 class MKeyboardHost: public MAbstractInputMethod
@@ -450,6 +451,7 @@ private:
 
     SimpleFileLog *touchPointLogHandle;
     MPlainWindow *view;
+    MImRootWidget *mRootWidget;
 
     bool toolbarHidePending;
     bool keyOverrideClearPending;
