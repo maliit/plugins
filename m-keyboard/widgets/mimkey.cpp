@@ -35,6 +35,7 @@
 #include "mimkeyarea.h"
 #include "mvirtualkeyboardstyle.h"
 #include "getcssproperty.h"
+#include "mimkeystyle.h"
 
 #include <mplainwindow.h>
 
@@ -131,6 +132,9 @@ namespace {
 
         return QString();
     }
+
+    // TODO: Make this a properly shared style between keys of same area.
+    MImKeyStyle gKeyStyle(QLatin1String("NonExistantStyleClassName"));
 }
 
 
@@ -568,48 +572,40 @@ bool MImKey::isGravityActive() const
 
 const MScalableImage * MImKey::backgroundImage() const
 {
-    const MScalableImage *background = 0;
-    QString backgroundProperty(KeyBackground);
+    static MScalableImage result;
+    static QPixmap bg;
 
-    backgroundProperty.append(style2name(model().style()));
+    MImKeyStylingContext ctx(static_cast<MaliitKeyboard::KeyState>(state()),
+                             static_cast<MaliitKeyboard::KeyStyle>(model().style()));
 
-    switch (state()) {
-    case MImAbstractKey::Pressed:
-        backgroundProperty.append(PressedStateName);
-        break;
-    case MImAbstractKey::Selected:
-        backgroundProperty.append(SelectedStateName);
-        break;
-    case MImAbstractKey::Disabled:
-        backgroundProperty.append(ignoreOverride ? NormalStateName : DisabledStateName );
-        break;
-    case MImAbstractKey::Normal:
-    default:
-        backgroundProperty.append(NormalStateName);
-        break;
+    // KeyStateDisabled can only be set through key overrides, but if we are
+    // currently ignoring overrides, we need to default to idle state:
+    if (ignoreOverride && ctx.state == MaliitKeyboard::KeyStateDisabled) {
+        ctx.state = MaliitKeyboard::KeyStateIdle;
     }
 
-    if (!ignoreOverride && override && override->highlighted() && enabled()) {
-        backgroundProperty.append(HighlightedName);
+    // Check whether the key needs to be highlighted:
+    if (not ignoreOverride && override && override->highlighted() && enabled()) {
+        ctx.overrides |= MaliitKeyboard::KeyOverrideHighlighted;
     }
 
-    background = getCSSProperty<const MScalableImage *>(styleContainer, backgroundProperty, false);
-    return background;
+    bg = gKeyStyle.background(ctx);
+    result.setPixmap(&bg);
+    return &result;
 }
 
 const MScalableImage *MImKey::normalBackgroundImage() const
 {
-    const MScalableImage *background = 0;
-    QString backgroundProperty(KeyBackground);
+    static MScalableImage result;
+    static QPixmap bg;
 
-    backgroundProperty.append(style2name(model().style()));
+    // normalBackgroundImage() always ignores overriden attributes:
+    MImKeyStylingContext ctx(MaliitKeyboard::KeyStateIdle,
+                             static_cast<MaliitKeyboard::KeyStyle>(model().style()));
 
-    backgroundProperty.append(NormalStateName);
-
-    // this method ignores overriden attributes
-
-    background = getCSSProperty<const MScalableImage *>(styleContainer, backgroundProperty, false);
-    return background;
+    bg = gKeyStyle.background(ctx);
+    result.setPixmap(&bg);
+    return &result;
 }
 
 QRectF MImKey::boundingRect() const
