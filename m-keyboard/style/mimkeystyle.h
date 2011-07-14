@@ -31,5 +31,77 @@
 
 #ifndef MIMKEYSTYLE_H
 #define MIMKEYSTYLE_H
-#endif // MIMKEYSTYLE_H
 
+#include "namespace.h"
+
+#include <minputmethodnamespace.h>
+#include <QtCore>
+#include <QtGui>
+#include <QMargins>
+
+//! Context (look&feel) helper for MImKeyStyle
+struct MImKeyStylingContext
+{
+public:
+    MaliitKeyboard::KeyState state;
+    MaliitKeyboard::KeyStyle style;
+    MaliitKeyboard::KeyOverrides overrides;
+
+    explicit MImKeyStylingContext(MaliitKeyboard::KeyState newState,
+                                  MaliitKeyboard::KeyStyle newStyle,
+                                  MaliitKeyboard::KeyOverrides newOverrides = MaliitKeyboard::KeyOverrideNone);
+};
+
+//! Context (geometry) helper for MImKeyStyle
+struct MImKeyGeometryContext
+{
+public:
+    MaliitKeyboard::KeyWidth width;
+    MaliitKeyboard::KeyHeight height;
+    MInputMethod::Orientation orientation;
+
+    explicit MImKeyGeometryContext(MaliitKeyboard::KeyWidth newWidth,
+                                   MaliitKeyboard::KeyHeight newHeight,
+                                   MInputMethod::Orientation newOrientation);
+};
+
+//! This class can be queried for style information regarding keys.
+//! Instances of this class are supposed to be stateless; all relevant
+//! information is given through a styling context parameter.
+//! One style instance can be used for an arbitrary amount of keys.
+class MImKeyStyle
+{
+private:
+    const QLatin1String styleClassName; //!< Keys with same style class name will use same styling information.
+
+public:
+    //! C'tor
+    //! @param newStyleClassName the style class name of a group of keys
+    explicit MImKeyStyle(const QLatin1String &newStyleClassName);
+
+    //! D'tor
+    virtual ~MImKeyStyle();
+
+    //! Returns background depending on context.
+    QPixmap background(const MImKeyStylingContext &context) const;
+
+    //! Returns backspace key icon depending on context, where size is an optional constraint.
+    QPixmap icon(const MImKeyStylingContext &context,
+                 MaliitKeyboard::KeyAction action,
+                 const QSizeF size = QSizeF()) const;
+
+    //! Returns font depending on context, where size is an optional constraint.
+    QFont font(const MImKeyStylingContext &context,
+               const QSizeF size = QSizeF()) const;
+
+    //! Returns font color depending on context.
+    QColor fontColor(const MImKeyStylingContext &context) const;
+
+    //! Returns size depending on context.
+    QSizeF size(const MImKeyGeometryContext &context) const;
+
+    //! Returns key margins depending on context.
+    QMargins margins(const MImKeyGeometryContext &context) const;
+};
+
+#endif // MIMKEYSTYLE_H
