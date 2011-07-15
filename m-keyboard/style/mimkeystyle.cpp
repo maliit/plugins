@@ -233,10 +233,12 @@ MImGraphicsAsset MImKeyStyle::icon(const MImKeyStylingContext &context,
 }
 
 QFont MImKeyStyle::font(const MImKeyStylingContext &context,
+                        const QString &text,
                         const QSizeF size) const
 {
     // TODO: compute correct font
     Q_UNUSED(context)
+    Q_UNUSED(text)
     Q_UNUSED(size)
     return QFont("Nokia pure", 26);
 }

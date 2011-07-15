@@ -96,6 +96,7 @@ public:
 
     //! Returns font depending on context, where size is an optional constraint.
     QFont font(const MImKeyStylingContext &context,
+               const QString &text,
                const QSizeF size = QSizeF()) const;
 
     //! Returns font color depending on context.
