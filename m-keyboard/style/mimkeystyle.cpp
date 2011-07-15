@@ -39,46 +39,64 @@ namespace {
     const char * const IconsDirectory =
         "/usr/share/themes/base/meegotouch/icons";
 
-    struct StyleContainer
+    struct StyleNode
     {
     public:
         typedef QHash<QLatin1String, QVariant> AttributesMap;
 
-        const StyleContainer *defaultContainer;
-        AttributesMap attributes;
+        const StyleNode *parent;
+        AttributesMap attributes; //!< contains default values suitable for both orientations
+        AttributesMap landscapeAttributes; //!< overrides values in default attributes when using landscape mode
+        AttributesMap portraitAttributes; //!< ovverides values in default attributes when using portrait mode
 
-        explicit StyleContainer(const StyleContainer *newDefaultContainer = 0)
-            : defaultContainer(newDefaultContainer)
+        explicit StyleNode(const StyleNode *newParent = 0)
+            : parent(newParent)
         {}
+
+        QVariant findAttributeWithOrientation(const QString &name,
+                                              MInputMethod::Orientation orientation) const
+        {
+            const AttributesMap &map(orientation == MInputMethod::Landscape ? landscapeAttributes
+                                                                            : portraitAttributes);
+
+            const QVariant result(map.value(QLatin1String(name.toAscii().constData())));
+
+            if (not result.isValid()) {
+                return findAttribute(name);
+            }
+
+            return result;
+        }
+
 
         QVariant findAttribute(const QString &name) const
         {
-            QVariant result(attributes.value(QLatin1String(name.toAscii().constData())));
+            const QVariant result(attributes.value(QLatin1String(name.toAscii().constData())));
 
-            if (not result.isValid() && defaultContainer) {
-                return defaultContainer->findAttribute(name);
+            // Initiates recursive lookup:
+            if (not result.isValid() && parent) {
+                return parent->findAttribute(name);
             }
 
             return result;
         }
     };
 
-    // "Element.SomeStyleClass:Mode =>
-    //    StyleContainer "SomeStyleClass:Mode" with defaultContainer = "SomeStyleClass"
-    //    "SomeStyleClass" has defaultContainer "Element"
-    // => Element:Mode is a valid style container!
-    // => Element is a valid style container!
-    QHash<QLatin1String, const StyleContainer *> availableStyleContainers;
+    // "Element.{Portrait, Landscape}:customMode =>
+    //    StyleNode "Element:customMode" with parent = ?
+    // * Element:Mode is a valid style node!
+    // * Element is a valid style mode!
+    QHash<QLatin1String, const StyleNode *> availableStyleContainers;
 
     // Test data
     void fillStyleContainers()
     {
         typedef QLatin1String QL1S;
-        StyleContainer *mimKey = new StyleContainer; // Default
-        StyleContainer *extKey = new StyleContainer(mimKey); // Overrides some stuff
-        StyleContainer *mimKeyChild = new StyleContainer(mimKey); // 100% transient to MImKey
+        StyleNode *mimKey = new StyleNode; // Default
+        StyleNode *extKey = new StyleNode(mimKey); // Overrides some stuff
+        StyleNode *mimKeyChild = new StyleNode(mimKey); // 100% transient to MImKey
 
-        StyleContainer::AttributesMap &m = mimKey->attributes;
+        StyleNode::AttributesMap &m = mimKey->attributes;
         m.insert(QL1S("background-borders"), "16 16 16 16");
 
         m.insert(QL1S("background"), "meegotouch-keyboard-key");
@@ -96,7 +114,7 @@ namespace {
         m.insert(QL1S("background-special-highlighted-selected"), "meegotouch-keyboard-function-key-highlighted-selected");
         m.insert(QL1S("background-special-highlighted-disabled"), "meegotouch-keyboard-function-key-highlighted-disabled");
 
-        StyleContainer::AttributesMap &e = extKey->attributes;
+        StyleNode::AttributesMap &e = extKey->attributes;
         e.insert(QL1S("backound"), "meegotouch-keyboard-accent-magnifier-background");
         e.insert(QL1S("backound-pressed"), "");
         e.insert(QL1S("backound-selected"), "");
@@ -169,7 +187,7 @@ QPixmap MImKeyStyle::background(const MImKeyStylingContext &context) const
         break;
     }
 
-    const StyleContainer *container(availableStyleContainers.value(styleClassName));
+    const StyleNode *container(availableStyleContainers.value(styleClassName));
     if (container) {
         return QPixmap(fileName.arg(container->findAttribute(keyName.join("-")).toString()));
     }
