@@ -18,6 +18,7 @@ HEADERS += ut_mimkey.h \
            $$COMMON_DIR/keyevent.h \
            $$COMMON_DIR/mimfontpool.h \
            $$STYLE_DIR/mimkeystyle.h \
+           $$STYLE_DIR/mimgraphicsasset.h \
            $$STYLE_HEADERS
 
 SOURCES += ut_mimkey.cpp \
@@ -28,4 +29,5 @@ SOURCES += ut_mimkey.cpp \
            $$COMMON_DIR/keyevent.cpp \
            $$COMMON_DIR/mimfontpool.cpp \
            $$STYLE_DIR/mimkeystyle.cpp \
+           $$STYLE_DIR/mimgraphicsasset.cpp \
 

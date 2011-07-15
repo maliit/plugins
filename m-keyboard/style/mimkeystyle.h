@@ -33,11 +33,15 @@
 #define MIMKEYSTYLE_H
 
 #include "namespace.h"
+#include "mimgraphicsasset.h"
 
 #include <minputmethodnamespace.h>
 #include <QtCore>
 #include <QtGui>
 #include <QMargins>
+
+// TODO: Move to proper place.
+Q_DECLARE_METATYPE(QMargins)
 
 //! Context (look&feel) helper for MImKeyStyle
 struct MImKeyStylingContext
@@ -83,12 +87,12 @@ public:
     virtual ~MImKeyStyle();
 
     //! Returns background depending on context.
-    QPixmap background(const MImKeyStylingContext &context) const;
+    MImGraphicsAsset background(const MImKeyStylingContext &context) const;
 
     //! Returns backspace key icon depending on context, where size is an optional constraint.
-    QPixmap icon(const MImKeyStylingContext &context,
-                 MaliitKeyboard::KeyAction action,
-                 const QSizeF size = QSizeF()) const;
+    MImGraphicsAsset icon(const MImKeyStylingContext &context,
+                          MaliitKeyboard::KeyAction action,
+                          const QSizeF size = QSizeF()) const;
 
     //! Returns font depending on context, where size is an optional constraint.
     QFont font(const MImKeyStylingContext &context,

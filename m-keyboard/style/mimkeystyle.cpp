@@ -91,13 +91,17 @@ namespace {
     // Test data
     void fillStyleContainers()
     {
+        qRegisterMetaType<QMargins>("QMargins");
+
         typedef QLatin1String QL1S;
         StyleNode *mimKey = new StyleNode; // Default
         StyleNode *extKey = new StyleNode(mimKey); // Overrides some stuff
         StyleNode *mimKeyChild = new StyleNode(mimKey); // 100% transient to MImKey
 
         StyleNode::AttributesMap &m = mimKey->attributes;
-        m.insert(QL1S("background-borders"), "16 16 16 16");
+        QVariant margins;
+        margins.setValue(QMargins(16, 16, 16, 16));
+        m.insert(QL1S("background-borders"), margins);
 
         m.insert(QL1S("background"), "meegotouch-keyboard-key");
         m.insert(QL1S("background-pressed"), "meegotouch-keyboard-key-pressed");
@@ -152,7 +156,7 @@ MImKeyStyle::MImKeyStyle(const QLatin1String &newStyleClassName)
 MImKeyStyle::~MImKeyStyle()
 {}
 
-QPixmap MImKeyStyle::background(const MImKeyStylingContext &context) const
+MImGraphicsAsset MImKeyStyle::background(const MImKeyStylingContext &context) const
 {
     QString fileName = QString("%1/%2.png").arg(ThemeDirectory);
 
@@ -189,15 +193,17 @@ QPixmap MImKeyStyle::background(const MImKeyStylingContext &context) const
 
     const StyleNode *container(availableStyleContainers.value(styleClassName));
     if (container) {
-        return QPixmap(fileName.arg(container->findAttribute(keyName.join("-")).toString()));
+        const QString joinedKeyName(keyName.join("-"));
+        return MImGraphicsAsset(joinedKeyName, QMargins(),
+                                QPixmap(fileName.arg(container->findAttribute(joinedKeyName).toString())));
     }
 
-    return QPixmap();
+    return MImGraphicsAsset();
 }
 
-QPixmap MImKeyStyle::icon(const MImKeyStylingContext &context,
-                          MaliitKeyboard::KeyAction action,
-                          const QSizeF size) const
+MImGraphicsAsset MImKeyStyle::icon(const MImKeyStylingContext &context,
+                                   MaliitKeyboard::KeyAction action,
+                                   const QSizeF size) const
 {
     // TODO: compute correct file name, take context and size constraint into account
     Q_UNUSED(context)
@@ -223,7 +229,7 @@ QPixmap MImKeyStyle::icon(const MImKeyStylingContext &context,
         break;
     }
 
-    return QPixmap(fileName);
+    return MImGraphicsAsset(fileName, QMargins(), QPixmap(fileName));
 }
 
 QFont MImKeyStyle::font(const MImKeyStylingContext &context,

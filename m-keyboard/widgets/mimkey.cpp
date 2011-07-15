@@ -36,6 +36,7 @@
 #include "mvirtualkeyboardstyle.h"
 #include "getcssproperty.h"
 #include "mimkeystyle.h"
+#include "mimgraphicsasset.h"
 
 #include <mplainwindow.h>
 
@@ -590,7 +591,7 @@ const MScalableImage * MImKey::backgroundImage() const
         ctx.overrides |= MaliitKeyboard::KeyOverrideHighlighted;
     }
 
-    bg = gKeyStyle.background(ctx);
+    bg = gKeyStyle.background(ctx).pixmap;
     result.setPixmap(&bg);
     return &result;
 }
@@ -604,7 +605,7 @@ const MScalableImage *MImKey::normalBackgroundImage() const
     MImKeyStylingContext ctx(MaliitKeyboard::KeyStateIdle,
                              static_cast<MaliitKeyboard::KeyStyle>(model().style()));
 
-    bg = gKeyStyle.background(ctx);
+    bg = gKeyStyle.background(ctx).pixmap;
     result.setPixmap(&bg);
     return &result;
 }
