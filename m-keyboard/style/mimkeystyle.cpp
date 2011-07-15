@@ -33,11 +33,79 @@
 
 namespace {
     const char * const ThemeDirectory =
-        "/usr/share/themes/blanco/meegotouch/images/theme/meegotouch-virtual-keyboard/";
+        "/usr/share/themes/blanco/meegotouch/images/theme/meegotouch-virtual-keyboard";
 
     // TODO: unify with theme folder? Or have only one big SVG even?
     const char * const IconsDirectory =
-        "/usr/share/themes/base/meegotouch/icons/";
+        "/usr/share/themes/base/meegotouch/icons";
+
+    struct StyleContainer
+    {
+    public:
+        typedef QHash<QLatin1String, QVariant> AttributesMap;
+
+        const StyleContainer *defaultContainer;
+        AttributesMap attributes;
+
+        explicit StyleContainer(const StyleContainer *newDefaultContainer = 0)
+            : defaultContainer(newDefaultContainer)
+        {}
+
+        QVariant findAttribute(const QString &name) const
+        {
+            QVariant result(attributes.value(QLatin1String(name.toAscii().constData())));
+
+            if (not result.isValid() && defaultContainer) {
+                return defaultContainer->findAttribute(name);
+            }
+
+            return result;
+        }
+    };
+
+    // "Element.SomeStyleClass:Mode =>
+    //    StyleContainer "SomeStyleClass:Mode" with defaultContainer = "SomeStyleClass"
+    //    "SomeStyleClass" has defaultContainer "Element"
+    // => Element:Mode is a valid style container!
+    // => Element is a valid style container!
+    QHash<QLatin1String, const StyleContainer *> availableStyleContainers;
+
+    // Test data
+    void fillStyleContainers()
+    {
+        typedef QLatin1String QL1S;
+        StyleContainer *mimKey = new StyleContainer; // Default
+        StyleContainer *extKey = new StyleContainer(mimKey); // Overrides some stuff
+        StyleContainer *mimKeyChild = new StyleContainer(mimKey); // 100% transient to MImKey
+
+        StyleContainer::AttributesMap &m = mimKey->attributes;
+        m.insert(QL1S("background-borders"), "16 16 16 16");
+
+        m.insert(QL1S("background"), "meegotouch-keyboard-key");
+        m.insert(QL1S("background-pressed"), "meegotouch-keyboard-key-pressed");
+        m.insert(QL1S("background-selected"), "meegotouch-keyboard-key-selected");
+        m.insert(QL1S("background-disabled"), "meegotouch-keyboard-key-disabled");
+
+        m.insert(QL1S("background-special"), "meegotouch-keyboard-function-key");
+        m.insert(QL1S("background-special-pressed"), "meegotouch-keyboard-function-key-pressed");
+        m.insert(QL1S("background-special-selected"), "meegotouch-keyboard-function-key-selected");
+        m.insert(QL1S("background-special-disabled"), "meegotouch-keyboard-function-key-disabled");
+
+        m.insert(QL1S("background-special-highlighted"), "meegotouch-keyboard-function-key-highlighted");
+        m.insert(QL1S("background-special-highlighted-pressed"), "meegotouch-keyboard-function-key-highlighted-pressed");
+        m.insert(QL1S("background-special-highlighted-selected"), "meegotouch-keyboard-function-key-highlighted-selected");
+        m.insert(QL1S("background-special-highlighted-disabled"), "meegotouch-keyboard-function-key-highlighted-disabled");
+
+        StyleContainer::AttributesMap &e = extKey->attributes;
+        e.insert(QL1S("backound"), "meegotouch-keyboard-accent-magnifier-background");
+        e.insert(QL1S("backound-pressed"), "");
+        e.insert(QL1S("backound-selected"), "");
+        e.insert(QL1S("backound-disabled"), "");
+
+        availableStyleContainers.insert(QL1S("MImKey"), mimKey);
+        availableStyleContainers.insert(QL1S("ExtendedKey"), extKey);
+        availableStyleContainers.insert(QL1S("MImKeyChild"), mimKeyChild);
+    }
 }
 
 MImKeyStylingContext::MImKeyStylingContext(MaliitKeyboard::KeyState newState,
@@ -58,20 +126,23 @@ MImKeyGeometryContext::MImKeyGeometryContext(MaliitKeyboard::KeyWidth newWidth,
 
 MImKeyStyle::MImKeyStyle(const QLatin1String &newStyleClassName)
     : styleClassName(newStyleClassName)
-{}
+{
+    // FIXME: move to proper place
+    fillStyleContainers();
+}
 
 MImKeyStyle::~MImKeyStyle()
 {}
 
 QPixmap MImKeyStyle::background(const MImKeyStylingContext &context) const
 {
-    QString fileName = QString("%1/%2-%3.png").arg(ThemeDirectory).arg("meegotouch-keyboard");
+    QString fileName = QString("%1/%2.png").arg(ThemeDirectory);
 
     QStringList keyName;
-    keyName.append("key");
+    keyName.append("background");
 
     if (context.style == MaliitKeyboard::KeyStyleSpecial) {
-        keyName.replace(0, "function-key");
+        keyName.append("special");
     }
 
     // FIXME: action-key is never used in original LMT-based styling code?
@@ -98,7 +169,12 @@ QPixmap MImKeyStyle::background(const MImKeyStylingContext &context) const
         break;
     }
 
-    return QPixmap(fileName.arg(keyName.join("-")));
+    const StyleContainer *container(availableStyleContainers.value(styleClassName));
+    if (container) {
+        return QPixmap(fileName.arg(container->findAttribute(keyName.join("-")).toString()));
+    }
+
+    return QPixmap();
 }
 
 QPixmap MImKeyStyle::icon(const MImKeyStylingContext &context,

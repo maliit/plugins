@@ -134,7 +134,8 @@ namespace {
     }
 
     // TODO: Make this a properly shared style between keys of same area.
-    MImKeyStyle gKeyStyle(QLatin1String("NonExistantStyleClassName"));
+    // TOOD: Make name based on actual style name/class type of key area.
+    MImKeyStyle gKeyStyle(QLatin1String("MImKey"));
 }
 
 
