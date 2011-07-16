@@ -108,10 +108,15 @@ namespace {
         m.insert(QL1S("background-selected"), "meegotouch-keyboard-key-selected");
         m.insert(QL1S("background-disabled"), "meegotouch-keyboard-key-disabled");
 
-        m.insert(QL1S("background-special"), "meegotouch-keyboard-function-key");
-        m.insert(QL1S("background-special-pressed"), "meegotouch-keyboard-function-key-pressed");
-        m.insert(QL1S("background-special-selected"), "meegotouch-keyboard-function-key-selected");
-        m.insert(QL1S("background-special-disabled"), "meegotouch-keyboard-function-key-disabled");
+        m.insert(QL1S("key-background-highlighted"), "meegotouch-keyboard-key-highlighted");
+        m.insert(QL1S("key-background-highlighted-pressed"), "meegotouch-function-key-highlighted-pressed");
+        m.insert(QL1S("key-background-highlighted-selected"), "meegotouch-keyboard-key-highlighted-selected");
+        m.insert(QL1S("key-background-highlighted-disabled"), "meegotouch-keyboard-key-highlighted-disabled");
+
+        m.insert(QL1S("key-background-special"), "meegotouch-keyboard-function-key");
+        m.insert(QL1S("key-background-special-pressed"), "meegotouch-keyboard-function-key-pressed");
+        m.insert(QL1S("key-background-special-selected"), "meegotouch-keyboard-function-key-selected");
+        m.insert(QL1S("key-background-special-disabled"), "meegotouch-keyboard-function-key-disabled");
 
         m.insert(QL1S("background-special-highlighted"), "meegotouch-keyboard-function-key-highlighted");
         m.insert(QL1S("background-special-highlighted-pressed"), "meegotouch-keyboard-function-key-highlighted-pressed");
