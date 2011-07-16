@@ -31,6 +31,11 @@
 
 #include "mimkeystyle.h"
 
+#ifndef EXPERIMENTAL_STYLING
+#include "getcssproperty.h"
+#include <MScalableImage>
+#endif
+
 namespace {
     const char * const ThemeDirectory =
         "/usr/share/themes/blanco/meegotouch/images/theme/meegotouch-virtual-keyboard";
@@ -101,12 +106,12 @@ namespace {
         StyleNode::AttributesMap &m = mimKey->attributes;
         QVariant margins;
         margins.setValue(QMargins(16, 16, 16, 16));
-        m.insert(QL1S("background-borders"), margins);
+        m.insert(QL1S("key-background-borders"), margins);
 
-        m.insert(QL1S("background"), "meegotouch-keyboard-key");
-        m.insert(QL1S("background-pressed"), "meegotouch-keyboard-key-pressed");
-        m.insert(QL1S("background-selected"), "meegotouch-keyboard-key-selected");
-        m.insert(QL1S("background-disabled"), "meegotouch-keyboard-key-disabled");
+        m.insert(QL1S("key-background"), "meegotouch-keyboard-key");
+        m.insert(QL1S("key-background-pressed"), "meegotouch-keyboard-key-pressed");
+        m.insert(QL1S("key-background-selected"), "meegotouch-keyboard-key-selected");
+        m.insert(QL1S("key-background-disabled"), "meegotouch-keyboard-key-disabled");
 
         m.insert(QL1S("key-background-highlighted"), "meegotouch-keyboard-key-highlighted");
         m.insert(QL1S("key-background-highlighted-pressed"), "meegotouch-function-key-highlighted-pressed");
@@ -118,16 +123,16 @@ namespace {
         m.insert(QL1S("key-background-special-selected"), "meegotouch-keyboard-function-key-selected");
         m.insert(QL1S("key-background-special-disabled"), "meegotouch-keyboard-function-key-disabled");
 
-        m.insert(QL1S("background-special-highlighted"), "meegotouch-keyboard-function-key-highlighted");
-        m.insert(QL1S("background-special-highlighted-pressed"), "meegotouch-keyboard-function-key-highlighted-pressed");
-        m.insert(QL1S("background-special-highlighted-selected"), "meegotouch-keyboard-function-key-highlighted-selected");
-        m.insert(QL1S("background-special-highlighted-disabled"), "meegotouch-keyboard-function-key-highlighted-disabled");
+        m.insert(QL1S("key-background-special-highlighted"), "meegotouch-keyboard-function-key-highlighted");
+        m.insert(QL1S("key-background-special-highlighted-pressed"), "meegotouch-keyboard-function-key-highlighted-pressed");
+        m.insert(QL1S("key-background-special-highlighted-selected"), "meegotouch-keyboard-function-key-highlighted-selected");
+        m.insert(QL1S("key-background-special-highlighted-disabled"), "meegotouch-keyboard-function-key-highlighted-disabled");
 
         StyleNode::AttributesMap &e = extKey->attributes;
-        e.insert(QL1S("backound"), "meegotouch-keyboard-accent-magnifier-background");
-        e.insert(QL1S("backound-pressed"), "");
-        e.insert(QL1S("backound-selected"), "");
-        e.insert(QL1S("backound-disabled"), "");
+        e.insert(QL1S("key-backound"), "meegotouch-keyboard-accent-magnifier-background");
+        e.insert(QL1S("key-backound-pressed"), "");
+        e.insert(QL1S("key-backound-selected"), "");
+        e.insert(QL1S("key-backound-disabled"), "");
 
         availableStyleContainers.insert(QL1S("MImKey"), mimKey);
         availableStyleContainers.insert(QL1S("ExtendedKey"), extKey);
@@ -151,12 +156,22 @@ MImKeyGeometryContext::MImKeyGeometryContext(MaliitKeyboard::KeyWidth newWidth,
     , orientation(newOrientation)
 {}
 
+#ifdef EXPERIMENTAL_STYLING
 MImKeyStyle::MImKeyStyle(const QLatin1String &newStyleClassName)
     : styleClassName(newStyleClassName)
 {
     // FIXME: move to proper place
     fillStyleContainers();
 }
+#else
+MImKeyStyle::MImKeyStyle(const QLatin1String &newStyleClassName,
+                         const MImAbstractKeyAreaStyleContainer &newStyleContainer)
+    : styleClassName(newStyleClassName)
+    , styleContainer(newStyleContainer)
+{
+    qRegisterMetaType<const MScalableImage *>();
+}
+#endif
 
 MImKeyStyle::~MImKeyStyle()
 {}
@@ -166,6 +181,7 @@ MImGraphicsAsset MImKeyStyle::background(const MImKeyStylingContext &context) co
     QString fileName = QString("%1/%2.png").arg(ThemeDirectory);
 
     QStringList keyName;
+    keyName.append("key");
     keyName.append("background");
 
     if (context.style == MaliitKeyboard::KeyStyleSpecial) {
@@ -196,6 +212,8 @@ MImGraphicsAsset MImKeyStyle::background(const MImKeyStylingContext &context) co
         break;
     }
 
+// TODO: fix action key highlighting
+#ifdef EXPERIMENTAL_STYLING
     const StyleNode *container(availableStyleContainers.value(styleClassName));
     if (container) {
         const QString joinedKeyName(keyName.join("-"));
@@ -204,6 +222,19 @@ MImGraphicsAsset MImKeyStyle::background(const MImKeyStylingContext &context) co
     }
 
     return MImGraphicsAsset();
+#else
+    const QString identifier(keyName.join("-"));
+
+    for (int index = 1; index < keyName.size(); ++index) {
+        keyName[index][0] = keyName.at(index).at(0).toUpper();
+    }
+
+    const QString joinedKeyName(keyName.join(""));
+    const MScalableImage *img = getCSSProperty<const MScalableImage *>(styleContainer, joinedKeyName, false);
+    return MImGraphicsAsset(identifier, QMargins(),
+                            (img ? *img->pixmap() : QPixmap()));
+#endif
+
 }
 
 MImGraphicsAsset MImKeyStyle::icon(const MImKeyStylingContext &context,

@@ -38,6 +38,10 @@ DEFINES += MALIIT_FRAMEWORK_USE_INTERNAL_API
     CONFIG += meegoreactionmap
 }
 
+experimental-styling {
+    DEFINES += EXPERIMENTAL_STYLING
+}
+
 CONFIG += link_pkgconfig
 PKGCONFIG += gconf-2.0 xkbfile
 

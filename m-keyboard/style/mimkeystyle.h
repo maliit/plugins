@@ -35,6 +35,13 @@
 #include "namespace.h"
 #include "mimgraphicsasset.h"
 
+#ifndef EXPERIMENTAL_STYLING
+#include "mimabstractkeyareastyle.h"
+#include <MScalableImage>
+//Q_DECLARE_METATYPE(const MScalableImage *)
+
+#endif
+
 #include <minputmethodnamespace.h>
 #include <QtCore>
 #include <QtGui>
@@ -77,14 +84,23 @@ class MImKeyStyle
 {
 private:
     const QLatin1String styleClassName; //!< Keys with same style class name will use same styling information.
+#ifndef EXPERIMENTAL_STYLING
+    const MImAbstractKeyAreaStyleContainer &styleContainer;
+#endif
 
 public:
     //! C'tor
     //! @param newStyleClassName the style class name of a group of keys
+#ifdef EXPERIMENTAL_STYLING
     explicit MImKeyStyle(const QLatin1String &newStyleClassName);
+#else
+    explicit MImKeyStyle(const QLatin1String &newStyleClassName,
+                         const MImAbstractKeyAreaStyleContainer &newStyleContainer);
+#endif
 
     //! D'tor
     virtual ~MImKeyStyle();
+
 
     //! Returns background depending on context.
     //! @param context the style context; needed to decide on which background to return.
