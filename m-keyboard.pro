@@ -6,7 +6,7 @@ TEMPLATE = subdirs
 SUBDIRS = \
     meego-keyboard-quick \
 
-CONFIG(docs) {
+docs {
     include (doc/doc.pri)
 }
 
