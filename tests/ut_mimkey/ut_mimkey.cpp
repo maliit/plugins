@@ -39,6 +39,7 @@
 #include "mimkeymodel.h"
 #include "mimfontpool.h"
 #include "utils.h"
+#include "mimkeystyle.h"
 
 #include <mkeyoverride.h>
 
@@ -123,6 +124,12 @@ void Ut_MImKey::initTestCase()
 
     parent = new QGraphicsWidget;
     dataKey = createKeyModel();
+
+#ifdef EXPERIMENTAL_STYLING
+    keyStyle = new MImKeyStyle(QLatin1String("MImKey");
+#else
+    keyStyle = new MImKeyStyle(QLatin1String("MImKey"), *style);
+#endif
 }
 
 void Ut_MImKey::cleanupTestCase()
@@ -133,11 +140,12 @@ void Ut_MImKey::cleanupTestCase()
     delete app;
     app = 0;
     delete parent;
+    delete keyStyle;
 }
 
 void Ut_MImKey::init()
 {
-    subject = new MImKey(*dataKey, *style, *parent, stylingCache, *fontPool);
+    subject = new MImKey(*dataKey, *style, *parent, stylingCache, *fontPool, *keyStyle);
 }
 
 void Ut_MImKey::cleanup()
@@ -197,7 +205,7 @@ void Ut_MImKey::testIsDead()
     MImKeyBinding *binding = new MImKeyBinding;
     key->setBinding(*binding, false);
 
-    MImAbstractKey *subject = new MImKey(*key, *style, *parent, stylingCache, *fontPool);
+    MImAbstractKey *subject = new MImKey(*key, *style, *parent, stylingCache, *fontPool, *keyStyle);
 
     for (int i = 0; i < 2; ++i) {
         bool isDead = (i != 0);
@@ -443,7 +451,7 @@ void Ut_MImKey::testVisitActiveKeys()
     b->keyAction = MImKeyBinding::ActionShift;
     MImKeyModel *model = new MImKeyModel;
     model->setBinding(*b, false);
-    MImKey *shift = new MImKey(*model, *style, *parent, stylingCache, *fontPool);
+    MImKey *shift = new MImKey(*model, *style, *parent, stylingCache, *fontPool, *keyStyle);
     shift->setDownState(true);
     keys << shift;
 
@@ -673,7 +681,7 @@ void Ut_MImKey::testIconInfo()
     MImAbstractKeyAreaStyle *s = const_cast<MImAbstractKeyAreaStyle *>(style->operator->());
     s->setRequiredKeyIconMargins(testKeyMargins);
 
-    subject = new MImKey(*dataKey, *style, *parent, stylingCache, *fontPool);
+    subject = new MImKey(*dataKey, *style, *parent, stylingCache, *fontPool, *keyStyle);
 
     subject->lowerCaseIcon.pixmap = (iconFlags & NormalIcon) ? &normalIcon : 0;
     subject->lowerCaseCompactIcon.pixmap = (iconFlags & CompactIcon) ? &compactIcon : 0;
@@ -776,7 +784,7 @@ void Ut_MImKey::testIconInfo()
 
 MImKey *Ut_MImKey::createKey(bool state)
 {
-    MImKey *key = new MImKey(*dataKey, *style, *parent, stylingCache, *fontPool);
+    MImKey *key = new MImKey(*dataKey, *style, *parent, stylingCache, *fontPool, *keyStyle);
     key->setDownState(state);
     return key;
 }
@@ -807,7 +815,7 @@ MImKeyModel *Ut_MImKey::createKeyModel()
 
 MImKey *Ut_MImKey::createDeadKey(MImKeyModel *model, bool state)
 {
-    MImKey *key = new MImKey(*model, *style, *parent, stylingCache, *fontPool);
+    MImKey *key = new MImKey(*model, *style, *parent, stylingCache, *fontPool, *keyStyle);
     key->setDownState(state);
     return key;
 }

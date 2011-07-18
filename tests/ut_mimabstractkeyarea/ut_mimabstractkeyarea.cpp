@@ -43,6 +43,7 @@
 #include "utils.h"
 #include "regiontracker.h"
 #include "reactionmappainter.h"
+#include "mimkeystyle.h"
 
 #include <MApplication>
 #include <MScene>
@@ -1322,7 +1323,12 @@ void Ut_MImAbstractKeyArea::testReset()
     QSharedPointer<MImKey::StylingCache> otherKeyCache;
     MImFontPool fontPool(true);
     fontPool.setDefaultFont(otherArea->baseStyle()->font());
-    MImKey otherKey(otherKeyModel, subject->baseStyle(), *otherArea, otherKeyCache, fontPool);
+#ifdef EXPERIMENTAL_STYLING
+    static MImKeyStyle keyStyle(QLatin1String("MImKey");
+#else
+    static MImKeyStyle keyStyle(QLatin1String("MImKey"), subject->baseStyle());
+#endif
+    MImKey otherKey(otherKeyModel, subject->baseStyle(), *otherArea, otherKeyCache, fontPool, keyStyle);
     QVERIFY(otherKey.parentItem() != subject);
 
     otherKey.increaseTouchPointCount();

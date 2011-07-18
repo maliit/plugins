@@ -133,10 +133,6 @@ namespace {
 
         return QString();
     }
-
-    // TODO: Make this a properly shared style between keys of same area.
-    // TOOD: Make name based on actual style name/class type of key area.
-    MImKeyStyle *gKeyStyle = 0;
 }
 
 
@@ -185,7 +181,8 @@ MImKey::MImKey(const MImKeyModel &newModel,
                const MImAbstractKeyAreaStyleContainer &style,
                QGraphicsItem &parent,
                const QSharedPointer<StylingCache> &newStylingCache,
-               MImFontPool &pool)
+               MImFontPool &pool,
+               const MImKeyStyle &newKeyStyle)
     : QGraphicsItem(&parent),
       width(0),
       mModel(newModel),
@@ -202,7 +199,8 @@ MImKey::MImKey(const MImKeyModel &newModel,
       ignoreOverride(false),
       composing(false),
       needsCompactIcon(false),
-      fontPool(pool)
+      fontPool(pool),
+      keyStyle(newKeyStyle)
 {
     if (mModel.binding(false)) {
         loadIcon(false);
@@ -577,15 +575,6 @@ const MScalableImage * MImKey::backgroundImage() const
     static MScalableImage result;
     static QPixmap bg;
 
-    if (not gKeyStyle) {
-#ifdef EXPERIMENTAL_STYLING
-        static MImKeyStyle s(QLatin1String("MImKey"));
-#else
-        static MImKeyStyle s(QLatin1String("MImKey"), styleContainer);
-#endif
-        gKeyStyle = &s;
-    }
-
     MImKeyStylingContext ctx(static_cast<MaliitKeyboard::KeyState>(state()),
                              static_cast<MaliitKeyboard::KeyStyle>(model().style()));
 
@@ -600,7 +589,7 @@ const MScalableImage * MImKey::backgroundImage() const
         ctx.overrides |= MaliitKeyboard::KeyOverrideHighlighted;
     }
 
-    bg = gKeyStyle->background(ctx).pixmap;
+    bg = keyStyle.background(ctx).pixmap;
     result.setPixmap(&bg);
     return &result;
 }
@@ -610,20 +599,11 @@ const MScalableImage *MImKey::normalBackgroundImage() const
     static MScalableImage result;
     static QPixmap bg;
 
-    if (not gKeyStyle) {
-#ifdef EXPERIMENTAL_STYLING
-        static MImKeyStyle s(QLatin1String("MImKey"));
-#else
-        static MImKeyStyle s(QLatin1String("MImKey"), styleContainer);
-#endif
-        gKeyStyle = &s;
-    }
-
     // normalBackgroundImage() always ignores overriden attributes:
     MImKeyStylingContext ctx(MaliitKeyboard::KeyStateIdle,
                              static_cast<MaliitKeyboard::KeyStyle>(model().style()));
 
-    bg = gKeyStyle->background(ctx).pixmap;
+    bg = keyStyle.background(ctx).pixmap;
     result.setPixmap(&bg);
     return &result;
 }

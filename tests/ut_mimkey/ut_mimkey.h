@@ -47,6 +47,7 @@ class MImAbstractKeyAreaStyleContainer;
 class QGraphicsItem;
 class KeyboardData;
 class MImFontPool;
+class MImKeyStyle;
 
 class Ut_MImKey: public QObject
 {
@@ -131,6 +132,7 @@ private:
     MImKey *createDeadKey(MImKeyModel *model, bool state = false);
     MImKeyModel *createDeadKeyModel(const QString &label);
     QSharedPointer<MImKey::StylingCache> stylingCache;
+    MImKeyStyle *keyStyle;
 };
 
 Q_DECLARE_METATYPE(Ut_MImKey::DirectionPair)

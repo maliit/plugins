@@ -410,14 +410,23 @@ void MImKeyAreaPrivate::loadKeys()
 
     RowIterator rowIter(rowList.begin());
 
+    // Need to delay initialization, because LMT style is not ready during MImKeyArea{, Private} construction.
+    if (keyStyle.isNull()) {
+#ifdef EXPERIMENTAL_STYLING
+        keyStyle.reset(new MImKeyStyle("MImKey")); // TODO: Get proper style name from key area's styleName (e.g., for ext keys).
+#else
+        keyStyle.reset(new MImKeyStyle(QLatin1String("MImKey"), q->baseStyle())); // TODO: Get proper style name from key area's styleName (e.g., for ext keys).
+#endif
+    }
+
     for (int row = 0; row != numRows; ++row, ++rowIter) {
         const int numColumns = section->columnsAt(row);
 
         // Add keys
         for (int col = 0; col < numColumns; ++col) {
             // Parameters to fetch from base class.
-            MImKeyModel *dataKey = section->keyModel(row, col);
-            MImKey *key = new MImKey(*dataKey, q->baseStyle(), *q, stylingCache, fontPool);
+            MImKeyModel *dataKey = section->keyModel(row, col);            
+            MImKey *key = new MImKey(*dataKey, q->baseStyle(), *q, stylingCache, fontPool, *keyStyle.data());
 
             if (!key->model().id().isEmpty()) {
                 registerKeyId(key);

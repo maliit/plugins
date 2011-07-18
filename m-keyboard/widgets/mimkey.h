@@ -36,6 +36,8 @@
 
 #include "mimabstractkey.h"
 #include "mimfontpool.h"
+#include "mimkeystyle.h"
+
 #include <QObject>
 #include <QPointF>
 #include <QGraphicsItem>
@@ -83,7 +85,8 @@ public:
                     const MImAbstractKeyAreaStyleContainer &style,
                     QGraphicsItem &parent,
                     const QSharedPointer<StylingCache> &newStylingCache,
-                    MImFontPool &pool);
+                    MImFontPool &pool,
+                    const MImKeyStyle &newKeyStyle);
 
     virtual ~MImKey();
 
@@ -298,6 +301,7 @@ private:
     bool needsCompactIcon;
 
     MImFontPool &fontPool;
+    const MImKeyStyle &keyStyle;
 
 #ifdef UNIT_TEST
     friend class Ut_MImKey;

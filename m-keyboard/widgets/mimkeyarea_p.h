@@ -36,6 +36,7 @@
 #include "mimabstractkeyarea_p.h"
 #include "mimkey.h"
 #include "mimfontpool.h"
+#include "mimkeystyle.h"
 
 #include <QSize>
 #include <QFontMetrics>
@@ -125,6 +126,8 @@ public:
     MImKey *composeKey; //!< stores compose key, if available in this key area
     MImFontPool fontPool; //!< decides which keys should share the same font object
     bool lockVerticalMovement; //!< whether vertical movement is considered
+    QScopedPointer<MImKeyStyle> keyStyle; //!< Key related styling, shared by all keys in same key area
+
 };
 //! \internal_end
 
