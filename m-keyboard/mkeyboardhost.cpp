@@ -72,6 +72,8 @@
 #include <MBanner>
 #include <MLibrary>
 
+#define SPACECHARACTER ' '
+
 M_LIBRARY
 
 namespace
@@ -1571,9 +1573,17 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
         preeditCursorPos = -1;
     } else if (spaceInsertedAfterCommitStringPrev && (text.length() == 1)
                && AutoPunctuationTriggers.contains(text[0])) {
-        sendBackSpaceKeyEvent();
-        resetInternalState();
-        inputMethodHost()->sendCommitString(text + " ");
+        // Remove the space character only. If the user has moved the cursor besides to the text then
+        // character should not be deleted, only punctuation character needs to be committed.
+        if (surroundingText.at(cursorPos - 1) == SPACECHARACTER) {
+            sendBackSpaceKeyEvent();
+            resetInternalState();
+            inputMethodHost()->sendCommitString(text + " ");
+        } else {
+            qDebug()<<surroundingText.length() << cursorPos;
+            resetInternalState();
+            inputMethodHost()->sendCommitString(text );
+        }
     } else {
         // append text to the end of preedit if cursor is at the end of
         // preedit (or cursor is -1, invisible). Or if cursor is inside
