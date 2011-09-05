@@ -72,7 +72,6 @@
 #include <MBanner>
 #include <MLibrary>
 
-#define SPACECHARACTER ' '
 
 M_LIBRARY
 
@@ -940,6 +939,10 @@ void MKeyboardHost::updateContext()
         && EngineManager::instance().engine()) {
         EngineManager::instance().engine()->setContext(surroundingText, cursorPos);
     }
+
+    if (spaceInsertedAfterCommitString && (cursorPosPrevCommitWithSpace != cursorPos)) {
+        spaceInsertedAfterCommitString = false;
+    }
 }
 
 void MKeyboardHost::reset()
@@ -1129,6 +1132,8 @@ void MKeyboardHost::commitString(const QString &updatedString)
         inputMethodHost()->sendCommitString(updatedString + " ");
         resetInternalState();
         spaceInsertedAfterCommitString = true;
+        inputMethodHost()->surroundingText(surroundingText, cursorPos);
+        cursorPosPrevCommitWithSpace = cursorPos;
     } else {
         inputMethodHost()->sendCommitString(updatedString);
         resetInternalState();
@@ -1530,6 +1535,8 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
                 spaceInsertedAfterCommitString = true;
                 const QString suggestion = engineWidgetHost->candidates().at(engineWidgetHost->suggestedWordIndex());
                 inputMethodHost()->sendCommitString(suggestion + " ");
+                inputMethodHost()->surroundingText(surroundingText, cursorPos);
+                cursorPosPrevCommitWithSpace = cursorPos;
                 eventSent = true;
             } else {
                 // ignore space click when word list is visible.
@@ -1573,17 +1580,10 @@ void MKeyboardHost::handleTextInputKeyClick(const KeyEvent &event)
         preeditCursorPos = -1;
     } else if (spaceInsertedAfterCommitStringPrev && (text.length() == 1)
                && AutoPunctuationTriggers.contains(text[0])) {
-        // Remove the space character only. If the user has moved the cursor besides to the text then
-        // character should not be deleted, only punctuation character needs to be committed.
-        if (surroundingText.at(cursorPos - 1) == SPACECHARACTER) {
-            sendBackSpaceKeyEvent();
-            resetInternalState();
-            inputMethodHost()->sendCommitString(text + " ");
-        } else {
-            qDebug()<<surroundingText.length() << cursorPos;
-            resetInternalState();
-            inputMethodHost()->sendCommitString(text );
-        }
+        sendBackSpaceKeyEvent();
+        resetInternalState();
+        inputMethodHost()->sendCommitString(text + " ");
+
     } else {
         // append text to the end of preedit if cursor is at the end of
         // preedit (or cursor is -1, invisible). Or if cursor is inside

@@ -401,6 +401,8 @@ private:
     QString surroundingText;
     int cursorPos;
     int preeditCursorPos;
+    //! Cursor Position at commit with a space; this keeps track of User cusor movement.
+    int cursorPosPrevCommitWithSpace;
     bool hasSelection;
     //! True if preedit has been edited by user since last setPreedit or resetInternalState
     bool preeditHasBeenEdited;
