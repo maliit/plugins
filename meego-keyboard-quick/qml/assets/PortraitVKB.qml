@@ -141,9 +141,10 @@ Column {
                 }
                 FunctionKey {
                     width: 88; height: keyHeight
-                    icon: "icon-m-input-methods-enter.svg"
+                    icon: MInputMethodQuick.actionKeyOverride.icon
+                    caption: MInputMethodQuick.actionKeyOverride.label
                     onReleased: {
-                        MInputMethodQuick.sendCommit("\r\n")
+                        MInputMethodQuick.activateActionKey()
                     }
                 }
             } //end Row4

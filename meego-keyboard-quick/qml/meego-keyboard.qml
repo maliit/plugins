@@ -57,6 +57,11 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
         }
+
+        Component.onCompleted: {
+            MInputMethodQuick.actionKeyOverride.setDefaultIcon("icon-m-input-methods-enter.svg")
+            MInputMethodQuick.actionKeyOverride.setDefaultLabel("")
+        }
     }
 
     focus: true
