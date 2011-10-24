@@ -64,101 +64,117 @@ Column {
         height: vkbStyle.landscapeHeight
         z: 100
 
-        Column { //Holder for the VKB rows
+        Flickable {
+            id: flickable
             anchors.fill: parent
-            anchors.topMargin: 4
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 12
+            property int variationX: 100
+            flickableDirection: Flickable.VerticalFlick
+            onFlickStarted: {
+                Math.abs( contentX ) < variationX && contentY < 0 ? MInputMethodQuick.userHide() :
+                                                                    false
+            }
 
-            Row { //Row 1
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: keyMargin
-                Repeater {
-                    model: row1
-                    CharacterKey {
-                        width: keyWidth; height: keyHeight
-                        caption: row1[index][0]
-                        captionShifted: row1[index][0].toUpperCase()
-                        symView: row1[index][1]
-                    }
-                }
+            Rectangle {
+                anchors.fill: parent
+                PluginSwitch{}
 
-            } //end Row1
+                Column { //Holder for the VKB rows
+                    anchors.fill: parent
+                    anchors.topMargin: 4
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 12
 
-            Row { //Row 2
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: keyMargin
-                Repeater {
-                    model: row2
-                    CharacterKey {
-                        width: keyWidth; height: keyHeight
-                        caption: row2[index][0]
-                        captionShifted: row2[index][0].toUpperCase()
-                        symView: row2[index][1]
-                    }
-                }
-            } //end Row2
-
-            Row { //Row 3
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: (columns == 11) ? 54 : 26
-                FunctionKey {
-                    width: 100; height: keyHeight
-                     icon: (isShiftLocked) ? "icon-m-input-methods-capslock.svg" :
-                                             (isShifted) ? "icon-m-input-methods-shift-uppercase.svg" : 
-                                                           "icon-m-input-methods-shift-lowercase.svg"
-                    color: isShiftLocked ? keyStyle.backgroundPressed : keyStyle.background
-                    onClickedPass: {
-                            isShifted = (!isShifted)
-                            isShiftLocked = false
-                    }
-                    onPressedAndHoldPass: {
-                            isShifted = true
-                            isShiftLocked = true
-                    }
-                }
-                Row {
-                    spacing: keyMargin
-                    Repeater {
-                        model: row3
-                        CharacterKey {
-                            width: keyWidth; height: keyHeight
-                            caption: row3[index][0]
-                            captionShifted: row3[index][0].toUpperCase()
-                            symView: row3[index][1]
+                    Row { //Row 1
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: keyMargin
+                        Repeater {
+                            model: row1
+                            CharacterKey {
+                                width: keyWidth; height: keyHeight
+                                caption: row1[index][0]
+                                captionShifted: row1[index][0].toUpperCase()
+                                symView: row1[index][1]
+                            }
                         }
-                    }
-                }
-                FunctionKey {
-                    width: 100; height: keyHeight
-                    icon: "icon-m-input-methods-backspace.svg"
-                    onClickedPass: { MInputMethodQuick.sendCommit("\b"); }
-                }
-            } //end Row3
 
-            Row { //Row 4
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: (columns == 11) ? 32 : 26
-                FunctionKey {
-                    width: 150; height: keyHeight
-                    caption: "?123"
-                    onClickedPass: { inSymView = (!inSymView) }
-                }
-                Row {
-                    spacing: keyMargin
-                    CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight }
-                    CharacterKey { caption: " "; width: 228; height: keyHeight }
-                    CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight }
-                }
-                FunctionKey {
-                    width: 150; height: keyHeight
-                    icon: MInputMethodQuick.actionKeyOverride.icon
-                    caption: MInputMethodQuick.actionKeyOverride.label
-                    onReleased: {
-                        MInputMethodQuick.activateActionKey()
-                    }
-                }
-            } //end Row4
-        }//end Column
+                    } //end Row1
+
+                    Row { //Row 2
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: keyMargin
+                        Repeater {
+                            model: row2
+                            CharacterKey {
+                                width: keyWidth; height: keyHeight
+                                caption: row2[index][0]
+                                captionShifted: row2[index][0].toUpperCase()
+                                symView: row2[index][1]
+                            }
+                        }
+                    } //end Row2
+
+                    Row { //Row 3
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: (columns == 11) ? 54 : 26
+                        FunctionKey {
+                            width: 100; height: keyHeight
+                             icon: (isShiftLocked) ? "icon-m-input-methods-capslock.svg" :
+                                                     (isShifted) ? "icon-m-input-methods-shift-uppercase.svg" : 
+                                                                   "icon-m-input-methods-shift-lowercase.svg"
+                            color: isShiftLocked ? keyStyle.backgroundPressed : keyStyle.background
+                            onClickedPass: {
+                                    isShifted = (!isShifted)
+                                    isShiftLocked = false
+                            }
+                            onPressedAndHoldPass: {
+                                    isShifted = true
+                                    isShiftLocked = true
+                            }
+                        }
+                        Row {
+                            spacing: keyMargin
+                            Repeater {
+                                model: row3
+                                CharacterKey {
+                                    width: keyWidth; height: keyHeight
+                                    caption: row3[index][0]
+                                    captionShifted: row3[index][0].toUpperCase()
+                                    symView: row3[index][1]
+                                }
+                            }
+                        }
+                        FunctionKey {
+                            width: 100; height: keyHeight
+                            icon: "icon-m-input-methods-backspace.svg"
+                            onClickedPass: { MInputMethodQuick.sendCommit("\b"); }
+                        }
+                    } //end Row3
+
+                    Row { //Row 4
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        spacing: (columns == 11) ? 32 : 26
+                        FunctionKey {
+                            width: 150; height: keyHeight
+                            caption: "?123"
+                            onClickedPass: { inSymView = (!inSymView) }
+                        }
+                        Row {
+                            spacing: keyMargin
+                            CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight }
+                            CharacterKey { caption: " "; width: 228; height: keyHeight }
+                            CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight }
+                        }
+                        FunctionKey {
+                            width: 150; height: keyHeight
+                            icon: MInputMethodQuick.actionKeyOverride.icon
+                            caption: MInputMethodQuick.actionKeyOverride.label
+                            onReleased: {
+                                MInputMethodQuick.activateActionKey()
+                            }
+                        }
+                    } //end Row4
+                }//end Column
+            }//end Rectangle
+        }//end Flickable
     } //end VKB area
 } //end VKB
