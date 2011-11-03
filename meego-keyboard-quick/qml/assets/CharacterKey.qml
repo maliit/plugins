@@ -40,9 +40,10 @@ Rectangle {
     property string captionShifted: ""
     property int fontSize: keyStyle.fontSize
     property string symView: ""
+    property string symView2: ""
 
     radius:  8
-    color: mouse_area.containsMouse ? keyStyle.backgroundPressed
+    color: mouse_area.containsMouse ? keyStyle.backgroundPressed 
                                     : keyStyle.background
 
     MouseArea {
@@ -68,7 +69,7 @@ Rectangle {
         font.family: "sans"
         font.pixelSize: keyStyle.fontSize
         color: keyStyle.fontColor
-        text: (inSymView && symView.length) > 0 ? symView
-                                                : (isShifted ? captionShifted : caption)
+        text: (inSymView && symView.length) > 0 ? (inSymView2 ? symView2 : symView)
+	                                        : (isShifted ? captionShifted : caption)
     }
 }

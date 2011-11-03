@@ -40,6 +40,7 @@ Rectangle {
 
     property string icon: ""
     property string caption: ""
+    property alias mouseArea: mouse_area 
     signal clickedPass()
     signal released()
     signal pressedAndHoldPass()

@@ -40,9 +40,9 @@ Column {
         id: keyStyle
     }
 
-    property variant row1:["q1", "w2", "e3", "r4", "t5", "y6", "u7", "i8", "o9", "p0"]
-    property variant row2: ["a*", "s#", "d+", "f-", "g=", "h(", "j)", "k?", "l!"]
-    property variant row3: ["z@", "x~", "c/", "v\\", "b'", "n;", "m:"]
+    property variant row1:["q1€", "w2£", "e3$", "r4¥", "t5₹", "y6%", "u7<", "i8>", "o9[", "p0]"]
+    property variant row2: ["a*`", "s#^", "d+|", "f-_", "g=§", "h({", "j)}", "k?¿", "l!¡"]
+    property variant row3: ["z@«", "x~»", "c/\"", "v\\“", "b'”", "n;„", "m:&"]
     property variant accents_row1: ["", "", "eèéêë", "", "tþ", "yý", "uûùúü", "iîïìí", "oöôòó", ""]
     property variant accents_row2: ["aäàâáãå", "", "dð", "", "", "", "", "", ""]
     property variant accents_row3: ["", "", "cç", "", "", "nñ", ""]
@@ -54,8 +54,9 @@ Column {
     property int keyMargin: (columns == 11) ? keyStyle.landscapeMarginNarrow
                                             : keyStyle.landscapeMargin
     property bool isShifted: false
-    property bool inSymView: false
     property bool isShiftLocked: false
+    property bool inSymView: false
+    property bool inSymView2: false
 
     Rectangle { //VKB background
         id: vkb
@@ -80,6 +81,7 @@ Column {
                         caption: row1[index][0]
                         captionShifted: row1[index][0].toUpperCase()
                         symView: row1[index][1]
+		        symView2: row1[index][2]
                     }
                 }
 
@@ -95,6 +97,7 @@ Column {
                         caption: row2[index][0]
                         captionShifted: row2[index][0].toUpperCase()
                         symView: row2[index][1]
+                        symView2: row2[index][2]
                     }
                 }
             } //end Row2
@@ -104,17 +107,26 @@ Column {
                 spacing: (columns == 11) ? 54 : 26
                 FunctionKey {
                     width: 100; height: keyHeight
-                     icon: (isShiftLocked) ? "icon-m-input-methods-capslock.svg" :
-                                             (isShifted) ? "icon-m-input-methods-shift-uppercase.svg" : 
-                                                           "icon-m-input-methods-shift-lowercase.svg"
-                    color: isShiftLocked ? keyStyle.backgroundPressed : keyStyle.background
+		    icon: inSymView ? "" :
+                                    (isShiftLocked) ? "icon-m-input-methods-capslock.svg" :
+                                    (isShifted)     ? "icon-m-input-methods-shift-uppercase.svg" : 
+                                                      "icon-m-input-methods-shift-lowercase.svg"
+		    caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
+		    color: mouseArea.containsMouse || (isShiftLocked && (!inSymView)) ? 
+				                   keyStyle.backgroundPressed : keyStyle.background
                     onClickedPass: {
-                            isShifted = (!isShifted)
-                            isShiftLocked = false
+		        if (inSymView) {
+			   inSymView2 = (!inSymView2) 
+			} else {
+                           isShifted = (!isShifted)
+                           isShiftLocked = false
+			}
                     }
                     onPressedAndHoldPass: {
-                            isShifted = true
-                            isShiftLocked = true
+		        if (!inSymView) {
+                           isShifted = true
+                           isShiftLocked = true
+			}
                     }
                 }
                 Row {
@@ -126,6 +138,7 @@ Column {
                             caption: row3[index][0]
                             captionShifted: row3[index][0].toUpperCase()
                             symView: row3[index][1]
+                            symView2: row3[index][2]
                         }
                     }
                 }
@@ -141,13 +154,13 @@ Column {
                 spacing: (columns == 11) ? 32 : 26
                 FunctionKey {
                     width: 150; height: keyHeight
-                    caption: "?123"
+		    caption: inSymView ? "ABC" : "?123"
                     onClickedPass: { inSymView = (!inSymView) }
                 }
                 Row {
                     spacing: keyMargin
                     CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight }
-                    CharacterKey { caption: " "; width: 228; height: keyHeight }
+		    CharacterKey { caption: " "; captionShifted: " "; width: 228; height: keyHeight }
                     CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight }
                 }
                 FunctionKey {
