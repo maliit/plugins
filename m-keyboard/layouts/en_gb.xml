@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
-<keyboard title="English (UK)" version="1.0" catalog="en_gb" language="en_gb">
-    <import file="en_gb_default.xml"/>
-    <import file="en_gb_customer.xml"/>
-</keyboard>

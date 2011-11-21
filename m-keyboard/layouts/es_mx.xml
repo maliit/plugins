@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
-<keyboard title="Español (América Latina)" version="1.0" catalog="" language="es_mx">
-    <import file="es.xml"/>
-</keyboard>

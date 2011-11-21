@@ -1,7 +1,0 @@
-For handset form factors, use the base theme (CSS + SVG) from parent directory
-and override with a device-specific CSS where needed. Most of the time, it's
-required to adjust the fixed-size layouts, especially for portrait mode.
-
-The override CSS is supposed to be installed in the "meego" or "n900de" theme
-directory, not "base". This implies that the device runs the "meego" or
-"n900de" theme, too.
