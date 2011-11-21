@@ -1,5 +1,5 @@
 /*
- * This file is part of MeeGo Keyboard
+ * This file is part of Maliit Plugins
  *
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies). All rights reserved.
  *
