@@ -21,8 +21,8 @@ include(config.pri)
 }
 
 CONFIG += ordered 
-TARGET = meego-im-plugins
+TARGET = maliit-plugins
 TEMPLATE = subdirs
 SUBDIRS = \
-    meego-keyboard-quick \
+    maliit-keyboard \
 

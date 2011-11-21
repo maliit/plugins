@@ -29,27 +29,27 @@
  *
  */
 
-#include "meegokeyboardquickplugin.h"
+#include "maliitkeyboardplugin.h"
 #define DEFINE_TO_STR(x) DEFINE_TO_STR2(x)
 #define DEFINE_TO_STR2(x) #x
 
 namespace
 {
-    const char * const MeegoKeyboardQuickFile = DEFINE_TO_STR(MEEGO_KEYBOARD_QUICK_FILE);
-    const char * const MeegoKeyboardQuickPluginName = "MeegoKeyboardQuick";
+    const char * const MALIIT_KEYBOARD = DEFINE_TO_STR(MALIIT_KEYBOARD_FILE);
+    const char * const MaliitKeyboardPluginName = "MaliitKeyboard";
 }
 
-MeegoKeyboardQuickPlugin::MeegoKeyboardQuickPlugin()
+MaliitKeyboardPlugin::MaliitKeyboardPlugin()
 {}
 
-QString MeegoKeyboardQuickPlugin::name() const
+QString MaliitKeyboardPlugin::name() const
 {
-    return MeegoKeyboardQuickPluginName;
+    return MaliitKeyboardPluginName;
 }
 
-QString MeegoKeyboardQuickPlugin::qmlFileName() const
+QString MaliitKeyboardPlugin::qmlFileName() const
 {
-    return MeegoKeyboardQuickFile;
+    return MALIIT_KEYBOARD;
 }
 
-Q_EXPORT_PLUGIN2(MeegoKeyboardQuick, MeegoKeyboardQuickPlugin)
+Q_EXPORT_PLUGIN2(MaliitKeyboard, MaliitKeyboardPlugin)

@@ -29,20 +29,20 @@
  *
  */
 
-#ifndef MEEGO_KEYBOARD_QUICK_PLUGIN_H
-#define MEEGO_KEYBOARD_QUICK_PLUGIN_H
+#ifndef MALIIT_KEYBOARD_PLUGIN_H
+#define MALIIT_KEYBOARD_PLUGIN_H
 
 #include <minputmethodquickplugin.h>
 #include <QObject>
 
-class MeegoKeyboardQuickPlugin
+class MaliitKeyboardPlugin
     : public QObject, public MInputMethodQuickPlugin
 {
     Q_OBJECT
     Q_INTERFACES(MInputMethodQuickPlugin MInputMethodPlugin)
 
 public:
-    MeegoKeyboardQuickPlugin();
+    MaliitKeyboardPlugin();
 
     //! \reimpl
     virtual QString name() const;
@@ -50,4 +50,4 @@ public:
     //! \reimpl_end
 };
 
-#endif // MEEGO_KEYBOARD_QUICK_PLUGIN_H 
+#endif // MALIIT_KEYBOARD_PLUGIN_H

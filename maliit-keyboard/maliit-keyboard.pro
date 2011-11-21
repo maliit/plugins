@@ -1,13 +1,13 @@
 include(../config.pri)
 
 VERSION = 0.1.0
-TARGET = meego-keyboard-quick
+TARGET = maliit-keyboard
 TEMPLATE = lib
 QT = core gui declarative
 
-MEEGO_KEYBOARD_QUICK_DIR=$${MALIIT_PLUGINS_DIR}/meego-keyboard-qml
-MEEGO_KEYBOARD_QUICK_FILE=$${MEEGO_KEYBOARD_QUICK_DIR}/meego-keyboard.qml
-DEFINES += "MEEGO_KEYBOARD_QUICK_FILE=$${MEEGO_KEYBOARD_QUICK_FILE}"
+MALIIT_KEYBOARD_DIR=$${MALIIT_PLUGINS_DIR}/maliit-keyboard
+MALIIT_KEYBOARD_FILE=$${MALIIT_KEYBOARD_DIR}/maliit-keyboard.qml
+DEFINES += "MALIIT_KEYBOARD_FILE=$${MALIIT_KEYBOARD_FILE}"
 
 CONFIG += \
     plugin \
@@ -22,13 +22,13 @@ enable-legacy {
 }
 
 SOURCES += \
-    meegokeyboardquickplugin.cpp \
+    maliitkeyboardplugin.cpp \
 
 HEADERS += \
-    meegokeyboardquickplugin.h \
+    maliitkeyboardplugin.h \
 
-qml.files = qml/meego-keyboard.qml qml/assets
-qml.path = $${MEEGO_KEYBOARD_QUICK_DIR}
+qml.files = qml/maliit-keyboard.qml qml/assets
+qml.path = $${MALIIT_KEYBOARD_DIR}
 
 target.path += $${MALIIT_PLUGINS_DIR}
 
