@@ -1,1 +1,11 @@
-This is a Nemo specific plugin.
+This is a Nemo (http://wiki.merproject.org/wiki/Nemo) specific plugin for Maliit. 
+
+Nemo-keyboard is basically a heavily refactored maliit-plugins (maliit-keyboard) 
+code modified to suit specifically N9/950/900 class of devices with screen sizes 
+800x480, 848x480 and similar. 
+
+Nemo keyboard is released under the terms on BSD license.
+
+Authors: Jakub Pavelek <jpavelek@live.com>
+Contributors: -
+
