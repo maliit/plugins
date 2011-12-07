@@ -1,7 +1,9 @@
 /*
  * This file is part of Maliit plugins
  *
- * Copyright (C) Jakub Pavelek <jpavelek@live.com>
+ * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies). All rights reserved.
+ *
+ * Contact: Jakub Pavelek <jpavelek@live.com>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
