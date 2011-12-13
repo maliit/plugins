@@ -11,3 +11,5 @@ core
 *.gcda
 *.gcno
 *~
+*.tar.*
+*.md5
