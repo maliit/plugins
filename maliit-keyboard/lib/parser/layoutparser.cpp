@@ -146,9 +146,47 @@ void LayoutParser::parseImport()
     const QString file(attributes.value(QLatin1String("file")).toString());
 
     if (file.isEmpty()) {
-        error(QString::fromLatin1("Expected non-empty 'file' attribute in '<import>'."));
+        bool found_anything(false);
+
+        while (m_xml.readNextStartElement()) {
+            const QStringRef name(m_xml.name());
+
+            if (name == QLatin1String("symview")) {
+                found_anything = true;
+                parseImportChild(&m_symviews);
+            } else if (name == QLatin1String("number")) {
+                found_anything = true;
+                parseImportChild(&m_numbers);
+            } else if (name == QLatin1String("phonenumber")) {
+                found_anything = true;
+                parseImportChild(&m_phonenumbers);
+            } else {
+                error(QString::fromLatin1("Expected '<symview>' or '<number>' or '<phonenumber>', but got '<%1>'.").arg(name.toString()));
+            }
+        }
+        if (not found_anything) {
+            error(QString::fromLatin1("Expected '<symview>' or '<number>' or '<phonenumber>'."));
+        }
     } else {
-        m_imports.append(file);
+        if (m_xml.readNextStartElement()) {
+            error(QString::fromLatin1("Expected no child tags, because 'file' attribute exists, but got '<%1>'.").arg(m_xml.name().toString()));
+        } else {
+            m_imports.append(file);
+            m_xml.skipCurrentElement();
+        }
+    }
+
+}
+
+void LayoutParser::parseImportChild(QStringList *target_list)
+{
+    const QXmlStreamAttributes attributes(m_xml.attributes());
+    const QString src(attributes.value(QLatin1String("src")).toString());
+
+    if (src.isEmpty()) {
+        error(QString::fromLatin1("Expected non-empty 'src' attribute in '<%1>'.").arg(m_xml.name().toString()));
+    } else if (target_list) {
+        target_list->append(src);
     }
 
     m_xml.skipCurrentElement();
@@ -369,6 +407,21 @@ const TagKeyboardPtr LayoutParser::keyboard() const
 const QStringList LayoutParser::imports() const
 {
     return m_imports;
+}
+
+const QStringList LayoutParser::symviews() const
+{
+    return m_symviews;
+}
+
+const QStringList LayoutParser::numbers() const
+{
+    return m_numbers;
+}
+
+const QStringList LayoutParser::phonenumbers() const
+{
+    return m_phonenumbers;
 }
 
 } // namespace MaliitKeyboard

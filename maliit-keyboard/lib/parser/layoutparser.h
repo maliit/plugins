@@ -54,11 +54,17 @@ public:
 
     const TagKeyboardPtr keyboard() const;
     const QStringList imports() const;
+    const QStringList symviews() const;
+    const QStringList numbers() const;
+    const QStringList phonenumbers() const;
 
 private:
     QXmlStreamReader m_xml;
     TagKeyboardPtr m_keyboard;
     QStringList m_imports;
+    QStringList m_symviews;
+    QStringList m_numbers;
+    QStringList m_phonenumbers;
     TagLayoutPtr m_last_layout;
     TagSectionPtr m_last_section;
     TagRowPtr m_last_row;
@@ -66,6 +72,7 @@ private:
 
     void parseKeyboard();
     void parseImport();
+    void parseImportChild(QStringList *target_list);
     void parseLayout();
     void parseSection();
     void parseRow();
