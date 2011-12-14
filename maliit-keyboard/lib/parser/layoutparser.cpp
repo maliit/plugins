@@ -1,4 +1,4 @@
-// -*- mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
+// -*- mode: C++; c-basic-offset: 4; indent-tabs-mode: nil; c-file-offsets: ((innamespace . 0)); -*-
 /*
  * This file is part of Maliit Plugins
  *
@@ -48,7 +48,7 @@ LayoutParser::LayoutParser(QIODevice *device)
 
 bool LayoutParser::parse()
 {
-    findRootElement();
+    goToRootElement();
 
     if (not m_xml.isStartElement() || m_xml.name() != QLatin1String("keyboard")) {
         error(QString::fromLatin1("Expected '<keyboard>', but got '<%1>'.").arg(m_xml.name().toString()));
@@ -61,7 +61,22 @@ bool LayoutParser::parse()
     return not m_xml.hasError();
 }
 
-void LayoutParser::findRootElement()
+bool LayoutParser::isLanguageFile()
+{
+    goToRootElement();
+
+    if (not m_xml.isStartElement() || m_xml.name() != QLatin1String("keyboard")) {
+        return false;
+    } else if (not m_xml.hasError()) {
+        const QXmlStreamAttributes attributes(m_xml.attributes());
+        const QStringRef language(attributes.value(QLatin1String("language")));
+
+        return (not language.isEmpty());
+    }
+    return false;
+}
+
+void LayoutParser::goToRootElement()
 {
     while (not m_xml.atEnd()) {
         QXmlStreamReader::TokenType type(m_xml.readNext());

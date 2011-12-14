@@ -262,7 +262,13 @@ QStringList KeyboardLoader::ids() const
         QFileInfoList file_infos(dir.entryInfoList());
 
         Q_FOREACH (const QFileInfo& file_info, file_infos) {
-            ids.append(file_info.baseName());
+            QFile file(file_info.filePath());
+            file.open(QIODevice::ReadOnly);
+            LayoutParser parser(&file);
+
+            if (parser.isLanguageFile()) {
+                ids.append(file_info.baseName());
+            }
         }
     }
     return ids;
