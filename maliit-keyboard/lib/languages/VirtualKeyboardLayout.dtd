@@ -1,5 +1,9 @@
 <!ELEMENT keyboard (layout | import)*>
-<!ELEMENT import EMPTY>
+<!ELEMENT import (symview | phonenumber | number)*>
+<!ELEMENT symview EMPTY>
+<!ELEMENT phonenumber EMPTY>
+<!ELEMENT number EMPTY>
+<!ELEMENT use EMPTY>
 <!ELEMENT layout (section+)>
 <!ELEMENT section (row+)>
 <!ELEMENT row (key | spacer)*>
@@ -15,7 +19,16 @@
   autocapitalization (true | false) "true">
 
 <!ATTLIST import
-  file CDATA #REQUIRED>
+  file CDATA #IMPLIED>
+
+<!ATTLIST symview
+  src CDATA #REQUIRED>
+
+<!ATTLIST phonenumber
+  src CDATA #REQUIRED>
+
+<!ATTLIST number
+  src CDATA #REQUIRED>
 
 <!ATTLIST layout
   type (general | url | email | number | phonenumber | common) "general"
