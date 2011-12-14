@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
 <keyboard title="English (UK)" version="1.0" catalog="en_gb" language="en_gb">
+  <import>
+    <symview src="symbols_en.xml"/>
+  </import>
   <layout type="general">
     <section id="main">
       <row>
@@ -151,6 +154,4 @@
       </row>
     </section>
   </layout>
-
-  <import file="symbols_en.xml"/>
 </keyboard>

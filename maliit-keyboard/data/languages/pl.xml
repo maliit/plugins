@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
 <keyboard title="Polski" version="1.0" catalog="pl" language="pl">
+  <import>
+    <symview src="symbols-38.xml"/>
+  </import>
   <layout type="general">
     <section id="main">
       <row>
@@ -160,6 +163,4 @@
       </row>
     </section>
   </layout>
-
-  <import file="symbols-38.xml"/>
 </keyboard>
