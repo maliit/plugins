@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
-<keyboard version="1.0" title="Number" language="number" catalog="number">
+<keyboard version="1.0" title="Number" catalog="number">
   <layout type="number" orientation="landscape">
     <section id="main" movable="false">
       <row>
