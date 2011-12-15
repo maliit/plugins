@@ -30,6 +30,6 @@ SOURCES += \
     abstractbackgroundbuffer.cpp \
     graphicsview.cpp \
 
-target.path += $$PREFIX/usr/lib
+target.path += $$INSTALL_LIBS
 INSTALLS += target
 

@@ -11,8 +11,6 @@ contains(QT_MAJOR_VERSION, 4) {
     QT = core gui widgets
 }
 
-MALIIT_KEYBOARD_DIR=$${MALIIT_PLUGINS_DIR}/maliit-keyboard
-
 CONFIG += \
     plugin \
 

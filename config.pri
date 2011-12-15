@@ -11,8 +11,23 @@ enable-legacy {
     MALIIT_PLUGINS_DATA_DIR=$$system(pkg-config --variable pluginsdatadir maliit-plugins-0.80)
 }
 
+isEmpty(PREFIX) {
+   PREFIX = /usr
+}
+
+isEmpty(LIBDIR) {
+   LIBDIR = $$PREFIX/lib
+}
+
+INSTALL_BIN = $$PREFIX/bin
+INSTALL_LIBS = $$LIBDIR
+INSTALL_HEADERS = $$PREFIX/include
+INSTALL_DOCS = $$PREFIX/share/doc
+
+# Fallback in case framework pkg-config does not have information
+# about what plugin data directory should be (framework version < 0.81.1)
 isEmpty(MALIIT_PLUGINS_DATA_DIR) {
-    MALIIT_PLUGINS_DATA_DIR=/usr/local/share/maliit/plugins
+    MALIIT_PLUGINS_DATA_DIR=$$PREFIX/share/maliit/plugins
 }
 
 enable-opengl {

@@ -1,6 +1,8 @@
+include(../../config.pri)
+
 TEMPLATE = app
 TARGET = maliit-keyboard-viewer
-target.path = $$PREFIX/usr/bin
+target.path = $$INSTALL_BIN
 
 INCLUDEPATH += ../lib ../
 LIBS += -L../lib -lmaliit-keyboard -L../view -lmaliit-keyboard-view

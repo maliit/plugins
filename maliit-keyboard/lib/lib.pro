@@ -19,7 +19,7 @@ include(models/models.pri)
 include(logic/logic.pri)
 include(parser/parser.pri)
 
-target.path += $$PREFIX/usr/lib
+target.path += $$INSTALL_LIBS
 languages.path = $$MALIIT_PLUGINS_DATA_DIR
 languages.files = languages/
 images.path = $$ORG_MALIIT_DIR

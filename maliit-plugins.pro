@@ -4,14 +4,15 @@ include(config.pri)
     # Output help
     help_string = \
         Important build options: \
-        \\n\\t \
+        \\n\\t PREFIX: Install prefix. Default: /usr \
+        \\n\\t LIBDIR: Library install directory. Default: $$PREFIX/lib \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-legacy: Build for legacy mode (using meego-im ABI/API compatabible maliit-framework) \
         \\nInfluential environment variables: \
         \\n\\t PKG_CONFIG_PATH: Specify the pkg-config files to use for dependencies \
         \\nExamples: \
         \\n\\t qmake \
-        \\n\\t qmake CONFIG+=enable-legacy \
+        \\n\\t qmake CONFIG+=enable-legacy PREFIX=/usr LIBDIR=/usr/lib64 \
 
     !build_pass:system(echo \"$$help_string\")
 } else {
