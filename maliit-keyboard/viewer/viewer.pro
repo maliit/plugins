@@ -1,8 +1,7 @@
-include(../../config.pri)
+include(../config.pri)
 
-TEMPLATE = app
 TARGET = maliit-keyboard-viewer
-target.path = $$INSTALL_BIN
+TEMPLATE = app
 
 INCLUDEPATH += ../lib ../
 LIBS += -L../lib -lmaliit-keyboard -L../view -lmaliit-keyboard-view
@@ -14,4 +13,5 @@ contains(QT_MAJOR_VERSION, 4) {
     QT = core gui widgets
 }
 
+target.path = $$INSTALL_BIN
 INSTALLS += target

@@ -1,4 +1,4 @@
-include(../../config.pri)
+include(../config.pri)
 
 VERSION = 0.2.0
 TARGET = maliit-keyboard-view

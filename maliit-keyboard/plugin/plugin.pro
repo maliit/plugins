@@ -1,4 +1,4 @@
-include(../../config.pri)
+include(../config.pri)
 
 TARGET = maliit-keyboard-plugin
 TEMPLATE = lib
