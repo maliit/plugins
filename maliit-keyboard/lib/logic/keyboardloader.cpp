@@ -288,7 +288,7 @@ void KeyboardLoader::setActiveId(const QString &id)
         d->active_id = id;
 
         // FIXME: Emit only after parsing new keyboard.
-        emit keyboardsChanged();
+        Q_EMIT keyboardsChanged();
     }
 }
 

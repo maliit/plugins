@@ -43,7 +43,7 @@ AbstractStateMachine::~AbstractStateMachine()
 bool AbstractStateMachine::inState(const QString &name) const
 {
     if (const QStateMachine *sm = dynamic_cast<const QStateMachine *>(this)) {
-        foreach (QAbstractState *state, sm->configuration()) {
+        Q_FOREACH (QAbstractState *state, sm->configuration()) {
             if (state->objectName() == name) {
                 return true;
             }

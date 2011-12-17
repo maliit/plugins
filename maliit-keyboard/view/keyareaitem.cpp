@@ -70,7 +70,7 @@ void KeyAreaItem::paint(QPainter *painter,
     painter->setBrush(Qt::black);
     painter->drawRect(boundingRect());
 
-    foreach (const Key &k, m_key_area.keys) {
+    Q_FOREACH (const Key &k, m_key_area.keys) {
         KeyRenderer::render(painter, k, boundingRect().topLeft().toPoint());
     }
 }

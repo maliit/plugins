@@ -193,7 +193,7 @@ InputMethod::subViews(MInputMethod::HandlerState state) const
 
     QList<MInputMethodSubView> views;
 
-    foreach (const QString &id, d->layout_updater.keyboardIds()) {
+    Q_FOREACH (const QString &id, d->layout_updater.keyboardIds()) {
         MInputMethodSubView v;
         v.subViewId = id;
         v.subViewTitle = d->layout_updater.keyboardTitle(id);
@@ -234,7 +234,7 @@ void InputMethod::onSwitchLeft()
         inputMethodHost()->surroundingSubViewDescriptions(MInputMethod::OnScreen);
 
     if (list.count() > 0) {
-        emit activeSubViewChanged(list.at(0).id());
+        Q_EMIT activeSubViewChanged(list.at(0).id());
     }
 }
 
@@ -245,7 +245,7 @@ void InputMethod::onSwitchRight()
         inputMethodHost()->surroundingSubViewDescriptions(MInputMethod::OnScreen);
 
     if (list.count() > 1) {
-        emit activeSubViewChanged(list.at(1).id());
+        Q_EMIT activeSubViewChanged(list.at(1).id());
     }
 }
 

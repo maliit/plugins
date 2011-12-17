@@ -163,7 +163,7 @@ bool Glass::eventFilter(QObject *obj,
         d->press_pos = qme->pos(); // FIXME: dont update on mouse release, clear instead.
         ev->accept();
 
-        foreach (const SharedLayout &layout, d->layouts) {
+        Q_FOREACH (const SharedLayout &layout, d->layouts) {
             const QPoint &pos(layout->orientation() == Layout::Landscape
                               ? qme->pos() : QPoint(d->window->height() - qme->pos().y(), qme->pos().x()));
             const QVector<Key> &keys(layout->activeKeyArea().keys);
@@ -181,10 +181,10 @@ bool Glass::eventFilter(QObject *obj,
 
                         if (qme->type() == QKeyEvent::MouseButtonPress) {
                             d->active_keys.append(k);
-                            emit keyPressed(k, layout);
+                            Q_EMIT keyPressed(k, layout);
                         } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
                             removeActiveKey(&d->active_keys, k);
-                            emit keyReleased(k, layout);
+                            Q_EMIT keyReleased(k, layout);
                         }
 
                         return true;
@@ -202,7 +202,7 @@ bool Glass::eventFilter(QObject *obj,
         QMouseEvent *qme = static_cast<QMouseEvent *>(ev);
         ev->accept();
 
-        foreach (const SharedLayout &layout, d->layouts) {
+        Q_FOREACH (const SharedLayout &layout, d->layouts) {
             const QPoint &pos(layout->orientation() == Layout::Landscape
                               ? qme->pos() : QPoint(d->window->height() - qme->pos().y(), qme->pos().x()));
             const QPoint &last_pos(layout->orientation() == Layout::Landscape
@@ -219,23 +219,23 @@ bool Glass::eventFilter(QObject *obj,
                     && pos.y() < (press_pos.y() + rect.height() * 0.33)) {
                     if (pos.x() < (press_pos.x() - rect.width() * 0.33)) {
                         d->gesture_triggered = true;
-                        emit switchRight(layout);
+                        Q_EMIT switchRight(layout);
                     } else if (pos.x() > (press_pos.x() + rect.width() * 0.33)) {
                         d->gesture_triggered = true;
-                        emit switchLeft(layout);
+                        Q_EMIT switchLeft(layout);
                     }
                 } else if (pos.x() > (press_pos.x() - rect.width() * 0.33)
                            && pos.x() < (press_pos.x() + rect.width() * 0.33)) {
                     if (pos.y() > (press_pos.y() + rect.height() * 0.50)) {
                         d->gesture_triggered = true;
-                        emit keyboardClosed();
+                        Q_EMIT keyboardClosed();
                     }
                 }
             }
 
             if (d->gesture_triggered) {
-                foreach (const Key &k, d->active_keys) {
-                    emit keyExited(k, layout);
+                Q_FOREACH (const Key &k, d->active_keys) {
+                    Q_EMIT keyExited(k, layout);
                 }
 
                 d->active_keys.clear();
@@ -254,7 +254,7 @@ bool Glass::eventFilter(QObject *obj,
             if (not last_key.rect().isEmpty()
                 && not last_key.rect().translated(origin).contains(pos)) {
                 removeActiveKey(&d->active_keys, last_key);
-                emit keyExited(last_key, layout);
+                Q_EMIT keyExited(last_key, layout);
             }
 
             if (rect.contains(pos)) {
@@ -266,7 +266,7 @@ bool Glass::eventFilter(QObject *obj,
                     if (key_rect.contains(pos)
                         && k != findActiveKey(&d->active_keys, origin, pos)) {
                         d->active_keys.append(k);
-                        emit keyEntered(k, layout);
+                        Q_EMIT keyEntered(k, layout);
 
                         return true;
                     }
