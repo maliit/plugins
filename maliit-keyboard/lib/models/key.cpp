@@ -98,22 +98,22 @@ void Key::setBackgroundBorders(const QMargins &borders)
     m_background_borders = borders;
 }
 
-QPixmap Key::background() const
+QByteArray Key::background() const
 {
     return m_background;
 }
 
-void Key::setBackground(const QPixmap &background)
+void Key::setBackground(const QByteArray &background)
 {
     m_background = background;
 }
 
-QPixmap Key::icon() const
+QByteArray Key::icon() const
 {
     return m_icon;
 }
 
-void Key::setIcon(const QPixmap &icon)
+void Key::setIcon(const QByteArray &icon)
 {
     m_icon = icon;
 }

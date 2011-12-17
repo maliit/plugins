@@ -35,97 +35,98 @@ namespace MaliitKeyboard {
 
 namespace {
 const char *const styles_dir(MALIIT_KEYBOARD_STYLES_DIR);
-const char *const images_dir(MALIIT_KEYBOARD_IMAGES_DIR);
-
 const QString profile_filename_format("%1/%2.ini");
-const QString image_filename_format("%1/%2");
 const QString key_with_format("key-width%2");
 
-const QString backgroud_id_build_format("background/%1%2");
-const QString icon_id_build_format("icon/%1%2");
-const QString id_build_format("%1/%2/%3");
-
-QString fromKeyWidth(KeyDescription::Width width)
+QByteArray fromKeyWidth(KeyDescription::Width width)
 {
     switch(width) {
-    case KeyDescription::Medium: return "";
-    case KeyDescription::Small: return "-small";
-    case KeyDescription::Large: return "-large";
-    case KeyDescription::XLarge: return "-xlarge";
-    case KeyDescription::XXLarge: return "-xxlarge";
-    case KeyDescription::Stretched: return "-stretched"; // makes no sense actually.
+    case KeyDescription::Medium: return QByteArray();
+    case KeyDescription::Small: return QByteArray("-small");
+    case KeyDescription::Large: return QByteArray("-large");
+    case KeyDescription::XLarge: return QByteArray("-xlarge");
+    case KeyDescription::XXLarge: return QByteArray("-xxlarge");
+    case KeyDescription::Stretched: return QByteArray("-stretched"); // makes no sense actually.
     }
 
-    return QString();
+    return QByteArray();
 }
 
-QString fromKeyIcon(KeyDescription::Icon icon)
+QByteArray fromKeyIcon(KeyDescription::Icon icon)
 {
     switch (icon) {
-    case KeyDescription::NoIcon: return "";
-    case KeyDescription::ReturnIcon: return "return";
-    case KeyDescription::BackspaceIcon: return "backspace";
-    case KeyDescription::ShiftIcon: return "shift";
-    case KeyDescription::ShiftLatchedIcon: return "shift-latched";
-    case KeyDescription::CapsLockIcon: return "caps-lock";
+    case KeyDescription::NoIcon: return QByteArray();
+    case KeyDescription::ReturnIcon: return QByteArray("return");
+    case KeyDescription::BackspaceIcon: return QByteArray("backspace");
+    case KeyDescription::ShiftIcon: return QByteArray("shift");
+    case KeyDescription::ShiftLatchedIcon: return QByteArray("shift-latched");
+    case KeyDescription::CapsLockIcon: return QByteArray("caps-lock");
     }
 
-    return QString();
+    return QByteArray();
 }
 
-QString fromKeyStyle(KeyDescription::Style style)
+QByteArray fromKeyStyle(KeyDescription::Style style)
 {
     switch (style) {
-    case KeyDescription::NormalStyle: return "normal";
-    case KeyDescription::DeadkeyStyle: return "dead";
-    case KeyDescription::SpecialStyle: return "special";
+    case KeyDescription::NormalStyle: return QByteArray("normal");
+    case KeyDescription::DeadkeyStyle: return QByteArray("dead");
+    case KeyDescription::SpecialStyle: return QByteArray("special");
     }
 
-    return QString();
+    return QByteArray();
 }
 
-QString fromKeyState(KeyDescription::State state)
+QByteArray fromKeyState(KeyDescription::State state)
 {
     switch (state) {
-    case KeyDescription::NormalState: return "";
-    case KeyDescription::PressedState: return "-pressed";
-    case KeyDescription::DisabledState: return "-disabled";
-    case KeyDescription::HighlightedState: return "-highlighted";
+    case KeyDescription::NormalState: return QByteArray();
+    case KeyDescription::PressedState: return QByteArray("-pressed");
+    case KeyDescription::DisabledState: return QByteArray("-disabled");
+    case KeyDescription::HighlightedState: return QByteArray("-highlighted");
     }
 
-    return QString();
+    return QByteArray();
 }
 
-QString buildBackgroundId(KeyDescription::Style style,
-                          KeyDescription::State state)
+QByteArray buildBackgroundId(KeyDescription::Style style,
+                             KeyDescription::State state)
 {
-    return backgroud_id_build_format
-           .arg(fromKeyStyle(style))
-           .arg(fromKeyState(state));
+    QByteArray result("background/");
+    result.append(fromKeyStyle(style));
+    result.append(fromKeyState(state));
+
+    return result;
 }
 
-QString buildIconId(KeyDescription::Icon icon,
-                    KeyDescription::State state)
+QByteArray buildIconId(KeyDescription::Icon icon,
+                       KeyDescription::State state)
 {
-    return icon_id_build_format
-           .arg(fromKeyIcon(icon))
-           .arg(fromKeyState(state));
+    QByteArray result("icon/");
+    result.append(fromKeyIcon(icon));
+    result.append(fromKeyState(state));
+
+    return result;
 }
 
-QString buildId(Layout::Orientation orientation,
-                const QString &style_name,
-                const QString &id)
+QByteArray buildId(Layout::Orientation orientation,
+                   const QByteArray &style_name,
+                   const QByteArray &id)
 {
-    return id_build_format
-           .arg(style_name)
-           .arg(orientation == Layout::Landscape ? "landscape" : "portrait")
-           .arg(id);
+    QByteArray result;
+    result.append(style_name);
+    result.append('/');
+    result.append(orientation == Layout::Landscape ? "landscape" : "portrait");
+    result.append('/');
+    result.append(id);
+
+    return result;
 }
 
 QVariant lookup(const QScopedPointer<QSettings> &store,
                 Layout::Orientation orientation,
-                const QString &style_name,
-                const QString &id)
+                const QByteArray &style_name,
+                const QByteArray &id)
 {
     if (store.isNull()) {
         qCritical() << __PRETTY_FUNCTION__
@@ -136,59 +137,23 @@ QVariant lookup(const QScopedPointer<QSettings> &store,
     const QVariant &result(store->value(buildId(orientation, style_name, id)));
 
     if (not result.isValid()) {
-        return store->value(buildId(orientation, "default", id));
+        return store->value(buildId(orientation, QByteArray("default"), id));
     }
 
     return result;
 }
 
-QPixmap loadImage(const QString &id,
-                  const QScopedPointer<QSettings> &store,
-                  QHash<QString, QPixmap> *cache)
-{
-    if (cache) {
-        const QPixmap &found(cache->value(id));
-
-        if (not found.isNull()) {
-            return found;
-        }
-    }
-
-    if (store.isNull()) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "No store given, aborting.";
-        return QPixmap();
-    }
-
-    const QPixmap &image(image_filename_format
-                         .arg(images_dir)
-                         .arg(store->value(id).toString()));
-
-    if (image.isNull()) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Image not found. Image id:" << id
-                   << ", file name:" << images_dir << store->value(id).toString();
-    } else if (cache) {
-        cache->insert(id, image);
-    }
-
-    return image;
 }
-
-}
-
 
 class StylePrivate
 {
 public:
     QString name;
     QScopedPointer<QSettings> store;
-    mutable QHash<QString, QPixmap> image_cache;
 
     explicit StylePrivate()
         : name()
         , store()
-        , image_cache()
     {}
 };
 
@@ -215,22 +180,20 @@ void Style::setStyleName(const QString &name)
     d->name = name;
 }
 
-QPixmap Style::keyBackground(KeyDescription::Style style,
-                             KeyDescription::State state) const
+QByteArray Style::keyBackground(KeyDescription::Style style,
+                                KeyDescription::State state) const
 {
     Q_D(const Style);
-
-    return loadImage(buildBackgroundId(style, state),
-                     d->store, &d->image_cache);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value(buildBackgroundId(style, state)).toByteArray());
 }
 
-QPixmap Style::icon(KeyDescription::Icon icon,
-                    KeyDescription::State state) const
+QByteArray Style::icon(KeyDescription::Icon icon,
+                       KeyDescription::State state) const
 {
     Q_D(const Style);
-
-    return loadImage(buildIconId(icon, state),
-                     d->store, &d->image_cache);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value(buildIconId(icon, state)).toByteArray());
 }
 
 QString Style::fontName(const QString &group_id) const
@@ -248,32 +211,42 @@ qreal Style::fontSize(const QString &group_id) const
 qreal Style::keyHeight(Layout::Orientation orientation) const
 {
     Q_D(const Style);
-    return lookup(d->store, orientation, d->name, "key-height").toReal();
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("key-height")).toReal();
 }
 
 qreal Style::keyWidth(Layout::Orientation orientation,
                       KeyDescription::Width width) const
 {
     Q_D(const Style);
-    return lookup(d->store, orientation, d->name, key_with_format.arg(fromKeyWidth(width))).toReal();
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("key-width").append(fromKeyWidth(width))).toReal();
 }
 
 qreal Style::keyAreaWidth(Layout::Orientation orientation) const
 {
     Q_D(const Style);
-    return lookup(d->store, orientation, d->name, "key-area-width").toReal();
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("key-area-width")).toReal();
 }
 
 qreal Style::keyMargin(Layout::Orientation orientation) const
 {
     Q_D(const Style);
-    return lookup(d->store, orientation, d->name, "key-margins").toReal();
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("key-margins")).toReal();
 }
 
 qreal Style::keyAreaPadding(Layout::Orientation orientation) const
 {
     Q_D(const Style);
-    return lookup(d->store, orientation, d->name, "key-area-paddings").toReal();
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("key-area-paddings")).toReal();
 }
 
 } // namespace MaliitKeyboard

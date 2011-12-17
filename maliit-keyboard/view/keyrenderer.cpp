@@ -34,6 +34,33 @@
 
 namespace MaliitKeyboard {
 
+namespace {
+const char *const g_images_dir(MALIIT_KEYBOARD_IMAGES_DIR);
+QHash<QByteArray, QPixmap> g_cache;
+
+QPixmap loadPixmap(const QByteArray &id)
+{
+    if (id.isEmpty()) {
+        return QPixmap();
+    }
+
+    const QPixmap &result(g_cache.value(id));
+
+    if (not result.isNull()) {
+        return result;
+    }
+
+    QByteArray filename(g_images_dir);
+    filename.append('/');
+    filename.append(id);
+
+    QPixmap new_pixmap(filename);
+    g_cache.insert(id, new_pixmap);
+
+    return new_pixmap;
+}
+}
+
 void KeyRenderer::render(QPainter *painter,
                          const Key &key,
                          const QPoint &origin)
@@ -41,7 +68,8 @@ void KeyRenderer::render(QPainter *painter,
     const QMargins &m(key.margins());
     const QRect &key_rect(key.rect().translated(origin).adjusted(m.left(), m.top(), -m.right(), -m.bottom()));
 
-    qDrawBorderPixmap(painter, key_rect, key.backgroundBorders(), key.background());
+    qDrawBorderPixmap(painter, key_rect, key.backgroundBorders(),
+                      loadPixmap(key.background()));
 
     if (QFont *font = key.label().font().data()) {
         painter->setFont(*font);
@@ -49,7 +77,7 @@ void KeyRenderer::render(QPainter *painter,
 
     painter->setPen(key.label().color());
     const QString &text(key.label().text());
-    const QPixmap &icon(key.icon());
+    const QPixmap &icon(loadPixmap(key.icon()));
 
     if (not text.isEmpty()) {
         painter->drawText(key_rect, Qt::AlignCenter, text);

@@ -5,6 +5,7 @@ SUBDIRS = \
     view \
     plugin \
     viewer \
+    data \
 
 # Dont build benchmark for Qt 5, as it implicitly depends on QWidget still.
 # Once libmaliit-keyboard has been cleaned up (QPixmap usage), benchmark can

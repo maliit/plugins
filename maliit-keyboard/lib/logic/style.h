@@ -55,10 +55,10 @@ public:
     void setProfile(const QString &profile);
     void setStyleName(const QString &name);
 
-    QPixmap keyBackground(KeyDescription::Style style,
-                          KeyDescription::State state) const;
-    QPixmap icon(KeyDescription::Icon icon,
-                 KeyDescription::State state) const;
+    QByteArray keyBackground(KeyDescription::Style style,
+                             KeyDescription::State state) const;
+    QByteArray icon(KeyDescription::Icon icon,
+                    KeyDescription::State state) const;
 
     QString fontName(const QString &group_id = QString()) const;
     qreal fontSize(const QString &group_id = QString()) const;

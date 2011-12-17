@@ -73,8 +73,8 @@ private:
     QRect m_rect;
     QMargins m_margins;
     QMargins m_background_borders;
-    QPixmap m_background;
-    QPixmap m_icon;
+    QByteArray m_background;
+    QByteArray m_icon;
 
 public:
     explicit Key();
@@ -96,11 +96,11 @@ public:
     QMargins backgroundBorders() const;
     void setBackgroundBorders(const QMargins &borders);
 
-    QPixmap background() const;
-    void setBackground(const QPixmap &background);
+    QByteArray background() const;
+    void setBackground(const QByteArray &background);
 
-    QPixmap icon() const;
-    void setIcon(const QPixmap &icon);
+    QByteArray icon() const;
+    void setIcon(const QByteArray &icon);
 };
 
 bool operator==(const Key &lhs,
