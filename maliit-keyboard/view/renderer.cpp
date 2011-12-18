@@ -220,6 +220,8 @@ QGraphicsView * createView(QWidget *widget,
 #endif
 
     scene->setSceneRect(widget->rect());
+    view->show();
+
     return view;
 }
 
