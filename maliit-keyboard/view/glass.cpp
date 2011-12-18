@@ -79,6 +79,8 @@ public:
     QPoint press_pos;
     QElapsedTimer gesture_timer;
     bool gesture_triggered;
+    QTimer long_press_timer;
+    SharedLayout long_press_layout;
 
     explicit GlassPrivate()
         : window(0)
@@ -88,13 +90,22 @@ public:
         , press_pos()
         , gesture_timer()
         , gesture_triggered(false)
-    {}
+        , long_press_timer()
+        , long_press_layout()
+    {
+        long_press_timer.setInterval(300);
+        long_press_timer.setSingleShot(true);
+    }
 };
 
 Glass::Glass(QObject *parent)
     : QObject(parent)
     , d_ptr(new GlassPrivate)
-{}
+{
+    connect(&d_ptr->long_press_timer, SIGNAL(timeout()),
+            this,                     SLOT(onLongPressTriggered()),
+            Qt::UniqueConnection);
+}
 
 Glass::~Glass()
 {}
@@ -152,47 +163,16 @@ bool Glass::eventFilter(QObject *obj,
         d->gesture_timer.restart();
         d->gesture_triggered = false;
 
-        // Intended fallthru:
-    case QKeyEvent::MouseButtonRelease: {
+        return handlePressReleaseEvent(ev);
+
+    case QKeyEvent::MouseButtonRelease:
+        d->long_press_timer.stop();
+
         if (d->gesture_triggered) {
             return false;
         }
 
-        QMouseEvent *qme = static_cast<QMouseEvent *>(ev);
-        d->last_pos = qme->pos();
-        d->press_pos = qme->pos(); // FIXME: dont update on mouse release, clear instead.
-        ev->accept();
-
-        Q_FOREACH (const SharedLayout &layout, d->layouts) {
-            const QPoint &pos(layout->orientation() == Layout::Landscape
-                              ? qme->pos() : QPoint(d->window->height() - qme->pos().y(), qme->pos().x()));
-            const QVector<Key> &keys(layout->activeKeyArea().keys);
-
-            // FIXME: use binary range search
-            const QRect &rect(layout->activeKeyArea().rect.toRect());
-            if (rect.contains(pos)) {
-
-                for (int index = 0; index < keys.count(); ++index) {
-                    Key k(keys.at(index));
-
-                    // Pressed state is not stored in key itself, so list of pressed keys (overridden keys) must be maintained elsewhere.
-                    const QRect &key_rect = k.rect().translated(rect.topLeft());
-                    if (key_rect.contains(pos)) {
-
-                        if (qme->type() == QKeyEvent::MouseButtonPress) {
-                            d->active_keys.append(k);
-                            Q_EMIT keyPressed(k, layout);
-                        } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
-                            removeActiveKey(&d->active_keys, k);
-                            Q_EMIT keyReleased(k, layout);
-                        }
-
-                        return true;
-                    }
-                }
-            }
-        }
-    } break;
+        return handlePressReleaseEvent(ev);
 
     case QKeyEvent::MouseMove: {
         if (d->gesture_triggered) {
@@ -243,8 +223,6 @@ bool Glass::eventFilter(QObject *obj,
                 return true;
             }
 
-
-
             const QVector<Key> &keys(layout->activeKeyArea().keys);
 
             // FIXME: use binary range search
@@ -254,6 +232,7 @@ bool Glass::eventFilter(QObject *obj,
             if (not last_key.rect().isEmpty()
                 && not last_key.rect().translated(origin).contains(pos)) {
                 removeActiveKey(&d->active_keys, last_key);
+                d->long_press_timer.stop();
                 Q_EMIT keyExited(last_key, layout);
             }
 
@@ -266,6 +245,8 @@ bool Glass::eventFilter(QObject *obj,
                     if (key_rect.contains(pos)
                         && k != findActiveKey(&d->active_keys, origin, pos)) {
                         d->active_keys.append(k);
+                        d->long_press_timer.start();
+                        d->long_press_layout = layout;
                         Q_EMIT keyEntered(k, layout);
 
                         return true;
@@ -277,6 +258,65 @@ bool Glass::eventFilter(QObject *obj,
 
     default:
         break;
+    }
+
+    return false;
+}
+
+void Glass::onLongPressTriggered()
+{
+    Q_D(Glass);
+
+    if (d->gesture_triggered || d->active_keys.isEmpty()) {
+        return;
+    }
+
+    Q_EMIT keyLongPressed(d->active_keys.last(), d->long_press_layout);
+}
+
+bool Glass::handlePressReleaseEvent(QEvent *ev)
+{
+    if (not ev) {
+        return false;
+    }
+
+    Q_D(Glass);
+
+    QMouseEvent *qme = static_cast<QMouseEvent *>(ev);
+    d->last_pos = qme->pos();
+    d->press_pos = qme->pos(); // FIXME: dont update on mouse release, clear instead.
+    ev->accept();
+
+    Q_FOREACH (const SharedLayout &layout, d->layouts) {
+        const QPoint &pos(layout->orientation() == Layout::Landscape
+                          ? qme->pos() : QPoint(d->window->height() - qme->pos().y(), qme->pos().x()));
+        const QVector<Key> &keys(layout->activeKeyArea().keys);
+
+        // FIXME: use binary range search
+        const QRect &rect(layout->activeKeyArea().rect.toRect());
+        if (rect.contains(pos)) {
+
+            for (int index = 0; index < keys.count(); ++index) {
+                Key k(keys.at(index));
+
+                // Pressed state is not stored in key itself, so list of pressed keys (overridden keys) must be maintained elsewhere.
+                const QRect &key_rect = k.rect().translated(rect.topLeft());
+                if (key_rect.contains(pos)) {
+
+                    if (qme->type() == QKeyEvent::MouseButtonPress) {
+                        d->active_keys.append(k);
+                        d->long_press_timer.start();
+                        d->long_press_layout = layout;
+                        Q_EMIT keyPressed(k, layout);
+                    } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
+                        removeActiveKey(&d->active_keys, k);
+                        Q_EMIT keyReleased(k, layout);
+                    }
+
+                    return true;
+                }
+            }
+        }
     }
 
     return false;

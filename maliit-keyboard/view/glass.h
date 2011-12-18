@@ -60,6 +60,8 @@ public:
 
     Q_SIGNAL void keyPressed(const Key &key,
                              const SharedLayout &layout);
+    Q_SIGNAL void keyLongPressed(const Key &key,
+                                 const SharedLayout &layout);
     Q_SIGNAL void keyReleased(const Key &key,
                               const SharedLayout &layout);
     Q_SIGNAL void keyEntered(const Key &key,
@@ -76,7 +78,10 @@ protected:
                              QEvent *ev);
     //! \reimp_end
 
-private:    
+private:
+    Q_SLOT void onLongPressTriggered();
+    bool handlePressReleaseEvent(QEvent *ev);
+
     const QScopedPointer<GlassPrivate> d_ptr;
 };
 
