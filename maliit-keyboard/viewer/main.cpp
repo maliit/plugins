@@ -29,14 +29,18 @@
  *
  */
 
-#include "view/renderer.h"
-#include "view/glass.h"
-#include "logic/layoutupdater.h"
+#include "dashboard.h"
 
 #include "models/keyarea.h"
 #include "models/key.h"
 #include "models/keyfont.h"
 #include "models/layout.h"
+
+#include "logic/layoutupdater.h"
+
+#include "view/renderer.h"
+#include "view/glass.h"
+#include "view/setup.h"
 
 #include <QApplication>
 #include <QWidget>
@@ -46,6 +50,7 @@ MaliitKeyboard::Key createKey(const QByteArray &id,
                               const MaliitKeyboard::KeyFont &f,
                               const QRect &kr,
                               const QByteArray &t,
+                              const QMargins &m,
                               MaliitKeyboard::Key::Action a = MaliitKeyboard::Key::ActionInsert)
 {
     MaliitKeyboard::Key k;
@@ -53,44 +58,30 @@ MaliitKeyboard::Key createKey(const QByteArray &id,
     k.setRect(kr);
     k.setBackground(id);
     k.setFont(f);
+    k.setMargins(m);
     k.setAction(a);
+    k.setBackgroundBorders(QMargins(6, 6, 6, 6));
 
     return k;
 }
 
-MaliitKeyboard::KeyArea createPrimaryKeyArea()
+MaliitKeyboard::KeyArea createToolbar(int key_width,
+                                      int key_height)
 {
     typedef QByteArray QBA;
     const QBA bg("key-background.png");
 
     MaliitKeyboard::KeyFont font;
-    font.setSize(16);
+    font.setSize(24);
+    font.setColor("#fffbed");
 
     MaliitKeyboard::KeyArea ka;
-    ka.rect = QRectF(0, 554, 480, 300);
-    ka.keys.append(createKey(bg, font, QRect(10, 10, 40, 60), QBA("Q")));
-    ka.keys.append(createKey(bg, font, QRect(60, 10, 80, 120), QBA("W")));
-    ka.keys.append(createKey(bg, font, QRect(10, 80, 40, 50), QBA("A")));
-    ka.keys.append(createKey(bg, font, QRect(10, 140, 130, 60), QBA("shift"),
-                             MaliitKeyboard::Key::ActionShift));
-    ka.keys.append(createKey(bg, font, QRect(160, 10, 120, 120), QBA("switch"),
-                             MaliitKeyboard::Key::ActionSwitch));
+    QMargins margins(4, 4, 4, 4);
 
-    return ka;
-}
-
-MaliitKeyboard::KeyArea createSecondaryKeyArea()
-{
-    typedef QByteArray QBA;
-    const QBA bg("key-background.png");
-
-    MaliitKeyboard::KeyFont font;
-    font.setSize(16);
-
-    MaliitKeyboard::KeyArea ka;
-    ka.rect = QRectF(0, 0, 480, 100);
-    ka.keys.append(createKey(bg, font, QRect(10, 10, 40, 60), QBA("T")));
-    ka.keys.append(createKey(bg, font, QRect(60, 10, 80, 80), QBA("O")));
+    ka.keys.append(createKey(bg, font, QRect(0, 0, key_width, key_height),
+                             QBA("<"), margins, MaliitKeyboard::Key::ActionLeft));
+    ka.keys.append(createKey(bg, font, QRect(key_width + 8, 0, key_width, key_height),
+                             QBA(">"), margins, MaliitKeyboard::Key::ActionRight));
 
     return ka;
 }
@@ -102,44 +93,56 @@ int main(int argc,
 {
     QApplication app(argc, argv);
 
-    QWidget *window = new QWidget;
-    window->resize(480, 854);
-    window->showFullScreen();
-
-    MaliitKeyboard::SharedLayout l0(new MaliitKeyboard::Layout);
-    l0->setCenterPanel(createPrimaryKeyArea());
-
-    MaliitKeyboard::SharedLayout l1(new MaliitKeyboard::Layout);
-    l1->setCenterPanel(createSecondaryKeyArea());
+    MaliitKeyboard::Dashboard *dashboard = new MaliitKeyboard::Dashboard;
+    dashboard->show();
 
     MaliitKeyboard::Renderer renderer;
-    renderer.setWindow(window);
-    renderer.addLayout(l0);
-    renderer.addLayout(l1);
-    renderer.show();
+    renderer.setWindow(dashboard);
+    dashboard->setRenderer(&renderer);
 
     MaliitKeyboard::Glass glass;
     glass.setWindow(renderer.viewport());
-    glass.addLayout(l0);
-    glass.addLayout(l1);
 
     // One layout updater can only manage one layout. If more layouts need to
     // be managed, then more layout updaters are required.
     MaliitKeyboard::LayoutUpdater updater;
-    updater.init();
+
+    MaliitKeyboard::SharedLayout l0(new MaliitKeyboard::Layout);
+    renderer.addLayout(l0);
+    glass.addLayout(l0);
     updater.setLayout(l0);
 
-    QObject::connect(&glass,   SIGNAL(keyPressed(Key, SharedLayout)),
-                     &updater, SLOT(onKeyPressed(Key, SharedLayout)));
+    MaliitKeyboard::SharedLayout l1(new MaliitKeyboard::Layout);
+    renderer.addLayout(l1);
+    glass.addLayout(l1);
 
-    QObject::connect(&glass,   SIGNAL(keyReleased(Key, SharedLayout)),
-                     &updater, SLOT(onKeyReleased(Key, SharedLayout)));
+    MaliitKeyboard::KeyArea ka(createToolbar(80, 48));
+    ka.rect = QRect(0, 0, dashboard->width(), 48);
+    l1->setCenterPanel(ka);
 
-    QObject::connect(&updater,  SIGNAL(layoutChanged(SharedLayout)),
-                     &renderer, SLOT(onLayoutChanged(SharedLayout)));
+    MaliitKeyboard::LayoutUpdater lu1;
+    lu1.setLayout(l1);
+    lu1.setScreenSize(dashboard->size());
+    lu1.resetKeyboardLoader();
 
-    QObject::connect(&updater,  SIGNAL(keysChanged(SharedLayout)),
-                     &renderer, SLOT(onKeysChanged(SharedLayout)));
+    MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);
+    MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu1, &renderer);
+
+    updater.setScreenSize(dashboard->size());
+
+    MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &updater);
+    MaliitKeyboard::Setup::connectGlassToRenderer(&glass, &renderer);
+    MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&updater, &renderer);
+
+    QObject::connect(&glass,    SIGNAL(keyReleased(Key,SharedLayout)),
+                     dashboard, SLOT(onKeyReleased(Key)));
+
+    QObject::connect(&glass,    SIGNAL(keyboardClosed()),
+                     dashboard, SLOT(onHide()));
+
+    // TODO: enable layout switching in viewer?
+    updater.setActiveKeyboardId("en_gb");
+    renderer.show();
 
     return app.exec();
 }

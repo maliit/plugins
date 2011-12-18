@@ -5,7 +5,13 @@ TEMPLATE = app
 
 INCLUDEPATH += ../lib ../
 LIBS += -L../lib -lmaliit-keyboard -L../view -lmaliit-keyboard-view
-SOURCES += main.cpp
+
+HEADERS += \
+    dashboard.h \
+
+SOURCES += \
+    main.cpp \
+    dashboard.cpp \
 
 contains(QT_MAJOR_VERSION, 4) {
     QT = core gui

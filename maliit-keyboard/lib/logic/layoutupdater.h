@@ -61,7 +61,7 @@ public:
 
     void setScreenSize(const QSize &size);
     void setLayout(const SharedLayout &layout);
-    void resetKeyboardLoader(KeyboardLoader *loader);
+    void resetKeyboardLoader(KeyboardLoader *loader = 0);
     void setOrientation(Layout::Orientation orientation);
 
     Q_SLOT void onKeyPressed(const Key &key,

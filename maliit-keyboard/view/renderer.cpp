@@ -219,6 +219,18 @@ QGraphicsView * createView(QWidget *widget,
     }
 #endif
 
+    // If there is no buffer, it probably means we run stand-alone. But when
+    // run as a maliit-server plugin, the server takes care of making any
+    // background widget visible. Without the server, we have to make the
+    // QGraphicsView translucent ourselves:
+    if (not buffer) {
+        view->setBackgroundBrush(Qt::transparent);
+        view->setBackgroundRole(QPalette::NoRole);
+        view->setWindowFlags(Qt::FramelessWindowHint);
+        view->setAttribute(Qt::WA_NoSystemBackground);
+        view->viewport()->setAutoFillBackground(false);
+    }
+
     scene->setSceneRect(widget->rect());
     view->show();
 
