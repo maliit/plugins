@@ -73,7 +73,8 @@ QPoint computeAnchor(const QSize &size,
 KeyArea createFromKeyboard(Style *style,
                            const Keyboard &source,
                            const QPoint &anchor,
-                           Layout::Orientation orientation)
+                           Layout::Orientation orientation,
+                           bool is_extended_keyarea = false)
 {
     // An ad-hoc geometry updater that also uses styling information.
     // Will only work for portrait mode (lots of hardcoded stuff).
@@ -106,6 +107,7 @@ KeyArea createFromKeyboard(Style *style,
     QPoint pos(0, 0);
     QVector<int> row_indices;
     int spacer_count = 0;
+    qreal consumed_width = 0;
 
 
     for (int index = 0; index < kb.keys.count(); ++index) {
@@ -163,7 +165,8 @@ KeyArea createFromKeyboard(Style *style,
         pos.rx() += key.rect().width();
 
         if (at_row_end) {
-            if (spacer_count > 0 && pos.x() < max_width + 1) {
+            if (not is_extended_keyarea
+                && spacer_count > 0 && pos.x() < max_width + 1) {
                 const int spacer_width = qMax<int>(0, max_width - pos.x()) / spacer_count;
                 pos.setX(0);
                 int right_x = 0;
@@ -196,6 +199,7 @@ KeyArea createFromKeyboard(Style *style,
                 }
             }
 
+            consumed_width = qMax<qreal>(consumed_width, key.rect().right() + padding);
             row_indices.clear();
             pos.setX(0);
             spacer_count = 0;
@@ -204,8 +208,10 @@ KeyArea createFromKeyboard(Style *style,
 
     const int height = pos.y() + key_height;
     ka.keys = kb.keys;
-    ka.rect =  QRectF(anchor.x() - max_width / 2, anchor.y() - height,
-                      max_width, height);
+    ka.rect =  QRectF(anchor.x() - (is_extended_keyarea ? consumed_width : max_width) / 2,
+                      anchor.y() - height,
+                      (is_extended_keyarea ? consumed_width : max_width),
+                      height);
 
     return ka;
 }
@@ -425,7 +431,10 @@ void LayoutUpdater::onKeyPressed(const Key &key,
     }
 
     layout->appendActiveKey(makeActive(key, d->style));
-    layout->setMagnifierKey(magnifyKey(key, d->style, d->layout->activeKeyArea().rect));
+
+    if (d->layout->activePanel() == Layout::CenterPanel) {
+        layout->setMagnifierKey(magnifyKey(key, d->style, d->layout->activeKeyArea().rect));
+    }
 
     switch (key.action()) {
     case Key::ActionShift:
@@ -444,6 +453,40 @@ void LayoutUpdater::onKeyPressed(const Key &key,
     Q_EMIT keysChanged(layout);
 }
 
+void LayoutUpdater::onKeyLongPressed(const Key &key,
+                                     const SharedLayout &layout)
+{
+    Q_UNUSED(key);
+    Q_D(LayoutUpdater);
+
+    if (d->layout != layout || not verify(d->loader, d->layout)) {
+        return;
+    }
+
+    clearActiveKeysAndMagnifier();
+    const Keyboard &ext_kb(d->loader->extendedKeyboard(key));
+
+    if (ext_kb.keys.isEmpty()) {
+        return;
+    }
+
+    KeyArea ext_ka(createFromKeyboard(&d->style, ext_kb,
+                                      d->anchor, d->layout->orientation(), true));
+    const QRectF &center_rect(d->layout->centerPanel().rect);
+    const QPointF offset(center_rect.topLeft() + key.rect().center());
+    ext_ka.rect.moveTo(QPointF(offset.x() - (ext_ka.rect.width() / 2), offset.y() - 100));
+
+    if (ext_ka.rect.left() < center_rect.left() + 10) {
+        ext_ka.rect.moveTo(center_rect.left() + 10, ext_ka.rect.top());
+    } else if (ext_ka.rect.right() > center_rect.right() - 10) {
+        ext_ka.rect.moveTo(center_rect.right() - ext_ka.rect.width() - 10, ext_ka.rect.top());
+    }
+
+    d->layout->setExtendedPanel(ext_ka);
+    d->layout->setActivePanel(Layout::ExtendedPanel);
+    Q_EMIT layoutChanged(d->layout);
+}
+
 void LayoutUpdater::onKeyReleased(const Key &key,
                                   const SharedLayout &layout)
 {
@@ -455,6 +498,13 @@ void LayoutUpdater::onKeyReleased(const Key &key,
 
     layout->removeActiveKey(key);
     layout->clearMagnifierKey();
+
+    if (d->layout->activePanel() == Layout::ExtendedPanel) {
+        d->layout->clearActiveKeys();
+        d->layout->setExtendedPanel(KeyArea());
+        d->layout->setActivePanel(Layout::CenterPanel);
+        Q_EMIT layoutChanged(d->layout);
+    }
 
     switch (key.action()) {
     case Key::ActionShift:
@@ -501,7 +551,11 @@ void LayoutUpdater::onKeyEntered(const Key &key,
     }
 
     layout->appendActiveKey(makeActive(key, d->style));
-    layout->setMagnifierKey(magnifyKey(key, d->style, d->layout->activeKeyArea().rect));
+
+    if (d->layout->activePanel() == Layout::CenterPanel) {
+        layout->setMagnifierKey(magnifyKey(key, d->style, d->layout->activeKeyArea().rect));
+    }
+
     Q_EMIT keysChanged(layout);
 }
 

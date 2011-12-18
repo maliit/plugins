@@ -66,6 +66,8 @@ public:
 
     Q_SLOT void onKeyPressed(const Key &key,
                              const SharedLayout &layout);
+    Q_SLOT void onKeyLongPressed(const Key &key,
+                                 const SharedLayout &layout);
     Q_SLOT void onKeyReleased(const Key &key,
                               const SharedLayout &layout);
     Q_SLOT void onKeyEntered(const Key &key,

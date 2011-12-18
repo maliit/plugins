@@ -267,11 +267,18 @@ void Glass::onLongPressTriggered()
 {
     Q_D(Glass);
 
-    if (d->gesture_triggered || d->active_keys.isEmpty()) {
+    if (d->gesture_triggered || d->active_keys.isEmpty()
+        || d->long_press_layout.isNull()
+        || d->long_press_layout->activePanel() == Layout::ExtendedPanel) {
         return;
     }
 
+    Q_FOREACH (const Key &k, d->active_keys) {
+        Q_EMIT keyExited(k, d->long_press_layout); // Not necessarily correct layout for the key ...
+    }
+
     Q_EMIT keyLongPressed(d->active_keys.last(), d->long_press_layout);
+    d->active_keys.clear();
 }
 
 bool Glass::handlePressReleaseEvent(QEvent *ev)

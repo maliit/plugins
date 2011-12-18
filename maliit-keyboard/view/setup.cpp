@@ -53,6 +53,9 @@ void connectGlassToLayoutUpdater(Glass *glass,
     QObject::connect(glass,   SIGNAL(keyPressed(Key,SharedLayout)),
                      updater, SLOT(onKeyPressed(Key,SharedLayout)));
 
+    QObject::connect(glass,   SIGNAL(keyLongPressed(Key,SharedLayout)),
+                     updater, SLOT(onKeyLongPressed(Key,SharedLayout)));
+
     QObject::connect(glass,   SIGNAL(keyReleased(Key,SharedLayout)),
                      updater, SLOT(onKeyReleased(Key,SharedLayout)));
 
