@@ -31,6 +31,8 @@
 
 #include "editor.h"
 
+#include <QtGui/QKeyEvent>
+
 namespace MaliitKeyboard {
 
 class EditorPrivate
@@ -69,7 +71,7 @@ void Editor::onKeyReleased(const Key &key)
 
     switch(key.action()) {
     case Key::ActionInsert:
-        d->host->sendCommitString(key.label().text());
+        d->host->sendCommitString(key.text());
         break;
 
     case Key::ActionBackspace: {

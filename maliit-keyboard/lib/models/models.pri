@@ -2,7 +2,7 @@ MODELS_DIR = ./models
 
 HEADERS += \
     key.h \
-    keylabel.h \
+    keyfont.h \
     keyarea.h \
     keyboard.h \
     keydescription.h \
@@ -10,7 +10,7 @@ HEADERS += \
 
 SOURCES += \
     key.cpp \
-    keylabel.cpp \
+    keyfont.cpp \
     keyarea.cpp \
     layout.cpp \
 

@@ -87,19 +87,16 @@ KeyArea transformKeyArea(const KeyArea &ka,
     new_ka.rect = ka.rect;
 
     Q_FOREACH (Key key, ka.keys) {
-        KeyLabel label(key.label());
-
         switch (t) {
         case TransformToUpper:
-            label.setText(label.text().toUpper());
+            key.setText(key.text().toUpper());
             break;
 
         case TransformToLower:
-            label.setText(label.text().toLower());
+            key.setText(key.text().toLower());
             break;
         }
 
-        key.setLabel(label);
         new_ka.keys.append(key);
     }
 
@@ -113,7 +110,7 @@ KeyArea replaceKey(const KeyArea &ka,
     new_ka.rect = ka.rect;
 
     Q_FOREACH (const Key &key, ka.keys) {
-        new_ka.keys.append((key.label().text() == replace.label().text()) ? replace : key);
+        new_ka.keys.append((key.text() == replace.text()) ? replace : key);
     }
 
     return new_ka;
@@ -137,11 +134,13 @@ KeyArea createFromKeyboard(Style *style,
 
     style->setStyleName(kb.style_name);
 
-    static SharedFont font(new QFont(style->fontName()));
-    font->setPixelSize(style->fontSize());
+    KeyFont font;
+    font.setName(style->fontName());
+    font.setSize(style->fontSize());
+    font.setColor(QByteArray("#ffffff"));
 
-    static SharedFont small_font(new QFont(style->fontName()));
-    small_font->setPointSize(12);
+    KeyFont small_font(font);
+    small_font.setSize(12);
 
     static const QMargins bg_margins(6, 6, 6, 6);
 
@@ -182,13 +181,10 @@ KeyArea createFromKeyboard(Style *style,
         key.setMargins(QMargins(use_left_padding ? padding : margin, margin,
                                 use_right_padding ? padding : margin, margin));
 
-        KeyLabel label(key.label());
-        label.setFont(label.text().count() > 1 ? small_font : font);
-        label.setColor(Qt::white);
-        key.setLabel(label);
+        key.setFont(key.text().count() > 1 ? small_font : font);
 
         // FIXME: Read from KeyDescription instead.
-        if (key.label().text().isEmpty()) {
+        if (key.text().isEmpty()) {
             switch (key.action()) {
             case Key::ActionShift:
                 key.setIcon(style->icon(KeyDescription::ShiftIcon,
@@ -283,8 +279,11 @@ Key magnifyKey(const Key &key,
 {
     // FIXME: Remove test code
     // TEST CODE STARTS
-    static SharedFont magnifier_font(new QFont);
-    magnifier_font->setPixelSize(50);
+    KeyFont magnifier_font;
+    magnifier_font.setName(style.fontName());
+    magnifier_font.setSize(50);
+    magnifier_font.setColor(QByteArray("#ffffff"));
+
     static const QMargins bg_margins(6, 6, 6, 6);
     // TEST CODE ENDS
 
@@ -310,11 +309,7 @@ Key magnifyKey(const Key &key,
 
     magnifier.setRect(magnifier_rect);
     magnifier.setBackgroundBorders(bg_margins);
-
-    KeyLabel magnifier_label(magnifier.label());
-    magnifier_label.setColor(Qt::white);
-    magnifier_label.setFont(magnifier_font);
-    magnifier.setLabel(magnifier_label);
+    magnifier.setFont(magnifier_font);
 
     return magnifier;
 }

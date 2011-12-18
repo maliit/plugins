@@ -29,35 +29,33 @@
  *
  */
 
-#ifndef MALIIT_KEYBOARD_KEYLABEL_H
-#define MALIIT_KEYBOARD_KEYLABEL_H
+#ifndef MALIIT_KEYBOARD_KEYFONT_H
+#define MALIIT_KEYBOARD_KEYFONT_H
 
-#include <QtGui>
+#include <QtCore>
 
 namespace MaliitKeyboard {
 
-typedef QSharedPointer<QFont> SharedFont;
-
-class KeyLabel
+class KeyFont
 {
 private:
-    QString m_label;
-    SharedFont m_font;
-    QColor m_color;
+    QByteArray m_name;
+    int m_size;
+    QByteArray m_color;
 
 public:
-    explicit KeyLabel();
+    explicit KeyFont();
 
-    QString text() const;
-    void setText(const QString &text);
+    QByteArray name() const;
+    void setName(const QByteArray &name);
 
-    SharedFont font() const;
-    void setFont(const SharedFont &font);
+    int size() const;
+    void setSize(int size);
 
-    QColor color() const;
-    void setColor(const QColor &color);
+    QByteArray color() const;
+    void setColor(const QByteArray &color);
 };
 
 } // namespace MaliitKeyboard
 
-#endif // MALIIT_KEYBOARD_KEYLABEL_H
+#endif // MALIIT_KEYBOARD_KEYFONT_H

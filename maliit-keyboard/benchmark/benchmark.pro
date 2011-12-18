@@ -8,5 +8,5 @@ INCLUDEPATH += ../lib
 LIBS += -L../lib -lmaliit-keyboard
 SOURCES += main.cpp
 
-QT += core
+QT = core
 INSTALLS += target

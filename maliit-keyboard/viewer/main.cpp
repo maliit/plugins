@@ -35,7 +35,7 @@
 
 #include "models/keyarea.h"
 #include "models/key.h"
-#include "models/keylabel.h"
+#include "models/keyfont.h"
 #include "models/layout.h"
 
 #include <QApplication>
@@ -43,21 +43,16 @@
 
 namespace {
 MaliitKeyboard::Key createKey(const QByteArray &id,
-                              const MaliitKeyboard::SharedFont &f,
+                              const MaliitKeyboard::KeyFont &f,
                               const QRect &kr,
                               const QByteArray &t,
-                              const QColor &c,
                               MaliitKeyboard::Key::Action a = MaliitKeyboard::Key::ActionInsert)
 {
-    MaliitKeyboard::KeyLabel l;
-    l.setText(t);
-    l.setColor(c);
-    l.setFont(f);
-
     MaliitKeyboard::Key k;
+    k.setText(t);
     k.setRect(kr);
     k.setBackground(id);
-    k.setLabel(l);
+    k.setFont(f);
     k.setAction(a);
 
     return k;
@@ -68,18 +63,17 @@ MaliitKeyboard::KeyArea createPrimaryKeyArea()
     typedef QByteArray QBA;
     const QBA bg("key-background.png");
 
-    MaliitKeyboard::SharedFont font(new QFont);
-    font->setBold(true);
-    font->setPointSize(16);
+    MaliitKeyboard::KeyFont font;
+    font.setSize(16);
 
     MaliitKeyboard::KeyArea ka;
     ka.rect = QRectF(0, 554, 480, 300);
-    ka.keys.append(createKey(bg, font, QRect(10, 10, 40, 60), QBA("Q"), Qt::darkBlue));
-    ka.keys.append(createKey(bg, font, QRect(60, 10, 80, 120), QBA("W"), Qt::darkMagenta));
-    ka.keys.append(createKey(bg, font, QRect(10, 80, 40, 50), QBA("A"), Qt::black));
-    ka.keys.append(createKey(bg, font, QRect(10, 140, 130, 60), QBA("shift"), Qt::darkCyan,
+    ka.keys.append(createKey(bg, font, QRect(10, 10, 40, 60), QBA("Q")));
+    ka.keys.append(createKey(bg, font, QRect(60, 10, 80, 120), QBA("W")));
+    ka.keys.append(createKey(bg, font, QRect(10, 80, 40, 50), QBA("A")));
+    ka.keys.append(createKey(bg, font, QRect(10, 140, 130, 60), QBA("shift"),
                              MaliitKeyboard::Key::ActionShift));
-    ka.keys.append(createKey(bg, font, QRect(160, 10, 120, 120), QBA("switch"), Qt::darkCyan,
+    ka.keys.append(createKey(bg, font, QRect(160, 10, 120, 120), QBA("switch"),
                              MaliitKeyboard::Key::ActionSwitch));
 
     return ka;
@@ -90,14 +84,13 @@ MaliitKeyboard::KeyArea createSecondaryKeyArea()
     typedef QByteArray QBA;
     const QBA bg("key-background.png");
 
-    MaliitKeyboard::SharedFont font(new QFont);
-    font->setBold(true);
-    font->setPointSize(16);
+    MaliitKeyboard::KeyFont font;
+    font.setSize(16);
 
     MaliitKeyboard::KeyArea ka;
     ka.rect = QRectF(0, 0, 480, 100);
-    ka.keys.append(createKey(bg, font, QRect(10, 10, 40, 60), QBA("T"), Qt::darkBlue));
-    ka.keys.append(createKey(bg, font, QRect(60, 10, 80, 80), QBA("O"), Qt::darkMagenta));
+    ka.keys.append(createKey(bg, font, QRect(10, 10, 40, 60), QBA("T")));
+    ka.keys.append(createKey(bg, font, QRect(60, 10, 80, 80), QBA("O")));
 
     return ka;
 }

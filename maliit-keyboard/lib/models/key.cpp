@@ -35,7 +35,7 @@ namespace MaliitKeyboard {
 
 Key::Key()
     : m_action(ActionInsert)
-    , m_label()
+    , m_font()
     , m_rect()
     , m_margins()
     , m_background_borders()
@@ -58,14 +58,24 @@ void Key::setAction(Action action)
     m_action = action;
 }
 
-KeyLabel Key::label() const
+QString Key::text() const
 {
-    return m_label;
+    return m_text;
 }
 
-void Key::setLabel(const KeyLabel &label)
+void Key::setText(const QString &text)
 {
-    m_label = label;
+    m_text = text;
+}
+
+KeyFont Key::font() const
+{
+    return m_font;
+}
+
+void Key::setFont(const KeyFont &label)
+{
+    m_font = label;
 }
 
 QRect Key::rect() const
@@ -121,8 +131,7 @@ void Key::setIcon(const QByteArray &icon)
 bool operator==(const Key &lhs,
                 const Key &rhs)
 {
-    // FIXME: introduce comparison for labels.
-    return (lhs.rect() == rhs.rect() && lhs.label().text() == rhs.label().text());
+    return (lhs.rect() == rhs.rect() && lhs.text() == rhs.text());
 }
 
 bool operator!=(const Key &lhs,

@@ -124,16 +124,11 @@ Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
                             the_binding = bindings.first();
                         }
 
-                        KeyLabel label;
                         const int index(dead_key.isNull() ? -1 : the_binding->accents().indexOf(dead_key));
 
-                        if (index < 0) {
-                            label.setText(the_binding->label());
-                        } else {
-                            label.setText(the_binding->accented_labels()[index]);
-                        }
-
                         Key skey;
+                        skey.setText(index < 0 ? the_binding->label()
+                                               : the_binding->accented_labels().at(index));
 
                         if (the_binding->dead()) {
                             // TODO: document it.
@@ -141,7 +136,7 @@ Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
                         } else {
                             skey.setAction(static_cast<Key::Action>(the_binding->action()));
                         }
-                        skey.setLabel(label);
+
                         skeyboard.keys.append(skey);
 
                         KeyDescription skey_description;
@@ -387,14 +382,14 @@ Keyboard KeyboardLoader::deadKeyboard(const Key &dead) const
     TagKeyboardPtr keyboard(get_tag_keyboard(d->active_id));
 
     // TODO: detect whether we want it shifted or not.
-    return get_keyboard(keyboard, d->currently_shifted, 0, dead.label().text());
+    return get_keyboard(keyboard, d->currently_shifted, 0, dead.text());
 }
 
 Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
 {
     Q_D(const KeyboardLoader);
     const TagKeyboardPtr keyboard(get_tag_keyboard(d->active_id));
-    const QPair<TagKeyPtr, TagBindingPtr> pair(get_tag_key_and_binding(keyboard, key.label().text()));
+    const QPair<TagKeyPtr, TagBindingPtr> pair(get_tag_key_and_binding(keyboard, key.text()));
     Keyboard skeyboard;
 
     if (pair.first and pair.second) {
@@ -403,10 +398,8 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
         Q_FOREACH(const QChar &c, extended_labels) {
             Key skey;
             KeyDescription skey_description;
-            KeyLabel label;
 
-            label.setText(c);
-            skey.setLabel(label);
+            skey.setText(c);
             skey.setAction(static_cast<Key::Action>(pair.second->action()));
             skey_description.row = 0;
             skey_description.width = static_cast<KeyDescription::Width>(pair.first->width());

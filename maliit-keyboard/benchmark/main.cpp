@@ -35,12 +35,12 @@
 
 #include <cstdlib>
 #include <ctime>
-#include <QApplication>
+#include <QCoreApplication>
 
 int main(int argc,
          char ** argv)
 {
-    QApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
     double deadline(0);
 
     if (argc > 1) {

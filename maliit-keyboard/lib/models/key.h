@@ -32,8 +32,8 @@
 #ifndef MALIIT_KEYBOARD_KEY_H
 #define MALIIT_KEYBOARD_KEY_H
 
-#include "keylabel.h"
-#include <QtGui>
+#include "keyfont.h"
+#include <QtCore>
 
 namespace MaliitKeyboard {
 
@@ -69,7 +69,8 @@ public:
 
 private:
     Action m_action;
-    KeyLabel m_label;
+    QString m_text;
+    KeyFont m_font;
     QRect m_rect;
     QMargins m_margins;
     QMargins m_background_borders;
@@ -84,8 +85,11 @@ public:
     Action action() const;
     void setAction(Action action);
 
-    KeyLabel label() const;
-    void setLabel(const KeyLabel &label);
+    QString text() const;
+    void setText(const QString &text);
+
+    KeyFont font() const;
+    void setFont(const KeyFont &font);
 
     QRect rect() const;
     void setRect(const QRect &rect);

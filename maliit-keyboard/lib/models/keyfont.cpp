@@ -29,42 +29,42 @@
  *
  */
 
-#include "keylabel.h"
+#include "keyfont.h"
 
 namespace MaliitKeyboard {
 
-KeyLabel::KeyLabel()
-    : m_label()
-    , m_font()
+KeyFont::KeyFont()
+    : m_name()
+    , m_size(0)
     , m_color()
 {}
 
-QString KeyLabel::text() const
+QByteArray KeyFont::name() const
 {
-    return m_label;
+    return m_name;
 }
 
-void KeyLabel::setText(const QString &label)
+void KeyFont::setName(const QByteArray &name)
 {
-    m_label = label;
+    m_name = name;
 }
 
-SharedFont KeyLabel::font() const
+int KeyFont::size() const
 {
-    return m_font;
+    return m_size;
 }
 
-void KeyLabel::setFont(const SharedFont &font)
+void KeyFont::setSize(int size)
 {
-    m_font = font;
+    m_size = size;
 }
 
-QColor KeyLabel::color() const
+QByteArray KeyFont::color() const
 {
     return m_color;
 }
 
-void KeyLabel::setColor(const QColor &color)
+void KeyFont::setColor(const QByteArray &color)
 {
     m_color = color;
 }

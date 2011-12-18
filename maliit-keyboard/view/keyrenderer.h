@@ -33,6 +33,8 @@
 #define MALIIT_KEYBOARD_KEYRENDERER_H
 
 #include "models/key.h"
+
+#include <QtCore>
 #include <QPainter>
 
 namespace MaliitKeyboard {

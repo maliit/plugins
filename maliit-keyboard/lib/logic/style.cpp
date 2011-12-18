@@ -196,13 +196,13 @@ QByteArray Style::icon(KeyDescription::Icon icon,
                               : d->store->value(buildIconId(icon, state)).toByteArray());
 }
 
-QString Style::fontName(const QString &group_id) const
+QByteArray Style::fontName(const QByteArray &group_id) const
 {
     Q_UNUSED(group_id)
-    return "Nokia Pure";
+    return QByteArray("Nokia Pure");
 }
 
-qreal Style::fontSize(const QString &group_id) const
+qreal Style::fontSize(const QByteArray &group_id) const
 {
     Q_UNUSED(group_id)
     return 20;
