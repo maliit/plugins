@@ -245,10 +245,13 @@ bool Glass::eventFilter(QObject *obj,
                     if (key_rect.contains(pos)
                         && k != findActiveKey(&d->active_keys, origin, pos)) {
                         d->active_keys.append(k);
-                        d->long_press_timer.start();
-                        d->long_press_layout = layout;
-                        Q_EMIT keyEntered(k, layout);
 
+                        if (k.hasExtendedKeys()) {
+                            d->long_press_timer.start();
+                            d->long_press_layout = layout;
+                        }
+
+                        Q_EMIT keyEntered(k, layout);
                         return true;
                     }
                 }
@@ -312,8 +315,12 @@ bool Glass::handlePressReleaseEvent(QEvent *ev)
 
                     if (qme->type() == QKeyEvent::MouseButtonPress) {
                         d->active_keys.append(k);
-                        d->long_press_timer.start();
-                        d->long_press_layout = layout;
+
+                        if (k.hasExtendedKeys()) {
+                            d->long_press_timer.start();
+                            d->long_press_layout = layout;
+                        }
+
                         Q_EMIT keyPressed(k, layout);
                     } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
                         removeActiveKey(&d->active_keys, k);

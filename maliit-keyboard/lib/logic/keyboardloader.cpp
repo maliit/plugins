@@ -112,6 +112,7 @@ Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
                         const int index(dead_key.isNull() ? -1 : the_binding->accents().indexOf(dead_key));
 
                         Key skey;
+                        skey.setExtendedKeysEnabled(not the_binding->extended_labels().isEmpty());
                         skey.setText(index < 0 ? the_binding->label()
                                                : the_binding->accented_labels().at(index));
 
@@ -121,6 +122,7 @@ Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
                         } else {
                             skey.setAction(static_cast<Key::Action>(the_binding->action()));
                         }
+
 
                         skeyboard.keys.append(skey);
 

@@ -76,6 +76,8 @@ private:
     QMargins m_background_borders;
     QByteArray m_background;
     QByteArray m_icon;
+    bool m_has_extended_keys: 1;
+    int m_flags_padding: 7;
 
 public:
     explicit Key();
@@ -105,6 +107,9 @@ public:
 
     QByteArray icon() const;
     void setIcon(const QByteArray &icon);
+
+    bool hasExtendedKeys() const;
+    void setExtendedKeysEnabled(bool enable);
 };
 
 bool operator==(const Key &lhs,

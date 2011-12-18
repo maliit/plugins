@@ -41,6 +41,7 @@ Key::Key()
     , m_background_borders()
     , m_background()
     , m_icon()
+    , m_has_extended_keys(false)
 {}
 
 bool Key::valid() const
@@ -126,6 +127,16 @@ QByteArray Key::icon() const
 void Key::setIcon(const QByteArray &icon)
 {
     m_icon = icon;
+}
+
+bool Key::hasExtendedKeys() const
+{
+    return m_has_extended_keys;
+}
+
+void Key::setExtendedKeysEnabled(bool enable)
+{
+    m_has_extended_keys = enable;
 }
 
 bool operator==(const Key &lhs,
