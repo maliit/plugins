@@ -423,7 +423,12 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
     Keyboard skeyboard;
 
     if (pair.first and pair.second) {
-        const QString extended_labels(pair.second->extended_labels());
+        QString extended_labels(pair.second->extended_labels());
+
+        // Allow to enter original key, too (by making it part of extended keyboard):
+        if (not extended_labels.isEmpty()) {
+            extended_labels.prepend(key.text());
+        }
 
         Q_FOREACH(const QChar &c, extended_labels) {
             Key skey;
