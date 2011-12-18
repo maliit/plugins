@@ -4,7 +4,7 @@ VERSION = 0.2.0
 TARGET = maliit-keyboard-view
 TEMPLATE = lib
 INCLUDEPATH=../lib
-LIB += -L../lib -lmaliit-keyboard
+LIBS += -L../lib -lmaliit-keyboard
 
 contains(QT_MAJOR_VERSION, 4) {
     QT = core gui
@@ -13,6 +13,7 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 HEADERS += \
+    setup.h \
     glass.h \
     renderer.h \
     keyrenderer.h \
@@ -22,6 +23,7 @@ HEADERS += \
     graphicsview.h \
 
 SOURCES += \
+    setup.cpp \
     glass.cpp \
     renderer.cpp \
     keyrenderer.cpp \

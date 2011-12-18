@@ -35,6 +35,7 @@
 #include "view/renderer.h"
 #include "view/abstractbackgroundbuffer.h"
 #include "view/glass.h"
+#include "view/setup.h"
 #include "models/keyarea.h"
 #include "models/layout.h"
 
@@ -117,41 +118,15 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host,
 {
     Q_D(InputMethod);
 
+    Setup::connectGlassToLayoutUpdater(&d->glass, &d->layout_updater);
+    Setup::connectGlassToRenderer(&d->glass, &d->renderer);
+    Setup::connectLayoutUpdaterToRenderer(&d->layout_updater, &d->renderer);
+
     connect(&d->glass,  SIGNAL(keyReleased(Key,SharedLayout)),
             &d->editor, SLOT(onKeyReleased(Key)));
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
             inputMethodHost(), SLOT(notifyImInitiatedHiding()));
-
-    connect(&d->glass, SIGNAL(keyboardClosed()),
-            &d->renderer, SLOT(hide()));
-
-    connect(&d->glass,          SIGNAL(keyboardClosed()),
-            &d->layout_updater, SLOT(clearActiveKeysAndMagnifier()));
-
-    connect(&d->glass,          SIGNAL(switchLeft(SharedLayout)),
-            &d->layout_updater, SLOT(clearActiveKeysAndMagnifier()));
-
-    connect(&d->glass,          SIGNAL(switchRight(SharedLayout)),
-            &d->layout_updater, SLOT(clearActiveKeysAndMagnifier()));
-
-    connect(&d->glass,          SIGNAL(keyPressed(Key,SharedLayout)),
-            &d->layout_updater, SLOT(onKeyPressed(Key,SharedLayout)));
-
-    connect(&d->glass,          SIGNAL(keyReleased(Key,SharedLayout)),
-            &d->layout_updater, SLOT(onKeyReleased(Key,SharedLayout)));
-
-    connect(&d->glass,          SIGNAL(keyEntered(Key,SharedLayout)),
-            &d->layout_updater, SLOT(onKeyEntered(Key,SharedLayout)));
-
-    connect(&d->glass,          SIGNAL(keyExited(Key,SharedLayout)),
-            &d->layout_updater, SLOT(onKeyExited(Key,SharedLayout)));
-
-    connect(&d->layout_updater, SIGNAL(layoutChanged(SharedLayout)),
-            &d->renderer,       SLOT(onLayoutChanged(SharedLayout)));
-
-    connect(&d->layout_updater, SIGNAL(keysChanged(SharedLayout)),
-            &d->renderer,       SLOT(onKeysChanged(SharedLayout)));
 
     connect(&d->renderer, SIGNAL(regionChanged(QRegion)),
             host,         SLOT(setInputMethodArea(QRegion)));
