@@ -127,6 +127,7 @@ Column {
         }
         FunctionKey {
             width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
+            repeat: true
             icon: "icon-m-input-methods-backspace.svg"
             onClickedPass: { MInputMethodQuick.sendCommit("\b"); }
         }
@@ -137,23 +138,23 @@ Column {
         spacing: (columns == 11) ? 19 : 16
         FunctionKey {
             width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
-            caption: "?123"
+            caption: inSymView ? "ABC" : "?123"
             onClickedPass: { inSymView = (!inSymView) }
         }
         Row {
             spacing: 8
             CharacterKey { caption: ","; captionShifted: ","; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
-            CharacterKey { caption: " "; width: 136; height: keyHeight; sizeType: "keyboard-key-136x60.png" }
+            CharacterKey { caption: " "; captionShifted: " "; width: 136; height: keyHeight; sizeType: "keyboard-key-136x60.png" }
             CharacterKey { caption: "."; captionShifted: "."; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
         }
         FunctionKey {
             width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
+            repeat: true
             icon: MInputMethodQuick.actionKeyOverride.icon
             caption: MInputMethodQuick.actionKeyOverride.label
-            onReleased: {
+            onClickedPass: {
                 MInputMethodQuick.activateActionKey()
             }
         }
     }
 }
-

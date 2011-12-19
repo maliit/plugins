@@ -47,145 +47,135 @@ Rectangle {
 
     property int columns: Math.max(row1.length, row2.length, row3.length)
     property int keyWidth: (columns == 11) ? UI.landscapeWidthNarrow
-                                           : UI.landscapeWidth
+    : UI.landscapeWidth
     property int keyHeight: UI.landscapeHeight
     property int keyMargin: (columns == 11) ? UI.landscapeMarginNarrow
-                                            : UI.landscapeMargin
+    : UI.landscapeMargin
     property bool isShifted: false
     property bool isShiftLocked: false
     property bool inSymView: false
     property bool inSymView2: false
 
-    Flickable {
-        id: flickable
+
+    Column { //Holder for the VKB rows
         anchors.fill: parent
-        property int variationX: 100
-        flickableDirection: Flickable.VerticalFlick
-        onFlickStarted: {
-            Math.abs( contentX ) < variationX && contentY < 0 ? MInputMethodQuick.userHide() : false
-        }
+        anchors.topMargin: 4
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 12
 
-
-        Column { //Holder for the VKB rows
-            anchors.fill: parent
-            anchors.topMargin: 4
+        Row { //Row 1
             anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 12
+            spacing: keyMargin
+            Repeater {
+                model: row1
+                CharacterKey {
+                    width: keyWidth; height: keyHeight
+                    sizeType: "keyboard-key-72x46.png"
+                    caption: row1[index][0]
+                    captionShifted: row1[index][0].toUpperCase()
+                    symView: row1[index][1]
+                    symView2: row1[index][2]
+                }
+            }
 
-            Row { //Row 1
-                anchors.horizontalCenter: parent.horizontalCenter
+        } //end Row1
+
+        Row { //Row 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: keyMargin
+            Repeater {
+                model: row2
+                CharacterKey {
+                    width: keyWidth; height: keyHeight
+                    sizeType: "keyboard-key-72x46.png"
+                    caption: row2[index][0]
+                    captionShifted: row2[index][0].toUpperCase()
+                    symView: row2[index][1]
+                    symView2: row2[index][2]
+                }
+            }
+        } //end Row2
+
+        Row { //Row 3
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: (columns == 11) ? 6 : 8
+            FunctionKey {
+                width: 110; height: keyHeight
+                landscape: true
+                icon: inSymView ? ""
+                : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
+                : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
+                : "icon-m-input-methods-shift-lowercase.svg"
+
+                caption: inSymView ? (inSymView2 ? "2/2" : "1/2")
+                : ""
+
+                opacity: (mouseArea.containsMouse || (isShiftLocked && (!inSymView)))
+                ? 0.6 : 1
+
+                onClickedPass: {
+                    if (inSymView) {
+                        inSymView2 = !inSymView2
+                    } else {
+                        isShifted = (!isShifted)
+                        isShiftLocked = false
+                    }
+                }
+                onPressedAndHoldPass: {
+                    if (!inSymView) {
+                        isShifted = true
+                        isShiftLocked = true
+                    }
+                }
+            }
+            Row {
                 spacing: keyMargin
                 Repeater {
-                    model: row1
+                    model: row3
                     CharacterKey {
                         width: keyWidth; height: keyHeight
                         sizeType: "keyboard-key-72x46.png"
-                        caption: row1[index][0]
-                        captionShifted: row1[index][0].toUpperCase()
-                        symView: row1[index][1]
-                        symView2: row1[index][2]
+                        caption: row3[index][0]
+                        captionShifted: row3[index][0].toUpperCase()
+                        symView: row3[index][1]
+                        symView2: row3[index][2]
                     }
                 }
+            }
+            FunctionKey {
+                width: 110; height: keyHeight
+                landscape: true
+                repeat: true
+                icon: "icon-m-input-methods-backspace.svg"
+                onClickedPass: { MInputMethodQuick.sendCommit("\b"); }
+            }
+        } //end Row3
 
-            } //end Row1
-
-            Row { //Row 2
-                anchors.horizontalCenter: parent.horizontalCenter
+        Row { //Row 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: (columns == 11) ? 6 : 8
+            FunctionKey {
+                width: 145; height: keyHeight
+                landscape: true
+                caption: inSymView ? "ABC" : "?123"
+                onClickedPass: { inSymView = (!inSymView) }
+            }
+            Row {
                 spacing: keyMargin
-                Repeater {
-                    model: row2
-                    CharacterKey {
-                        width: keyWidth; height: keyHeight
-                        sizeType: "keyboard-key-72x46.png"
-                        caption: row2[index][0]
-                        captionShifted: row2[index][0].toUpperCase()
-                        symView: row2[index][1]
-                        symView2: row2[index][2]
-                    }
+                CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
+                CharacterKey { caption: " "; captionShifted: " "; width: 228; height: keyHeight; sizeType: "keyboard-key-228x46.png" }
+                CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
+            }
+            FunctionKey {
+                width: 145; height: keyHeight
+                landscape: true
+                repeat: true
+                icon: MInputMethodQuick.actionKeyOverride.icon
+                caption: MInputMethodQuick.actionKeyOverride.label
+                onClickedPass: {
+                    MInputMethodQuick.activateActionKey()
                 }
-            } //end Row2
-
-            Row { //Row 3
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: (columns == 11) ? 6 : 8
-                FunctionKey {
-                    width: 110; height: keyHeight
-                    landscape: true
-                    icon: inSymView ? ""
-                                    : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
-                                                      : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
-                                                                    : "icon-m-input-methods-shift-lowercase.svg"
-
-                    caption: inSymView ? (inSymView2 ? "2/2" : "1/2")
-                                       : ""
-
-                    opacity: (mouseArea.containsMouse || (isShiftLocked && (!inSymView)))
-                           ? 0.6 : 1
-
-                    onClickedPass: {
-                        if (inSymView) {
-                            inSymView2 = !inSymView2
-                        } else {
-                            isShifted = (!isShifted)
-                            isShiftLocked = false
-                        }
-                    }
-                    onPressedAndHoldPass: {
-                        if (!inSymView) {
-                            isShifted = true
-                            isShiftLocked = true
-                        }
-                    }
-                }
-                Row {
-                    spacing: keyMargin
-                    Repeater {
-                        model: row3
-                        CharacterKey {
-                            width: keyWidth; height: keyHeight
-                            sizeType: "keyboard-key-72x46.png"
-                            caption: row3[index][0]
-                            captionShifted: row3[index][0].toUpperCase()
-                            symView: row3[index][1]
-                            symView2: row3[index][2]
-                        }
-                    }
-                }
-                FunctionKey {
-                    width: 110; height: keyHeight
-                    landscape: true
-                    icon: "icon-m-input-methods-backspace.svg"
-                    onClickedPass: { MInputMethodQuick.sendCommit("\b"); }
-                }
-            } //end Row3
-
-            Row { //Row 4
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: (columns == 11) ? 6 : 8
-                FunctionKey {
-                    width: 145; height: keyHeight
-                    landscape: true
-                    caption: "?123"
-                    onClickedPass: { inSymView = (!inSymView) }
-                }
-                Row {
-                    spacing: keyMargin
-                    CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
-                    CharacterKey { caption: " "; width: 228; height: keyHeight; sizeType: "keyboard-key-228x46.png"  }
-                    CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png"  }
-                }
-                FunctionKey {
-                    width: 145; height: keyHeight
-                    landscape: true
-                    icon: MInputMethodQuick.actionKeyOverride.icon
-                    caption: MInputMethodQuick.actionKeyOverride.label
-                    onReleased: {
-                        MInputMethodQuick.activateActionKey()
-                    }
-                }
-            } //end Row4
-        }//end Column
-
-    }//end Flickable
+            }
+        } //end Row4
+    }//end Column
 } //end VKB area
-

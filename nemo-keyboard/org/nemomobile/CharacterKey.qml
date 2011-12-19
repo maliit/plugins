@@ -42,7 +42,6 @@ Item {
     property string sizeType: "keyboard-key-43x60.png"
     property bool pressed: false
 
-
     Image {
         id: keyImage
         source: sizeType
@@ -74,18 +73,32 @@ Item {
 
         onPressed: {
             aCharKey.pressed = true
-            MInputMethodQuick.sendPreedit(key_label.text);
+            //MInputMethodQuick.sendPreedit(key_label.text);
+            MInputMethodQuick.sendCommit(key_label.text)
         }
 
+        onPressAndHold: { charRepeater.start() }
+
         onReleased: {
+            charRepeater.stop()
             aCharKey.pressed = false
-            MInputMethodQuick.sendCommit(key_label.text)
+            //MInputMethodQuick.sendCommit(key_label.text)
             isShifted = isShiftLocked ? isShifted : false
         }
+
         onCanceled: {
+            charRepeater.stop()
             aCharKey.pressed = false
             //TODO - Should cancel the pre-edit modifications as well here
         }
+
+        onExited: { charRepeater.stop() }
+    }
+
+    Timer {
+        id: charRepeater
+        interval: 80; repeat: true
+        triggeredOnStart: true
+        onTriggered: { MInputMethodQuick.sendCommit(key_label.text) }
     }
 }
-

@@ -30,8 +30,9 @@
  */
 
 import Qt 4.7
+//import "KeyboardUiConstants.js" as UI
 
-//! This component is used to close QML plugin by veritical flicking
+//! This component is used to close QML plugin by vertical flicking
 Flickable {
     id: flickableCloseKeyboard
     property int variationX: 100

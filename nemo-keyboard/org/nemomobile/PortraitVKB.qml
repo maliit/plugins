@@ -36,7 +36,7 @@ Rectangle {
     z: 100
     width: UI.PORTRAIT_WIDTH
     height: UI.PORTRAIT_HEIGHT
-
+    /*
     Flickable {
         id: flickable
         anchors.fill: parent
@@ -50,9 +50,9 @@ Rectangle {
                     console.log("SWITCH")
                 }
             }
-        }
+        } */
         //TODO - loader here?
-        //RussianPortrait {}
-        EnglishPortrait {}
-    }
+    //RussianPortrait {}
+    EnglishPortrait {}
+    //}
 }

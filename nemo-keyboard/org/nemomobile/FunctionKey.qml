@@ -41,6 +41,8 @@ Item {
     property int sourceWidth: -1
     property int sourceHeight: -1
     property bool landscape: false
+    property bool repeat: false
+
     signal clickedPass()
     signal released()
     signal pressedAndHoldPass()
@@ -66,11 +68,31 @@ Item {
     MouseArea {
         id: mouse_area
         anchors.fill: parent
+
         onClicked: { clickedPass() }
         onPressed: aFunctKey.opacity = 0.6
-        onCanceled: aFunctKey.opacity = 1
-        onReleased: { parent.released(); aFunctKey.opacity = 1 }
-        onPressAndHold: { pressedAndHoldPass() }
+
+        onPressAndHold: {
+            if (repeat) { functRepeater.start() }
+            pressedAndHoldPass()
+        }
+
+        onReleased: {
+            functRepeater.stop()
+            parent.released()
+            aFunctKey.opacity = 1
+        }
+
+        onCanceled:{ functRepeater.stop(); aFunctKey.opacity = 1 }
+
+        onExited: { functRepeater.stop() }
+    }
+
+    Timer {
+        id: functRepeater
+        interval: 80; repeat: true
+        triggeredOnStart: true
+        onTriggered: parent.clickedPass()
     }
 
     Image {
