@@ -73,7 +73,6 @@ Item {
 
         onPressed: {
             aCharKey.pressed = true
-            //MInputMethodQuick.sendPreedit(key_label.text);
             MInputMethodQuick.sendCommit(key_label.text)
         }
 
@@ -82,7 +81,6 @@ Item {
         onReleased: {
             charRepeater.stop()
             aCharKey.pressed = false
-            //MInputMethodQuick.sendCommit(key_label.text)
             isShifted = isShiftLocked ? isShifted : false
         }
 
