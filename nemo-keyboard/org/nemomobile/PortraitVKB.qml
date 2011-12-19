@@ -36,21 +36,6 @@ Rectangle {
     z: 100
     width: UI.PORTRAIT_WIDTH
     height: UI.PORTRAIT_HEIGHT
-    /*
-    Flickable {
-        id: flickable
-        anchors.fill: parent
-        flickableDirection: Flickable.VerticalFlick
-        onFlickStarted: {
-            if (Math.abs(contentY) > UI.FLICK_CLOSE_DISTANCE) {
-                //Long enough to care
-                if (contentY < 0) {
-                    MInputMethodQuick.userHide();
-                } else {
-                    console.log("SWITCH")
-                }
-            }
-        } */
         //TODO - loader here?
     //RussianPortrait {}
     EnglishPortrait {}
