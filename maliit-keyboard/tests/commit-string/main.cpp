@@ -227,8 +227,8 @@ private:
         // `-------'
         const KeyArea &key_area(createAbcdArea(g_size));
 
-        layout->setCenterPanel(key_area);
-        layout->setActivePanel(Layout::CenterPanel);
+        layout->setExtendedPanel(key_area);
+        layout->setActivePanel(Layout::ExtendedPanel);
 
         Q_FOREACH (QMouseEvent *ev, mouse_events) {
             m_app->postEvent(&window, ev);
