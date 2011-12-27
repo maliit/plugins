@@ -36,4 +36,7 @@ namespace MaliitKeyboard {
 AbstractBackgroundBuffer::AbstractBackgroundBuffer()
 {}
 
+AbstractBackgroundBuffer::~AbstractBackgroundBuffer()
+{}
+
 } // namespace MaliitKeyboard
