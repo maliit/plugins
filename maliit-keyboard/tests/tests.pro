@@ -1,13 +1,7 @@
-CONFIG += ordered 
+CONFIG += ordered
 TEMPLATE = subdirs
 SUBDIRS = \
-    lib \
-    view \
-    plugin \
-    viewer \
-    data \
-    benchmark \
-    tests \
+    language-layout-switching \
 
 QMAKE_EXTRA_TARGETS += check
 check.target = check

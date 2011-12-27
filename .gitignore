@@ -16,3 +16,4 @@ core
 *.core
 *.tar.*
 *.md5
+*.moc
