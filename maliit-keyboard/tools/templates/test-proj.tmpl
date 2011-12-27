@@ -1,0 +1,18 @@
+include(../../config.pri)
+
+TARGET = %{dir_name}
+TEMPLATE = app
+QT = core testlib
+
+check.commands = ./%{dir_name}
+
+INCLUDEPATH += ../ ../../lib ../../
+LIBS += -L../../lib -lmaliit-keyboard
+
+HEADERS += \
+    ../utils.h \
+
+SOURCES += \
+    ../utils.cpp \
+    main.cpp \
+
