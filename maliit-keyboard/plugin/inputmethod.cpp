@@ -75,7 +75,6 @@ public:
 class InputMethodPrivate
 {
 public:
-    QWidget *window;
     BackgroundBuffer buffer;
     Renderer renderer;
     Glass glass;
@@ -83,19 +82,14 @@ public:
     Editor editor;
 
     explicit InputMethodPrivate(MAbstractInputMethodHost *host,
-                                QWidget *new_window)
-        : window(new_window)
-        , buffer(host)
+                                std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory)
+        : buffer(host)
         , renderer()
         , glass()
         , layout_updater()
         , editor()
     {
-        if (qApp && qApp->desktop()) {
-            window->resize(qApp->desktop()->screenGeometry().size());
-        }
-
-        renderer.setWindow(window, &buffer);
+        renderer.setWindow(factory, QSize(854, 250), &buffer);
         glass.setWindow(renderer.viewport());
         editor.setHost(host);
 
@@ -104,16 +98,15 @@ public:
         glass.addLayout(layout);
         layout_updater.setLayout(layout);
 
-        const QRect screen_area(QApplication::desktop() ? QApplication::desktop()->screenGeometry()
-                                                        : QRect(0, 0, 480, 854));
+        const QRect screen_area(QPoint(0, 0), QSize(854, 250));
         layout_updater.setScreenSize(screen_area.size());
     }
 };
 
 InputMethod::InputMethod(MAbstractInputMethodHost *host,
-                         QWidget *window)
-    : MAbstractInputMethod(host, window)
-    , d_ptr(new InputMethodPrivate(host, window))
+                         std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory)
+    : MAbstractInputMethod(host, 0)
+    , d_ptr(new InputMethodPrivate(host, factory))
 {
     Q_D(InputMethod);
 

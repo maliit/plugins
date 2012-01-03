@@ -34,6 +34,7 @@
 
 #include "abstractbackgroundbuffer.h"
 #include "models/layout.h"
+#include "surface.h"
 
 #include <QtGui>
 
@@ -52,7 +53,8 @@ public:
     explicit Renderer(QObject *parent = 0);
     virtual ~Renderer();
 
-    void setWindow(QWidget *window,
+    void setWindow(std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory,
+                   const QSize &size,
                    AbstractBackgroundBuffer *buffer = 0);
 
     QRegion region() const;

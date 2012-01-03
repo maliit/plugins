@@ -124,7 +124,7 @@ int main(int argc,
     l1->setCenterPanel(createSecondaryKeyArea());
 
     MaliitKeyboard::Renderer renderer;
-    renderer.setWindow(window);
+    renderer.setWindow(std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>(), QSize(854, 250));
     renderer.addLayout(l0);
     renderer.addLayout(l1);
     renderer.show();

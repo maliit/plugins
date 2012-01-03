@@ -34,7 +34,7 @@
 
 MaliitKeyboardPlugin::MaliitKeyboardPlugin(QObject *parent)
     : QObject(parent)
-    , MInputMethodPlugin()
+    , Maliit::Server::InputMethodPlugin()
 {}
 
 QString MaliitKeyboardPlugin::name() const
@@ -42,23 +42,10 @@ QString MaliitKeyboardPlugin::name() const
     return QString("Maliit Keyboard");
 }
 
-QStringList MaliitKeyboardPlugin::languages() const
-{
-    QStringList list;
-    list.append("en");
-
-    return list;
-}
-
 MAbstractInputMethod * MaliitKeyboardPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                                               QWidget *window)
+                                                               std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory)
 {
-    return new MaliitKeyboard::InputMethod(host, window);
-}
-
-MAbstractInputMethodSettings * MaliitKeyboardPlugin::createInputMethodSettings()
-{
-    return 0;
+    return new MaliitKeyboard::InputMethod(host, factory);
 }
 
 QSet<MInputMethod::HandlerState> MaliitKeyboardPlugin::supportedStates() const

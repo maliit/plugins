@@ -164,65 +164,6 @@ public:
     }
 };
 
-class RootItem
-    : public QGraphicsItem
-{
-private:
-    QRectF m_rect;
-
-public:
-    explicit RootItem(QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
-        , m_rect()
-    {
-        setFlag(QGraphicsItem::ItemHasNoContents);
-    }
-
-    void setRect(const QRectF &rect)
-    {
-        m_rect = rect;
-    }
-
-    virtual QRectF boundingRect() const
-    {
-        return m_rect;
-    }
-
-    virtual void paint(QPainter *,
-                       const QStyleOptionGraphicsItem *,
-                       QWidget *)
-    {}
-};
-
-QGraphicsView * createView(QWidget *widget,
-                           AbstractBackgroundBuffer *buffer)
-{
-    GraphicsView *view = new GraphicsView(widget);
-    view->setBackgroundBuffer(buffer);
-    view->resize(widget->size());
-    view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    view->setOptimizationFlags(QGraphicsView::DontClipPainter | QGraphicsView::DontSavePainterState);
-    QGraphicsScene *scene = new QGraphicsScene(view);
-    view->setScene(scene);
-    view->setSceneRect(widget->rect());
-    view->setFrameShape(QFrame::NoFrame);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-#ifdef MALIIT_KEYBOARD_HAVE_OPENGL
-    QGLWidget *gl_widget = new QGLWidget;
-    if (gl_widget->isValid()) {
-        view->setViewport(gl_widget);
-        view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    } else {
-        delete gl_widget;
-    }
-#endif
-
-    scene->setSceneRect(widget->rect());
-    return view;
-}
-
 void recycleKeyItem(QVector<KeyItem *> *key_items,
                     int index,
                     const Key &key,
@@ -247,22 +188,22 @@ void recycleKeyItem(QVector<KeyItem *> *key_items,
 class RendererPrivate
 {
 public:
-    QWidget *window;
-    QScopedPointer<QGraphicsView> view;
+    std::tr1::shared_ptr<Maliit::Server::GraphicsViewSurface> surface;
+    std::tr1::shared_ptr<Maliit::Server::GraphicsViewSurface> magnifierSurface;
     AbstractBackgroundBuffer *buffer;
     QRegion region;
     QVector<LayoutItem> layout_items;
     QVector<KeyItem *> key_items;
-    RootItem *root;
+    QVector<KeyItem *> magnifier_key_items;
 
     explicit RendererPrivate()
-        : window(0)
-        , view(0)
+        : surface()
+        , magnifierSurface()
         , buffer(0)
         , region()
         , layout_items()
         , key_items()
-        , root(0)
+        , magnifier_key_items()
     {}
 };
 
@@ -274,14 +215,15 @@ Renderer::Renderer(QObject *parent)
 Renderer::~Renderer()
 {}
 
-void Renderer::setWindow(QWidget *window,
+void Renderer::setWindow(std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory,
+                         const QSize &size,
                          AbstractBackgroundBuffer *buffer)
 {
     Q_D(Renderer);
-    d->window = window;
+    d->surface = factory->createGraphicsViewSurface(Maliit::Server::SurfacePolicy(Maliit::Server::SurfacePositionCenterBottom, size, size));
+    d->magnifierSurface = factory->createGraphicsViewSurface(Maliit::Server::SurfacePolicy(Maliit::Server::SurfacePositionOverlay, QSize(300, 300), QSize(300, 300)), d->surface);
 
     d->buffer = buffer;
-    d->view.reset(createView(d->window, d->buffer));
 }
 
 QRegion Renderer::region() const
@@ -293,7 +235,7 @@ QRegion Renderer::region() const
 QWidget * Renderer::viewport() const
 {
     Q_D(const Renderer);
-    return d->view->viewport();
+    return d->surface->view()->viewport();
 }
 
 void Renderer::addLayout(const SharedLayout &layout)
@@ -311,23 +253,16 @@ void Renderer::clearLayouts()
 
     d->layout_items.clear();
     d->key_items.clear();
-    d->root = 0;
-    d->view->scene()->clear();
+    d->surface->clear();
 }
 
 void Renderer::show()
 {
     Q_D(Renderer);
 
-    const QRect &rect(d->view->rect());
+    d->surface->show();
 
-    if (not d->root) {
-        d->view->scene()->addItem(d->root = new RootItem);
-        d->root->setRect(rect);
-        d->root->show();
-    }
-
-    if (not d->view || d->layout_items.isEmpty()) {
+    if (not d->surface->view() || d->layout_items.isEmpty()) {
         qCritical() << __PRETTY_FUNCTION__
                     << "No view or no layouts exists, aborting!";
     }
@@ -346,10 +281,12 @@ void Renderer::show()
             orientation = li.layout->orientation(); // last layout wins ...
         }
 
-        li.show(d->root, &d->region);
+        li.show(d->surface->root(), &d->region);
     }
 
-    switch (orientation) {
+    Q_UNUSED(orientation);
+
+/*    switch (orientation) {
     case Layout::Landscape:
         d->root->setRect(rect);
         d->root->setRotation(0);
@@ -361,10 +298,10 @@ void Renderer::show()
         d->root->setRotation(-90);
         d->root->setPos(0, rect.height());
         break;
-    }
+    }*/
 
-    d->view->show();
-    d->view->raise();
+    d->surface->show();
+//    d->view->raise();
     Q_EMIT regionChanged(d->region);
 }
 
@@ -372,11 +309,13 @@ void Renderer::hide()
 {
     Q_D(Renderer);
 
+    d->surface->hide();
+
     Q_FOREACH (LayoutItem li, d->layout_items) {
         li.hide();
     }
 
-    d->view->hide();
+    d->surface->hide();
     d->region = QRegion();
     Q_EMIT regionChanged(d->region);
 }
@@ -389,13 +328,15 @@ void Renderer::onLayoutChanged(const SharedLayout &layout)
 
 void Renderer::onKeysChanged(const SharedLayout &layout)
 {
+    Q_D(Renderer);
+
+    d->magnifierSurface->hide();
+
     if (layout.isNull()) {
         qCritical() << __PRETTY_FUNCTION__
                     << "Invalid layout.";
         return;
      }
-
-    Q_D(Renderer);
 
     if (d->key_items.count() > 10) {
         qWarning() << __PRETTY_FUNCTION__
@@ -423,8 +364,12 @@ void Renderer::onKeysChanged(const SharedLayout &layout)
         }
 
         if (layout->magnifierKey().valid()) {
-            recycleKeyItem(&d->key_items, index, layout->magnifierKey(), parent);
-            ++index;
+            d->magnifierSurface->show();
+            Key magnifierKey = layout->magnifierKey();
+            d->magnifierSurface->setSize(magnifierKey.rect().size());
+            d->magnifierSurface->setRelativePosition(magnifierKey.rect().topLeft());
+            magnifierKey.setRect(QRect(QPoint(), magnifierKey.rect().size()));
+            recycleKeyItem(&d->magnifier_key_items, 0, magnifierKey, d->magnifierSurface->root());
         }
     }
 

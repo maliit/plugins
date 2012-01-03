@@ -34,6 +34,7 @@
 
 #include <mabstractinputmethod.h>
 #include <mabstractinputmethodhost.h>
+#include <surface.h>
 #include <QtGui>
 
 namespace MaliitKeyboard {
@@ -49,7 +50,7 @@ class InputMethod
 
 public:
     explicit InputMethod(MAbstractInputMethodHost *host,
-                         QWidget *window);
+                         std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory);
 
     virtual ~InputMethod();
 

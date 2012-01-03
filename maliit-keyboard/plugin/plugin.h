@@ -37,20 +37,18 @@
 #include <QtGui>
 
 class MaliitKeyboardPlugin
-    : public QObject, public MInputMethodPlugin
+    : public QObject, public Maliit::Server::InputMethodPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(MInputMethodPlugin)
+    Q_INTERFACES(Maliit::Server::InputMethodPlugin)
 
 public:
     explicit MaliitKeyboardPlugin(QObject *parent = 0);
 
     //! \reimpl
     virtual QString name() const;
-    virtual QStringList languages() const;
-    virtual MAbstractInputMethod * createInputMethod(MAbstractInputMethodHost *host,
-                                                     QWidget *window);
-    virtual MAbstractInputMethodSettings * createInputMethodSettings();
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
+                                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory);
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimpl_end
 };
