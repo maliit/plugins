@@ -228,6 +228,15 @@ namespace MaliitKeyboard {
 class KeyboardLoaderPrivate
 {
 public:
+    typedef const QStringList (LayoutParser::*ParserFunc)() const;
+
+    // TODO: Move this to anonymous namespace when we get rid of currently_shifted member.
+    // TODO: When move is done then active_id parameter will have to be added.
+    Keyboard get_imported_keyboard(ParserFunc func,
+                                   const QString &file_prefix,
+                                   const QString &default_file,
+                                   int page = 0) const;
+
     QString active_id;
     mutable bool currently_shifted;
 
@@ -236,6 +245,63 @@ public:
         , currently_shifted(false)
     {}
 };
+
+Keyboard KeyboardLoaderPrivate::get_imported_keyboard(KeyboardLoaderPrivate::ParserFunc func,
+                                                      const QString &file_prefix,
+                                                      const QString &default_file,
+                                                      int page) const
+{
+    QFile file (QString::fromLatin1(languages_dir) + "/" + active_id + ".xml");
+
+    if (file.exists()) {
+        file.open(QIODevice::ReadOnly);
+
+        LayoutParser parser(&file);
+        const bool result(parser.parse());
+
+        file.close();
+        if (result) {
+            const QStringList f_results ((parser.*func)());
+
+            currently_shifted = false;
+            Q_FOREACH (const QString &f_result, f_results) {
+                const QFileInfo file_info(QString::fromLatin1(languages_dir) + "/" + f_result);
+
+                if (file_info.exists() and file_info.isFile()) {
+                    const TagKeyboardPtr keyboard(get_tag_keyboard(file_info.baseName()));
+                    return get_keyboard(keyboard, false, page);
+                }
+            }
+
+            // If we got there then it means that we got xml layout file that does not use
+            // new <import> syntax or just does not specify explicitly which file to import.
+            // In this case we have to search imports list for entry with filename beginning
+            // with file_prefix.
+            const QStringList imports (parser.imports());
+            const QRegExp file_regexp("^(" + file_prefix + ".*).xml$");
+
+            Q_FOREACH (const QString &import, imports) {
+                if (file_regexp.exactMatch(import)) {
+                    QFileInfo file_info(QString::fromLatin1(languages_dir) + "/" + import);
+
+                    if (file_info.exists() and file_info.isFile()) {
+                        const TagKeyboardPtr keyboard(get_tag_keyboard(file_regexp.cap(1)));
+                        return get_keyboard(keyboard, false, page);
+                    }
+                }
+            }
+
+            // If we got there then we try to just load a file with name in default_file.
+            QFileInfo file_info(QString::fromLatin1(languages_dir) + "/" + default_file);
+
+            if (file_info.exists() and file_info.isFile()) {
+                const TagKeyboardPtr keyboard(get_tag_keyboard(file_info.baseName()));
+                return get_keyboard(keyboard, false);
+            }
+        }
+    }
+    return Keyboard();
+}
 
 KeyboardLoader::KeyboardLoader(QObject *parent)
     : QObject(parent)
