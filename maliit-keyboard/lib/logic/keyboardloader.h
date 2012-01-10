@@ -1,3 +1,4 @@
+// -*- mode: C++; c-basic-offset: 4; indent-tabs-mode: nil; c-file-offsets: ((innamespace . 0)); -*-
 /*
  * This file is part of Maliit Plugins
  *
@@ -66,6 +67,8 @@ public:
     virtual Keyboard symbolsKeyboard(int page = 0) const;
     virtual Keyboard deadKeyboard(const Key &dead) const;
     virtual Keyboard extendedKeyboard(const Key &key) const;
+    virtual Keyboard numberKeyboard() const;
+    virtual Keyboard phoneNumberKeyboard() const;
 
     Q_SIGNAL void keyboardsChanged() const;
 

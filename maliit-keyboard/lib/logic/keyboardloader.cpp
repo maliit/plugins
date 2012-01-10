@@ -63,26 +63,6 @@ TagKeyboardPtr get_tag_keyboard(const QString& id)
     return TagKeyboardPtr();
 }
 
-QStringList get_imports(const QString &id)
-{
-    QFile file (QString::fromLatin1(languages_dir) + "/" + id + ".xml");
-
-    if (file.exists()) {
-        file.open(QIODevice::ReadOnly);
-
-        LayoutParser parser(&file);
-        const bool result(parser.parse());
-
-        file.close();
-        if (result) {
-            return parser.imports();
-        }
-    }
-
-    return QStringList();
-
-}
-
 Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
                       bool shifted = false,
                       int page = 0,
@@ -428,18 +408,8 @@ Keyboard KeyboardLoader::shiftedKeyboard() const
 Keyboard KeyboardLoader::symbolsKeyboard(int page) const
 {
     Q_D(const KeyboardLoader);
-    QStringList imports(get_imports(d->active_id));
-    const QRegExp symbols_regexp("^(symbols.*).xml$");
 
-    d->currently_shifted = false;
-    Q_FOREACH (const QString &import, imports) {
-        if (symbols_regexp.exactMatch(import)) {
-            TagKeyboardPtr keyboard(get_tag_keyboard(symbols_regexp.cap(1)));
-            return get_keyboard(keyboard, false, page);
-        }
-    }
-
-    return Keyboard();
+    return d->get_imported_keyboard(&LayoutParser::symviews, "symbols", "symbols_en.xml", page);
 }
 
 Keyboard KeyboardLoader::deadKeyboard(const Key &dead) const
@@ -476,6 +446,20 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
         }
     }
     return skeyboard;
+}
+
+Keyboard KeyboardLoader::numberKeyboard() const
+{
+    Q_D(const KeyboardLoader);
+
+    return d->get_imported_keyboard(&LayoutParser::numbers, "number", "number.xml");
+}
+
+Keyboard KeyboardLoader::phoneNumberKeyboard() const
+{
+    Q_D(const KeyboardLoader);
+
+    return d->get_imported_keyboard(&LayoutParser::phonenumbers, "phonenumber", "phonenumber.xml");
 }
 
 } // namespace MaliitKeyboard
