@@ -32,9 +32,8 @@
 #ifndef MALIIT_KEYBOARD_RENDERER_H
 #define MALIIT_KEYBOARD_RENDERER_H
 
-#include "abstractbackgroundbuffer.h"
+#include "abstractsurface.h"
 #include "models/layout.h"
-#include "surface.h"
 
 #include <QtGui>
 
@@ -53,9 +52,8 @@ public:
     explicit Renderer(QObject *parent = 0);
     virtual ~Renderer();
 
-    void setWindow(std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory,
-                   const QSize &size,
-                   AbstractBackgroundBuffer *buffer = 0);
+    void setWindow(AbstractSurface *surface,
+                   AbstractSurface *magnifierSurface);
 
     QRegion region() const;
     Q_SIGNAL void regionChanged(const QRegion &region);

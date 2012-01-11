@@ -12,11 +12,6 @@ contains(QT_MAJOR_VERSION, 4) {
     QT = core gui widgets
 }
 
-CONFIG += link_pkgconfig
-PKGCONFIG += maliit-plugins-0.80
-# moc needs the include path
-INCLUDEPATH += $$system(pkg-config --cflags maliit-plugins-0.80 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
-
 HEADERS += \
     glass.h \
     renderer.h \
@@ -25,6 +20,7 @@ HEADERS += \
     keyitem.h \
     abstractbackgroundbuffer.h \
     graphicsview.h \
+    abstractsurface.h
 
 SOURCES += \
     glass.cpp \
@@ -34,7 +30,10 @@ SOURCES += \
     keyitem.cpp \
     abstractbackgroundbuffer.cpp \
     graphicsview.cpp \
+    abstractsurface.cpp
 
 target.path += $$INSTALL_LIBS
 INSTALLS += target
+
+
 

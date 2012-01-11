@@ -188,8 +188,8 @@ void recycleKeyItem(QVector<KeyItem *> *key_items,
 class RendererPrivate
 {
 public:
-    std::tr1::shared_ptr<Maliit::Server::GraphicsViewSurface> surface;
-    std::tr1::shared_ptr<Maliit::Server::GraphicsViewSurface> magnifierSurface;
+    QScopedPointer<AbstractSurface> surface;
+    QScopedPointer<AbstractSurface> magnifierSurface;
     AbstractBackgroundBuffer *buffer;
     QRegion region;
     QVector<LayoutItem> layout_items;
@@ -215,15 +215,16 @@ Renderer::Renderer(QObject *parent)
 Renderer::~Renderer()
 {}
 
-void Renderer::setWindow(std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory,
-                         const QSize &size,
-                         AbstractBackgroundBuffer *buffer)
+void Renderer::setWindow(AbstractSurface *surface,
+                         AbstractSurface *magnifierSurface)
 {
     Q_D(Renderer);
-    d->surface = factory->createGraphicsViewSurface(Maliit::Server::SurfacePolicy(Maliit::Server::SurfacePositionCenterBottom, size, size));
+    /*    d->surface = factory->createGraphicsViewSurface(Maliit::Server::SurfacePolicy(Maliit::Server::SurfacePositionCenterBottom, size, size));
     d->magnifierSurface = factory->createGraphicsViewSurface(Maliit::Server::SurfacePolicy(Maliit::Server::SurfacePositionOverlay, QSize(300, 300), QSize(300, 300)), d->surface);
 
-    d->buffer = buffer;
+    d->buffer = buffer;*/
+    d->surface.reset(surface);
+    d->magnifierSurface.reset(magnifierSurface);
 }
 
 QRegion Renderer::region() const
@@ -235,7 +236,7 @@ QRegion Renderer::region() const
 QWidget * Renderer::viewport() const
 {
     Q_D(const Renderer);
-    return d->surface->view()->viewport();
+    return d->surface->viewport();
 }
 
 void Renderer::addLayout(const SharedLayout &layout)
@@ -262,9 +263,9 @@ void Renderer::show()
 
     d->surface->show();
 
-    if (not d->surface->view() || d->layout_items.isEmpty()) {
+    if (d->layout_items.isEmpty()) {
         qCritical() << __PRETTY_FUNCTION__
-                    << "No view or no layouts exists, aborting!";
+                    << "No layouts exists, aborting!";
     }
 
     Q_FOREACH (QGraphicsItem *key_item, d->key_items) {
@@ -367,7 +368,7 @@ void Renderer::onKeysChanged(const SharedLayout &layout)
             d->magnifierSurface->show();
             Key magnifierKey = layout->magnifierKey();
             d->magnifierSurface->setSize(magnifierKey.rect().size());
-            d->magnifierSurface->setRelativePosition(magnifierKey.rect().topLeft());
+            d->magnifierSurface->setPosition(magnifierKey.rect().topLeft());
             magnifierKey.setRect(QRect(QPoint(), magnifierKey.rect().size()));
             recycleKeyItem(&d->magnifier_key_items, 0, magnifierKey, d->magnifierSurface->root());
         }

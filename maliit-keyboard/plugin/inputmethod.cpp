@@ -45,51 +45,77 @@
 
 namespace MaliitKeyboard {
 
-class BackgroundBuffer
-    : public AbstractBackgroundBuffer
+using Maliit::Server::GraphicsViewSurface;
+using Maliit::Server::SurfacePolicy;
+
+class MaliitSurface
+    : public AbstractSurface
 {
 private:
-    MAbstractInputMethodHost *m_host;
+    QSharedPointer<GraphicsViewSurface> m_surface;
 
 public:
-    explicit BackgroundBuffer(MAbstractInputMethodHost *host)
-        : AbstractBackgroundBuffer()
-    {
-        m_host = host;
-    }
-
-    virtual ~BackgroundBuffer()
+    explicit MaliitSurface(QSharedPointer<GraphicsViewSurface> surface)
+        : AbstractSurface()
+        , m_surface(surface)
     {}
 
-    QPixmap background() const
-    {
-        if (not m_host) {
-            static QPixmap empty;
-            return empty;
-        }
+    virtual ~MaliitSurface()
+    {}
 
-        return m_host->background();
+    QWidget *viewport()
+    {
+        return m_surface->view()->viewport();
+    }
+
+    void clear()
+    {
+        m_surface->clear();
+    }
+
+    void show()
+    {
+        m_surface->show();
+    }
+
+    void hide()
+    {
+        m_surface->hide();
+    }
+
+    QGraphicsItem *root()
+    {
+        return m_surface->root();
+    }
+
+    void setSize(const QSize &size)
+    {
+        m_surface->setSize(size);
+    }
+
+    void setPosition(const QPoint &topLeft)
+    {
+        m_surface->setRelativePosition(topLeft);
     }
 };
 
 class InputMethodPrivate
 {
 public:
-    BackgroundBuffer buffer;
     Renderer renderer;
     Glass glass;
     LayoutUpdater layout_updater;
     Editor editor;
 
-    explicit InputMethodPrivate(MAbstractInputMethodHost *host,
-                                std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory)
-        : buffer(host)
-        , renderer()
+    explicit InputMethodPrivate(MAbstractInputMethodHost *host)
+        : renderer()
         , glass()
         , layout_updater()
         , editor()
     {
-        renderer.setWindow(factory, QSize(854, 250), &buffer);
+        QSharedPointer<GraphicsViewSurface> surface = host->surfaceFactory()->createGraphicsViewSurface(SurfacePolicy(Maliit::Server::SurfacePositionCenterBottom, QSize(854, 250), QSize(250, 854)));
+        QSharedPointer<GraphicsViewSurface> magnifierSurface = host->surfaceFactory()->createGraphicsViewSurface(SurfacePolicy(Maliit::Server::SurfacePositionOverlay, QSize(), QSize()), surface);
+        renderer.setWindow(new MaliitSurface(surface), new MaliitSurface(magnifierSurface));
         glass.setWindow(renderer.viewport());
         editor.setHost(host);
 
@@ -103,10 +129,9 @@ public:
     }
 };
 
-InputMethod::InputMethod(MAbstractInputMethodHost *host,
-                         std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory)
-    : MAbstractInputMethod(host, 0)
-    , d_ptr(new InputMethodPrivate(host, factory))
+InputMethod::InputMethod(MAbstractInputMethodHost *host)
+    : MAbstractInputMethod(host)
+    , d_ptr(new InputMethodPrivate(host))
 {
     Q_D(InputMethod);
 

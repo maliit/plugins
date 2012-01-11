@@ -42,10 +42,9 @@ QString MaliitKeyboardPlugin::name() const
     return QString("Maliit Keyboard");
 }
 
-MAbstractInputMethod * MaliitKeyboardPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                                               std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory)
+MAbstractInputMethod * MaliitKeyboardPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    return new MaliitKeyboard::InputMethod(host, factory);
+    return new MaliitKeyboard::InputMethod(host);
 }
 
 QSet<MInputMethod::HandlerState> MaliitKeyboardPlugin::supportedStates() const

@@ -29,49 +29,35 @@
  *
  */
 
-#ifndef MALIIT_KEYBOARD_INPUTMETHOD_H
-#define MALIIT_KEYBOARD_INPUTMETHOD_H
+#ifndef MALIITKEYBOARD_ABSTRACTSURFACE_H
+#define MALIITKEYBOARD_ABSTRACTSURFACE_H
 
-#include <mabstractinputmethod.h>
-#include <mabstractinputmethodhost.h>
-#include <QtGui>
+#include <QPoint>
+#include <QSize>
+
+class QGraphicsItem;
+class QWidget;
 
 namespace MaliitKeyboard {
 
-class InputMethodPrivate;
-
-class InputMethod
-    : public MAbstractInputMethod
+class AbstractSurface
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(InputMethod)
-    Q_DECLARE_PRIVATE(InputMethod)
-
 public:
-    explicit InputMethod(MAbstractInputMethodHost *host);
+    explicit AbstractSurface();
+    virtual ~AbstractSurface() = 0;
 
-    virtual ~InputMethod();
+    virtual QWidget *viewport() = 0;
+    virtual void clear() = 0;
 
-    //! \reimp
-    virtual void show();
-    virtual void hide();
-    virtual void switchContext(MInputMethod::SwitchDirection direction,
-                               bool animated);
-    virtual QList<MAbstractInputMethod::MInputMethodSubView>
-    subViews(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
-    virtual void setActiveSubView(const QString &id,
-                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
-    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
-    virtual void handleAppOrientationChanged(int angle);
-    //! \reimp_end
+    virtual void show() = 0;
+    virtual void hide() = 0;
 
-private:
-    Q_SLOT void onSwitchLeft();
-    Q_SLOT void onSwitchRight();
+    virtual QGraphicsItem *root() = 0;
 
-    const QScopedPointer<InputMethodPrivate> d_ptr;
+    virtual void setSize(const QSize &size) = 0;
+    virtual void setPosition(const QPoint &topLeft) = 0;
 };
 
 } // namespace MaliitKeyboard
 
-#endif // MALIIT_KEYBOARD_INPUTMETHOD_H
+#endif // MALIITKEYBOARD_ABSTRACTSURFACE_H
