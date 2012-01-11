@@ -42,6 +42,9 @@ namespace {
 
 using namespace MaliitKeyboard;
 
+// From http://doc.qt.nokia.com/4.7/qdir.html#separator:
+// If you always use "/", Qt will translate your paths to conform
+// to the underlying operating system.
 const char *const languages_dir(MALIIT_PLUGINS_DATA_DIR "/languages");
 
 TagKeyboardPtr get_tag_keyboard(const QString& id)
