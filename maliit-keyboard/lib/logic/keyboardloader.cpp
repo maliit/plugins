@@ -49,7 +49,7 @@ const char *const languages_dir(MALIIT_PLUGINS_DATA_DIR "/languages");
 
 TagKeyboardPtr get_tag_keyboard(const QString& id)
 {
-    QFile file (QString::fromLatin1(languages_dir) + "/" + id + ".xml");
+    QFile file(QString::fromLatin1(languages_dir) + "/" + id + ".xml");
 
     if (file.exists()) {
         file.open(QIODevice::ReadOnly);
@@ -234,7 +234,7 @@ Keyboard KeyboardLoaderPrivate::get_imported_keyboard(KeyboardLoaderPrivate::Par
                                                       const QString &default_file,
                                                       int page) const
 {
-    QFile file (QString::fromLatin1(languages_dir) + "/" + active_id + ".xml");
+    QFile file(QString::fromLatin1(languages_dir) + "/" + active_id + ".xml");
 
     if (file.exists()) {
         file.open(QIODevice::ReadOnly);
@@ -244,7 +244,7 @@ Keyboard KeyboardLoaderPrivate::get_imported_keyboard(KeyboardLoaderPrivate::Par
 
         file.close();
         if (result) {
-            const QStringList f_results ((parser.*func)());
+            const QStringList f_results((parser.*func)());
 
             currently_shifted = false;
             Q_FOREACH (const QString &f_result, f_results) {
@@ -260,7 +260,7 @@ Keyboard KeyboardLoaderPrivate::get_imported_keyboard(KeyboardLoaderPrivate::Par
             // new <import> syntax or just does not specify explicitly which file to import.
             // In this case we have to search imports list for entry with filename beginning
             // with file_prefix.
-            const QStringList imports (parser.imports());
+            const QStringList imports(parser.imports());
             const QRegExp file_regexp("^(" + file_prefix + ".*).xml$");
 
             Q_FOREACH (const QString &import, imports) {
@@ -365,7 +365,7 @@ Keyboard KeyboardLoader::nextKeyboard() const
         return Keyboard();
     }
 
-    int next_index (all_ids.indexOf(d->active_id) + 1);
+    int next_index(all_ids.indexOf(d->active_id) + 1);
 
     if (next_index >= all_ids.size()) {
         next_index = 0;
@@ -387,7 +387,7 @@ Keyboard KeyboardLoader::previousKeyboard() const
         return Keyboard();
     }
 
-    int previous_index (all_ids.indexOf(d->active_id) - 1);
+    int previous_index(all_ids.indexOf(d->active_id) - 1);
 
     if (previous_index < 0) {
         previous_index = 0;
