@@ -25,8 +25,8 @@ Running
 Plugins require a running maliit-server. Active and enabled plugins are
 controlled via GConf. The reference plugin is configured like so:
 
-gconftool-2 -s --type list --list-type string /maliit/onscreen/enabled "[libmaliit-keyboard.so,]"
-gconftool-2 -s --type list --list-type string /maliit/onscreen/active "[libmaliit-keyboard.so,]"
+gconftool-2 -s --type list --list-type string /maliit/onscreen/enabled "[libmaliit-keyboard-plugin.so,en_gb]"
+gconftool-2 -s --type list --list-type string /maliit/onscreen/active "[libmaliit-keyboard-plugin.so,en_gb]"
 
 There can be more than one enabled plugin, but only one can be active at a time.
 
