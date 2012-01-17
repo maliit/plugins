@@ -3,8 +3,9 @@ include(../config.pri)
 VERSION = 0.2.0
 TARGET = maliit-keyboard-view
 TEMPLATE = lib
-INCLUDEPATH=../lib
-LIB += -L../lib -lmaliit-keyboard
+CONFIG += staticlib
+INCLUDEPATH = ../lib
+LIBS += -L../lib -lmaliit-keyboard
 
 contains(QT_MAJOR_VERSION, 4) {
     QT = core gui
@@ -29,7 +30,3 @@ SOURCES += \
     keyitem.cpp \
     abstractbackgroundbuffer.cpp \
     graphicsview.cpp \
-
-target.path += $$INSTALL_LIBS
-INSTALLS += target
-
