@@ -56,6 +56,9 @@ public:
         NumPanels
     };
 
+    Q_ENUMS(Orientation)
+    Q_ENUMS(Panel)
+
 private:
     Orientation m_orientation;
     Panel m_active_panel;
