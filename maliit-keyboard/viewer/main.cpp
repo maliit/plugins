@@ -140,8 +140,21 @@ int main(int argc,
     QObject::connect(&glass,    SIGNAL(keyboardClosed()),
                      dashboard, SLOT(onHide()));
 
-    // TODO: enable layout switching in viewer?
-    updater.setActiveKeyboardId("en_gb");
+    // Allow to specify keyboard id via command line:
+    QString keyboard_id("en_gb");
+    bool found_keyboard_id = false;
+
+    Q_FOREACH (const QString &arg, QApplication::arguments()) {
+        if (found_keyboard_id && not arg.isEmpty()) {
+            keyboard_id = arg;
+        }
+
+        if (arg == "--id" || arg == "-id") {
+            found_keyboard_id = true;
+        }
+    }
+
+    updater.setActiveKeyboardId(keyboard_id);
     renderer.show();
 
     return app.exec();
