@@ -29,6 +29,8 @@
  *
  */
 
+#include "models/key.h"
+#include "view/renderer.h"
 #include "dashboard.h"
 
 #include <QInputMethodEvent>

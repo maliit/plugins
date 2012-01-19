@@ -32,14 +32,13 @@
 #ifndef MALIIT_KEYBOARD_DASHBOARD_H
 #define MALIIT_KEYBOARD_DASHBOARD_H
 
-#include "models/key.h"
-#include "view/renderer.h"
-
 #include <QtCore>
 #include <QMainWindow>
 
 namespace MaliitKeyboard {
 
+class Renderer;
+class Key;
 class DashboardPrivate;
 
 class Dashboard
