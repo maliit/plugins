@@ -1,4 +1,5 @@
 include(../../config.pri)
+include(../common_check.pri)
 
 TARGET = commit-string
 TEMPLATE = app
@@ -7,8 +8,6 @@ QT = core testlib gui
 !contains(QT_MAJOR_VERSION, 4) {
     QT += widgets
 }
-
-check.commands = ./commit-string
 
 enable-legacy {
     CONFIG += meegoimframework
