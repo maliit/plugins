@@ -29,41 +29,17 @@
  *
  */
 
-#include "keyrenderer.h"
-#include "utils.h"
+#ifndef MALIIT_KEYBOARD_UTILS_H
+#define MALIIT_KEYBOARD_UTILS_H
 
-#include <qdrawutil.h>
+class QPixmap;
+class QByteArray;
 
 namespace MaliitKeyboard {
+namespace Utils {
 
-void KeyRenderer::render(QPainter *painter,
-                         const Key &key,
-                         const QPoint &origin)
-{
-    const QMargins &m(key.margins());
-    const QRect &key_rect(key.rect().translated(origin).adjusted(m.left(), m.top(), -m.right(), -m.bottom()));
+QPixmap loadPixmap(const QByteArray &id);
 
-    qDrawBorderPixmap(painter, key_rect, key.backgroundBorders(),
-                      Utils::loadPixmap(key.background()));
+}} // namespace Utils, MaliitKeyboard
 
-    const KeyFont &key_font(key.font());
-    QFont painter_font(key_font.name());
-    painter_font.setBold(true);
-    painter_font.setPixelSize(key_font.size());
-
-    painter->setFont(painter_font);
-    painter->setPen(QColor(key.font().color().data()));
-
-    const QString &text(key.text());
-    const QPixmap &icon(Utils::loadPixmap(key.icon()));
-
-    if (not text.isEmpty()) {
-        painter->drawText(key_rect, Qt::AlignCenter, text);
-    } else if (not icon.isNull()) {
-        const QPoint &c(key_rect.center());
-        const QPoint tl(c.x() - icon.width() / 2, c.y() - icon.height() / 2);
-        painter->drawPixmap(tl, icon);
-    }
-}
-
-} // namespace MaliitKeyboard
+#endif // MALIIT_KEYBOARD_UTILS_H

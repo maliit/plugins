@@ -14,6 +14,7 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 HEADERS += \
+    utils.h \
     setup.h \
     glass.h \
     renderer.h \
@@ -24,6 +25,7 @@ HEADERS += \
     graphicsview.h \
 
 SOURCES += \
+    utils.cpp \
     setup.cpp \
     glass.cpp \
     renderer.cpp \
