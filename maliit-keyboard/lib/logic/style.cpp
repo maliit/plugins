@@ -249,4 +249,20 @@ qreal Style::keyAreaPadding(Layout::Orientation orientation) const
                   QByteArray("key-area-paddings")).toReal();
 }
 
+qreal Style::verticalExtendedKeysOffset(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("vertial-extended-keys-offset")).toReal();
+}
+
+qreal Style::extendedKeysSafetyMargin(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("extended-keys-safety-margin")).toReal();
+}
+
 } // namespace MaliitKeyboard

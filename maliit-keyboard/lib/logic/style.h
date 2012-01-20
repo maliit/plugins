@@ -71,6 +71,9 @@ public:
     qreal keyMargin(Layout::Orientation orientation) const;
     qreal keyAreaPadding(Layout::Orientation orienation) const;
 
+    qreal verticalExtendedKeysOffset(Layout::Orientation orientation) const;
+    qreal extendedKeysSafetyMargin(Layout::Orientation orientation) const;
+
 private:
     const QScopedPointer<StylePrivate> d_ptr;
 };

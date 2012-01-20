@@ -470,16 +470,18 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
         return;
     }
 
-    KeyArea ext_ka(createFromKeyboard(&d->style, ext_kb,
-                                      d->anchor, d->layout->orientation(), true));
+    const Layout::Orientation orientation(d->layout->orientation());
+    KeyArea ext_ka(createFromKeyboard(&d->style, ext_kb, d->anchor, orientation, true));
     const QRectF &center_rect(d->layout->centerPanel().rect);
     const QPointF offset(center_rect.topLeft() + key.rect().center());
-    ext_ka.rect.moveTo(QPointF(offset.x() - (ext_ka.rect.width() / 2), offset.y() - 100));
+    ext_ka.rect.moveTo(QPointF(offset.x() - (ext_ka.rect.width() / 2),
+                               offset.y() - d->style.verticalExtendedKeysOffset(orientation)));
 
-    if (ext_ka.rect.left() < center_rect.left() + 10) {
-        ext_ka.rect.moveTo(center_rect.left() + 10, ext_ka.rect.top());
-    } else if (ext_ka.rect.right() > center_rect.right() - 10) {
-        ext_ka.rect.moveTo(center_rect.right() - ext_ka.rect.width() - 10, ext_ka.rect.top());
+    const qreal safety_margin(d->style.extendedKeysSafetyMargin(orientation));
+    if (ext_ka.rect.left() < center_rect.left() + safety_margin) {
+        ext_ka.rect.moveTo(center_rect.left() + safety_margin, ext_ka.rect.top());
+    } else if (ext_ka.rect.right() > center_rect.right() - safety_margin) {
+        ext_ka.rect.moveTo(center_rect.right() - ext_ka.rect.width() - safety_margin, ext_ka.rect.top());
     }
 
     d->layout->setExtendedPanel(ext_ka);
