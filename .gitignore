@@ -2,7 +2,8 @@
 .obj
 moc_*
 gen_*
-*.so
+*.so*
+*.a
 *.o
 Makefile
 *-stamp
