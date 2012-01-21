@@ -55,9 +55,13 @@ public:
     void setProfile(const QString &profile);
     void setStyleName(const QString &name);
 
-    QByteArray keyAreaBackground() const;
+    QByteArray keyAreaBackground() const;    
     QByteArray keyBackground(KeyDescription::Style style,
                              KeyDescription::State state) const;
+
+    QMargins keyAreaBackgroundBorders() const;
+    QMargins keyBackgroundBorders() const;
+
     QByteArray icon(KeyDescription::Icon icon,
                     KeyDescription::State state) const;
 

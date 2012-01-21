@@ -89,6 +89,23 @@ QByteArray fromKeyState(KeyDescription::State state)
     return QByteArray();
 }
 
+QMargins fromByteArray(const QByteArray &data)
+{
+    QMargins result;
+    const QList<QByteArray> &tokens(data.split(' '));
+
+    if (tokens.count() != 4) {
+        return result;
+    }
+
+    result.setLeft(tokens.at(0).toInt());
+    result.setTop(tokens.at(1).toInt());
+    result.setRight(tokens.at(2).toInt());
+    result.setBottom(tokens.at(3).toInt());
+
+    return result;
+}
+
 QByteArray buildBackgroundId(KeyDescription::Style style,
                              KeyDescription::State state)
 {
@@ -193,6 +210,20 @@ QByteArray Style::keyBackground(KeyDescription::Style style,
     Q_D(const Style);
     return (d->store.isNull() ? QByteArray()
                               : d->store->value(buildBackgroundId(style, state)).toByteArray());
+}
+
+QMargins Style::keyAreaBackgroundBorders() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QMargins()
+                              : fromByteArray(d->store->value("background/key-area-borders").toByteArray()));
+}
+
+QMargins Style::keyBackgroundBorders() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QMargins()
+                              : fromByteArray(d->store->value("background/key-borders").toByteArray()));
 }
 
 QByteArray Style::icon(KeyDescription::Icon icon,

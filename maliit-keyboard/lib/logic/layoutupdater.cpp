@@ -97,7 +97,7 @@ KeyArea createFromKeyboard(Style *style,
     KeyFont small_font(font);
     small_font.setSize(12);
 
-    static const QMargins bg_margins(6, 6, 6, 6);
+    static const QMargins bg_margins(style->keyBackgroundBorders());
 
     const qreal max_width(style->keyAreaWidth(orientation));
     const qreal key_height(style->keyHeight(orientation));
@@ -208,7 +208,7 @@ KeyArea createFromKeyboard(Style *style,
 
     const int height = pos.y() + key_height;
     ka.background = style->keyAreaBackground();
-    ka.background_borders = QMargins(6, 6, 6, 6);
+    ka.background_borders = style->keyAreaBackgroundBorders();
     ka.keys = kb.keys;
     ka.rect =  QRectF(anchor.x() - (is_extended_keyarea ? consumed_width : max_width) / 2,
                       anchor.y() - height,
