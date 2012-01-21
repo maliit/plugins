@@ -219,30 +219,24 @@ KeyArea createFromKeyboard(Style *style,
 }
 
 Key makeActive(const Key &key,
-               const Style &style)
+               const Style *style)
 {
-    // FIXME: Remove test code
-    // TEST CODE STARTS
-    static const QMargins bg_margins(6, 6, 6, 6);
-    // TEST CODE ENDS
-
     Key k(key);
     // FIXME: Use correct key style, but where to look it up?
-    k.setBackground(style.keyBackground(KeyDescription::NormalStyle,
-                                        KeyDescription::PressedState));
-    k.setBackgroundBorders(bg_margins);
+    k.setBackground(style->keyBackground(KeyDescription::NormalStyle, KeyDescription::PressedState));
+    k.setBackgroundBorders(style->keyBackgroundBorders());
 
     return k;
 }
 
 Key magnifyKey(const Key &key,
-               const Style &style,
+               const Style *style,
                const QRectF &key_area_rect)
 {
     // FIXME: Remove test code
     // TEST CODE STARTS
     KeyFont magnifier_font;
-    magnifier_font.setName(style.fontName());
+    magnifier_font.setName(style->fontName());
     magnifier_font.setSize(50);
     magnifier_font.setColor(QByteArray("#ffffff"));
 
@@ -254,8 +248,8 @@ Key magnifyKey(const Key &key,
     }
 
     Key magnifier(key);
-    magnifier.setBackground(style.keyBackground(KeyDescription::NormalStyle,
-                                                KeyDescription::PressedState));
+    magnifier.setBackground(style->keyBackground(KeyDescription::NormalStyle,
+                                                 KeyDescription::PressedState));
 
     QRect magnifier_rect(key.rect().translated(0, -120).adjusted(-20, -20, 20, 20));
     const QRect &mapped(magnifier_rect.translated(key_area_rect.topLeft().toPoint()));
@@ -290,6 +284,7 @@ public:
     QSize screen_size;
     QPoint anchor;
     Style style;
+    Style extended_keys_style;
 
     explicit LayoutUpdaterPrivate()
         : initialized(false)
@@ -301,8 +296,10 @@ public:
         , screen_size()
         , anchor()
         , style()
+        , extended_keys_style()
     {
         style.setProfile("nokia-n9");
+        extended_keys_style.setProfile("nokia-n9-extended-keys");
     }
 
     bool inShiftedState() const
@@ -432,10 +429,10 @@ void LayoutUpdater::onKeyPressed(const Key &key,
         return;
     }
 
-    layout->appendActiveKey(makeActive(key, d->style));
+    layout->appendActiveKey(makeActive(key, activeStyle()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, d->style, d->layout->activeKeyArea().rect));
+        layout->setMagnifierKey(magnifyKey(key, activeStyle(), d->layout->activeKeyArea().rect));
     }
 
     switch (key.action()) {
@@ -473,13 +470,13 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     }
 
     const Layout::Orientation orientation(d->layout->orientation());
-    KeyArea ext_ka(createFromKeyboard(&d->style, ext_kb, d->anchor, orientation, true));
+    KeyArea ext_ka(createFromKeyboard(&d->extended_keys_style, ext_kb, d->anchor, orientation, true));
     const QRectF &center_rect(d->layout->centerPanel().rect);
     const QPointF offset(center_rect.topLeft() + key.rect().center());
     ext_ka.rect.moveTo(QPointF(offset.x() - (ext_ka.rect.width() / 2),
-                               offset.y() - d->style.verticalExtendedKeysOffset(orientation)));
+                               offset.y() - d->extended_keys_style.verticalOffset(orientation)));
 
-    const qreal safety_margin(d->style.extendedKeysSafetyMargin(orientation));
+    const qreal safety_margin(d->extended_keys_style.safetyMargin(orientation));
     if (ext_ka.rect.left() < center_rect.left() + safety_margin) {
         ext_ka.rect.moveTo(center_rect.left() + safety_margin, ext_ka.rect.top());
     } else if (ext_ka.rect.right() > center_rect.right() - safety_margin) {
@@ -554,10 +551,10 @@ void LayoutUpdater::onKeyEntered(const Key &key,
         return;
     }
 
-    layout->appendActiveKey(makeActive(key, d->style));
+    layout->appendActiveKey(makeActive(key, activeStyle()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, d->style, d->layout->activeKeyArea().rect));
+        layout->setMagnifierKey(magnifyKey(key, activeStyle(), d->layout->activeKeyArea().rect));
     }
 
     Q_EMIT keysChanged(layout);
@@ -588,6 +585,13 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
 
     d->layout->clearActiveKeys();
     d->layout->clearMagnifierKey();
+}
+
+Style * LayoutUpdater::activeStyle()
+{
+    Q_D(LayoutUpdater);
+    return (d->layout->activePanel() == Layout::ExtendedPanel
+            ? &d->extended_keys_style : &d->style);
 }
 
 void LayoutUpdater::syncLayoutToView()

@@ -107,9 +107,11 @@ QMargins fromByteArray(const QByteArray &data)
 }
 
 QByteArray buildBackgroundId(KeyDescription::Style style,
-                             KeyDescription::State state)
+                             KeyDescription::State state,
+                             QByteArray prefix = QByteArray())
 {
     QByteArray result("background/");
+    result.append(prefix);
     result.append(fromKeyStyle(style));
     result.append(fromKeyState(state));
 
@@ -287,20 +289,20 @@ qreal Style::keyAreaPadding(Layout::Orientation orientation) const
                   QByteArray("key-area-paddings")).toReal();
 }
 
-qreal Style::verticalExtendedKeysOffset(Layout::Orientation orientation) const
+qreal Style::verticalOffset(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
                   d->name.toLocal8Bit(),
-                  QByteArray("vertical-extended-keys-offset")).toReal();
+                  QByteArray("vertical-offset")).toReal();
 }
 
-qreal Style::extendedKeysSafetyMargin(Layout::Orientation orientation) const
+qreal Style::safetyMargin(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
                   d->name.toLocal8Bit(),
-                  QByteArray("extended-keys-safety-margin")).toReal();
+                  QByteArray("safety-margin")).toReal();
 }
 
 } // namespace MaliitKeyboard

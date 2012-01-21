@@ -55,7 +55,7 @@ public:
     void setProfile(const QString &profile);
     void setStyleName(const QString &name);
 
-    QByteArray keyAreaBackground() const;    
+    QByteArray keyAreaBackground() const;
     QByteArray keyBackground(KeyDescription::Style style,
                              KeyDescription::State state) const;
 
@@ -76,8 +76,8 @@ public:
     qreal keyMargin(Layout::Orientation orientation) const;
     qreal keyAreaPadding(Layout::Orientation orienation) const;
 
-    qreal verticalExtendedKeysOffset(Layout::Orientation orientation) const;
-    qreal extendedKeysSafetyMargin(Layout::Orientation orientation) const;
+    qreal verticalOffset(Layout::Orientation orientation) const;
+    qreal safetyMargin(Layout::Orientation orientation) const;
 
 private:
     const QScopedPointer<StylePrivate> d_ptr;

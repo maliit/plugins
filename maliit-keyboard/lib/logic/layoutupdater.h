@@ -39,6 +39,7 @@
 
 namespace MaliitKeyboard {
 
+class Style;
 class LayoutUpdaterPrivate;
 
 class LayoutUpdater
@@ -80,6 +81,8 @@ public:
     Q_SIGNAL void keysChanged(const SharedLayout &layout);
 
 private:
+    Style * activeStyle();
+
     Q_SIGNAL void shiftPressed();
     Q_SIGNAL void shiftReleased();
     Q_SIGNAL void autoCapsActivated();
