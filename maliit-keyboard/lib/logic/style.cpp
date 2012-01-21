@@ -180,6 +180,13 @@ void Style::setStyleName(const QString &name)
     d->name = name;
 }
 
+QByteArray Style::keyAreaBackground() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value("background/key-area").toByteArray());
+}
+
 QByteArray Style::keyBackground(KeyDescription::Style style,
                                 KeyDescription::State state) const
 {

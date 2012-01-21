@@ -76,6 +76,7 @@ MaliitKeyboard::KeyArea createToolbar(int key_width,
     font.setColor("#fffbed");
 
     MaliitKeyboard::KeyArea ka;
+    ka.background = QByteArray("background.png");
     QMargins margins(4, 4, 4, 4);
 
     ka.keys.append(createKey(bg, font, QRect(0, 0, key_width, key_height),

@@ -41,6 +41,8 @@ struct KeyArea
 {
     QRectF rect;
     QVector<Key> keys;
+    QMargins background_borders;
+    QByteArray background;
 };
 
 bool operator==(const KeyArea &lhs,

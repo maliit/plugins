@@ -30,7 +30,10 @@
  */
 
 #include "keyareaitem.h"
+#include "utils.h"
 #include "models/key.h"
+
+#include <qdrawutil.h>
 
 namespace MaliitKeyboard {
 
@@ -66,11 +69,12 @@ void KeyAreaItem::paint(QPainter *painter,
                         const QStyleOptionGraphicsItem *,
                         QWidget *)
 {
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::black);
-    painter->drawRect(boundingRect());
+    const KeyArea &ka(m_key_area);
 
-    Q_FOREACH (const Key &k, m_key_area.keys) {
+    qDrawBorderPixmap(painter, boundingRect().toRect(),
+                      ka.background_borders, Utils::loadPixmap(ka.background));
+
+    Q_FOREACH (const Key &k, ka.keys) {
         KeyRenderer::render(painter, k, boundingRect().topLeft().toPoint());
     }
 }

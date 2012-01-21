@@ -207,6 +207,8 @@ KeyArea createFromKeyboard(Style *style,
     }
 
     const int height = pos.y() + key_height;
+    ka.background = style->keyAreaBackground();
+    ka.background_borders = QMargins(6, 6, 6, 6);
     ka.keys = kb.keys;
     ka.rect =  QRectF(anchor.x() - (is_extended_keyarea ? consumed_width : max_width) / 2,
                       anchor.y() - height,
