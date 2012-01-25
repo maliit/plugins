@@ -1,11 +1,12 @@
 include(../config.pri)
 
+TOP_BUILDDIR = $${OUT_PWD}/../..
 VERSION = 0.2.0
-TARGET = maliit-keyboard-view
+TARGET = $${MALIIT_KEYBOARD_VIEW_TARGET}
 TEMPLATE = lib
 CONFIG += staticlib
 INCLUDEPATH = ../lib
-LIBS += -L../lib -lmaliit-keyboard
+LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 
 contains(QT_MAJOR_VERSION, 4) {
     QT = core gui

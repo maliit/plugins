@@ -1,8 +1,9 @@
 include(../config.pri)
 
-TARGET = maliit-keyboard-plugin
+TOP_BUILDDIR = $${OUT_PWD}/../..
+TARGET = $${MALIIT_KEYBOARD_PLUGIN_TARGET}
 TEMPLATE = lib
-LIBS += -L../lib -lmaliit-keyboard -L../view -lmaliit-keyboard-view
+LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_VIEW_LIB}
 INCLUDEPATH += ../lib ../
 
 contains(QT_MAJOR_VERSION, 4) {

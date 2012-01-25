@@ -1,11 +1,12 @@
-include(../../config.pri)
+include(../config.pri)
 
+TOP_BUILDDIR = $${OUT_PWD}/../..
 TEMPLATE = app
 TARGET = maliit-keyboard-benchmark
 target.path = $$INSTALL_BIN
 
 INCLUDEPATH += ../lib
-LIBS += -L../lib -lmaliit-keyboard
+LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 SOURCES += main.cpp
 
 QT = core

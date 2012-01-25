@@ -1,6 +1,7 @@
 include(../../config.pri)
 include(../common-check.pri)
 
+TOP_BUILDDIR = $${OUT_PWD}/../../..
 TARGET = commit-string
 TEMPLATE = app
 QT = core testlib gui
@@ -19,7 +20,7 @@ enable-legacy {
 }
 
 INCLUDEPATH += ../ ../../lib ../../
-LIBS += -L../../lib -lmaliit-keyboard -L../../view -lmaliit-keyboard-view ../../plugin/libmaliit-keyboard-plugin.so
+LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_VIEW_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_PLUGIN_LIB}
 
 HEADERS += \
     ../utils.h \

@@ -1,12 +1,13 @@
 include(../../config.pri)
 include(../common-check.pri)
 
+TOP_BUILDDIR = $${OUT_PWD}/../../..
 TARGET = language-layout-switching
 TEMPLATE = app
 QT = core testlib
 
 INCLUDEPATH += ../ ../../lib ../../
-LIBS += -L../../lib -lmaliit-keyboard
+LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 
 HEADERS += \
     ../utils.h \

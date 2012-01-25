@@ -1,10 +1,11 @@
 include(../config.pri)
 
+TOP_BUILDDIR = $${OUT_PWD}/../..
 TARGET = maliit-keyboard-viewer
 TEMPLATE = app
 
 INCLUDEPATH += ../lib ../
-LIBS += -L../lib -lmaliit-keyboard -L../view -lmaliit-keyboard-view
+LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_VIEW_LIB}
 
 HEADERS += \
     dashboard.h \

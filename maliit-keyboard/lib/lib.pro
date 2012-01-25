@@ -1,7 +1,7 @@
 include(../config.pri)
 
 VERSION = 0.2.0
-TARGET = maliit-keyboard
+TARGET = $${MALIIT_KEYBOARD_TARGET}
 TEMPLATE = lib
 QT = core
 CONFIG += staticlib
