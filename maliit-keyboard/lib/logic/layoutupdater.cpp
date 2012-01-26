@@ -320,6 +320,12 @@ public:
         return (deadkey_machine.inState(DeadkeyMachine::deadkey_state) or
                 deadkey_machine.inState(DeadkeyMachine::latched_deadkey_state));
     }
+
+    const Style * activeStyle() const
+    {
+        return (layout->activePanel() == Layout::ExtendedPanel
+                ? &extended_keys_style : &style);
+    }
 };
 
 LayoutUpdater::LayoutUpdater(QObject *parent)
@@ -429,10 +435,10 @@ void LayoutUpdater::onKeyPressed(const Key &key,
         return;
     }
 
-    layout->appendActiveKey(makeActive(key, activeStyle()));
+    layout->appendActiveKey(makeActive(key, d->activeStyle()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, activeStyle(), d->layout->activeKeyArea().rect));
+        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->activeKeyArea().rect));
     }
 
     switch (key.action()) {
@@ -551,10 +557,10 @@ void LayoutUpdater::onKeyEntered(const Key &key,
         return;
     }
 
-    layout->appendActiveKey(makeActive(key, activeStyle()));
+    layout->appendActiveKey(makeActive(key, d->activeStyle()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, activeStyle(), d->layout->activeKeyArea().rect));
+        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->activeKeyArea().rect));
     }
 
     Q_EMIT keysChanged(layout);
@@ -585,13 +591,6 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
 
     d->layout->clearActiveKeys();
     d->layout->clearMagnifierKey();
-}
-
-Style * LayoutUpdater::activeStyle()
-{
-    Q_D(LayoutUpdater);
-    return (d->layout->activePanel() == Layout::ExtendedPanel
-            ? &d->extended_keys_style : &d->style);
 }
 
 void LayoutUpdater::syncLayoutToView()
