@@ -7,6 +7,7 @@ TEMPLATE = lib
 CONFIG += staticlib
 INCLUDEPATH = ../lib
 LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
+PRE_TARGETDEPS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 
 contains(QT_MAJOR_VERSION, 4) {
     QT = core gui
