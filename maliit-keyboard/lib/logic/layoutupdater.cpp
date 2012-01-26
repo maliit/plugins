@@ -32,6 +32,7 @@
 
 #include "layoutupdater.h"
 #include "style.h"
+#include "logic/keyareaconverter.h"
 #include "logic/state-machines/shiftmachine.h"
 #include "logic/state-machines/viewmachine.h"
 #include "logic/state-machines/deadkeymachine.h"
@@ -68,154 +69,6 @@ QPoint computeAnchor(const QSize &size,
     }
 
     return anchor;
-}
-
-KeyArea createFromKeyboard(Style *style,
-                           const Keyboard &source,
-                           const QPoint &anchor,
-                           Layout::Orientation orientation,
-                           bool is_extended_keyarea = false)
-{
-    // An ad-hoc geometry updater that also uses styling information.
-    // Will only work for portrait mode (lots of hardcoded stuff).
-    KeyArea ka;
-    Keyboard kb(source);
-
-    if (not style) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "No style given, aborting.";
-        return ka;
-    }
-
-    style->setStyleName(kb.style_name);
-
-    KeyFont font;
-    font.setName(style->fontName());
-    font.setSize(style->fontSize());
-    font.setColor(QByteArray("#ffffff"));
-
-    KeyFont small_font(font);
-    small_font.setSize(12);
-
-    static const QMargins bg_margins(style->keyBackgroundBorders());
-
-    const qreal max_width(style->keyAreaWidth(orientation));
-    const qreal key_height(style->keyHeight(orientation));
-    const qreal margin = style->keyMargin(orientation);
-    const qreal padding = style->keyAreaPadding(orientation);
-
-    QPoint pos(0, 0);
-    QVector<int> row_indices;
-    int spacer_count = 0;
-    qreal consumed_width = 0;
-
-
-    for (int index = 0; index < kb.keys.count(); ++index) {
-        row_indices.append(index);
-        Key &key(kb.keys[index]);
-        const KeyDescription &desc(kb.key_descriptions.at(index));
-        int width = 0;
-        pos.setY(key_height * desc.row);
-
-        bool at_row_end((index + 1 == kb.keys.count())
-                        || (index + 1 < kb.keys.count()
-                            && kb.key_descriptions.at(index + 1).row > desc.row));
-
-        if (desc.left_spacer || desc.right_spacer) {
-            ++spacer_count;
-        }
-
-        key.setBackground(style->keyBackground(desc.style, KeyDescription::NormalState));
-        key.setBackgroundBorders(bg_margins);
-
-        width = style->keyWidth(orientation, desc.width);
-        const bool use_left_padding(pos.x() == 0);
-        const bool use_right_padding(pos.x() + width + margin + padding == max_width);
-
-        const qreal key_margin((use_left_padding || use_right_padding) ? margin + padding : margin * 2);
-        key.setRect(QRect(pos.x(), pos.y(), width + key_margin, key_height));
-        key.setMargins(QMargins(use_left_padding ? padding : margin, margin,
-                                use_right_padding ? padding : margin, margin));
-
-        key.setFont(key.text().count() > 1 ? small_font : font);
-
-        // FIXME: Read from KeyDescription instead.
-        if (key.text().isEmpty()) {
-            switch (key.action()) {
-            case Key::ActionShift:
-                key.setIcon(style->icon(KeyDescription::ShiftIcon,
-                                        KeyDescription::NormalState));
-                break;
-
-            case Key::ActionBackspace:
-                key.setIcon(style->icon(KeyDescription::BackspaceIcon,
-                                        KeyDescription::NormalState));
-                break;
-
-            case Key::ActionReturn:
-                key.setIcon(style->icon(KeyDescription::ReturnIcon,
-                                        KeyDescription::NormalState));
-                break;
-
-            default:
-                break;
-            }
-        }
-
-        pos.rx() += key.rect().width();
-
-        if (at_row_end) {
-            if (not is_extended_keyarea
-                && spacer_count > 0 && pos.x() < max_width + 1) {
-                const int spacer_width = qMax<int>(0, max_width - pos.x()) / spacer_count;
-                pos.setX(0);
-                int right_x = 0;
-
-                Q_FOREACH (int row_index, row_indices) {
-                    Key &k(kb.keys[row_index]);
-                    const KeyDescription &d(kb.key_descriptions.at(row_index));
-
-                    QRect r(k.rect());
-                    QMargins m(k.margins());
-                    int extra_width = 0;
-
-                    if (d.left_spacer) {
-                        m.setLeft(m.left() + spacer_width);
-                        extra_width += spacer_width;
-                    }
-
-                    if (d.right_spacer) {
-                        m.setRight(m.right() + spacer_width);
-                        extra_width += spacer_width;
-                    }
-
-                    k.setMargins(m);
-
-                    r.translate(right_x - r.left(), 0);
-                    r.setWidth(r.width() + extra_width);
-                    k.setRect(r);
-
-                    right_x = r.right();
-                }
-            }
-
-            consumed_width = qMax<qreal>(consumed_width, key.rect().right() + padding);
-            row_indices.clear();
-            pos.setX(0);
-            spacer_count = 0;
-        }
-    }
-
-    const int height = pos.y() + key_height;
-    ka.background = style->keyAreaBackground();
-    ka.background_borders = style->keyAreaBackgroundBorders();
-    ka.keys = kb.keys;
-    ka.rect =  QRectF(anchor.x() - (is_extended_keyarea ? consumed_width : max_width) / 2,
-                      anchor.y() - height,
-                      (is_extended_keyarea ? consumed_width : max_width),
-                      height);
-
-    return ka;
 }
 
 Key makeActive(const Key &key,
@@ -415,12 +268,12 @@ void LayoutUpdater::setOrientation(Layout::Orientation orientation)
         d->layout->setOrientation(orientation);
 
         // FIXME: reposition extended keys, too (and left/right?).
+        // FIXME: Move anchor into converter?
         d->anchor = computeAnchor(d->screen_size, orientation);
-        d->layout->setCenterPanel(createFromKeyboard(&d->style,
-                                                     d->inShiftedState() ? d->loader->shiftedKeyboard()
-                                                                         : d->loader->keyboard(),
-                                                     d->anchor,
-                                                     orientation));
+        const KeyAreaConverter converter(&d->style, d->loader.data(), d->anchor);
+        d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
+                                                      : converter.keyArea(orientation));
+
         clearActiveKeysAndMagnifier();
         Q_EMIT layoutChanged(d->layout);
     }
@@ -469,14 +322,15 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     }
 
     clearActiveKeysAndMagnifier();
-    const Keyboard &ext_kb(d->loader->extendedKeyboard(key));
 
-    if (ext_kb.keys.isEmpty()) {
+    const Layout::Orientation orientation(d->layout->orientation());
+    const KeyAreaConverter converter(&d->extended_keys_style, d->loader.data(), d->anchor);
+    KeyArea ext_ka(converter.extendedKeyArea(orientation, key));
+
+    if (ext_ka.keys.isEmpty()) {
         return;
     }
 
-    const Layout::Orientation orientation(d->layout->orientation());
-    KeyArea ext_ka(createFromKeyboard(&d->extended_keys_style, ext_kb, d->anchor, orientation, true));
     const QRectF &center_rect(d->layout->centerPanel().rect);
     const QPointF offset(center_rect.topLeft() + key.rect().center());
     ext_ka.rect.moveTo(QPointF(offset.x() - (ext_ka.rect.width() / 2),
@@ -635,11 +489,12 @@ void LayoutUpdater::switchToMainView()
 
     d->layout->clearActiveKeys();
     d->layout->clearMagnifierKey();
-    d->layout->setCenterPanel(createFromKeyboard(&d->style,
-                                                 d->inShiftedState() ? d->loader->shiftedKeyboard()
-                                                                     : d->loader->keyboard(),
-                                                 d->anchor,
-                                                 d->layout->orientation()));
+
+    const KeyAreaConverter converter(&d->style, d->loader.data(), d->anchor);
+    const Layout::Orientation orientation(d->layout->orientation());
+    d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
+                                                  : converter.keyArea(orientation));
+
     Q_EMIT layoutChanged(d->layout);
 }
 
@@ -651,10 +506,10 @@ void LayoutUpdater::switchToPrimarySymView()
         return;
     }
 
-    d->layout->setCenterPanel(createFromKeyboard(&d->style,
-                                                 d->loader->symbolsKeyboard(0),
-                                                 d->anchor,
-                                                 d->layout->orientation()));
+    const KeyAreaConverter converter(&d->style, d->loader.data(), d->anchor);
+    const Layout::Orientation orientation(d->layout->orientation());
+    d->layout->setCenterPanel(converter.symbolsKeyArea(orientation, 0));
+
     // Reset shift state machine, also see switchToMainView.
     d->shift_machine.restart();
 
@@ -670,10 +525,10 @@ void LayoutUpdater::switchToSecondarySymView()
         return;
     }
 
-    d->layout->setCenterPanel(createFromKeyboard(&d->style,
-                                                 d->loader->symbolsKeyboard(1),
-                                                 d->anchor,
-                                                 d->layout->orientation()));
+    const KeyAreaConverter converter(&d->style, d->loader.data(), d->anchor);
+    const Layout::Orientation orientation(d->layout->orientation());
+    d->layout->setCenterPanel(converter.symbolsKeyArea(orientation, 1));
+
     Q_EMIT layoutChanged(d->layout);
 }
 
@@ -685,11 +540,12 @@ void LayoutUpdater::switchToAccentedView()
         return;
     }
 
-    d->layout->setCenterPanel(createFromKeyboard(&d->style,
-                                                 d->inShiftedState() ? d->loader->shiftedDeadKeyboard(d->deadkey_machine.accentKey())
-                                                                     : d->loader->deadKeyboard(d->deadkey_machine.accentKey()),
-                                                 d->anchor,
-                                                 d->layout->orientation()));
+    const KeyAreaConverter converter(&d->style, d->loader.data(), d->anchor);
+    const Layout::Orientation orientation(d->layout->orientation());
+    const Key accent(d->deadkey_machine.accentKey());
+    d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedDeadKeyArea(orientation, accent)
+                                                  : converter.deadKeyArea(orientation, accent));
+
     Q_EMIT layoutChanged(d->layout);
 }
 
