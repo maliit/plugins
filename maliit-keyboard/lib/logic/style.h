@@ -42,14 +42,12 @@ namespace MaliitKeyboard {
 class StylePrivate;
 
 class Style
-    : public QObject
 {
-    Q_OBJECT
     Q_DISABLE_COPY(Style)
     Q_DECLARE_PRIVATE(Style)
 
 public:
-    explicit Style(QObject *parent = 0);
+    explicit Style();
     virtual ~Style();
 
     void setProfile(const QString &profile);

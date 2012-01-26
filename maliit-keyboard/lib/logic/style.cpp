@@ -176,9 +176,8 @@ public:
     {}
 };
 
-Style::Style(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new StylePrivate)
+Style::Style()
+    : d_ptr(new StylePrivate)
 {}
 
 Style::~Style()
