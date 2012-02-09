@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
+<keyboard title="Македонски" version="1.0" catalog="mk_mk" language="mk_mk">
+  <layout type="general">
+    <section id="main">
+      <row>
+        <key>
+          <binding label="љ"/>
+          <binding shift="true" label="Љ"/>
+        </key>
+        <key>
+          <binding label="њ"/>
+          <binding shift="true" label="Њ"/>
+        </key>
+        <key>
+          <binding label="е" extended_labels="è€"/>
+          <binding shift="true" label="Е" extended_labels="È€"/>
+        </key>
+        <key>
+          <binding label="р"/>
+          <binding shift="true" label="Р"/>
+        </key>
+        <key>
+          <binding label="т" />
+          <binding shift="true" label="Т" />
+        </key>
+        <key>
+          <binding label="ѕ"/>
+          <binding shift="true" label="Ѕ"/>
+        </key>
+        <key>
+          <binding label="у"/>
+          <binding shift="true" label="У"/>
+        </key>
+        <key>
+          <binding label="и" extended_labels="ѝ"/>
+          <binding shift="true" label="И" extended_labels="ѝ"/>
+        </key>
+        <key>
+          <binding label="о"/>
+          <binding shift="true" label="O"/>
+        </key>
+        <key>
+          <binding label="п"/>
+          <binding shift="true" label="П"/>
+        </key>
+        <key>
+          <binding label="ш"/>
+          <binding shift="true" label="Ш"/>
+        </key>
+      </row>
+
+      <row>
+        <spacer/>
+
+        <key>
+          <binding label="а" />
+          <binding shift="true" label="А" />
+        </key>
+        <key>
+          <binding label="с" extended_labels="$"/>
+          <binding shift="true" label="С" extended_labels="$"/>
+        </key>
+        <key>
+          <binding label="д" />
+          <binding shift="true" label="Д" />
+        </key>
+        <key>
+          <binding label="ф"/>
+          <binding shift="true" label="Ф"/>
+        </key>
+        <key>
+          <binding label="г"/>
+          <binding shift="true" label="Г"/>
+        </key>
+        <key>
+          <binding label="х"/>
+          <binding shift="true" label="Х"/>
+        </key>
+        <key>
+          <binding label="ј"/>
+          <binding shift="true" label="Ј"/>
+        </key>
+        <key>
+          <binding label="к"/>
+          <binding shift="true" label="К"/>
+        </key>
+        <key>
+          <binding label="л"/>
+          <binding shift="true" label="Л"/>
+        </key>
+        <key>
+          <binding label="ч"/>
+          <binding shift="true" label="Ч"/>
+        </key>
+        <key>
+          <binding label="ќ"/>
+          <binding shift="true" label="Ќ"/>
+        </key>
+
+
+        <spacer/>
+      </row>
+
+      <row>
+        <key style="special">
+          <binding action="shift"/>
+        </key>
+
+        <key>
+          <binding label="з"/>
+          <binding shift="true" label="З"/>
+        </key>
+        <key>
+          <binding label="џ"/>
+          <binding shift="true" label="Џ"/>
+        </key>
+        <key>
+          <binding label="ц"/>
+          <binding shift="true" label="Ц"/>
+        </key>
+        <key>
+          <binding label="в"/>
+          <binding shift="true" label="В"/>
+        </key>
+        <key>
+          <binding label="б"/>
+          <binding shift="true" label="Б"/>
+        </key>
+        <key>
+          <binding label="н"/>
+          <binding shift="true" label="Н"/>
+        </key>
+        <key>
+          <binding label="м"/>
+          <binding shift="true" label="М"/>
+        </key>
+        <key>
+          <binding label="ѓ"/>
+          <binding shift="true" label="Ѓ"/>
+        </key>
+        <key>
+          <binding label="ж"/>
+          <binding shift="true" label="Ж"/>
+        </key>
+
+
+        <key style="special">
+          <binding action="backspace"/>
+        </key>
+      </row>
+
+      <row>
+        <key style="special" width="large">
+          <binding action="sym" label="?123"/>
+        </key>
+
+        <spacer/>
+
+        <key id="emailUrlKey"><binding label=","/></key>
+        <key width="xx-large"><binding action="space"/></key>
+        <key><binding label="."/></key>
+
+        <spacer/>
+
+        <key style="special" width="x-large" id="actionKey">
+          <binding action="return"/>
+        </key>
+      </row>
+    </section>
+  </layout>
+
+  <import file="symbols_ru_uk.xml"/>
+</keyboard>
