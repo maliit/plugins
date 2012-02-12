@@ -51,8 +51,6 @@
       </row>
 
       <row>
-        <spacer/>
-
         <key>
           <binding label="а" />
           <binding shift="true" label="А" />
@@ -97,9 +95,6 @@
           <binding label="ќ"/>
           <binding shift="true" label="Ќ"/>
         </key>
-
-
-        <spacer/>
       </row>
 
       <row>
@@ -151,15 +146,17 @@
       </row>
 
       <row>
-        <key style="special" width="large">
+        <key style="special" width="x-large">
           <binding action="sym" label="?123"/>
         </key>
 
         <spacer/>
 
+        <key><binding label=";"/></key>
         <key id="emailUrlKey"><binding label=","/></key>
         <key width="xx-large"><binding action="space"/></key>
         <key><binding label="."/></key>
+        <key><binding label=":"/></key>
 
         <spacer/>
 
