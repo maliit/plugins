@@ -88,6 +88,10 @@ void Editor::onKeyReleased(const Key &key)
         d->host->sendCommitString(" ");
         break;
 
+    case Key::ActionClose:
+        Q_EMIT keyboardClosed();
+        break;
+
     default:
         break;
     }

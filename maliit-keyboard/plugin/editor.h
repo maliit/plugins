@@ -55,6 +55,8 @@ public:
     void setHost(MAbstractInputMethodHost *host);
     Q_SLOT void onKeyReleased(const Key &key);
 
+    Q_SIGNAL void keyboardClosed();
+
 private:
     const QScopedPointer<EditorPrivate> d_ptr;
 };

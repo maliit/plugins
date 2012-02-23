@@ -55,7 +55,7 @@ public:
 
     //! \reimp
     virtual void show();
-    virtual void hide();
+    Q_SLOT virtual void hide();
     virtual void switchContext(MInputMethod::SwitchDirection direction,
                                bool animated);
     virtual QList<MAbstractInputMethod::MInputMethodSubView>

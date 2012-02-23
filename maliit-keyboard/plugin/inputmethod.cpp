@@ -139,6 +139,9 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host,
 
     connect(&d->glass, SIGNAL(switchRight(SharedLayout)),
             this,      SLOT(onSwitchRight()));
+
+    connect(&d->editor, SIGNAL(keyboardClosed()),
+            this,       SLOT(hide()));
 }
 
 InputMethod::~InputMethod()
@@ -154,6 +157,8 @@ void InputMethod::hide()
 {
     Q_D(InputMethod);
     d->renderer.hide();
+    d->layout_updater.clearActiveKeysAndMagnifier();
+    inputMethodHost()->notifyImInitiatedHiding();
 }
 
 void InputMethod::switchContext(MInputMethod::SwitchDirection direction,
