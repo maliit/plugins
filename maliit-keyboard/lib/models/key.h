@@ -62,6 +62,7 @@ public:
         ActionUp, //!< Key moves cursor position to previous line, in text editor.
         ActionRight, //!< Key moves cursor position to right, in text editor.
         ActionDown, //!< Key moves cursor position to next line, in text editor.
+        ActionClose, //!< Key closes the virtual keyboard.
         ActionTab, //!< Key moves cursor position by one tab, in text editor.
         ActionDead, //!< Switches keyboard to deadkey variation, using key's label as lookup.
         NumActions
