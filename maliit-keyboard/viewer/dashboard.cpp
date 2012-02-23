@@ -146,6 +146,10 @@ void Dashboard::onKeyReleased(const Key &key)
         key_ev = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
         break;
 
+    case Key::ActionClose:
+        Q_EMIT keyboardClosed();
+        break;
+
     default:
         break;
     }

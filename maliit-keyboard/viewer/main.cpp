@@ -141,6 +141,18 @@ int main(int argc,
     QObject::connect(&glass,    SIGNAL(keyboardClosed()),
                      dashboard, SLOT(onHide()));
 
+    QObject::connect(dashboard, SIGNAL(keyboardClosed()),
+                     &lu1,      SLOT(clearActiveKeysAndMagnifier()));
+
+    QObject::connect(dashboard, SIGNAL(keyboardClosed()),
+                     &updater,  SLOT(clearActiveKeysAndMagnifier()));
+
+    QObject::connect(dashboard, SIGNAL(keyboardClosed()),
+                     &renderer, SLOT(hide()));
+
+    QObject::connect(dashboard, SIGNAL(keyboardClosed()),
+                     dashboard, SLOT(onHide()));
+
     // Allow to specify keyboard id via command line:
     QString keyboard_id("en_gb");
     bool found_keyboard_id = false;

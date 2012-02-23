@@ -55,6 +55,7 @@ public:
     void setRenderer(Renderer *renderer);
 
     Q_SLOT void onKeyReleased(const Key &key);
+    Q_SIGNAL void keyboardClosed();
 
 private:
     Q_SLOT void onShow();
