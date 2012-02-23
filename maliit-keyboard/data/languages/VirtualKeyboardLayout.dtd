@@ -56,7 +56,7 @@
 <!ATTLIST binding
   action (insert | shift | backspace | space | cycle | layout_menu | sym
           | return | commit | decimal_separator | plus_minus_toggle | switch
-          | on_off_toggle | compose | left | up | right | down) "insert"
+          | on_off_toggle | compose | left | up | right | down | close) "insert"
   shift (true|false) "false"
   alt (true|false) "false"
   label CDATA #IMPLIED
