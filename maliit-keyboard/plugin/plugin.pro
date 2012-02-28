@@ -1,4 +1,5 @@
 include(../config.pri)
+include(../config-plugin.pri)
 
 TOP_BUILDDIR = $${OUT_PWD}/../..
 TARGET = $${MALIIT_KEYBOARD_PLUGIN_TARGET}
@@ -15,16 +16,6 @@ contains(QT_MAJOR_VERSION, 4) {
 
 CONFIG += \
     plugin \
-
-enable-legacy {
-    CONFIG += meegoimframework
-} else {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-plugins-0.80
-    # moc needs the include path
-    INCLUDEPATH += $$system(pkg-config --cflags maliit-plugins-0.80 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
-}
-
 
 HEADERS += \
     plugin.h \
