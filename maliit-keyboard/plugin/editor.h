@@ -41,6 +41,14 @@ namespace MaliitKeyboard {
 
 class EditorPrivate;
 
+struct EditorOptions
+{
+    EditorOptions();
+    // all delays are in milliseconds
+    int backspace_auto_repeat_delay; // delay before first automatically repeated key
+    int backspace_auto_repeat_interval; // interval between automatically repeated keys
+};
+
 class Editor
     : public QObject
 {
@@ -49,7 +57,7 @@ class Editor
     Q_DECLARE_PRIVATE(Editor)
 
 public:
-    explicit Editor(QObject *parent = 0);
+    explicit Editor(const EditorOptions &newOptions = EditorOptions(), QObject *parent = 0);
     virtual ~Editor();
 
     void setHost(MAbstractInputMethodHost *host);

@@ -34,12 +34,13 @@
 #include <QtGui/QKeyEvent>
 #include <QTimer>
 
-namespace {
-    const int AutoRepeatDelay = 500;
-    const int AutoRepeatInterval = 300;
-}
-
 namespace MaliitKeyboard {
+
+EditorOptions::EditorOptions()
+    : backspace_auto_repeat_delay(500)
+    , backspace_auto_repeat_interval(300)
+{
+}
 
 class EditorPrivate
 {
@@ -47,20 +48,22 @@ public:
     MAbstractInputMethodHost *host;
     QTimer auto_repeat_backspace_timer;
     bool backspace_sent;
+    EditorOptions options;
 
-    explicit EditorPrivate();
+    explicit EditorPrivate(const EditorOptions &newOptions);
 };
 
-EditorPrivate::EditorPrivate()
+EditorPrivate::EditorPrivate(const EditorOptions &newOptions)
     : host(0)
     , backspace_sent(false)
+    , options(newOptions)
 {
     auto_repeat_backspace_timer.setSingleShot(true);
 }
 
-Editor::Editor(QObject *parent)
+Editor::Editor(const EditorOptions &newOptions, QObject *parent)
     : QObject(parent)
-    , d_ptr(new EditorPrivate)
+    , d_ptr(new EditorPrivate(newOptions))
 {
     connect(&d_ptr->auto_repeat_backspace_timer, SIGNAL(timeout()),
             this, SLOT(autoRepeatBackspace()));
@@ -81,7 +84,7 @@ void Editor::onKeyPressed(const Key &key)
 
     if (key.action() == Key::ActionBackspace) {
         d->backspace_sent = false;
-        d->auto_repeat_backspace_timer.start(AutoRepeatDelay);
+        d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_delay);
     }
 }
 
@@ -128,7 +131,7 @@ void Editor::onKeyEntered(const Key &key)
 
     if (key.action() == Key::ActionBackspace) {
         d->backspace_sent = false;
-        d->auto_repeat_backspace_timer.start(AutoRepeatDelay);
+        d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_delay);
     }
 }
 
@@ -163,7 +166,7 @@ void Editor::autoRepeatBackspace()
     QKeyEvent ev(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
     d->host->sendKeyEvent(ev);
     d->backspace_sent = true;
-    d->auto_repeat_backspace_timer.start(AutoRepeatInterval);
+    d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_interval);
 }
 
 } // namespace MaliitKeyboard
