@@ -122,8 +122,17 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host,
     Setup::connectGlassToRenderer(&d->glass, &d->renderer);
     Setup::connectLayoutUpdaterToRenderer(&d->layout_updater, &d->renderer);
 
+    connect(&d->glass,  SIGNAL(keyPressed(Key,SharedLayout)),
+            &d->editor, SLOT(onKeyPressed(Key)));
+
     connect(&d->glass,  SIGNAL(keyReleased(Key,SharedLayout)),
             &d->editor, SLOT(onKeyReleased(Key)));
+
+    connect(&d->glass,  SIGNAL(keyEntered(Key,SharedLayout)),
+            &d->editor, SLOT(onKeyEntered(Key)));
+
+    connect(&d->glass,  SIGNAL(keyExited(Key,SharedLayout)),
+            &d->editor, SLOT(onKeyExited(Key)));
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
             inputMethodHost(), SLOT(notifyImInitiatedHiding()));

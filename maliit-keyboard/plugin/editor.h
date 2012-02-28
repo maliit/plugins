@@ -53,9 +53,14 @@ public:
     virtual ~Editor();
 
     void setHost(MAbstractInputMethodHost *host);
+    Q_SLOT void onKeyPressed(const Key &key);
     Q_SLOT void onKeyReleased(const Key &key);
+    Q_SLOT void onKeyEntered(const Key &key);
+    Q_SLOT void onKeyExited(const Key &key);
 
 private:
+    Q_SLOT void autoRepeatBackspace();
+
     const QScopedPointer<EditorPrivate> d_ptr;
 };
 
