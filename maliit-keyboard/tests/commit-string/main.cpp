@@ -37,8 +37,8 @@
 #include "view/glass.h"
 #include "plugin/editor.h"
 
-#include <mabstractinputmethodhost.h>
-#include <mimplugindescription.h>
+#include <inputmethodhostprobe.h>
+
 #include <QtCore>
 #include <QtTest>
 #include <QWidget>
@@ -90,59 +90,6 @@ QMouseEvent *createReleaseEvent(int x,
 }
 }
 
-class InputMethodHostProbe
-    : public MAbstractInputMethodHost
-{
-private:
-    QString m_commit_string_history;
-
-public:
-    QString commitStringHistory() const
-    {
-        return m_commit_string_history;
-    }
-
-    void sendCommitString(const QString &string,
-                          int replace_start,
-                          int replace_length,
-                          int cursor_pos)
-    {
-        Q_UNUSED(replace_start)
-        Q_UNUSED(replace_length)
-        Q_UNUSED(cursor_pos)
-
-        m_commit_string_history.append(string);
-    }
-
-    // unused reimpl
-    int contentType(bool&) {return 0;}
-    bool correctionEnabled(bool&) {return false;}
-    bool predictionEnabled(bool&) {return false;}
-    bool autoCapitalizationEnabled(bool&) {return false;}
-    bool surroundingText(QString&, int&) {return false;}
-    bool hasSelection(bool&) {return false;}
-    int inputMethodMode(bool&) {return 0;}
-    QRect preeditRectangle(bool&) {return QRect();}
-    QRect cursorRectangle(bool&) {return QRect();}
-    int anchorPosition(bool&) {return 0;}
-    QString selection(bool&) {return QString();}
-    void sendPreeditString(const QString&, const QList<MInputMethod::PreeditTextFormat>&, int, int, int) {}
-    void sendKeyEvent(const QKeyEvent&, MInputMethod::EventRequestType) {}
-    void notifyImInitiatedHiding() {}
-    void copy() {}
-    void paste() {}
-    void setRedirectKeys(bool) {}
-    void setDetectableAutoRepeat(bool) {}
-    void setGlobalCorrectionEnabled(bool) {}
-    void setInputModeIndicator(MInputMethod::InputModeIndicator) {}
-    void switchPlugin(MInputMethod::SwitchDirection) {}
-    void switchPlugin(const QString&) {}
-    void setScreenRegion(const QRegion&) {}
-    void setInputMethodArea(const QRegion&) {}
-    void setSelection(int, int) {}
-    void setOrientationAngleLocked(bool) {}
-    QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState) const {return QList<MImPluginDescription>();}
-};
 
 class TestCommitString
     : public QObject
