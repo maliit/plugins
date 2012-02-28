@@ -6,14 +6,12 @@ TARGET = language-layout-switching
 TEMPLATE = app
 QT = core testlib
 
-INCLUDEPATH += ../ ../../lib ../../
+INCLUDEPATH += ../../lib ../../
 LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 PRE_TARGETDEPS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 
 HEADERS += \
-    ../utils.h \
 
 SOURCES += \
-    ../utils.cpp \
     main.cpp \
 

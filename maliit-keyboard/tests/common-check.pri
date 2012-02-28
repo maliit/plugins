@@ -15,3 +15,7 @@ check.commands = \
     ./$$TARGET
 
 check.depends += $$TARGET
+
+LIBS += ../common/libtests-common.a
+POST_TARGETDEPS += ../common/libtests-common.a
+INCLUDEPATH += ../common

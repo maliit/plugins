@@ -29,23 +29,22 @@
  *
  */
 
-#ifndef TESTUTILS_H
-#define TESTUTILS_H
+#include "utils.h"
 
-class QObject;
-class QString;
-class QCoreApplication;
-class QApplication;
+#include <QtCore>
+
+#include <QApplication>
+#include <QCommonStyle>
 
 namespace TestUtils {
 
-// Requires event loop. Use SIGNAL macro for signal parameter.
-void waitForSignal(QObject *obj,
-                   const char *signal,
-                   int timeout = 1000);
-QCoreApplication *createCoreApplication(const QString &app_name);
-QApplication *createApplication(const QString &app_name);
+QApplication *createApplication(const QString &app_name)
+{
+    static int argc = 1;
+    static char* argv[] = { app_name.toLatin1().data() };
+    QApplication::setStyle(new QCommonStyle);
+    return new QApplication(argc, argv);
+}
 
 } // namespace TestUtils
 
-#endif

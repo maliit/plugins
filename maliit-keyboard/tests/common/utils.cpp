@@ -33,13 +33,7 @@
 
 #include <QtCore>
 
-#ifdef QT_GUI_LIB
-#include <QApplication>
-#else
-class QApplication
-    : public QCoreApplication
-{};
-#endif
+#include <QCoreApplication>
 
 namespace TestUtils {
 
@@ -59,18 +53,6 @@ QCoreApplication *createCoreApplication(const QString &app_name)
     static int argc = 1; \
     static char* argv[] = { app_name.toLatin1().data() };
     return new QCoreApplication(argc, argv);
-}
-
-QApplication *createApplication(const QString &app_name)
-{
-#ifndef QT_GUI_LIB
-    Q_UNUSED(app_name)
-    return 0;
-#else
-    static int argc = 1; \
-    static char* argv[] = { app_name.toLatin1().data() };
-    return new QApplication(argc, argv);
-#endif
 }
 
 } // namespace TestUtils
