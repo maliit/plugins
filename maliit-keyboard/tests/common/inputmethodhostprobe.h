@@ -35,6 +35,8 @@
 #include <mabstractinputmethodhost.h>
 #include <mimplugindescription.h>
 
+#include <QKeyEvent>
+
 class InputMethodHostProbe
     : public MAbstractInputMethodHost
 {
@@ -42,14 +44,22 @@ class InputMethodHostProbe
 
 private:
     QString m_commit_string_history;
+    QKeyEvent m_last_key_event;
+    int m_key_event_count;
 
 public:
+    InputMethodHostProbe();
+
     QString commitStringHistory() const;
 
     void sendCommitString(const QString &string,
                           int replace_start,
                           int replace_length,
                           int cursor_pos);
+
+    QKeyEvent lastKeyEvent() const;
+    int keyEventCount() const;
+    void sendKeyEvent(const QKeyEvent& event, MInputMethod::EventRequestType);
 
     // unused reimpl
     int contentType(bool&) {return 0;}
@@ -64,7 +74,6 @@ public:
     int anchorPosition(bool&) {return 0;}
     QString selection(bool&) {return QString();}
     void sendPreeditString(const QString&, const QList<MInputMethod::PreeditTextFormat>&, int, int, int) {}
-    void sendKeyEvent(const QKeyEvent&, MInputMethod::EventRequestType) {}
     void notifyImInitiatedHiding() {}
     void copy() {}
     void paste() {}

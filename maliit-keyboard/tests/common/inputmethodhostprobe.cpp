@@ -31,6 +31,11 @@
 
 #include "inputmethodhostprobe.h"
 
+InputMethodHostProbe::InputMethodHostProbe()
+    : m_last_key_event(QEvent::None, 0, Qt::NoModifier)
+    , m_key_event_count(0)
+{
+}
 
 QString InputMethodHostProbe::commitStringHistory() const
 {
@@ -47,4 +52,20 @@ void InputMethodHostProbe::sendCommitString(const QString &string,
     Q_UNUSED(cursor_pos)
 
     m_commit_string_history.append(string);
+}
+
+QKeyEvent InputMethodHostProbe::lastKeyEvent() const
+{
+    return m_last_key_event;
+}
+
+int InputMethodHostProbe::keyEventCount() const
+{
+    return m_key_event_count;
+}
+
+void InputMethodHostProbe::sendKeyEvent(const QKeyEvent& event, MInputMethod::EventRequestType)
+{
+    m_last_key_event = event;
+    ++m_key_event_count;
 }
