@@ -97,14 +97,11 @@ class TestCommitString
     Q_OBJECT
 
 private:
-    QScopedPointer<QApplication> m_app;
-
 
     Q_SLOT void initTestCase()
     {
         qRegisterMetaType<QList<QMouseEvent*> >();
         qRegisterMetaType<Layout::Orientation>();
-        m_app.reset(TestUtils::createApplication("commit-string"));
     }
 
     Q_SLOT void test_data()
@@ -178,7 +175,7 @@ private:
         layout->setActivePanel(Layout::ExtendedPanel);
 
         Q_FOREACH (QMouseEvent *ev, mouse_events) {
-            m_app->postEvent(&window, ev);
+            QApplication::instance()->postEvent(&window, ev);
         }
 
         TestUtils::waitForSignal(&glass, SIGNAL(keyReleased(Key,SharedLayout)));
@@ -186,5 +183,5 @@ private:
     }
 };
 
-QTEST_APPLESS_MAIN(TestCommitString)
+QTEST_MAIN(TestCommitString)
 #include "main.moc"
