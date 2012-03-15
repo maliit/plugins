@@ -4,15 +4,16 @@ include(config.pri)
     # Output help
     help_string = \
         Important build options: \
-        \\n\\t PREFIX: Install prefix. Default: /usr \
+        \\n\\t PREFIX: Install prefix for tools. Default: Maliit framework prefix \
+	\\n\\t\\t Note that the plugins themselves are installed under Maliit framework prefix \
         \\n\\t LIBDIR: Library install directory. Default: $$PREFIX/lib \
-        \\nRecognised CONFIG flags: \
-        \\n\\t enable-legacy: Build for legacy mode (using meego-im ABI/API compatabible maliit-framework) \
         \\nInfluential environment variables: \
-        \\n\\t PKG_CONFIG_PATH: Specify the pkg-config files to use for dependencies \
+        \\n\\t QMAKEFEATURES A mkspecs/features directory list to look for features. \
+	\\n\\t\\t Use it if a dependency is installed to non-default location. \
+	\\n\\t\\t Note that it must also be passed to qmake calls in subdirectories. \
         \\nExamples: \
         \\n\\t qmake \
-        \\n\\t qmake CONFIG+=enable-legacy PREFIX=/usr LIBDIR=/usr/lib64 \
+        \\n\\t qmake PREFIX=/usr LIBDIR=/usr/lib64 \
 
     !build_pass:system(echo -e \"$$help_string\")
 } else {

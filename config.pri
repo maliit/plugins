@@ -5,16 +5,16 @@ QMAKE_CXXFLAGS_DEBUG+=-Werror -O0
 
 CONFIG += no_keywords
 
-enable-legacy {
-    MALIIT_PLUGINS_DIR=$$system(pkg-config --variable pluginsdir MeegoImFramework)
-    MALIIT_PLUGINS_DATA_DIR=$$system(pkg-config --variable pluginsdatadir MeegoImFramework)
-} else {
-    MALIIT_PLUGINS_DIR=$$system(pkg-config --variable pluginsdir maliit-plugins-0.80)
-    MALIIT_PLUGINS_DATA_DIR=$$system(pkg-config --variable pluginsdatadir maliit-plugins-0.80)
+# The feature maliit-defines initializes some variables related for MALIIT, such as installation paths
+# here have to load it early, to start using the defines immediately
+!load(maliit-defines) {
+   error(Cannot find $$[QT_INSTALL_DATA]/mkspecs/features/maliit-defines.prf. Probably Maliit framework not installed)
 }
+# This enables the maliit library for C++ code
+CONFIG += maliit-plugins
 
 isEmpty(PREFIX) {
-   PREFIX = /usr
+   PREFIX = $$MALIIT_PREFIX
 }
 
 isEmpty(LIBDIR) {
@@ -25,12 +25,6 @@ INSTALL_BIN = $$PREFIX/bin
 INSTALL_LIBS = $$LIBDIR
 INSTALL_HEADERS = $$PREFIX/include
 INSTALL_DOCS = $$PREFIX/share/doc
-
-# Fallback in case framework pkg-config does not have information
-# about what plugin data directory should be (framework version < 0.81.1)
-isEmpty(MALIIT_PLUGINS_DATA_DIR) {
-    MALIIT_PLUGINS_DATA_DIR=$$PREFIX/share/maliit/plugins
-}
 
 enable-opengl {
     QT += opengl
