@@ -29,63 +29,20 @@
  *
  */
 
-#ifndef MALIIT_KEYBOARD_GLASS_H
-#define MALIIT_KEYBOARD_GLASS_H
+#ifndef MALIIT_KEYBOARD_HITLOGIC_H
+#define MALIIT_KEYBOARD_HITLOGIC_H
 
 #include "models/key.h"
-#include "models/wordcandidate.h"
-#include "models/layout.h"
-
-#include <QtGui>
+#include <QtCore>
 
 namespace MaliitKeyboard {
+namespace Logic {
 
-class GlassPrivate;
+Key keyHit(const QVector<Key> &keys,
+           const QRect &geometry,
+           const QPoint &pos,
+           const QVector<Key> &filtered_keys = QVector<Key>());
 
-class Glass
-    : public QObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(Glass)
-    Q_DECLARE_PRIVATE(Glass)
+}} // namespace Logic, MaliitKeyboard
 
-public:
-    explicit Glass(QObject *parent = 0);
-    virtual ~Glass();
-
-    void setWindow(QWidget *window);
-
-    void addLayout(const SharedLayout &layout);
-    void clearLayouts();
-
-    Q_SIGNAL void keyPressed(const Key &key,
-                             const SharedLayout &layout);
-    Q_SIGNAL void keyLongPressed(const Key &key,
-                                 const SharedLayout &layout);
-    Q_SIGNAL void keyReleased(const Key &key,
-                              const SharedLayout &layout);
-    Q_SIGNAL void keyEntered(const Key &key,
-                             const SharedLayout &layout);
-    Q_SIGNAL void keyExited(const Key &key,
-                            const SharedLayout &layout);
-
-    Q_SIGNAL void switchLeft(const SharedLayout &layout);
-    Q_SIGNAL void switchRight(const SharedLayout &layout);
-    Q_SIGNAL void keyboardClosed();
-
-protected:
-    //! \reimp
-    virtual bool eventFilter(QObject *obj,
-                             QEvent *ev);
-    //! \reimp_end
-
-private:
-    Q_SLOT void onLongPressTriggered();
-    bool handlePressReleaseEvent(QEvent *ev);
-
-    const QScopedPointer<GlassPrivate> d_ptr;
-};
-
-} // namespace MaliitKeyboard
-
-#endif // MALIIT_KEYBOARD_GLASS_H
+#endif // MALIIT_KEYBOARD_HITLOGIC_H

@@ -29,63 +29,48 @@
  *
  */
 
-#ifndef MALIIT_KEYBOARD_GLASS_H
-#define MALIIT_KEYBOARD_GLASS_H
-
-#include "models/key.h"
-#include "models/wordcandidate.h"
-#include "models/layout.h"
-
-#include <QtGui>
+#include "hitlogic.h"
 
 namespace MaliitKeyboard {
+namespace Logic {
+namespace {
 
-class GlassPrivate;
-
-class Glass
-    : public QObject
+Key findFilteredKey(const QVector<Key> &filtered_keys,
+                    const QPoint &origin,
+                    const QPoint &pos)
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(Glass)
-    Q_DECLARE_PRIVATE(Glass)
+    Q_FOREACH (const Key &current, filtered_keys) {
+        if (current.rect().translated(origin).contains(pos)) {
+            return current;
+        }
+    }
 
-public:
-    explicit Glass(QObject *parent = 0);
-    virtual ~Glass();
+    // No filtered key found:
+    return Key();
+}
 
-    void setWindow(QWidget *window);
+}
 
-    void addLayout(const SharedLayout &layout);
-    void clearLayouts();
+Key keyHit(const QVector<Key> &keys,
+           const QRect &geometry,
+           const QPoint &pos,
+           const QVector<Key> &filtered_keys)
+{
+    // TODO: assume pos in screen coordinates and translate here?
+    if (geometry.contains(pos)) {
+        const QPoint &origin(geometry.topLeft());
 
-    Q_SIGNAL void keyPressed(const Key &key,
-                             const SharedLayout &layout);
-    Q_SIGNAL void keyLongPressed(const Key &key,
-                                 const SharedLayout &layout);
-    Q_SIGNAL void keyReleased(const Key &key,
-                              const SharedLayout &layout);
-    Q_SIGNAL void keyEntered(const Key &key,
-                             const SharedLayout &layout);
-    Q_SIGNAL void keyExited(const Key &key,
-                            const SharedLayout &layout);
+        // FIXME: use binary range search
+        Q_FOREACH (const Key &current, keys) {
+            if (current.rect().translated(origin).contains(pos)
+                && current != findFilteredKey(filtered_keys, origin, pos)) {
+                return current;
+            }
+        }
+    }
 
-    Q_SIGNAL void switchLeft(const SharedLayout &layout);
-    Q_SIGNAL void switchRight(const SharedLayout &layout);
-    Q_SIGNAL void keyboardClosed();
+    // No key found:
+    return Key();
+}
 
-protected:
-    //! \reimp
-    virtual bool eventFilter(QObject *obj,
-                             QEvent *ev);
-    //! \reimp_end
-
-private:
-    Q_SLOT void onLongPressTriggered();
-    bool handlePressReleaseEvent(QEvent *ev);
-
-    const QScopedPointer<GlassPrivate> d_ptr;
-};
-
-} // namespace MaliitKeyboard
-
-#endif // MALIIT_KEYBOARD_GLASS_H
+}} // namespace Logic, MaliitKeyboard

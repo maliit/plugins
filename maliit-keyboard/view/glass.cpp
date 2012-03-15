@@ -30,6 +30,10 @@
  */
 
 #include "glass.h"
+#include "logic/hitlogic.h"
+#include "models/keyarea.h"
+#include "models/wordribbon.h"
+
 #include <QWidget>
 
 namespace MaliitKeyboard {
@@ -50,23 +54,6 @@ void removeActiveKey(QVector<Key> *active_keys,
     }
 }
 
-Key findActiveKey(QVector<Key> *active_keys,
-                  const QPoint &origin,
-                  const QPoint &pos)
-{
-    if (not active_keys) {
-        return Key();
-    }
-
-    for (int index = 0; index < active_keys->count(); ++index) {
-        const Key &k(active_keys->at(index));
-        if (k.rect().translated(origin).contains(pos)) {
-            return k;
-        }
-    }
-
-    return Key();
-}
 }
 
 class GlassPrivate
@@ -223,38 +210,28 @@ bool Glass::eventFilter(QObject *obj,
                 return true;
             }
 
-            const QVector<Key> &keys(layout->activeKeyArea().keys());
+            const Key &last_key(Logic::keyHit(d->active_keys, rect, last_pos));
 
-            // FIXME: use binary range search
-            const QPoint &origin(rect.topLeft());
-
-            const Key &last_key(findActiveKey(&d->active_keys, origin, last_pos));
-            if (not last_key.rect().isEmpty()
-                && not last_key.rect().translated(origin).contains(pos)) {
+            if (last_key.valid()) {
                 removeActiveKey(&d->active_keys, last_key);
                 d->long_press_timer.stop();
                 Q_EMIT keyExited(last_key, layout);
             }
 
-            if (rect.contains(pos)) {
-                for (int index = 0; index < keys.count(); ++index) {
-                    Key k(keys.at(index));
+            const Key &key(Logic::keyHit(layout->activeKeyArea().keys(),
+                                         layout->activeKeyAreaGeometry(),
+                                         pos, d->active_keys));
 
-                    // Pressed state is not stored in key itself, so list of pressed keys (overridden keys) must be maintained elsewhere.
-                    const QRect &key_rect = k.rect().translated(origin);
-                    if (key_rect.contains(pos)
-                        && k != findActiveKey(&d->active_keys, origin, pos)) {
-                        d->active_keys.append(k);
+            if (key.valid()) {
+                d->active_keys.append(key);
 
-                        if (k.hasExtendedKeys()) {
-                            d->long_press_timer.start();
-                            d->long_press_layout = layout;
-                        }
-
-                        Q_EMIT keyEntered(k, layout);
-                        return true;
-                    }
+                if (key.hasExtendedKeys()) {
+                    d->long_press_timer.start();
+                    d->long_press_layout = layout;
                 }
+
+                Q_EMIT keyEntered(key, layout);
+                return true;
             }
         }
     } break;
