@@ -50,6 +50,7 @@ public:
     explicit WordRibbon();
 
     QVector<WordCandidate> candidates() const;
+    QVector<WordCandidate> & rCandidates();
     void appendCandidate(const WordCandidate &candidate);
     void clearCandidates();
 

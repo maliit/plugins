@@ -58,6 +58,34 @@ Key makeActive(const Key &key,
     return k;
 }
 
+WordCandidate makeActive(const WordCandidate &candidate,
+                         const Style *style)
+{
+    Q_UNUSED(style)
+
+    WordCandidate c(candidate);
+    Font f(c.label().font());
+
+    f.setColor("#fff");
+    c.rLabel().setFont(f);
+
+    return c;
+}
+
+WordCandidate makeInactive(const WordCandidate &candidate,
+                           const Style *style)
+{
+    Q_UNUSED(style)
+
+    WordCandidate c(candidate);
+    Font f(c.label().font());
+
+    f.setColor("#ddd");
+    c.rLabel().setFont(f);
+
+    return c;
+}
+
 Key magnifyKey(const Key &key,
                const Style *style,
                const QRectF &key_area_rect)
@@ -395,6 +423,58 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
 
     d->layout->clearActiveKeys();
     d->layout->clearMagnifierKey();
+}
+
+void LayoutUpdater::onWordCandidatePressed(const WordCandidate &candidate,
+                                           const SharedLayout &layout)
+{
+    Q_D(LayoutUpdater);
+
+    if (d->layout != layout) {
+        return;
+    }
+
+    WordRibbon ribbon(layout->wordRibbon());
+    QVector<WordCandidate> &candidates(ribbon.rCandidates());
+
+    for (int index = 0; index < candidates.count(); ++index) {
+        const WordCandidate &current(candidates.at(index));
+
+        if (current.label().text() == candidate.label().text()
+            && current.rect() == candidate.rect()) {
+            candidates.replace(index, makeActive(candidate, d->activeStyle()));
+            layout->setWordRibbon(ribbon);
+
+            Q_EMIT wordCandidatesChanged(layout);
+            break;
+        }
+    }
+}
+
+void LayoutUpdater::onWordCandidateReleased(const WordCandidate &candidate,
+                                            const SharedLayout &layout)
+{
+    Q_D(LayoutUpdater);
+
+    if (d->layout != layout) {
+        return;
+    }
+
+    WordRibbon ribbon(layout->wordRibbon());
+    QVector<WordCandidate> &candidates(ribbon.rCandidates());
+
+    for (int index = 0; index < candidates.count(); ++index) {
+        const WordCandidate &current(candidates.at(index));
+
+        if (current.label().text() == candidate.label().text()
+            && current.rect() == candidate.rect()) {
+            candidates.replace(index, makeInactive(candidate, d->activeStyle()));
+            layout->setWordRibbon(ribbon);
+
+            Q_EMIT wordCandidatesChanged(layout);
+            break;
+        }
+    }
 }
 
 void LayoutUpdater::syncLayoutToView()

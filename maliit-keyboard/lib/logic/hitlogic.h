@@ -33,15 +33,29 @@
 #define MALIIT_KEYBOARD_HITLOGIC_H
 
 #include "models/key.h"
+#include "models/wordcandidate.h"
+
 #include <QtCore>
 
 namespace MaliitKeyboard {
 namespace Logic {
 
+enum FilterBehaviour {
+    IgnoreIfInFilter,
+    AcceptIfInFilter
+};
+
 Key keyHit(const QVector<Key> &keys,
            const QRect &geometry,
            const QPoint &pos,
-           const QVector<Key> &filtered_keys = QVector<Key>());
+           const QVector<Key> &filtered_keys = QVector<Key>(),
+           FilterBehaviour behaviour = IgnoreIfInFilter);
+
+WordCandidate wordCandidateHit(const QVector<WordCandidate> &candidates,
+                               const QRect &geometry,
+                               const QPoint &pos,
+                               const QVector<WordCandidate> &filtered_candidates = QVector<WordCandidate>(),
+                               FilterBehaviour behaviour = IgnoreIfInFilter);
 
 }} // namespace Logic, MaliitKeyboard
 

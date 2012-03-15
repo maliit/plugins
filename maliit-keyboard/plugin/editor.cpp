@@ -148,6 +148,16 @@ void Editor::onKeyExited(const Key &key)
     }
 }
 
+void Editor::onWordCandidateReleased(const WordCandidate &candidate)
+{
+    Q_D(Editor);
+
+    if (candidate.valid()) {
+        // Automatically adds space to commit string:
+        d->host->sendCommitString(QString("%1 ").arg(candidate.label().text()));
+    }
+}
+
 // TODO: this implementation does not take into account following features:
 // 1) preedit string
 //      if there is preedit then first call to autoRepeatBackspace should clean it completely

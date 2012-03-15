@@ -72,6 +72,7 @@ public:
 
     Q_SLOT void onLayoutChanged(const SharedLayout &layout);
     Q_SLOT void onKeysChanged(const SharedLayout &layout);
+    Q_SLOT void onWordCandidatesChanged(const SharedLayout &layout);
 
 
 private:

@@ -35,18 +35,58 @@ namespace MaliitKeyboard {
 namespace Logic {
 namespace {
 
-Key findFilteredKey(const QVector<Key> &filtered_keys,
-                    const QPoint &origin,
-                    const QPoint &pos)
+template<class T>
+T findFilteredElement(const QVector<T> &filtered,
+                      const QPoint &origin,
+                      const QPoint &pos)
 {
-    Q_FOREACH (const Key &current, filtered_keys) {
+    Q_FOREACH (const T &current, filtered) {
         if (current.rect().translated(origin).contains(pos)) {
             return current;
         }
     }
 
-    // No filtered key found:
-    return Key();
+    // No filtered element found:
+    return T();
+}
+
+template<class T>
+T elementHit(const QVector<T> &elements,
+             const QRect &geometry,
+             const QPoint &pos,
+             const QVector<T> &filtered,
+             FilterBehaviour behaviour)
+{
+    // TODO: assume pos in screen coordinates and translate here?
+    if (geometry.contains(pos)) {
+        const QPoint &origin(geometry.topLeft());
+
+        // FIXME: use binary range search
+        Q_FOREACH (const T &current, elements) {
+            const T &from_filter = findFilteredElement<T>(filtered, origin, pos);
+
+            if (current.rect().translated(origin).contains(pos)) {
+                switch (behaviour) {
+                case IgnoreIfInFilter:
+                    if (current != from_filter) {
+                        return current;
+                    }
+
+                    break;
+
+                case AcceptIfInFilter:
+                    if (current == from_filter) {
+                        return current;
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    // No element hit:
+    return T();
 }
 
 }
@@ -54,23 +94,19 @@ Key findFilteredKey(const QVector<Key> &filtered_keys,
 Key keyHit(const QVector<Key> &keys,
            const QRect &geometry,
            const QPoint &pos,
-           const QVector<Key> &filtered_keys)
+           const QVector<Key> &filtered_keys,
+           FilterBehaviour behaviour)
 {
-    // TODO: assume pos in screen coordinates and translate here?
-    if (geometry.contains(pos)) {
-        const QPoint &origin(geometry.topLeft());
+    return elementHit<Key>(keys, geometry, pos, filtered_keys, behaviour);
+}
 
-        // FIXME: use binary range search
-        Q_FOREACH (const Key &current, keys) {
-            if (current.rect().translated(origin).contains(pos)
-                && current != findFilteredKey(filtered_keys, origin, pos)) {
-                return current;
-            }
-        }
-    }
-
-    // No key found:
-    return Key();
+WordCandidate wordCandidateHit(const QVector<WordCandidate> &candidates,
+                               const QRect &geometry,
+                               const QPoint &pos,
+                               const QVector<WordCandidate> &filtered_candidates,
+                               FilterBehaviour behaviour)
+{
+    return elementHit<WordCandidate>(candidates, geometry, pos, filtered_candidates, behaviour);
 }
 
 }} // namespace Logic, MaliitKeyboard

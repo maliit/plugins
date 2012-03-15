@@ -474,4 +474,25 @@ void Renderer::onKeysChanged(const SharedLayout &layout)
     }
 }
 
+void Renderer::onWordCandidatesChanged(const SharedLayout &layout)
+{
+    Q_D(Renderer);
+
+    if (layout.isNull()) {
+        qCritical() << __PRETTY_FUNCTION__
+                    << "Invalid layout.";
+        return;
+     }
+
+    for (int index = 0; index < d->layout_items.count(); ++index) {
+        const LayoutItem &li(d->layout_items.at(index));
+
+        if (li.layout == layout) {
+            li.ribbon_item->setWordRibbon(layout->wordRibbon(), layout->wordRibbonGeometry());
+            break;
+        }
+    }
+
+}
+
 } // namespace MaliitKeyboard

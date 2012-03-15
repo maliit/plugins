@@ -33,6 +33,7 @@
 #define MALIIT_KEYBOARD_EDITOR_H
 
 #include "models/key.h"
+#include "models/wordcandidate.h"
 
 #include <mabstractinputmethodhost.h>
 #include <QtCore>
@@ -65,6 +66,7 @@ public:
     Q_SLOT void onKeyReleased(const Key &key);
     Q_SLOT void onKeyEntered(const Key &key);
     Q_SLOT void onKeyExited(const Key &key);
+    Q_SLOT void onWordCandidateReleased(const WordCandidate &candidate);
 
     Q_SIGNAL void keyboardClosed();
 

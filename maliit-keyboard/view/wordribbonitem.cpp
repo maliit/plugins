@@ -48,15 +48,12 @@ void WordRibbonItem::setWordRibbon(const WordRibbon &ribbon,
                                    const QRect &geometry)
 {
     m_ribbon = ribbon;
+    m_ribbon_geometry = geometry;
 
-    if (m_ribbon_geometry != geometry) {
-        m_ribbon_geometry = geometry;
-
-        if (boundingRect().isEmpty()) {
-            hide();
-        } else {
-            update();
-        }
+    if (boundingRect().isEmpty()) {
+        hide();
+    } else {
+        update();
     }
 }
 

@@ -48,6 +48,11 @@ QVector<WordCandidate> WordRibbon::candidates() const
     return m_candidates;
 }
 
+QVector<WordCandidate> & WordRibbon::rCandidates()
+{
+    return m_candidates;
+}
+
 void WordRibbon::clearCandidates()
 {
     m_candidates.clear();

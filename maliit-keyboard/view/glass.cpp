@@ -62,6 +62,7 @@ public:
     QWidget *window;
     QVector<SharedLayout> layouts;
     QVector<Key> active_keys;
+    WordCandidate active_candidate;
     QPoint last_pos;
     QPoint press_pos;
     QElapsedTimer gesture_timer;
@@ -73,6 +74,7 @@ public:
         : window(0)
         , layouts()
         , active_keys()
+        , active_candidate()
         , last_pos()
         , press_pos()
         , gesture_timer()
@@ -269,6 +271,7 @@ bool Glass::handlePressReleaseEvent(QEvent *ev)
 
     Q_D(Glass);
 
+    bool consumed = false;
     QMouseEvent *qme = static_cast<QMouseEvent *>(ev);
     d->last_pos = qme->pos();
     d->press_pos = qme->pos(); // FIXME: dont update on mouse release, clear instead.
@@ -277,40 +280,65 @@ bool Glass::handlePressReleaseEvent(QEvent *ev)
     Q_FOREACH (const SharedLayout &layout, d->layouts) {
         const QPoint &pos(layout->orientation() == Layout::Landscape
                           ? qme->pos() : QPoint(d->window->height() - qme->pos().y(), qme->pos().x()));
-        const QVector<Key> &keys(layout->activeKeyArea().keys());
 
-        // FIXME: use binary range search
-        const QRect &rect(layout->activeKeyAreaGeometry());
-        if (rect.contains(pos)) {
+        switch (qme->type()) {
+        case QKeyEvent::MouseButtonPress: {
+            const Key &key(Logic::keyHit(layout->activeKeyArea().keys(),
+                                         layout->activeKeyAreaGeometry(),
+                                         pos, d->active_keys));
 
-            for (int index = 0; index < keys.count(); ++index) {
-                Key k(keys.at(index));
+            if (key.valid()) {
+                d->active_keys.append(key);
+                Q_EMIT keyPressed(key, layout);
 
-                // Pressed state is not stored in key itself, so list of pressed keys (overridden keys) must be maintained elsewhere.
-                const QRect &key_rect = k.rect().translated(rect.topLeft());
-                if (key_rect.contains(pos)) {
+                if (key.hasExtendedKeys()) {
+                    d->long_press_timer.start();
+                    d->long_press_layout = layout;
+                }
 
-                    if (qme->type() == QKeyEvent::MouseButtonPress) {
-                        d->active_keys.append(k);
+                consumed = true;
+            } else {
+                const WordCandidate &candidate(Logic::wordCandidateHit(layout->wordRibbon().candidates(),
+                                                                       layout->wordRibbonGeometry(),
+                                                                       pos));
 
-                        if (k.hasExtendedKeys()) {
-                            d->long_press_timer.start();
-                            d->long_press_layout = layout;
-                        }
-
-                        Q_EMIT keyPressed(k, layout);
-                    } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
-                        removeActiveKey(&d->active_keys, k);
-                        Q_EMIT keyReleased(k, layout);
-                    }
-
-                    return true;
+                if (candidate.valid()) {
+                    d->active_candidate = candidate;
+                    Q_EMIT wordCandidatePressed(candidate, layout);
+                    consumed = true;
                 }
             }
+        } break;
+
+        case QKeyEvent::MouseButtonRelease: {
+            const Key &key(Logic::keyHit(layout->activeKeyArea().keys(),
+                                         layout->activeKeyAreaGeometry(),
+                                         pos, d->active_keys, Logic::AcceptIfInFilter));
+
+            if (key.valid()) {
+                removeActiveKey(&d->active_keys, key);
+                Q_EMIT keyReleased(key, layout);
+                consumed = true;
+            } else {
+                const WordCandidate &candidate(Logic::wordCandidateHit(layout->wordRibbon().candidates(),
+                                                                       layout->wordRibbonGeometry(),
+                                                                       pos));
+
+                if (candidate.valid() && candidate == d->active_candidate) {
+                    d->active_candidate = WordCandidate();
+                    Q_EMIT wordCandidateReleased(candidate, layout);
+                    consumed = true;
+                }
+            }
+
+        } break;
+
+        default:
+            break;
         }
     }
 
-    return false;
+    return consumed;
 }
 
 } // namespace MaliitKeyboard

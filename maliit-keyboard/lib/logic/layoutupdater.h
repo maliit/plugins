@@ -33,6 +33,8 @@
 #define MALIIT_KEYBOARD_LAYOUTUPDATER_H
 
 #include "keyboardloader.h"
+#include "models/key.h"
+#include "models/wordcandidate.h"
 #include "models/layout.h"
 
 #include <QtCore>
@@ -62,6 +64,7 @@ public:
     void setLayout(const SharedLayout &layout);
     Q_SLOT void setOrientation(Layout::Orientation orientation);
 
+    // Key signal handlers:
     Q_SLOT void onKeyPressed(const Key &key,
                              const SharedLayout &layout);
     Q_SLOT void onKeyLongPressed(const Key &key,
@@ -74,8 +77,15 @@ public:
                             const SharedLayout &layout);
     Q_SLOT void clearActiveKeysAndMagnifier();
 
+    // WordCandidate signal handlers:
+    Q_SLOT void onWordCandidatePressed(const WordCandidate &candidate,
+                                       const SharedLayout &layout);
+    Q_SLOT void onWordCandidateReleased(const WordCandidate &candidate,
+                                        const SharedLayout &layout);
+
     Q_SIGNAL void layoutChanged(const SharedLayout &layout);
     Q_SIGNAL void keysChanged(const SharedLayout &layout);
+    Q_SIGNAL void wordCandidatesChanged(const SharedLayout &layout);
 
 private:
     Q_SIGNAL void shiftPressed();

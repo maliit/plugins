@@ -182,6 +182,15 @@ void Dashboard::onKeyReleased(const Key &key)
     }
 }
 
+void Dashboard::onWordCandidateReleased(const WordCandidate &candidate)
+{
+    Q_D(Dashboard);
+
+    QInputMethodEvent *const im_ev = new QInputMethodEvent;
+    im_ev->setCommitString(QString("%1 ").arg(candidate.label().text()));
+    qApp->postEvent(d->text_entry, im_ev);
+}
+
 void Dashboard::onShow()
 {
     Q_D(Dashboard);

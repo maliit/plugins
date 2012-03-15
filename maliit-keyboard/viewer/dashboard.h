@@ -32,6 +32,8 @@
 #ifndef MALIIT_KEYBOARD_DASHBOARD_H
 #define MALIIT_KEYBOARD_DASHBOARD_H
 
+#include "models/key.h"
+#include "models/wordcandidate.h"
 #include "models/layout.h"
 
 #include <QtCore>
@@ -57,6 +59,7 @@ public:
     void setRenderer(Renderer *renderer);
 
     Q_SLOT void onKeyReleased(const Key &key);
+    Q_SLOT void onWordCandidateReleased(const WordCandidate &candidate);
     Q_SIGNAL void orientationChanged(Layout::Orientation orientation);
     Q_SIGNAL void keyboardClosed();
 

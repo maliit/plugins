@@ -32,6 +32,9 @@
 #include "setup.h"
 #include "glass.h"
 #include "renderer.h"
+#include "models/key.h"
+#include "models/wordcandidate.h"
+#include "models/layout.h"
 #include "logic/layoutupdater.h"
 
 namespace MaliitKeyboard {
@@ -50,6 +53,7 @@ void connectGlassToLayoutUpdater(Glass *glass,
     QObject::connect(glass,   SIGNAL(switchRight(SharedLayout)),
                      updater, SLOT(clearActiveKeysAndMagnifier()));
 
+    // Connect key signals to key signal handlers:
     QObject::connect(glass,   SIGNAL(keyPressed(Key,SharedLayout)),
                      updater, SLOT(onKeyPressed(Key,SharedLayout)));
 
@@ -64,6 +68,13 @@ void connectGlassToLayoutUpdater(Glass *glass,
 
     QObject::connect(glass,   SIGNAL(keyExited(Key,SharedLayout)),
                      updater, SLOT(onKeyExited(Key,SharedLayout)));
+
+    // Connect word candidate signals to word candidate handlers:
+    QObject::connect(glass,   SIGNAL(wordCandidatePressed(WordCandidate,SharedLayout)),
+                     updater, SLOT(onWordCandidatePressed(WordCandidate,SharedLayout)));
+
+    QObject::connect(glass,   SIGNAL(wordCandidateReleased(WordCandidate,SharedLayout)),
+                     updater, SLOT(onWordCandidateReleased(WordCandidate,SharedLayout)));
 }
 
 void connectGlassToRenderer(Glass *glass,
@@ -81,6 +92,9 @@ void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
 
     QObject::connect(updater,  SIGNAL(keysChanged(SharedLayout)),
                      renderer, SLOT(onKeysChanged(SharedLayout)));
+
+    QObject::connect(updater,  SIGNAL(wordCandidatesChanged(SharedLayout)),
+                     renderer, SLOT(onWordCandidatesChanged(SharedLayout)));
 }
 
 }} // namespace Setup, MaliitKeyboard

@@ -94,7 +94,7 @@ int main(int argc,
     l0->setScreenSize(dashboard->size());
 
     MaliitKeyboard::Font font;
-    font.setColor(QByteArray("#0033ff"));
+    font.setColor(QByteArray("#ddd"));
     font.setSize(20);
 
     MaliitKeyboard::WordCandidate candidate;
@@ -136,6 +136,12 @@ int main(int argc,
 
     QObject::connect(&glass,    SIGNAL(keyReleased(Key,SharedLayout)),
                      dashboard, SLOT(onKeyReleased(Key)));
+
+    QObject::connect(&glass,    SIGNAL(wordCandidateReleased(WordCandidate,SharedLayout)),
+                     dashboard, SLOT(onWordCandidateReleased(WordCandidate)));
+
+    QObject::connect(&glass,    SIGNAL(keyboardClosed()),
+                     dashboard, SLOT(onHide()));
 
     QObject::connect(dashboard, SIGNAL(orientationChanged(Layout::Orientation)),
                      &lu0,      SLOT(setOrientation(Layout::Orientation)));
