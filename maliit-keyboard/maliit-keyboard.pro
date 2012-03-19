@@ -7,7 +7,11 @@ SUBDIRS = \
     viewer \
     data \
     benchmark \
-    tests \
+
+
+!notests {
+    SUBDIRS += tests
+}
 
 QMAKE_EXTRA_TARGETS += check
 check.target = check
