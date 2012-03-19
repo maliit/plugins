@@ -13,9 +13,17 @@ unix {
 }
 
 win32 {
-    MALIIT_STATIC_PREFIX=
-    MALIIT_STATIC_SUFFIX=.lib
-    MALIIT_DYNAMIC_PREFIX=
+    # qmake puts libraries in subfolders on Windows
+    release {
+        MALIIT_STATIC_PREFIX=release/lib
+        MALIIT_DYNAMIC_PREFIX=release/
+    }
+    debug {
+        MALIIT_STATIC_PREFIX=debug/lib
+        MALIIT_DYNAMIC_PREFIX=debug/
+    }
+
+    MALIIT_STATIC_SUFFIX=.a
     MALIIT_DYNAMIC_SUFFIX=.dll
 }
 
