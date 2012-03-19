@@ -20,6 +20,6 @@ check.commands = \
 
 check.depends += $$TARGET
 
-LIBS += ../common/libtests-common.a
-POST_TARGETDEPS += ../common/libtests-common.a
+LIBS += ../common/$$maliitStaticLib(tests-common)
+POST_TARGETDEPS += ../common/$$maliitStaticLib(tests-common)
 INCLUDEPATH += ../common
