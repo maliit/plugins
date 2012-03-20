@@ -44,6 +44,7 @@ namespace MaliitKeyboard {
 class Renderer;
 class Key;
 class DashboardPrivate;
+class AbstractTextEditor;
 
 class Dashboard
     : public QMainWindow
@@ -57,9 +58,8 @@ public:
     virtual ~Dashboard();
 
     void setRenderer(Renderer *renderer);
+    AbstractTextEditor * editor() const;
 
-    Q_SLOT void onKeyReleased(const Key &key);
-    Q_SLOT void onWordCandidateReleased(const WordCandidate &candidate);
     Q_SIGNAL void orientationChanged(Layout::Orientation orientation);
     Q_SIGNAL void keyboardClosed();
 

@@ -37,6 +37,7 @@ namespace MaliitKeyboard {
 class Glass;
 class LayoutUpdater;
 class Renderer;
+class AbstractTextEditor;
 
 namespace Setup {
 
@@ -44,6 +45,8 @@ void connectGlassToLayoutUpdater(Glass *glass,
                                  LayoutUpdater *updater);
 void connectGlassToRenderer(Glass *glass,
                             Renderer *renderer);
+void connectGlassToTextEditor(Glass *glass,
+                              AbstractTextEditor *editor);
 void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
                                     Renderer *renderer);
 

@@ -34,46 +34,34 @@
 
 #include "models/key.h"
 #include "models/wordcandidate.h"
+#include "view/abstracttexteditor.h"
 
 #include <mabstractinputmethodhost.h>
 #include <QtCore>
 
 namespace MaliitKeyboard {
 
-class EditorPrivate;
-
-struct EditorOptions
-{
-    EditorOptions();
-    // all delays are in milliseconds
-    int backspace_auto_repeat_delay; // delay before first automatically repeated key
-    int backspace_auto_repeat_interval; // interval between automatically repeated keys
-};
-
 class Editor
-    : public QObject
+    : public AbstractTextEditor
 {
     Q_OBJECT
     Q_DISABLE_COPY(Editor)
-    Q_DECLARE_PRIVATE(Editor)
+
+private:
+    MAbstractInputMethodHost *m_host;
 
 public:
-    explicit Editor(const EditorOptions &newOptions = EditorOptions(), QObject *parent = 0);
+    explicit Editor(const EditorOptions &options,
+                    QObject *parent = 0);
     virtual ~Editor();
 
     void setHost(MAbstractInputMethodHost *host);
-    Q_SLOT void onKeyPressed(const Key &key);
-    Q_SLOT void onKeyReleased(const Key &key);
-    Q_SLOT void onKeyEntered(const Key &key);
-    Q_SLOT void onKeyExited(const Key &key);
-    Q_SLOT void onWordCandidateReleased(const WordCandidate &candidate);
 
-    Q_SIGNAL void keyboardClosed();
-
-private:
-    Q_SLOT void autoRepeatBackspace();
-
-    const QScopedPointer<EditorPrivate> d_ptr;
+    //! \reimp
+    virtual void sendPreeditString(const QString &preedit);
+    virtual void sendCommitString(const QString &commit);
+    virtual void sendKeyEvent(const QKeyEvent &ev);
+    //! \reimp_end
 };
 
 } // namespace MaliitKeyboard

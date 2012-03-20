@@ -154,7 +154,7 @@ private:
 
         QWidget window;
         Glass glass;
-        Editor editor;
+        Editor editor(EditorOptions(), 0);
         InputMethodHostProbe host;
         SharedLayout layout(new Layout);
 

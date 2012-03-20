@@ -32,6 +32,7 @@
 #include "models/key.h"
 #include "models/layout.h"
 #include "view/renderer.h"
+#include "view/abstracttexteditor.h"
 #include "logic/keyareaconverter.h"
 #include "dashboard.h"
 
@@ -39,11 +40,56 @@
 
 namespace MaliitKeyboard {
 
+class DashboardEditor
+    : public AbstractTextEditor
+{
+private:
+    QTextEdit *const m_target;
+
+public:
+    explicit DashboardEditor(QTextEdit *target,
+                             const EditorOptions &options,
+                             QObject *parent = 0);
+
+    //! \reimp
+    virtual void sendPreeditString(const QString &preedit);
+    virtual void sendCommitString(const QString &commit);
+    virtual void sendKeyEvent(const QKeyEvent &ev);
+    //! \reimp_end
+};
+
+DashboardEditor::DashboardEditor(QTextEdit *target,
+                                 const EditorOptions &options,
+                                 QObject *parent)
+    : AbstractTextEditor(options, Model::SharedText(new Model::Text), parent)
+    , m_target(target)
+{}
+
+void DashboardEditor::sendPreeditString(const QString &preedit)
+{
+    QInputMethodEvent *ev = new QInputMethodEvent(preedit, QList<QInputMethodEvent::Attribute>());
+    qApp->postEvent(m_target, ev);
+}
+
+void DashboardEditor::sendCommitString(const QString &commit)
+{
+    QInputMethodEvent *ev = new QInputMethodEvent;
+    ev->setCommitString(commit);
+    qApp->postEvent(m_target, ev);
+}
+
+void DashboardEditor::sendKeyEvent(const QKeyEvent &ev)
+{
+    QKeyEvent *new_ev = new QKeyEvent(ev.type(), ev.key(), ev.modifiers(), ev.text(), ev.isAutoRepeat(), ev.count());
+    qApp->postEvent(m_target, new_ev);
+}
+
 class DashboardPrivate
 {
 public:
     Renderer *renderer;
     QTextEdit *text_entry;
+    DashboardEditor *editor;
     QGraphicsProxyWidget *proxy_widget;
     QVBoxLayout *vbox;
     QSpacerItem *top;
@@ -51,9 +97,10 @@ public:
     QWidget *buttons;
     Layout::Orientation orientation;
 
-    explicit DashboardPrivate()
+    explicit DashboardPrivate(Dashboard *q)
         : renderer(0)
         , text_entry(new QTextEdit)
+        , editor(new DashboardEditor(text_entry, EditorOptions(), q))
         , proxy_widget(0)
         , vbox(new QVBoxLayout)
         , top(new QSpacerItem(0, 0))
@@ -65,7 +112,7 @@ public:
 
 Dashboard::Dashboard(QWidget *parent)
     : QMainWindow(parent)
-    , d_ptr(new DashboardPrivate)
+    , d_ptr(new DashboardPrivate(this))
 {
     setWindowTitle("Maliit Keyboard Viewer");
     resize(854, 480);
@@ -131,64 +178,10 @@ void Dashboard::setRenderer(Renderer *renderer)
     d->renderer = renderer;
 }
 
-void Dashboard::onKeyReleased(const Key &key)
+AbstractTextEditor * Dashboard::editor() const
 {
-    Q_D(Dashboard);
-
-    QInputMethodEvent *im_ev = 0;
-    QKeyEvent *key_ev = 0;
-
-    switch(key.action()) {
-    case Key::ActionInsert:
-        im_ev = new QInputMethodEvent;
-        im_ev->setCommitString(key.label().text());
-        break;
-
-    case Key::ActionBackspace:
-        key_ev = new QKeyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
-        break;
-
-    case Key::ActionReturn:
-        key_ev = new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
-        break;
-
-    case Key::ActionSpace:
-        im_ev = new QInputMethodEvent;
-        im_ev->setCommitString(" ");
-        break;
-
-    case Key::ActionLeft:
-        key_ev = new QKeyEvent(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
-        break;
-
-    case Key::ActionRight:
-        key_ev = new QKeyEvent(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
-        break;
-
-    case Key::ActionClose:
-        Q_EMIT keyboardClosed();
-        break;
-
-    default:
-        break;
-    }
-
-    if (im_ev) {
-        qApp->postEvent(d->text_entry, im_ev);
-    }
-
-    if (key_ev) {
-        qApp->postEvent(d->text_entry, key_ev);
-    }
-}
-
-void Dashboard::onWordCandidateReleased(const WordCandidate &candidate)
-{
-    Q_D(Dashboard);
-
-    QInputMethodEvent *const im_ev = new QInputMethodEvent;
-    im_ev->setCommitString(QString("%1 ").arg(candidate.label().text()));
-    qApp->postEvent(d->text_entry, im_ev);
+    Q_D(const Dashboard);
+    return d->editor;
 }
 
 void Dashboard::onShow()

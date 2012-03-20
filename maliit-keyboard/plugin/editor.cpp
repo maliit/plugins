@@ -29,6 +29,7 @@
  *
  */
 
+#include "models/text.h"
 #include "editor.h"
 
 #include <QtGui/QKeyEvent>
@@ -36,151 +37,48 @@
 
 namespace MaliitKeyboard {
 
-EditorOptions::EditorOptions()
-    : backspace_auto_repeat_delay(500)
-    , backspace_auto_repeat_interval(300)
-{
-}
-
-class EditorPrivate
-{
-public:
-    MAbstractInputMethodHost *host;
-    QTimer auto_repeat_backspace_timer;
-    bool backspace_sent;
-    EditorOptions options;
-
-    explicit EditorPrivate(const EditorOptions &newOptions);
-};
-
-EditorPrivate::EditorPrivate(const EditorOptions &newOptions)
-    : host(0)
-    , backspace_sent(false)
-    , options(newOptions)
-{
-    auto_repeat_backspace_timer.setSingleShot(true);
-}
-
-Editor::Editor(const EditorOptions &newOptions, QObject *parent)
-    : QObject(parent)
-    , d_ptr(new EditorPrivate(newOptions))
-{
-    connect(&d_ptr->auto_repeat_backspace_timer, SIGNAL(timeout()),
-            this, SLOT(autoRepeatBackspace()));
-}
+Editor::Editor(const EditorOptions &options,
+               QObject *parent)
+    : AbstractTextEditor(options, Model::SharedText(new Model::Text), parent)
+    , m_host(0)
+{}
 
 Editor::~Editor()
 {}
 
 void Editor::setHost(MAbstractInputMethodHost *host)
 {
-    Q_D(Editor);
-    d->host = host;
+    m_host = host;
 }
 
-void Editor::onKeyPressed(const Key &key)
+void Editor::sendPreeditString(const QString &preedit)
 {
-    Q_D(Editor);
-
-    if (key.action() == Key::ActionBackspace) {
-        d->backspace_sent = false;
-        d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_delay);
+    if (not m_host) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Host not set, ignoring.";
     }
+
+    m_host->sendPreeditString(preedit, QList<MInputMethod::PreeditTextFormat>());
 }
 
-void Editor::onKeyReleased(const Key &key)
+void Editor::sendCommitString(const QString &commit)
 {
-    Q_D(Editor);
-
-    if (not d->host) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "No host found, forgot to set it?";
-        return;
+    if (not m_host) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Host not set, ignoring.";
     }
 
-    switch(key.action()) {
-    case Key::ActionInsert:
-        d->host->sendCommitString(key.label().text());
-        break;
-
-    case Key::ActionBackspace: {
-        if (not d->backspace_sent) {
-            QKeyEvent ev(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
-            d->host->sendKeyEvent(ev);
-        }
-        d->auto_repeat_backspace_timer.stop();
-     } break;
-
-    case Key::ActionReturn: {
-        QKeyEvent ev(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
-        d->host->sendKeyEvent(ev);
-    } break;
-
-    case Key::ActionSpace:
-        d->host->sendCommitString(" ");
-        break;
-
-    case Key::ActionClose:
-        Q_EMIT keyboardClosed();
-        break;
-
-    default:
-        break;
-    }
+    m_host->sendCommitString(commit);
 }
 
-void Editor::onKeyEntered(const Key &key)
+void Editor::sendKeyEvent(const QKeyEvent &ev)
 {
-    Q_D(Editor);
-
-    if (key.action() == Key::ActionBackspace) {
-        d->backspace_sent = false;
-        d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_delay);
-    }
-}
-
-void Editor::onKeyExited(const Key &key)
-{
-    Q_D(Editor);
-
-    if (key.action() == Key::ActionBackspace) {
-        d->auto_repeat_backspace_timer.stop();
-    }
-}
-
-void Editor::onWordCandidateReleased(const WordCandidate &candidate)
-{
-    Q_D(Editor);
-
-    if (candidate.valid()) {
-        // Automatically adds space to commit string:
-        d->host->sendCommitString(QString("%1 ").arg(candidate.label().text()));
-    }
-}
-
-// TODO: this implementation does not take into account following features:
-// 1) preedit string
-//      if there is preedit then first call to autoRepeatBackspace should clean it completely
-//      and following calls should remove remaining text character by character
-// 2) multitouch
-//      it is not completely clean how to handle multitouch for backspace,
-//      but we can follow the strategy from meego-keyboard - release pressed
-//      key when user press another one at the same time. Then we do not need to
-//      change anything in this method
-void Editor::autoRepeatBackspace()
-{
-    Q_D(Editor);
-
-    if (not d->host) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "No host found, forgot to set it?";
-        return;
+    if (not m_host) {
+        qWarning() << __PRETTY_FUNCTION__
+                     << "Host not set, ignoring.";
     }
 
-    QKeyEvent ev(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
-    d->host->sendKeyEvent(ev);
-    d->backspace_sent = true;
-    d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_interval);
+    m_host->sendKeyEvent(ev);
 }
 
 } // namespace MaliitKeyboard

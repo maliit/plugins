@@ -32,6 +32,7 @@
 #include "setup.h"
 #include "glass.h"
 #include "renderer.h"
+#include "abstracttexteditor.h"
 #include "models/key.h"
 #include "models/wordcandidate.h"
 #include "models/layout.h"
@@ -82,6 +83,28 @@ void connectGlassToRenderer(Glass *glass,
 {
     QObject::connect(glass, SIGNAL(keyboardClosed()),
                      renderer, SLOT(hide()));
+}
+
+void connectGlassToTextEditor(Glass *glass,
+                              AbstractTextEditor *editor)
+{
+    QObject::connect(glass,  SIGNAL(keyPressed(Key,SharedLayout)),
+                     editor, SLOT(onKeyPressed(Key)));
+
+    QObject::connect(glass,  SIGNAL(keyReleased(Key,SharedLayout)),
+                     editor, SLOT(onKeyReleased(Key)));
+
+    QObject::connect(glass,  SIGNAL(keyEntered(Key,SharedLayout)),
+                     editor, SLOT(onKeyEntered(Key)));
+
+    QObject::connect(glass,  SIGNAL(keyExited(Key,SharedLayout)),
+                     editor, SLOT(onKeyExited(Key)));
+
+    QObject::connect(glass,  SIGNAL(wordCandidatePressed(WordCandidate,SharedLayout)),
+                     editor, SLOT(onWordCandidateReleased(WordCandidate)));
+
+    QObject::connect(editor, SIGNAL(keyboardClosed()),
+                     glass,  SIGNAL(keyboardClosed()));
 }
 
 void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,

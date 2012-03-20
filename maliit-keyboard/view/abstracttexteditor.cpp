@@ -149,6 +149,10 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
         event_key = Qt::Key_Return;
         break;
 
+    case Key::ActionClose:
+        Q_EMIT keyboardClosed();
+        break;
+
     case Key::ActionLeft:
         event_key = Qt::Key_Left;
         break;

@@ -129,16 +129,10 @@ int main(int argc,
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu1, &renderer);
 
-
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu0);
     MaliitKeyboard::Setup::connectGlassToRenderer(&glass, &renderer);
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu0, &renderer);
-
-    QObject::connect(&glass,    SIGNAL(keyReleased(Key,SharedLayout)),
-                     dashboard, SLOT(onKeyReleased(Key)));
-
-    QObject::connect(&glass,    SIGNAL(wordCandidateReleased(WordCandidate,SharedLayout)),
-                     dashboard, SLOT(onWordCandidateReleased(WordCandidate)));
+    MaliitKeyboard::Setup::connectGlassToTextEditor(&glass, dashboard->editor());
 
     QObject::connect(&glass,    SIGNAL(keyboardClosed()),
                      dashboard, SLOT(onHide()));

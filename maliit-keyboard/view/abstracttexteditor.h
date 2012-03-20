@@ -85,6 +85,7 @@ public:
                                ReplacementPolicy policy = ReplaceAndCommit);
 
     Q_SIGNAL void textChanged(const Model::SharedText &text);
+    Q_SIGNAL void keyboardClosed();
 
 private:
     const QScopedPointer<AbstractTextEditorPrivate> d_ptr;
