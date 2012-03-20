@@ -18,6 +18,7 @@ contains(QT_MAJOR_VERSION, 4) {
 HEADERS += \
     utils.h \
     setup.h \
+    abstracttexteditor.h \
     glass.h \
     renderer.h \
     keyareaitem.h \
@@ -29,6 +30,7 @@ HEADERS += \
 SOURCES += \
     utils.cpp \
     setup.cpp \
+    abstracttexteditor.cpp \
     glass.cpp \
     renderer.cpp \
     keyareaitem.cpp \
