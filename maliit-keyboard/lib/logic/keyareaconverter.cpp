@@ -88,6 +88,8 @@ KeyArea createFromKeyboard(Style *style,
         int width = 0;
         pos.setY(key_height * desc.row);
 
+        bool at_row_start((index == 0)
+                          || (kb.key_descriptions.at(index - 1).row < desc.row));
         bool at_row_end((index + 1 == kb.keys.count())
                         || (index + 1 < kb.keys.count()
                             && kb.key_descriptions.at(index + 1).row > desc.row));
@@ -100,13 +102,11 @@ KeyArea createFromKeyboard(Style *style,
         key.setBackgroundBorders(bg_margins);
 
         width = style->keyWidth(orientation, desc.width);
-        const bool use_left_padding(pos.x() == 0);
-        const bool use_right_padding(pos.x() + width + margin + padding == max_width);
 
-        const qreal key_margin((use_left_padding || use_right_padding) ? margin + padding : margin * 2);
+        const qreal key_margin((at_row_start || at_row_end) ? margin + padding : margin * 2);
         key.setRect(QRect(pos.x(), pos.y(), width + key_margin, key_height));
-        key.setMargins(QMargins(use_left_padding ? padding : margin, margin,
-                                use_right_padding ? padding : margin, margin));
+        key.setMargins(QMargins(at_row_start ? padding : margin, margin,
+                                at_row_end   ? padding : margin, margin));
 
         key.setFont(key.text().count() > 1 ? small_font : font);
 
