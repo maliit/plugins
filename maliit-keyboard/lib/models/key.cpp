@@ -46,7 +46,7 @@ Key::Key()
 bool Key::valid() const
 {
     return (m_area.size().isValid()
-            && not m_label.text().isEmpty());
+            && (not m_label.text().isEmpty() || m_action != Key::ActionCommit));
 }
 
 QRect Key::rect() const
