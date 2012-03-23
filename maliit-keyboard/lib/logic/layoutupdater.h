@@ -73,6 +73,7 @@ public:
     Q_SLOT void onKeyExited(const Key &key,
                             const SharedLayout &layout);
     Q_SLOT void clearActiveKeysAndMagnifier();
+    Q_SLOT void resetLayoutAtClose();
 
     Q_SIGNAL void layoutChanged(const SharedLayout &layout);
     Q_SIGNAL void keysChanged(const SharedLayout &layout);

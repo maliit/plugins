@@ -42,7 +42,7 @@ void connectGlassToLayoutUpdater(Glass *glass,
 {
 
     QObject::connect(glass,   SIGNAL(keyboardClosed()),
-                     updater, SLOT(clearActiveKeysAndMagnifier()));
+                     updater, SLOT(resetLayoutAtClose()));
 
     QObject::connect(glass,   SIGNAL(switchLeft(SharedLayout)),
                      updater, SLOT(clearActiveKeysAndMagnifier()));
