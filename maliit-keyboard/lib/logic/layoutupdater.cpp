@@ -32,53 +32,20 @@
 
 #include "layoutupdater.h"
 #include "style.h"
-#include "logic/keyareaconverter.h"
-#include "logic/state-machines/shiftmachine.h"
-#include "logic/state-machines/viewmachine.h"
-#include "logic/state-machines/deadkeymachine.h"
+
 #include "models/area.h"
 #include "models/keyboard.h"
 #include "models/keydescription.h"
 #include "models/wordribbon.h"
 #include "models/wordcandidate.h"
+#include "models/text.h"
 
-#ifdef HAVE_PRESAGE
-#include <presage.h>
-#endif
+#include "logic/keyareaconverter.h"
+#include "logic/state-machines/shiftmachine.h"
+#include "logic/state-machines/viewmachine.h"
+#include "logic/state-machines/deadkeymachine.h"
 
 namespace MaliitKeyboard {
-
-#ifdef HAVE_PRESAGE
-class CandidatesCallback
-    : public PresageCallback
-{
-private:
-    const std::string& m_past_context;
-    const std::string m_empty;
-
-public:
-    explicit CandidatesCallback(const std::string& past_context);
-
-    std::string get_past_stream() const;
-    std::string get_future_stream() const;
-};
-
-CandidatesCallback::CandidatesCallback(const std::string &past_context)
-    : m_past_context(past_context)
-    , m_empty()
-{}
-
-std::string CandidatesCallback::get_past_stream() const
-{
-    return m_past_context;
-}
-
-std::string CandidatesCallback::get_future_stream() const
-{
-    return m_empty;
-}
-#endif
-
 namespace {
 
 Key makeActive(const Key &key,
@@ -176,11 +143,6 @@ public:
     QPoint anchor;
     Style style;
     Style extended_keys_style;
-#ifdef HAVE_PRESAGE
-    std::string candidates_context;
-    CandidatesCallback candidates;
-    Presage presage;
-#endif
 
     explicit LayoutUpdaterPrivate()
         : initialized(false)
@@ -192,11 +154,6 @@ public:
         , anchor()
         , style()
         , extended_keys_style()
-#ifdef HAVE_PRESAGE
-        , candidates_context()
-        , candidates(CandidatesCallback(candidates_context))
-        , presage(&candidates)
-#endif
     {
         style.setProfile("nokia-n9");
         extended_keys_style.setProfile("nokia-n9-extended-keys");
@@ -470,48 +427,33 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
     d->layout->clearMagnifierKey();
 }
 
-void LayoutUpdater::onSurroundingTextChanged(const QString &surround, int offset)
+void LayoutUpdater::onCandidatesUpdated(const QStringList &candidates)
 {
-
-#ifndef HAVE_PRESAGE
-    Q_UNUSED(surround)
-    Q_UNUSED(offset)
-#else
     Q_D(LayoutUpdater);
 
     if (d->layout.isNull()) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "No layout specified.";
+        qWarning() << __PRETTY_FUNCTION__
+                   << "No layout specified.";
         return;
     }
 
-    d->candidates_context = surround.left(offset).toStdString();
-
-    // request prediction
-    const std::vector<std::string> predictions = d->presage.predict();
-
+    // Copy WordRibbon instance in order to preserve geometry and styling:
     WordRibbon ribbon(d->layout->wordRibbon());
     ribbon.clearCandidates();
 
-    // TODO: Fine-tune presage behaviour to also perform error correction, not just word prediction.
-    if (not surround.isEmpty()) {
-        // FIXME: max_candidates should come from style, too:
-        const static unsigned int max_candidates = 7;
-        for (unsigned int index = 0; index < predictions.size() && index < max_candidates; ++index) {
-            WordCandidate candidate;
-            candidate.rLabel().setText(QString::fromStdString(predictions.at(index)));
-            // FIXME: compute based on VKB width?
-            candidate.rArea().setSize(QSize(96, 40));
-            candidate.setOrigin(QPoint(index * 96, 0));
-            // FIXME: should be void applyStyle, or such
-            candidate = makeInactive(candidate, d->activeStyle());
-            ribbon.appendCandidate(candidate);
-        }
+    for (int index = 0; index < candidates.count(); ++index) {
+        WordCandidate word_candidate;
+        word_candidate.rLabel().setText(candidates.at(index));
+        // FIXME: compute based on VKB width?
+        word_candidate.rArea().setSize(QSize(96, 40));
+        word_candidate.setOrigin(QPoint(index * 96, 0));
+        // FIXME: should be void applyStyle, or such
+        word_candidate = makeInactive(word_candidate, d->activeStyle());
+        ribbon.appendCandidate(word_candidate);
     }
 
     d->layout->setWordRibbon(ribbon);
     Q_EMIT wordCandidatesChanged(d->layout);
-#endif
 }
 
 void LayoutUpdater::onWordCandidatePressed(const WordCandidate &candidate,

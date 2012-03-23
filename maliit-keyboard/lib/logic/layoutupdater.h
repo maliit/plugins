@@ -33,6 +33,7 @@
 #define MALIIT_KEYBOARD_LAYOUTUPDATER_H
 
 #include "keyboardloader.h"
+
 #include "models/key.h"
 #include "models/wordcandidate.h"
 #include "models/layout.h"
@@ -76,9 +77,7 @@ public:
     Q_SLOT void onKeyExited(const Key &key,
                             const SharedLayout &layout);
     Q_SLOT void clearActiveKeysAndMagnifier();
-
-    Q_SLOT void onSurroundingTextChanged(const QString &surround,
-                                         int offset);
+    Q_SLOT void onCandidatesUpdated(const QStringList &candidates);
 
     // WordCandidate signal handlers:
     Q_SLOT void onWordCandidatePressed(const WordCandidate &candidate,

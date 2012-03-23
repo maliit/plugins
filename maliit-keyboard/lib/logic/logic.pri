@@ -6,6 +6,8 @@ HEADERS += \
     keyboardloader.h \
     keyareaconverter.h \
     style.h \
+    spellchecker.h \
+    wordengine.h \
 
 SOURCES += \
     hitlogic.cpp \
@@ -13,6 +15,8 @@ SOURCES += \
     keyboardloader.cpp \
     keyareaconverter.cpp \
     style.cpp \
+    spellchecker.cpp \
+    wordengine.cpp \
 
 DEPENDPATH += $$LOGIC_DIR
 
