@@ -18,3 +18,5 @@ SOURCES += \
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
+
+include(../../config-bottom.pri)

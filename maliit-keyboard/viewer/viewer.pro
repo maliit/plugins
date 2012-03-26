@@ -23,3 +23,5 @@ contains(QT_MAJOR_VERSION, 4) {
 
 target.path = $$INSTALL_BIN
 INSTALLS += target
+
+include(../config-bottom.pri)

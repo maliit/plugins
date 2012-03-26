@@ -9,3 +9,4 @@ CONFIG += staticlib
 include(models/models.pri)
 include(logic/logic.pri)
 include(parser/parser.pri)
+include(../config-bottom.pri)

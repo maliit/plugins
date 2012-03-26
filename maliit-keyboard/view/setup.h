@@ -47,6 +47,8 @@ void connectGlassToRenderer(Glass *glass,
                             Renderer *renderer);
 void connectGlassToTextEditor(Glass *glass,
                               AbstractTextEditor *editor);
+void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
+                                      AbstractTextEditor *editor);
 void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
                                     Renderer *renderer);
 

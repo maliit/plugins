@@ -11,7 +11,6 @@ QT = core testlib gui
     QT += widgets
 }
 
-
 INCLUDEPATH += ../../lib ../../
 LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_PLUGIN_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_VIEW_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
 PRE_TARGETDEPS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_PLUGIN_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_VIEW_LIB} $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}
@@ -21,3 +20,4 @@ HEADERS += \
 SOURCES += \
     main.cpp \
 
+include(../../config-bottom.pri)

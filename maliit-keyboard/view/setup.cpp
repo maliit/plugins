@@ -107,6 +107,16 @@ void connectGlassToTextEditor(Glass *glass,
                      glass,  SIGNAL(keyboardClosed()));
 }
 
+void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
+                                      AbstractTextEditor *editor)
+{
+    QObject::connect(updater, SIGNAL(wordCandidateSelected(QString)),
+                     editor,  SLOT(replacePreedit(QString)));
+
+    QObject::connect(editor,  SIGNAL(surroundingTextChanged(QString,int)),
+                     updater, SLOT(onSurroundingTextChanged(QString,int)));
+}
+
 void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
                                     Renderer *renderer)
 {

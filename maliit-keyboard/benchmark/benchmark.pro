@@ -12,3 +12,5 @@ SOURCES += main.cpp
 
 QT = core
 INSTALLS += target
+
+include(../config-bottom.pri)

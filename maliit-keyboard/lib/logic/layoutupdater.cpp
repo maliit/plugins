@@ -42,7 +42,42 @@
 #include "models/wordribbon.h"
 #include "models/wordcandidate.h"
 
+#ifdef HAVE_PRESAGE
+#include <presage.h>
+#endif
+
 namespace MaliitKeyboard {
+
+#ifdef HAVE_PRESAGE
+class CandidatesCallback
+    : public PresageCallback
+{
+private:
+    const std::string& m_past_context;
+    const std::string m_empty;
+
+public:
+    explicit CandidatesCallback(const std::string& past_context);
+
+    std::string get_past_stream() const;
+    std::string get_future_stream() const;
+};
+
+CandidatesCallback::CandidatesCallback(const std::string &past_context)
+    : m_past_context(past_context)
+    , m_empty()
+{}
+
+std::string CandidatesCallback::get_past_stream() const
+{
+    return m_past_context;
+}
+
+std::string CandidatesCallback::get_future_stream() const
+{
+    return m_empty;
+}
+#endif
 
 namespace {
 
@@ -65,7 +100,7 @@ WordCandidate makeActive(const WordCandidate &candidate,
 
     WordCandidate c(candidate);
     Font f(c.label().font());
-
+    f.setSize(14);
     f.setColor("#fff");
     c.rLabel().setFont(f);
 
@@ -79,7 +114,7 @@ WordCandidate makeInactive(const WordCandidate &candidate,
 
     WordCandidate c(candidate);
     Font f(c.label().font());
-
+    f.setSize(14);
     f.setColor("#ddd");
     c.rLabel().setFont(f);
 
@@ -141,6 +176,11 @@ public:
     QPoint anchor;
     Style style;
     Style extended_keys_style;
+#ifdef HAVE_PRESAGE
+    std::string candidates_context;
+    CandidatesCallback candidates;
+    Presage presage;
+#endif
 
     explicit LayoutUpdaterPrivate()
         : initialized(false)
@@ -152,6 +192,11 @@ public:
         , anchor()
         , style()
         , extended_keys_style()
+#ifdef HAVE_PRESAGE
+        , candidates_context()
+        , candidates(CandidatesCallback(candidates_context))
+        , presage(&candidates)
+#endif
     {
         style.setProfile("nokia-n9");
         extended_keys_style.setProfile("nokia-n9-extended-keys");
@@ -425,6 +470,50 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
     d->layout->clearMagnifierKey();
 }
 
+void LayoutUpdater::onSurroundingTextChanged(const QString &surround, int offset)
+{
+
+#ifndef HAVE_PRESAGE
+    Q_UNUSED(surround)
+    Q_UNUSED(offset)
+#else
+    Q_D(LayoutUpdater);
+
+    if (d->layout.isNull()) {
+        qCritical() << __PRETTY_FUNCTION__
+                    << "No layout specified.";
+        return;
+    }
+
+    d->candidates_context = surround.left(offset).toStdString();
+
+    // request prediction
+    const std::vector<std::string> predictions = d->presage.predict();
+
+    WordRibbon ribbon(d->layout->wordRibbon());
+    ribbon.clearCandidates();
+
+    // TODO: Fine-tune presage behaviour to also perform error correction, not just word prediction.
+    if (not surround.isEmpty()) {
+        // FIXME: max_candidates should come from style, too:
+        const static unsigned int max_candidates = 7;
+        for (unsigned int index = 0; index < predictions.size() && index < max_candidates; ++index) {
+            WordCandidate candidate;
+            candidate.rLabel().setText(QString::fromStdString(predictions.at(index)));
+            // FIXME: compute based on VKB width?
+            candidate.rArea().setSize(QSize(96, 40));
+            candidate.setOrigin(QPoint(index * 96, 0));
+            // FIXME: should be void applyStyle, or such
+            candidate = makeInactive(candidate, d->activeStyle());
+            ribbon.appendCandidate(candidate);
+        }
+    }
+
+    d->layout->setWordRibbon(ribbon);
+    Q_EMIT wordCandidatesChanged(d->layout);
+#endif
+}
+
 void LayoutUpdater::onWordCandidatePressed(const WordCandidate &candidate,
                                            const SharedLayout &layout)
 {
@@ -472,6 +561,8 @@ void LayoutUpdater::onWordCandidateReleased(const WordCandidate &candidate,
             layout->setWordRibbon(ribbon);
 
             Q_EMIT wordCandidatesChanged(layout);
+            Q_EMIT wordCandidateSelected(candidate.label().text());
+
             break;
         }
     }

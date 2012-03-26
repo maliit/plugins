@@ -97,14 +97,7 @@ int main(int argc,
     font.setColor(QByteArray("#ddd"));
     font.setSize(20);
 
-    MaliitKeyboard::WordCandidate candidate;
-    candidate.rLabel().setText("Candidate");
-    candidate.rLabel().setFont(font);
-    candidate.rArea().setSize(QSize(120, 40));
-
     MaliitKeyboard::WordRibbon ribbon;
-    ribbon.appendCandidate(candidate);
-
     MaliitKeyboard::Area area;
     area.setBackground(QByteArray("key-background.png"));
     area.setBackgroundBorders(QMargins(10, 10, 10, 10));
@@ -131,8 +124,9 @@ int main(int argc,
 
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu0);
     MaliitKeyboard::Setup::connectGlassToRenderer(&glass, &renderer);
-    MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu0, &renderer);
     MaliitKeyboard::Setup::connectGlassToTextEditor(&glass, dashboard->editor());
+    MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu0, &renderer);
+    MaliitKeyboard::Setup::connectLayoutUpdaterToTextEditor(&lu0, dashboard->editor());
 
     QObject::connect(&glass,    SIGNAL(keyboardClosed()),
                      dashboard, SLOT(onHide()));

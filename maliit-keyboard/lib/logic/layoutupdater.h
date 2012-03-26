@@ -77,6 +77,9 @@ public:
                             const SharedLayout &layout);
     Q_SLOT void clearActiveKeysAndMagnifier();
 
+    Q_SLOT void onSurroundingTextChanged(const QString &surround,
+                                         int offset);
+
     // WordCandidate signal handlers:
     Q_SLOT void onWordCandidatePressed(const WordCandidate &candidate,
                                        const SharedLayout &layout);
@@ -86,6 +89,7 @@ public:
     Q_SIGNAL void layoutChanged(const SharedLayout &layout);
     Q_SIGNAL void keysChanged(const SharedLayout &layout);
     Q_SIGNAL void wordCandidatesChanged(const SharedLayout &layout);
+    Q_SIGNAL void wordCandidateSelected(const QString &candidate);
 
 private:
     Q_SIGNAL void shiftPressed();

@@ -29,3 +29,5 @@ SOURCES += \
 
 target.path += $${MALIIT_PLUGINS_DIR}
 INSTALLS += target
+
+include(../config-bottom.pri)
