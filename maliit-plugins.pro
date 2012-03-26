@@ -9,6 +9,7 @@ include(config.pri)
         \\n\\t LIBDIR: Library install directory. Default: $$PREFIX/lib \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-presage: Use presage to calculate word candidates (maliit-keyboard-plugin only) \
+        \\n\\t enable-hunspell: Use hunspell for error correction (maliit-keyboard-plugin only) \
         \\nInfluential environment variables: \
         \\n\\t QMAKEFEATURES A mkspecs/features directory list to look for features. \
 	\\n\\t\\t Use it if a dependency is installed to non-default location. \
