@@ -121,17 +121,11 @@ int main(int argc,
     lu1.setLayout(l1);
 
     MaliitKeyboard::Logic::WordEngine word_engine;
+    MaliitKeyboard::Setup::connectAll(&glass, &lu0, &renderer, dashboard->editor(), &word_engine);
 
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu1, &renderer);
 
-    MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu0);
-    MaliitKeyboard::Setup::connectGlassToRenderer(&glass, &renderer);
-    MaliitKeyboard::Setup::connectGlassToTextEditor(&glass, dashboard->editor());
-    MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu0, &renderer);
-    MaliitKeyboard::Setup::connectLayoutUpdaterToTextEditor(&lu0, dashboard->editor());
-    MaliitKeyboard::Setup::connectTextEditorToWordEngine(dashboard->editor(), &word_engine);
-    MaliitKeyboard::Setup::connectWordEngineToLayoutUpdater(&word_engine, &lu0);
 
     QObject::connect(&glass,    SIGNAL(keyboardClosed()),
                      dashboard, SLOT(onHide()));

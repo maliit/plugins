@@ -45,6 +45,23 @@
 namespace MaliitKeyboard {
 namespace Setup {
 
+void connectAll(Glass *glass,
+                LayoutUpdater *updater,
+                Renderer *renderer,
+                AbstractTextEditor *editor,
+                Logic::WordEngine *engine)
+{
+    connectGlassToLayoutUpdater(glass, updater);
+    connectGlassToRenderer(glass, renderer);
+    connectGlassToTextEditor(glass, editor);
+
+    connectLayoutUpdaterToRenderer(updater, renderer);
+    connectLayoutUpdaterToTextEditor(updater, editor);
+
+    connectWordEngineToLayoutUpdater(engine, updater);
+    connectTextEditorToWordEngine(editor, engine);
+}
+
 void connectGlassToLayoutUpdater(Glass *glass,
                                  LayoutUpdater *updater)
 {

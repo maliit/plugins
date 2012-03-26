@@ -45,6 +45,12 @@ class WordEngine;
 
 namespace Setup {
 
+void connectAll(Glass *glass,
+                LayoutUpdater *updater,
+                Renderer *renderer,
+                AbstractTextEditor *editor,
+                Logic::WordEngine *engine);
+
 void connectGlassToLayoutUpdater(Glass *glass,
                                  LayoutUpdater *updater);
 void connectGlassToRenderer(Glass *glass,

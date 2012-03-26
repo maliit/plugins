@@ -134,13 +134,7 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host,
 {
     Q_D(InputMethod);
 
-    Setup::connectGlassToLayoutUpdater(&d->glass, &d->layout_updater);
-    Setup::connectGlassToRenderer(&d->glass, &d->renderer);
-    Setup::connectGlassToTextEditor(&d->glass, &d->editor);
-    Setup::connectLayoutUpdaterToRenderer(&d->layout_updater, &d->renderer);
-    Setup::connectLayoutUpdaterToTextEditor(&d->layout_updater, &d->editor);
-    Setup::connectTextEditorToWordEngine(&d->editor, &d->word_engine);
-    Setup::connectWordEngineToLayoutUpdater(&d->word_engine, &d->layout_updater);
+    Setup::connectAll(&d->glass, &d->layout_updater, &d->renderer, &d->editor, &d->word_engine);
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
             inputMethodHost(), SLOT(notifyImInitiatedHiding()));
