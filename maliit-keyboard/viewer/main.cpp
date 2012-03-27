@@ -39,6 +39,7 @@
 #include "models/wordribbon.h"
 
 #include "logic/layoutupdater.h"
+#include "logic/wordengine.h"
 
 #include "view/renderer.h"
 #include "view/glass.h"
@@ -119,6 +120,8 @@ int main(int argc,
     MaliitKeyboard::LayoutUpdater lu1;
     lu1.setLayout(l1);
 
+    MaliitKeyboard::Logic::WordEngine word_engine;
+
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu1, &renderer);
 
@@ -127,6 +130,8 @@ int main(int argc,
     MaliitKeyboard::Setup::connectGlassToTextEditor(&glass, dashboard->editor());
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu0, &renderer);
     MaliitKeyboard::Setup::connectLayoutUpdaterToTextEditor(&lu0, dashboard->editor());
+    MaliitKeyboard::Setup::connectTextEditorToWordEngine(dashboard->editor(), &word_engine);
+    MaliitKeyboard::Setup::connectWordEngineToLayoutUpdater(&word_engine, &lu0);
 
     QObject::connect(&glass,    SIGNAL(keyboardClosed()),
                      dashboard, SLOT(onHide()));

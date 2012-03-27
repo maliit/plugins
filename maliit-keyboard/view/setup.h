@@ -39,6 +39,10 @@ class LayoutUpdater;
 class Renderer;
 class AbstractTextEditor;
 
+namespace Logic {
+class WordEngine;
+}
+
 namespace Setup {
 
 void connectGlassToLayoutUpdater(Glass *glass,
@@ -47,10 +51,16 @@ void connectGlassToRenderer(Glass *glass,
                             Renderer *renderer);
 void connectGlassToTextEditor(Glass *glass,
                               AbstractTextEditor *editor);
+
 void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
                                       AbstractTextEditor *editor);
 void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
                                     Renderer *renderer);
+void connectWordEngineToLayoutUpdater(Logic::WordEngine *engine,
+                                      LayoutUpdater *updater);
+
+void connectTextEditorToWordEngine(AbstractTextEditor *editor,
+                                   Logic::WordEngine *engine);
 
 }} // namespace Setup, MaliitKeyboard
 

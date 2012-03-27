@@ -31,14 +31,18 @@
 
 #include "inputmethod.h"
 #include "editor.h"
+
+#include "models/keyarea.h"
+#include "models/layout.h"
+#include "models/wordribbon.h"
+
 #include "logic/layoutupdater.h"
+#include "logic/wordengine.h"
+
 #include "view/renderer.h"
 #include "view/abstractbackgroundbuffer.h"
 #include "view/glass.h"
 #include "view/setup.h"
-#include "models/keyarea.h"
-#include "models/layout.h"
-#include "models/wordribbon.h"
 
 #include <mimsubviewdescription.h>
 #include <QApplication>
@@ -83,6 +87,7 @@ public:
     Glass glass;
     LayoutUpdater layout_updater;
     Editor editor;
+    Logic::WordEngine word_engine;
 
     explicit InputMethodPrivate(MAbstractInputMethodHost *host,
                                 QWidget *new_window)
@@ -92,6 +97,7 @@ public:
         , glass()
         , layout_updater()
         , editor(EditorOptions())
+        , word_engine()
     {
         if (qApp && qApp->desktop()) {
             window->resize(qApp->desktop()->screenGeometry().size());
@@ -133,6 +139,8 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host,
     Setup::connectGlassToTextEditor(&d->glass, &d->editor);
     Setup::connectLayoutUpdaterToRenderer(&d->layout_updater, &d->renderer);
     Setup::connectLayoutUpdaterToTextEditor(&d->layout_updater, &d->editor);
+    Setup::connectTextEditorToWordEngine(&d->editor, &d->word_engine);
+    Setup::connectWordEngineToLayoutUpdater(&d->word_engine, &d->layout_updater);
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
             inputMethodHost(), SLOT(notifyImInitiatedHiding()));

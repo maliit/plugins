@@ -33,10 +33,14 @@
 #include "glass.h"
 #include "renderer.h"
 #include "abstracttexteditor.h"
+
 #include "models/key.h"
 #include "models/wordcandidate.h"
 #include "models/layout.h"
+#include "models/text.h"
+
 #include "logic/layoutupdater.h"
+#include "logic/wordengine.h"
 
 namespace MaliitKeyboard {
 namespace Setup {
@@ -112,9 +116,6 @@ void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
 {
     QObject::connect(updater, SIGNAL(wordCandidateSelected(QString)),
                      editor,  SLOT(replacePreedit(QString)));
-
-    QObject::connect(editor,  SIGNAL(surroundingTextChanged(QString,int)),
-                     updater, SLOT(onSurroundingTextChanged(QString,int)));
 }
 
 void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
@@ -128,6 +129,20 @@ void connectLayoutUpdaterToRenderer(LayoutUpdater *updater,
 
     QObject::connect(updater,  SIGNAL(wordCandidatesChanged(SharedLayout)),
                      renderer, SLOT(onWordCandidatesChanged(SharedLayout)));
+}
+
+void connectWordEngineToLayoutUpdater(Logic::WordEngine *engine,
+                                      LayoutUpdater *updater)
+{
+    QObject::connect(engine,  SIGNAL(candidatesUpdated(QStringList)),
+                     updater, SLOT(onCandidatesUpdated(QStringList)));
+}
+
+void connectTextEditorToWordEngine(AbstractTextEditor *editor,
+                                   Logic::WordEngine *engine)
+{
+    QObject::connect(editor, SIGNAL(textChanged(Model::SharedText)),
+                     engine, SLOT(onTextChanged(Model::SharedText)));
 }
 
 }} // namespace Setup, MaliitKeyboard
