@@ -145,6 +145,9 @@ Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
                         case Key::ActionShift:
                             skey_description.icon = KeyDescription::ShiftIcon;
                             break;
+                        case Key::ActionClose:
+                            skey_description.icon = KeyDescription::CloseIcon;
+                            break;
                         default:
                             skey_description.icon = KeyDescription::NoIcon;
                             break;

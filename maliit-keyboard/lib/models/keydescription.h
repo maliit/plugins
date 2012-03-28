@@ -57,7 +57,8 @@ struct KeyDescription
         BackspaceIcon,
         ShiftIcon,
         ShiftLatchedIcon,
-        CapsLockIcon
+        CapsLockIcon,
+        CloseIcon
     };
 
     enum State {
