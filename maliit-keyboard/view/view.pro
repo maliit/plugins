@@ -23,6 +23,7 @@ HEADERS += \
     keyrenderer.h \
     keyareaitem.h \
     keyitem.h \
+    wordribbonitem.h \
     abstractbackgroundbuffer.h \
     graphicsview.h \
 
@@ -34,5 +35,6 @@ SOURCES += \
     keyrenderer.cpp \
     keyareaitem.cpp \
     keyitem.cpp \
+    wordribbonitem.cpp \
     abstractbackgroundbuffer.cpp \
     graphicsview.cpp \
