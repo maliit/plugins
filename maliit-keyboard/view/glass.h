@@ -68,6 +68,8 @@ public:
                              const SharedLayout &layout);
     Q_SIGNAL void keyExited(const Key &key,
                             const SharedLayout &layout);
+    Q_SIGNAL void keyAreaPressed(Layout::Panel panel, const SharedLayout &layout);
+    Q_SIGNAL void keyAreaReleased(Layout::Panel panel, const SharedLayout &layout);
     Q_SIGNAL void switchLeft(const SharedLayout &layout);
     Q_SIGNAL void switchRight(const SharedLayout &layout);
     Q_SIGNAL void keyboardClosed();

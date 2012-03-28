@@ -322,14 +322,37 @@ bool Glass::handlePressReleaseEvent(QEvent *ev)
                         }
 
                         Q_EMIT keyPressed(k, layout);
+                        Q_EMIT keyAreaPressed(layout->activePanel(), layout);
                     } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
                         removeActiveKey(&d->active_keys, k);
                         Q_EMIT keyReleased(k, layout);
+                        Q_EMIT keyAreaReleased(layout->activePanel(), layout);
                     }
 
                     return true;
                 }
             }
+        }
+
+        Layout::Panel panel = Layout::NumPanels;
+
+        if (layout->centerPanelGeometry().contains(pos))
+            panel = Layout::CenterPanel;
+        else if (layout->extendedPanelGeometry().contains(pos))
+            panel = Layout::ExtendedPanel;
+        else if (layout->leftPanelGeometry().contains(pos))
+            panel = Layout::LeftPanel;
+        else if (layout->rightPanelGeometry().contains(pos))
+            panel = Layout::RightPanel;
+
+        if (panel != Layout::NumPanels) {
+            if (qme->type() == QKeyEvent::MouseButtonPress) {
+                Q_EMIT keyAreaPressed(panel, layout);
+            } else if (qme->type() == QKeyEvent::MouseButtonRelease) {
+                Q_EMIT keyAreaReleased(panel, layout);
+            }
+
+            return true;
         }
     }
 
