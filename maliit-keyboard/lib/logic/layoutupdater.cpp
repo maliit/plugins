@@ -48,6 +48,11 @@
 namespace MaliitKeyboard {
 namespace {
 
+enum ActivationPolicy {
+    ActivateElement,
+    DeactivateElement
+};
+
 Key makeActive(const Key &key,
                const Style *style)
 {
@@ -60,32 +65,58 @@ Key makeActive(const Key &key,
     return k;
 }
 
-WordCandidate makeActive(const WordCandidate &candidate,
-                         const Style *style)
+void applyStyleToCandidate(WordCandidate *candidate,
+                           const Style *style,
+                           ActivationPolicy policy)
 {
-    Q_UNUSED(style)
+    if (not candidate || not style) {
+        return;
+    }
 
-    WordCandidate c(candidate);
-    Font f(c.label().font());
-    f.setSize(14);
-    f.setColor("#fff");
-    c.rLabel().setFont(f);
+    Label &label(candidate->rLabel());
+    Font f(label.font());
+    f.setSize(17);
 
-    return c;
+    QByteArray color;
+    switch(policy) {
+    case ActivateElement:
+        color = QByteArray("#fff");
+        break;
+
+    case DeactivateElement:
+        color = QByteArray("#ddd");
+        break;
+    }
+
+    f.setColor(color);
+    label.setFont(f);
 }
 
-WordCandidate makeInactive(const WordCandidate &candidate,
-                           const Style *style)
+bool updateWordRibbon(const SharedLayout &layout,
+                      const WordCandidate &candidate,
+                      const Style *style,
+                      ActivationPolicy policy)
 {
-    Q_UNUSED(style)
+    if (layout.isNull() || not style) {
+        return false;
+    }
 
-    WordCandidate c(candidate);
-    Font f(c.label().font());
-    f.setSize(14);
-    f.setColor("#ddd");
-    c.rLabel().setFont(f);
+    WordRibbon ribbon(layout->wordRibbon());
+    QVector<WordCandidate> &candidates(ribbon.rCandidates());
 
-    return c;
+    for (int index = 0; index < candidates.count(); ++index) {
+        WordCandidate &current(candidates[index]);
+
+        if (current.label().text() == candidate.label().text()
+            && current.rect() == candidate.rect()) {
+            applyStyleToCandidate(&current, style, policy);
+            layout->setWordRibbon(ribbon);
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 Key magnifyKey(const Key &key,
@@ -441,14 +472,16 @@ void LayoutUpdater::onCandidatesUpdated(const QStringList &candidates)
     WordRibbon ribbon(d->layout->wordRibbon());
     ribbon.clearCandidates();
 
+    const Style * const style(d->activeStyle());
+    const Layout::Orientation orientation(d->layout->orientation());
+    const int candidate_width(style->keyAreaWidth(orientation) / (orientation == Layout::Landscape ? 6 : 4));
+
     for (int index = 0; index < candidates.count(); ++index) {
         WordCandidate word_candidate;
         word_candidate.rLabel().setText(candidates.at(index));
-        // FIXME: compute based on VKB width?
-        word_candidate.rArea().setSize(QSize(96, 40));
-        word_candidate.setOrigin(QPoint(index * 96, 0));
-        // FIXME: should be void applyStyle, or such
-        word_candidate = makeInactive(word_candidate, d->activeStyle());
+        word_candidate.rArea().setSize(QSize(candidate_width, 56));
+        word_candidate.setOrigin(QPoint(index * candidate_width, 0));
+        applyStyleToCandidate(&word_candidate, d->activeStyle(), DeactivateElement);
         ribbon.appendCandidate(word_candidate);
     }
 
@@ -461,24 +494,9 @@ void LayoutUpdater::onWordCandidatePressed(const WordCandidate &candidate,
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout != layout) {
-        return;
-    }
-
-    WordRibbon ribbon(layout->wordRibbon());
-    QVector<WordCandidate> &candidates(ribbon.rCandidates());
-
-    for (int index = 0; index < candidates.count(); ++index) {
-        const WordCandidate &current(candidates.at(index));
-
-        if (current.label().text() == candidate.label().text()
-            && current.rect() == candidate.rect()) {
-            candidates.replace(index, makeActive(candidate, d->activeStyle()));
-            layout->setWordRibbon(ribbon);
-
-            Q_EMIT wordCandidatesChanged(layout);
-            break;
-        }
+    if (layout == d->layout
+        && updateWordRibbon(d->layout, candidate, d->activeStyle(), ActivateElement)) {
+        Q_EMIT wordCandidatesChanged(d->layout);
     }
 }
 
@@ -487,26 +505,10 @@ void LayoutUpdater::onWordCandidateReleased(const WordCandidate &candidate,
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout != layout) {
-        return;
-    }
-
-    WordRibbon ribbon(layout->wordRibbon());
-    QVector<WordCandidate> &candidates(ribbon.rCandidates());
-
-    for (int index = 0; index < candidates.count(); ++index) {
-        const WordCandidate &current(candidates.at(index));
-
-        if (current.label().text() == candidate.label().text()
-            && current.rect() == candidate.rect()) {
-            candidates.replace(index, makeInactive(candidate, d->activeStyle()));
-            layout->setWordRibbon(ribbon);
-
-            Q_EMIT wordCandidatesChanged(layout);
-            Q_EMIT wordCandidateSelected(candidate.label().text());
-
-            break;
-        }
+    if (layout == d->layout
+        && updateWordRibbon(d->layout, candidate, d->activeStyle(), DeactivateElement)) {
+        Q_EMIT wordCandidatesChanged(d->layout);
+        Q_EMIT wordCandidateSelected(candidate.label().text());
     }
 }
 
