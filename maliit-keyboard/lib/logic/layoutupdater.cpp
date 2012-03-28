@@ -113,6 +113,7 @@ public:
     QPoint anchor;
     Style style;
     Style extended_keys_style;
+    Layout::Panel close_extended_on_release;
 
     explicit LayoutUpdaterPrivate()
         : initialized(false)
@@ -124,6 +125,7 @@ public:
         , anchor()
         , style()
         , extended_keys_style()
+        , close_extended_on_release(Layout::NumPanels)
     {
         style.setProfile("nokia-n9");
         extended_keys_style.setProfile("nokia-n9-extended-keys");
@@ -350,6 +352,36 @@ void LayoutUpdater::onKeyReleased(const Key &key,
     }
 
     Q_EMIT keysChanged(layout);
+}
+
+void LayoutUpdater::onKeyAreaPressed(Layout::Panel panel, const SharedLayout &layout)
+{
+    Q_D(LayoutUpdater);
+
+    if (d->layout != layout) {
+        return;
+    }
+
+    if (d->layout->activePanel() == Layout::ExtendedPanel && panel != Layout::ExtendedPanel) {
+        d->close_extended_on_release = panel;
+    }
+}
+
+void LayoutUpdater::onKeyAreaReleased(Layout::Panel panel, const SharedLayout &layout)
+{
+    Q_D(LayoutUpdater);
+
+    if (d->layout != layout) {
+        return;
+    }
+
+    if (d->close_extended_on_release == panel) {
+        d->layout->setExtendedPanel(KeyArea());
+        d->layout->setActivePanel(Layout::CenterPanel);
+        Q_EMIT layoutChanged(d->layout);
+    }
+
+    d->close_extended_on_release = Layout::NumPanels;
 }
 
 void LayoutUpdater::onKeyEntered(const Key &key,
