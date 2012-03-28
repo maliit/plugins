@@ -3,7 +3,6 @@ MODELS_DIR = ./models
 HEADERS += \
     area.h \
     font.h \
-    keyfont.h \
     label.h \
     key.h \
     keyarea.h \
@@ -16,7 +15,6 @@ HEADERS += \
 SOURCES += \
     area.cpp \
     font.cpp \
-    keyfont.cpp \
     label.cpp \
     key.cpp \
     keyarea.cpp \
