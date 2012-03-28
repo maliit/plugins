@@ -114,27 +114,9 @@ KeyArea createFromKeyboard(Style *style,
         const QString &text(key.label().text());
         key.rLabel().setFont(text.count() > 1 ? small_font : font);
 
-        // FIXME: Read from KeyDescription instead.
         if (text.isEmpty()) {
-            switch (key.action()) {
-            case Key::ActionShift:
-                key.setIcon(style->icon(KeyDescription::ShiftIcon,
-                                        KeyDescription::NormalState));
-                break;
-
-            case Key::ActionBackspace:
-                key.setIcon(style->icon(KeyDescription::BackspaceIcon,
-                                        KeyDescription::NormalState));
-                break;
-
-            case Key::ActionReturn:
-                key.setIcon(style->icon(KeyDescription::ReturnIcon,
-                                        KeyDescription::NormalState));
-                break;
-
-            default:
-                break;
-            }
+            key.setIcon(style->icon(desc.icon,
+                                    KeyDescription::NormalState));
         }
 
         pos.rx() += key.rect().width();
