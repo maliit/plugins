@@ -35,6 +35,11 @@ namespace MaliitKeyboard {
 namespace Logic {
 namespace {
 
+//! Find whether pos hit an filtered element, with its rectangle being
+//! translated to origin.
+//! \param filtered the list of filtered elements.
+//! \param origin the origin to use for translation.
+//! \param pos the position to test against the element bounding box.
 template<class T>
 T findFilteredElement(const QVector<T> &filtered,
                       const QPoint &origin,
@@ -50,6 +55,19 @@ T findFilteredElement(const QVector<T> &filtered,
     return T();
 }
 
+//! From a list of elements of type T, find out whether pos (in same coordinate
+//! system as geometry) hits one of the elements, if their bounding box is
+//! translated to geometry's top left corner.
+//!     Returns the found element or a default constructed elment, if pos did
+//! not hit any of the provided elements.
+//! \param elements the list of provided elements.
+//! \param geometry the geometry that pos relates to.
+//! \param pos the position to test on whether it hit an element.
+//! \param filtered the list of filtered elements.
+//! \param behaviour controls the behaviour of elements in filtered list,
+//!                  whether to ignore any hit element that is also in filtered
+//!                  list, or whether to only accept if hit element is in
+//!                  filtered list.
 template<class T>
 T elementHit(const QVector<T> &elements,
              const QRect &geometry,
@@ -91,6 +109,7 @@ T elementHit(const QVector<T> &elements,
 
 }
 
+//! \sa elementHit
 Key keyHit(const QVector<Key> &keys,
            const QRect &geometry,
            const QPoint &pos,
@@ -100,6 +119,7 @@ Key keyHit(const QVector<Key> &keys,
     return elementHit<Key>(keys, geometry, pos, filtered_keys, behaviour);
 }
 
+//! \sa elementHit
 WordCandidate wordCandidateHit(const QVector<WordCandidate> &candidates,
                                const QRect &geometry,
                                const QPoint &pos,
