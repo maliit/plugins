@@ -33,6 +33,7 @@
 
 #include "style.h"
 #include "keyboardloader.h"
+#include "models/area.h"
 #include "models/keyarea.h"
 #include "models/key.h"
 
@@ -43,9 +44,7 @@ namespace {
 
 KeyArea createFromKeyboard(Style *style,
                            const Keyboard &source,
-                           const QPoint &anchor,
                            Layout::Orientation orientation,
-                           Layout::Alignment alignment,
                            bool is_extended_keyarea = false)
 {
     // An ad-hoc geometry updater that also uses styling information.
@@ -60,12 +59,12 @@ KeyArea createFromKeyboard(Style *style,
 
     style->setStyleName(kb.style_name);
 
-    KeyFont font;
+    Font font;
     font.setName(style->fontName());
     font.setSize(style->fontSize());
     font.setColor(QByteArray("#ffffff"));
 
-    KeyFont small_font(font);
+    Font small_font(font);
     small_font.setSize(12);
 
     static const QMargins bg_margins(style->keyBackgroundBorders());
@@ -96,22 +95,27 @@ KeyArea createFromKeyboard(Style *style,
             ++spacer_count;
         }
 
-        key.setBackground(style->keyBackground(desc.style, KeyDescription::NormalState));
-        key.setBackgroundBorders(bg_margins);
-
         width = style->keyWidth(orientation, desc.width);
         const bool use_left_padding(pos.x() == 0);
         const bool use_right_padding(pos.x() + width + margin + padding == max_width);
 
         const qreal key_margin((use_left_padding || use_right_padding) ? margin + padding : margin * 2);
-        key.setRect(QRect(pos.x(), pos.y(), width + key_margin, key_height));
+
+        Area area;
+        area.setBackground(style->keyBackground(desc.style, KeyDescription::NormalState));
+        area.setBackgroundBorders(bg_margins);
+        area.setSize(QSize(width + key_margin, key_height));
+        key.setArea(area);
+
+        key.setOrigin(pos);
         key.setMargins(QMargins(use_left_padding ? padding : margin, margin,
                                 use_right_padding ? padding : margin, margin));
 
-        key.setFont(key.text().count() > 1 ? small_font : font);
+        const QString &text(key.label().text());
+        key.rLabel().setFont(text.count() > 1 ? small_font : font);
 
         // FIXME: Read from KeyDescription instead.
-        if (key.text().isEmpty()) {
+        if (text.isEmpty()) {
             switch (key.action()) {
             case Key::ActionShift:
                 key.setIcon(style->icon(KeyDescription::ShiftIcon,
@@ -164,7 +168,8 @@ KeyArea createFromKeyboard(Style *style,
 
                     r.translate(right_x - r.left(), 0);
                     r.setWidth(r.width() + extra_width);
-                    k.setRect(r);
+                    k.setOrigin(r.topLeft());
+                    k.rArea().setSize(r.size());
 
                     right_x = r.right();
                 }
@@ -177,15 +182,14 @@ KeyArea createFromKeyboard(Style *style,
         }
     }
 
-    const int height = pos.y() + key_height;
-    ka.background = style->keyAreaBackground();
-    ka.background_borders = style->keyAreaBackgroundBorders();
-    ka.keys = kb.keys;
-    // FIXME: left, right aligment does not work as expected (treated as top alignment currently).
-    ka.rect =  QRectF(anchor.x() - (is_extended_keyarea ? consumed_width : max_width) / 2,
-                      (alignment == Layout::Bottom ? anchor.y() - height : 0),
-                      (is_extended_keyarea ? consumed_width : max_width),
-                      height);
+    Area area;
+    area.setBackground(style->keyAreaBackground());
+    area.setBackgroundBorders(style->keyAreaBackgroundBorders());
+    area.setSize(QSize((is_extended_keyarea ? consumed_width : max_width),
+                       pos.y() + key_height));
+
+    ka.setArea(area);
+    ka.setKeys(kb.keys);
 
     return ka;
 }
@@ -207,78 +211,58 @@ KeyAreaConverter::KeyAreaConverter(Style *style,
 KeyAreaConverter::~KeyAreaConverter()
 {}
 
-KeyArea KeyAreaConverter::keyArea(Layout::Orientation orientation,
-                                  Layout::Alignment alignment) const
+KeyArea KeyAreaConverter::keyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->keyboard(),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->keyboard(), orientation);
 }
 
-KeyArea KeyAreaConverter::nextKeyArea(Layout::Orientation orientation,
-                                      Layout::Alignment alignment) const
+KeyArea KeyAreaConverter::nextKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->nextKeyboard(),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->nextKeyboard(), orientation);
 }
 
-KeyArea KeyAreaConverter::previousKeyArea(Layout::Orientation orientation,
-                                          Layout::Alignment alignment) const
+KeyArea KeyAreaConverter::previousKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->previousKeyboard(),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->previousKeyboard(), orientation);
 }
 
-KeyArea KeyAreaConverter::shiftedKeyArea(Layout::Orientation orientation,
-                                         Layout::Alignment alignment) const
+KeyArea KeyAreaConverter::shiftedKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->shiftedKeyboard(),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->shiftedKeyboard(), orientation);
 }
 
 KeyArea KeyAreaConverter::symbolsKeyArea(Layout::Orientation orientation,
-                                         Layout::Alignment alignment,
                                          int page) const
 {
-    return createFromKeyboard(m_style, m_loader->symbolsKeyboard(page),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->symbolsKeyboard(page), orientation);
 }
 
 KeyArea KeyAreaConverter::deadKeyArea(Layout::Orientation orientation,
-                                      Layout::Alignment alignment,
                                       const Key &dead) const
 {
-    return createFromKeyboard(m_style, m_loader->deadKeyboard(dead),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->deadKeyboard(dead), orientation);
 }
 
 KeyArea KeyAreaConverter::shiftedDeadKeyArea(Layout::Orientation orientation,
-                                             Layout::Alignment alignment,
                                              const Key &dead) const
 {
-    return createFromKeyboard(m_style, m_loader->shiftedDeadKeyboard(dead),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->shiftedDeadKeyboard(dead), orientation);
 }
 
 KeyArea KeyAreaConverter::extendedKeyArea(Layout::Orientation orientation,
-                                          Layout::Alignment alignment,
                                           const Key &key) const
 {
-    return createFromKeyboard(m_style, m_loader->extendedKeyboard(key),
-                              m_anchor, orientation, alignment, true);
+    return createFromKeyboard(m_style, m_loader->extendedKeyboard(key), orientation, true);
 }
 
-KeyArea KeyAreaConverter::numberKeyArea(Layout::Orientation orientation,
-                                        Layout::Alignment alignment) const
+KeyArea KeyAreaConverter::numberKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->numberKeyboard(),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->numberKeyboard(), orientation);
 }
 
-KeyArea KeyAreaConverter::phoneNumberKeyArea(Layout::Orientation orientation,
-                                             Layout::Alignment alignment) const
+KeyArea KeyAreaConverter::phoneNumberKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->phoneNumberKeyboard(),
-                              m_anchor, orientation, alignment);
+    return createFromKeyboard(m_style, m_loader->phoneNumberKeyboard(), orientation);
 }
 
 } // namespace MaliitKeyboard

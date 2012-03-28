@@ -141,7 +141,7 @@ void Dashboard::onKeyReleased(const Key &key)
     switch(key.action()) {
     case Key::ActionInsert:
         im_ev = new QInputMethodEvent;
-        im_ev->setCommitString(key.text());
+        im_ev->setCommitString(key.label().text());
         break;
 
     case Key::ActionBackspace:

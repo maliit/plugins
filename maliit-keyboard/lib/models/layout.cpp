@@ -34,16 +34,39 @@
 namespace MaliitKeyboard {
 
 Layout::Layout()
-    : m_orientation(Landscape)
+    : m_screen_size()
+    , m_extended_panel_offset()
+    , m_orientation(Landscape)
     , m_alignment(Bottom)
     , m_active_panel(CenterPanel)
     , m_left()
     , m_right()
     , m_center()
     , m_extended()
+    , m_ribbon()
     , m_active_keys()
     , m_magnifier_key()
 {}
+
+QSize Layout::screenSize() const
+{
+    return m_screen_size;
+}
+
+void Layout::setScreenSize(const QSize &size)
+{
+    m_screen_size = size;
+}
+
+QPoint Layout::extendedPanelOffset() const
+{
+    return m_extended_panel_offset;
+}
+
+void Layout::setExtendedPanelOffset(const QPoint &offset)
+{
+    m_extended_panel_offset = offset;
+}
 
 Layout::Orientation Layout::orientation() const
 {
@@ -55,7 +78,7 @@ void Layout::setOrientation(Orientation orientation)
     m_orientation = orientation;
 }
 
-Layout::Alignment Layout::alignemnt() const
+Layout::Alignment Layout::alignment() const
 {
     return m_alignment;
 }
@@ -75,6 +98,12 @@ void Layout::setActivePanel(Panel panel)
     if (panel != NumPanels) {
         m_active_panel = panel;
     }
+}
+
+QRect Layout::geometry(Panel panel) const
+{
+    Q_UNUSED(panel)
+    return QRect();
 }
 
 KeyArea Layout::activeKeyArea() const
@@ -97,6 +126,23 @@ void Layout::setActiveKeyArea(const KeyArea &active)
     }
 }
 
+QRect Layout::activeKeyAreaGeometry() const
+{
+    switch(m_active_panel) {
+    case LeftPanel: return leftPanelGeometry();
+    case RightPanel: return rightPanelGeometry();
+    case CenterPanel: return centerPanelGeometry();
+    case ExtendedPanel: return extendedPanelGeometry();
+
+    default:
+        break;
+    }
+
+    qCritical() << __PRETTY_FUNCTION__
+                << "Should not be reached, invalid panel:" << m_active_panel;
+    return QRect();
+}
+
 KeyArea Layout::leftPanel() const
 {
     return m_left;
@@ -107,6 +153,11 @@ void Layout::setLeftPanel(const KeyArea &left)
     if (m_left != left) {
         m_left = left;
     }
+}
+
+QRect Layout::leftPanelGeometry() const
+{
+    return QRect();
 }
 
 KeyArea Layout::rightPanel() const
@@ -121,6 +172,11 @@ void Layout::setRightPanel(const KeyArea &right)
     }
 }
 
+QRect Layout::rightPanelGeometry() const
+{
+    return QRect();
+}
+
 KeyArea Layout::centerPanel() const
 {
     return m_center;
@@ -133,6 +189,11 @@ void Layout::setCenterPanel(const KeyArea &center)
     }
 }
 
+QRect Layout::centerPanelGeometry() const
+{
+    return QRect(panelOrigin(), m_center.area().size());
+}
+
 KeyArea Layout::extendedPanel() const
 {
     return m_extended;
@@ -143,6 +204,26 @@ void Layout::setExtendedPanel(const KeyArea &extended)
     if (m_extended != extended) {
         m_extended = extended;
     }
+}
+
+QRect Layout::extendedPanelGeometry() const
+{
+    return QRect(panelOrigin() + m_extended_panel_offset, m_extended.area().size());
+}
+
+WordRibbon Layout::wordRibbon() const
+{
+    return m_ribbon;
+}
+
+void Layout::setWordRibbon(const WordRibbon &ribbon)
+{
+    m_ribbon = ribbon;
+}
+
+QRect Layout::wordRibbonGeometry() const
+{
+    return QRect(origin(), m_ribbon.area().size());
 }
 
 QVector<Key> Layout::activeKeys() const
@@ -190,7 +271,9 @@ void Layout::removeActiveKey(const Key &key)
 
     if (active_keys) {
         for (int index = 0; index < active_keys->count(); ++index) {
-            if (active_keys->at(index) == key) {
+            const Key &current(active_keys->at(index));
+            if (current.origin() == key.origin()
+                && current.label() == key.label()) {
                 active_keys->remove(index);
                 break;
             }
@@ -226,6 +309,34 @@ KeyArea Layout::lookup(Panel panel) const
     qCritical() << __PRETTY_FUNCTION__
                 << "Should not be reached, invalid panel:" << panel;
     return KeyArea();
+}
+
+QPoint Layout::origin() const
+{
+    const QSize size(m_orientation == Landscape ? m_screen_size
+                                                : QSize(m_screen_size.height(), m_screen_size.width()));
+    const QSize &center_size(m_center.area().size());
+
+
+    switch(m_alignment) {
+    case Top:
+        return QPoint(size.width() / 2 - center_size.width() / 2, 0);
+
+    case Bottom:
+        return QPoint(size.width() / 2 - center_size.width() / 2,
+                      size.height() - center_size.height() - m_ribbon.area().size().height());
+    default:
+        break;
+    }
+
+    qCritical() << __PRETTY_FUNCTION__
+                << "Should not be reached, invalid alignment:" << m_alignment;
+    return QPoint();
+}
+
+QPoint Layout::panelOrigin() const
+{
+    return (origin() + QPoint(0, m_ribbon.area().size().height()));
 }
 
 } // namespace MaliitKeyboard

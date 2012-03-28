@@ -33,8 +33,10 @@
 
 #include "models/keyarea.h"
 #include "models/key.h"
-#include "models/keyfont.h"
+#include "models/font.h"
 #include "models/layout.h"
+#include "models/wordcandidate.h"
+#include "models/wordribbon.h"
 
 #include "logic/layoutupdater.h"
 
@@ -47,20 +49,21 @@
 
 namespace {
 MaliitKeyboard::Key createKey(const QByteArray &id,
-                              const MaliitKeyboard::KeyFont &f,
+                              const MaliitKeyboard::Font &f,
                               const QRect &kr,
                               const QByteArray &t,
                               const QMargins &m,
                               MaliitKeyboard::Key::Action a = MaliitKeyboard::Key::ActionInsert)
 {
     MaliitKeyboard::Key k;
-    k.setText(t);
-    k.setRect(kr);
-    k.setBackground(id);
-    k.setFont(f);
+    k.rLabel().setText(t);
+    k.setOrigin(kr.topLeft());
+    k.rArea().setSize(kr.size());
+    k.rArea().setBackground(id);
+    k.rLabel().setFont(f);
     k.setMargins(m);
     k.setAction(a);
-    k.setBackgroundBorders(QMargins(6, 6, 6, 6));
+    k.rArea().setBackgroundBorders(QMargins(6, 6, 6, 6));
 
     return k;
 }
@@ -88,23 +91,44 @@ int main(int argc,
 
     MaliitKeyboard::SharedLayout l0(new MaliitKeyboard::Layout);
     l0->setAlignment(MaliitKeyboard::Layout::Bottom);
+    l0->setScreenSize(dashboard->size());
+
+    MaliitKeyboard::Font font;
+    font.setColor(QByteArray("#0033ff"));
+    font.setSize(20);
+
+    MaliitKeyboard::WordCandidate candidate;
+    candidate.rLabel().setText("Candidate");
+    candidate.rLabel().setFont(font);
+    candidate.rArea().setSize(QSize(120, 40));
+
+    MaliitKeyboard::WordRibbon ribbon;
+    ribbon.appendCandidate(candidate);
+
+    MaliitKeyboard::Area area;
+    area.setBackground(QByteArray("key-background.png"));
+    area.setBackgroundBorders(QMargins(10, 10, 10, 10));
+    area.setSize(QSize(856, 40));
+    ribbon.setArea(area);
+
+    l0->setWordRibbon(ribbon);
+
     renderer.addLayout(l0);
     glass.addLayout(l0);
     lu0.setLayout(l0);
 
     MaliitKeyboard::SharedLayout l1(new MaliitKeyboard::Layout);
     l1->setAlignment(MaliitKeyboard::Layout::Top);
+    l1->setScreenSize(dashboard->size());
     renderer.addLayout(l1);
     glass.addLayout(l1);
 
     MaliitKeyboard::LayoutUpdater lu1;
     lu1.setLayout(l1);
-    lu1.setScreenSize(dashboard->size());
 
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu1, &renderer);
 
-    lu0.setScreenSize(dashboard->size());
 
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu0);
     MaliitKeyboard::Setup::connectGlassToRenderer(&glass, &renderer);

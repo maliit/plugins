@@ -34,11 +34,23 @@
 
 class QPixmap;
 class QByteArray;
+class QPainter;
+class QPoint;
 
 namespace MaliitKeyboard {
+
+class Key;
+class WordCandidate;
+
 namespace Utils {
 
 QPixmap loadPixmap(const QByteArray &id);
+void renderKey(QPainter *painter,
+               const Key &key,
+               const QPoint &origin);
+void renderWordCandidate(QPainter *painter,
+                         const WordCandidate &candidate,
+                         const QPoint &origin);
 
 }} // namespace Utils, MaliitKeyboard
 

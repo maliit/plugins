@@ -33,11 +33,51 @@
 
 namespace MaliitKeyboard {
 
+KeyArea::KeyArea()
+    : m_keys()
+    , m_area()
+{}
+
+bool KeyArea::hasKeys() const
+{
+    return (not m_keys.isEmpty());
+}
+
+QVector<Key> KeyArea::keys() const
+{
+    return m_keys;
+}
+
+QVector<Key> & KeyArea::rKeys()
+{
+    return m_keys;
+}
+
+void KeyArea::setKeys(const QVector<Key> &keys)
+{
+    m_keys = keys;
+}
+
+Area KeyArea::area() const
+{
+    return m_area;
+}
+
+Area & KeyArea::rArea()
+{
+    return m_area;
+}
+
+void KeyArea::setArea(const Area &area)
+{
+    m_area = area;
+}
+
 bool operator==(const KeyArea &lhs,
                 const KeyArea &rhs)
 {
-    return (lhs.rect == rhs.rect
-            && lhs.keys == rhs.keys);
+    return (lhs.area() == rhs.area()
+            && lhs.keys() == rhs.keys());
 }
 
 bool operator!=(const KeyArea &lhs,
@@ -47,4 +87,3 @@ bool operator!=(const KeyArea &lhs,
 }
 
 } // namespace MaliitKeyboard
-

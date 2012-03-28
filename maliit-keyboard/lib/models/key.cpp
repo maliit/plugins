@@ -34,19 +34,64 @@
 namespace MaliitKeyboard {
 
 Key::Key()
-    : m_action(ActionInsert)
-    , m_font()
-    , m_rect()
+    : m_origin()
+    , m_area()
+    , m_label()
+    , m_action(ActionInsert)
     , m_margins()
-    , m_background_borders()
-    , m_background()
     , m_icon()
     , m_has_extended_keys(false)
 {}
 
 bool Key::valid() const
 {
-    return (not m_rect.isEmpty());
+    return (m_area.size().isValid()
+            && not m_label.text().isEmpty());
+}
+
+QRect Key::rect() const
+{
+    return QRect(m_origin, m_area.size());
+}
+
+QPoint Key::origin() const
+{
+    return m_origin;
+}
+
+void Key::setOrigin(const QPoint &origin)
+{
+    m_origin = origin;
+}
+
+Area Key::area() const
+{
+    return m_area;
+}
+
+Area & Key::rArea()
+{
+    return m_area;
+}
+
+void Key::setArea(const Area &area)
+{
+    m_area = area;
+}
+
+Label Key::label() const
+{
+    return m_label;
+}
+
+Label & Key::rLabel()
+{
+    return m_label;
+}
+
+void Key::setLabel(const Label &label)
+{
+    m_label = label;
 }
 
 Key::Action Key::action() const
@@ -59,36 +104,6 @@ void Key::setAction(Action action)
     m_action = action;
 }
 
-QString Key::text() const
-{
-    return m_text;
-}
-
-void Key::setText(const QString &text)
-{
-    m_text = text;
-}
-
-KeyFont Key::font() const
-{
-    return m_font;
-}
-
-void Key::setFont(const KeyFont &label)
-{
-    m_font = label;
-}
-
-QRect Key::rect() const
-{
-    return m_rect;
-}
-
-void Key::setRect(const QRect &rect)
-{
-    m_rect = rect;
-}
-
 QMargins Key::margins() const
 {
     return m_margins;
@@ -97,26 +112,6 @@ QMargins Key::margins() const
 void Key::setMargins(const QMargins &margins)
 {
     m_margins = margins;
-}
-
-QMargins Key::backgroundBorders() const
-{
-    return m_background_borders;
-}
-
-void Key::setBackgroundBorders(const QMargins &borders)
-{
-    m_background_borders = borders;
-}
-
-QByteArray Key::background() const
-{
-    return m_background;
-}
-
-void Key::setBackground(const QByteArray &background)
-{
-    m_background = background;
 }
 
 QByteArray Key::icon() const
@@ -142,7 +137,9 @@ void Key::setExtendedKeysEnabled(bool enable)
 bool operator==(const Key &lhs,
                 const Key &rhs)
 {
-    return (lhs.rect() == rhs.rect() && lhs.text() == rhs.text());
+    return (lhs.origin() == rhs.origin()
+            && lhs.area() == rhs.area()
+            && lhs.label() == rhs.label());
 }
 
 bool operator!=(const Key &lhs,

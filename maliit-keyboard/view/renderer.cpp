@@ -32,8 +32,11 @@
 #include "renderer.h"
 #include "keyareaitem.h"
 #include "keyitem.h"
+#include "wordribbonitem.h"
 #include "graphicsview.h"
+
 #include "models/keyarea.h"
+#include "models/wordribbon.h"
 
 #ifdef MALIIT_KEYBOARD_HAVE_OPENGL
 #include <QGLWidget>
@@ -42,6 +45,12 @@
 namespace MaliitKeyboard {
 
 namespace {
+
+const qreal WordRibbonZIndex = 0.0f;
+const qreal CenterPanelZIndex = 1.0f;
+const qreal ExtendedPanelZIndex = 20.0f;
+
+const qreal ActiveKeyZIndex = 0.0f;
 
 QRect mapToScreenCoordinates(const QRectF &rect,
                              Layout::Orientation o)
@@ -63,6 +72,7 @@ public:
     KeyAreaItem *right_item;
     KeyAreaItem *center_item;
     KeyAreaItem *extended_item;
+    WordRibbonItem *ribbon_item;
     QRegion region;
 
     explicit LayoutItem()
@@ -71,6 +81,7 @@ public:
         , right_item(0)
         , center_item(0)
         , extended_item(0)
+        , ribbon_item(0)
         , region()
     {}
 
@@ -118,27 +129,40 @@ public:
 
         if (not center_item) {
             center_item = new KeyAreaItem(root);
+            center_item->setZValue(CenterPanelZIndex);
         }
 
         if (not extended_item) {
             extended_item = new KeyAreaItem(root);
+            extended_item->setZValue(ExtendedPanelZIndex);
+        }
+
+        if (not ribbon_item) {
+            ribbon_item = new WordRibbonItem(root);
+            ribbon_item->setZValue(WordRibbonZIndex);
         }
 
         center_item->setParentItem(root);
-        center_item->setKeyArea(layout->centerPanel());
+        center_item->setKeyArea(layout->centerPanel(), layout->centerPanelGeometry());
         center_item->update();
         center_item->show();
-        *region |= QRegion(mapToScreenCoordinates(layout->centerPanel().rect, layout->orientation()));
+        *region |= QRegion(mapToScreenCoordinates(layout->centerPanelGeometry(), layout->orientation()));
 
         extended_item->setParentItem(root);
-        extended_item->setKeyArea(layout->extendedPanel());
+        extended_item->setKeyArea(layout->extendedPanel(), layout->extendedPanelGeometry());
         extended_item->update();
+
+        ribbon_item->setParentItem(root);
+        ribbon_item->setWordRibbon(layout->wordRibbon(), layout->wordRibbonGeometry());
+        ribbon_item->update();
+        ribbon_item->show();
+        *region |= QRegion(mapToScreenCoordinates(layout->wordRibbonGeometry(), layout->orientation()));
 
         if (layout->activePanel() != Layout::ExtendedPanel) {
             extended_item->hide();
         } else {
             extended_item->show();
-            *region |= QRegion(mapToScreenCoordinates(layout->extendedPanel().rect, layout->orientation()));
+            *region |= QRegion(mapToScreenCoordinates(layout->extendedPanelGeometry(), layout->orientation()));
         }
 
         root->show();
@@ -246,6 +270,7 @@ void recycleKeyItem(QVector<KeyItem *> *key_items,
 
     if (index >= key_items->count()) {
         item = new KeyItem;
+        item->setZValue(ActiveKeyZIndex);
         key_items->append(item);
     } else {
         item = key_items->at(index);
@@ -362,6 +387,7 @@ void Renderer::show()
 
         li.show(d->root, &d->region);
     }
+
 
     switch (orientation) {
     case Layout::Landscape:

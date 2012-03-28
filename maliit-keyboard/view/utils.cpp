@@ -30,9 +30,16 @@
  */
 
 #include "utils.h"
+#include "models/area.h"
+#include "models/label.h"
+#include "models/key.h"
+#include "models/wordcandidate.h"
 
 #include <QtCore>
 #include <QPixmap>
+#include <QFont>
+#include <QPainter>
+#include <qdrawutil.h>
 
 namespace {
 
@@ -64,6 +71,59 @@ QPixmap loadPixmap(const QByteArray &id)
     g_pixmap_cache.insert(id, new_pixmap);
 
     return new_pixmap;
+}
+
+void renderKey(QPainter *painter,
+               const Key &key,
+               const QPoint &origin)
+{
+    const QMargins &m(key.margins());
+    const QRect &key_rect(key.rect().translated(origin).adjusted(m.left(), m.top(), -m.right(), -m.bottom()));
+    const Area &area(key.area());
+
+    qDrawBorderPixmap(painter, key_rect, area.backgroundBorders(),
+                      Utils::loadPixmap(area.background()));
+
+    const Label &key_label(key.label());
+    const Font &key_font(key_label.font());
+    QFont painter_font(key_font.name());
+    painter_font.setBold(true);
+    painter_font.setPixelSize(key_font.size());
+
+    painter->setFont(painter_font);
+    painter->setPen(QColor(key_font.color().data()));
+
+    const QString &text(key_label.text());
+    const QPixmap &icon(Utils::loadPixmap(key.icon()));
+
+    if (not text.isEmpty()) {
+        painter->drawText(key_rect, Qt::AlignCenter, text);
+    } else if (not icon.isNull()) {
+        const QPoint &c(key_rect.center());
+        const QPoint tl(c.x() - icon.width() / 2, c.y() - icon.height() / 2);
+        painter->drawPixmap(tl, icon);
+    }
+}
+
+void renderWordCandidate(QPainter *painter,
+                         const WordCandidate &candidate,
+                         const QPoint &origin)
+{
+    const QRect &candidate_rect(candidate.rect().translated(origin));
+    const Label &label(candidate.label());
+    const Font &candidate_font(label.font());
+    QFont painter_font(candidate_font.name());
+    painter_font.setBold(true);
+    painter_font.setPixelSize(candidate_font.size());
+
+    painter->setFont(painter_font);
+    painter->setPen(QColor(candidate_font.color().data()));
+
+    const QString &text(label.text());
+
+    if (not text.isEmpty()) {
+        painter->drawText(candidate_rect, Qt::AlignCenter, text);
+    }
 }
 
 }} // namespace Utils, MaliitKeyboard

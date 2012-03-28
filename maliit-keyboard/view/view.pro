@@ -20,7 +20,6 @@ HEADERS += \
     setup.h \
     glass.h \
     renderer.h \
-    keyrenderer.h \
     keyareaitem.h \
     keyitem.h \
     wordribbonitem.h \
@@ -32,7 +31,6 @@ SOURCES += \
     setup.cpp \
     glass.cpp \
     renderer.cpp \
-    keyrenderer.cpp \
     keyareaitem.cpp \
     keyitem.cpp \
     wordribbonitem.cpp \

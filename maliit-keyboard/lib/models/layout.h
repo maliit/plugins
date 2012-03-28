@@ -32,7 +32,10 @@
 #ifndef MALIIT_KEYBOARD_LAYOUT_H
 #define MALIIT_KEYBOARD_LAYOUT_H
 
+#include "key.h"
 #include "keyarea.h"
+#include "wordribbon.h"
+
 #include <QtCore>
 
 namespace MaliitKeyboard {
@@ -40,6 +43,9 @@ namespace MaliitKeyboard {
 class Layout;
 typedef QSharedPointer<Layout> SharedLayout;
 
+// TODO: Implement hit test on Layout, one to check whether key was hit, one to check whether word candidate was hit.
+// Should return invalid key/wc, or found key/wc.
+// Would be used by Glass.
 class Layout
 {
 public:
@@ -67,6 +73,9 @@ public:
     Q_ENUMS(Panel)
 
 private:
+    QSize m_screen_size;
+    QPoint m_origin;
+    QPoint m_extended_panel_offset;
     Orientation m_orientation;
     Alignment m_alignment;
     Panel m_active_panel;
@@ -74,6 +83,7 @@ private:
     KeyArea m_right;
     KeyArea m_center;
     KeyArea m_extended;
+    WordRibbon m_ribbon;
 
     struct {
         QVector<Key> left;
@@ -87,29 +97,45 @@ private:
 public:
     explicit Layout();
 
+    QSize screenSize() const;
+    void setScreenSize(const QSize &size);
+
+    QPoint extendedPanelOffset() const;
+    void setExtendedPanelOffset(const QPoint &offset);
+
     Orientation orientation() const;
     void setOrientation(Orientation orientation);
 
-    Alignment alignemnt() const;
+    Alignment alignment() const;
     void setAlignment(Alignment alignment);
 
     Panel activePanel() const;
     void setActivePanel(Panel panel);
+    QRect geometry(Panel panel) const;
 
     KeyArea activeKeyArea() const;
     void setActiveKeyArea(const KeyArea &active);
+    QRect activeKeyAreaGeometry() const;
 
     KeyArea leftPanel() const;
     void setLeftPanel(const KeyArea &left);
+    QRect leftPanelGeometry() const;
 
     KeyArea rightPanel() const;
     void setRightPanel(const KeyArea &right);
+    QRect rightPanelGeometry() const;
 
     KeyArea centerPanel() const;
     void setCenterPanel(const KeyArea &center);
+    QRect centerPanelGeometry() const;
 
     KeyArea extendedPanel() const;
     void setExtendedPanel(const KeyArea &extended);
+    QRect extendedPanelGeometry() const;
+
+    WordRibbon wordRibbon() const;
+    void setWordRibbon(const WordRibbon &ribbon);
+    QRect wordRibbonGeometry() const;
 
     QVector<Key> activeKeys() const;
     void clearActiveKeys();
@@ -121,7 +147,10 @@ public:
     void clearMagnifierKey();
 
 private:
+    // TODO: Move into .cpp file instead.
     KeyArea lookup(Panel panel) const;
+    QPoint origin() const;
+    QPoint panelOrigin() const;
 };
 
 } // namespace MaliitKeyboard

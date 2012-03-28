@@ -32,7 +32,6 @@
 #ifndef MALIIT_KEYBOARD_KEYAREAITEM_H
 #define MALIIT_KEYBOARD_KEYAREAITEM_H
 
-#include "keyrenderer.h"
 #include "models/keyarea.h"
 
 #include <QGraphicsItem>
@@ -44,14 +43,15 @@ class KeyAreaItem
 {
 private:
     KeyArea m_key_area;
+    QRect m_key_area_geometry;
 
 public:
-    // FIXE: Make registry shared, too?
     explicit KeyAreaItem(QGraphicsItem *parent = 0);
     virtual ~KeyAreaItem();
 
     KeyArea keyArea() const;
-    void setKeyArea(const KeyArea &ka);
+    void setKeyArea(const KeyArea &ka,
+                    const QRect &geometry);
 
     //! \reimp
     virtual QRectF boundingRect() const;

@@ -113,8 +113,8 @@ Keyboard get_keyboard(const TagKeyboardPtr& keyboard,
 
                         Key skey;
                         skey.setExtendedKeysEnabled(not the_binding->extended_labels().isEmpty());
-                        skey.setText(index < 0 ? the_binding->label()
-                                               : the_binding->accented_labels().at(index));
+                        skey.rLabel().setText(index < 0 ? the_binding->label()
+                                                        : the_binding->accented_labels().at(index));
 
                         if (the_binding->dead()) {
                             // TODO: document it.
@@ -406,7 +406,7 @@ Keyboard KeyboardLoader::deadKeyboard(const Key &dead) const
     Q_D(const KeyboardLoader);
     TagKeyboardPtr keyboard(get_tag_keyboard(d->active_id));
 
-    return get_keyboard(keyboard, false, 0, dead.text());
+    return get_keyboard(keyboard, false, 0, dead.label().text());
 }
 
 Keyboard KeyboardLoader::shiftedDeadKeyboard(const Key &dead) const
@@ -414,14 +414,14 @@ Keyboard KeyboardLoader::shiftedDeadKeyboard(const Key &dead) const
     Q_D(const KeyboardLoader);
     TagKeyboardPtr keyboard(get_tag_keyboard(d->active_id));
 
-    return get_keyboard(keyboard, true, 0, dead.text());
+    return get_keyboard(keyboard, true, 0, dead.label().text());
 }
 
 Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
 {
     Q_D(const KeyboardLoader);
     const TagKeyboardPtr keyboard(get_tag_keyboard(d->active_id));
-    const QPair<TagKeyPtr, TagBindingPtr> pair(get_tag_key_and_binding(keyboard, key.text()));
+    const QPair<TagKeyPtr, TagBindingPtr> pair(get_tag_key_and_binding(keyboard, key.label().text()));
     Keyboard skeyboard;
 
     if (pair.first and pair.second) {
@@ -429,14 +429,14 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
 
         // Allow to enter original key, too (by making it part of extended keyboard):
         if (not extended_labels.isEmpty()) {
-            extended_labels.prepend(key.text());
+            extended_labels.prepend(key.label().text());
         }
 
         Q_FOREACH(const QChar &c, extended_labels) {
             Key skey;
             KeyDescription skey_description;
 
-            skey.setText(c);
+            skey.rLabel().setText(c);
             skey.setAction(static_cast<Key::Action>(pair.second->action()));
             skey_description.row = 0;
             skey_description.width = static_cast<KeyDescription::Width>(pair.first->width());

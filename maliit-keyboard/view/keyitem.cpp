@@ -30,7 +30,7 @@
  */
 
 #include "keyitem.h"
-#include "keyrenderer.h"
+#include "utils.h"
 
 namespace MaliitKeyboard {
 
@@ -63,7 +63,7 @@ void KeyItem::paint(QPainter *painter,
                     const QStyleOptionGraphicsItem *,
                     QWidget *)
 {
-    KeyRenderer::render(painter, m_key, parentItem()->boundingRect().topLeft().toPoint());
+    Utils::renderKey(painter, m_key, parentItem()->boundingRect().topLeft().toPoint());
 }
 
 } // namespace MaliitKeyboard

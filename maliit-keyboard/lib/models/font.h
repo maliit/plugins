@@ -29,8 +29,8 @@
  *
  */
 
-#ifndef MALIIT_KEYBOARD_KEYFONT_H
-#define MALIIT_KEYBOARD_KEYFONT_H
+#ifndef MALIIT_KEYBOARD_FONT_H
+#define MALIIT_KEYBOARD_FONT_H
 
 #include <QtCore>
 
@@ -58,4 +58,4 @@ public:
 
 } // namespace MaliitKeyboard
 
-#endif // MALIIT_KEYBOARD_KEYFONT_H
+#endif // MALIIT_KEYBOARD_FONT_H

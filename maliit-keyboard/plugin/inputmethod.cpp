@@ -38,6 +38,7 @@
 #include "view/setup.h"
 #include "models/keyarea.h"
 #include "models/layout.h"
+#include "models/wordribbon.h"
 
 #include <mimsubviewdescription.h>
 #include <QApplication>
@@ -100,14 +101,23 @@ public:
         glass.setWindow(renderer.viewport());
         editor.setHost(host);
 
+        WordRibbon ribbon;
+        Area area;
+        area.setBackground(QByteArray("background.png"));
+        area.setBackgroundBorders(QMargins(0, 0, 0, 0));
+        area.setSize(QSize(854, 40));
+        ribbon.setArea(area);
+
         SharedLayout layout(new Layout);
+        layout->setWordRibbon(ribbon);
         renderer.addLayout(layout);
         glass.addLayout(layout);
         layout_updater.setLayout(layout);
 
         const QRect screen_area(QApplication::desktop() ? QApplication::desktop()->screenGeometry()
                                                         : QRect(0, 0, 480, 854));
-        layout_updater.setScreenSize(screen_area.size());
+        layout->setScreenSize(screen_area.size());
+        layout->setAlignment(Layout::Bottom);
     }
 };
 

@@ -55,31 +55,21 @@ public:
                               const QPoint &anchor);
     virtual ~KeyAreaConverter();
 
-    virtual KeyArea keyArea(Layout::Orientation orientation,
-                            Layout::Alignment alignment) const;
-    virtual KeyArea nextKeyArea(Layout::Orientation orientation,
-                                Layout::Alignment alignment) const;
-    virtual KeyArea previousKeyArea(Layout::Orientation orientation,
-                                    Layout::Alignment alignment) const;
+    virtual KeyArea keyArea(Layout::Orientation orientation) const;
+    virtual KeyArea nextKeyArea(Layout::Orientation orientation) const;
+    virtual KeyArea previousKeyArea(Layout::Orientation orientation) const;
 
-    virtual KeyArea shiftedKeyArea(Layout::Orientation orientation,
-                                   Layout::Alignment alignment) const;
+    virtual KeyArea shiftedKeyArea(Layout::Orientation orientation) const;
     virtual KeyArea symbolsKeyArea(Layout::Orientation orientation,
-                                   Layout::Alignment alignment,
                                    int page = 0) const;
     virtual KeyArea deadKeyArea(Layout::Orientation orientation,
-                                Layout::Alignment alignment,
                                 const Key &dead) const;
     virtual KeyArea shiftedDeadKeyArea(Layout::Orientation orientation,
-                                       Layout::Alignment alignment,
                                        const Key &dead) const;
     virtual KeyArea extendedKeyArea(Layout::Orientation orientation,
-                                    Layout::Alignment alignment,
                                     const Key &key) const;
-    virtual KeyArea numberKeyArea(Layout::Orientation orientation,
-                                  Layout::Alignment alignment) const;
-    virtual KeyArea phoneNumberKeyArea(Layout::Orientation orientation,
-                                       Layout::Alignment alignment) const;
+    virtual KeyArea numberKeyArea(Layout::Orientation orientation) const;
+    virtual KeyArea phoneNumberKeyArea(Layout::Orientation orientation) const;
 };
 
 } // namespace MaliitKeyboard

@@ -82,7 +82,7 @@ private:
         TestUtils::waitForSignal(&layout_updater, SIGNAL(layoutChanged(SharedLayout)));
 
         QCOMPARE(layout->activePanel(), Layout::CenterPanel);
-        QCOMPARE(layout->activeKeyArea().keys.count(), expected_key_count);
+        QCOMPARE(layout->activeKeyArea().keys().count(), expected_key_count);
     }
 };
 

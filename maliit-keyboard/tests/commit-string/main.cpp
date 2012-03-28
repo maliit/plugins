@@ -31,6 +31,7 @@
 
 #include "utils.h"
 
+#include "models/area.h"
 #include "models/key.h"
 #include "models/keyarea.h"
 #include "models/layout.h"
@@ -54,28 +55,34 @@ const int g_size = 64;
 
 KeyArea createAbcdArea(int size)
 {
+    const QSize key_size(size / 2, size /2);
     KeyArea key_area;
-    key_area.rect = QRect(0, 0, size, size);
+    Area area;
+    area.setSize(QSize(size, size));
+    key_area.setArea(area);
 
     Key keyA;
-    keyA.setText("a");
-    keyA.setRect(QRect(0, 0, size / 2, size / 2));
-    key_area.keys.append(keyA);
+    keyA.rLabel().setText("a");
+    keyA.rArea().setSize(key_size);
+    key_area.rKeys().append(keyA);
 
     Key keyB;
-    keyB.setText("b");
-    keyB.setRect(QRect(size / 2, 0, size / 2, size / 2));
-    key_area.keys.append(keyB);
+    keyB.setOrigin(QPoint(size / 2, 0));
+    keyB.rLabel().setText("b");
+    keyB.rArea().setSize(key_size);
+    key_area.rKeys().append(keyB);
 
     Key keyC;
-    keyC.setText("c");
-    keyC.setRect(QRect(0, size / 2, size / 2, size / 2));
-    key_area.keys.append(keyC);
+    keyC.setOrigin(QPoint(0, size / 2));
+    keyC.rLabel().setText("c");
+    keyC.rArea().setSize(key_size);
+    key_area.rKeys().append(keyC);
 
     Key keyD;
-    keyD.setText("d");
-    keyD.setRect(QRect(size / 2, size / 2, size / 2, size / 2));
-    key_area.keys.append(keyD);
+    keyD.setOrigin(QPoint(size / 2, size / 2));
+    keyD.rLabel().setText("d");
+    keyD.rArea().setSize(key_size);
+    key_area.rKeys().append(keyD);
 
     return key_area;
 }

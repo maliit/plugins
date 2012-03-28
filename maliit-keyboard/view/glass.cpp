@@ -192,7 +192,7 @@ bool Glass::eventFilter(QObject *obj,
             const QPoint &press_pos(layout->orientation() == Layout::Landscape
                                     ? d->press_pos : QPoint(d->window->height() - d->press_pos.y(), d->press_pos.x()));
 
-            const QRect &rect(layout->activeKeyArea().rect.toRect());
+            const QRect &rect(layout->activeKeyAreaGeometry());
 
             if (d->gesture_timer.elapsed() < 250) {
                 if (pos.y() > (press_pos.y() - rect.height() * 0.33)
@@ -223,7 +223,7 @@ bool Glass::eventFilter(QObject *obj,
                 return true;
             }
 
-            const QVector<Key> &keys(layout->activeKeyArea().keys);
+            const QVector<Key> &keys(layout->activeKeyArea().keys());
 
             // FIXME: use binary range search
             const QPoint &origin(rect.topLeft());
@@ -300,10 +300,10 @@ bool Glass::handlePressReleaseEvent(QEvent *ev)
     Q_FOREACH (const SharedLayout &layout, d->layouts) {
         const QPoint &pos(layout->orientation() == Layout::Landscape
                           ? qme->pos() : QPoint(d->window->height() - qme->pos().y(), qme->pos().x()));
-        const QVector<Key> &keys(layout->activeKeyArea().keys);
+        const QVector<Key> &keys(layout->activeKeyArea().keys());
 
         // FIXME: use binary range search
-        const QRect &rect(layout->activeKeyArea().rect.toRect());
+        const QRect &rect(layout->activeKeyAreaGeometry());
         if (rect.contains(pos)) {
 
             for (int index = 0; index < keys.count(); ++index) {

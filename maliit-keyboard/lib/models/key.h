@@ -32,7 +32,9 @@
 #ifndef MALIIT_KEYBOARD_KEY_H
 #define MALIIT_KEYBOARD_KEY_H
 
-#include "keyfont.h"
+#include "models/area.h"
+#include "models/label.h"
+
 #include <QtCore>
 
 namespace MaliitKeyboard {
@@ -68,13 +70,11 @@ public:
     };
 
 private:
+    QPoint m_origin;
+    Area m_area;
+    Label m_label;
     Action m_action;
-    QString m_text;
-    KeyFont m_font;
-    QRect m_rect;
     QMargins m_margins;
-    QMargins m_background_borders;
-    QByteArray m_background;
     QByteArray m_icon;
     bool m_has_extended_keys: 1;
     int m_flags_padding: 7;
@@ -82,28 +82,26 @@ private:
 public:
     explicit Key();
 
+    // read-only properties:
     bool valid() const;
+    QRect rect() const;
+
+    QPoint origin() const;
+    void setOrigin(const QPoint &origin);
+
+    Area area() const;
+    Area & rArea();
+    void setArea(const Area &area);
+
+    Label label() const;
+    Label & rLabel();
+    void setLabel(const Label &label);
 
     Action action() const;
     void setAction(Action action);
 
-    QString text() const;
-    void setText(const QString &text);
-
-    KeyFont font() const;
-    void setFont(const KeyFont &font);
-
-    QRect rect() const;
-    void setRect(const QRect &rect);
-
     QMargins margins() const;
     void setMargins(const QMargins &margins);
-
-    QMargins backgroundBorders() const;
-    void setBackgroundBorders(const QMargins &borders);
-
-    QByteArray background() const;
-    void setBackground(const QByteArray &background);
 
     QByteArray icon() const;
     void setIcon(const QByteArray &icon);
@@ -117,7 +115,6 @@ bool operator==(const Key &lhs,
 
 bool operator!=(const Key &lhs,
                 const Key &rhs);
-
 
 } // namespace MaliitKeyboard
 

@@ -32,17 +32,30 @@
 #ifndef MALIIT_KEYBOARD_KEYAREA_H
 #define MALIIT_KEYBOARD_KEYAREA_H
 
-#include "key.h"
-#include <QtCore>
+#include "models/area.h"
+#include "models/key.h"
 
 namespace MaliitKeyboard {
 
-struct KeyArea
+class KeyArea
 {
-    QRectF rect;
-    QVector<Key> keys;
-    QMargins background_borders;
-    QByteArray background;
+private:
+    QVector<Key> m_keys;
+    Area m_area;
+    qreal m_margin;
+
+public:
+    explicit KeyArea();
+
+    bool hasKeys() const;
+
+    QVector<Key> keys() const;
+    QVector<Key> & rKeys();
+    void setKeys(const QVector<Key> &keys);
+
+    Area area() const;
+    Area & rArea();
+    void setArea(const Area &area);
 };
 
 bool operator==(const KeyArea &lhs,
@@ -52,7 +65,5 @@ bool operator!=(const KeyArea &lhs,
                 const KeyArea &rhs);
 
 } // namespace MaliitKeyboard
-
-Q_DECLARE_METATYPE(MaliitKeyboard::KeyArea)
 
 #endif // MALIIT_KEYBOARD_KEYAREA_H

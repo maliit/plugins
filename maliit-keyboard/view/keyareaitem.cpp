@@ -40,6 +40,7 @@ namespace MaliitKeyboard {
 KeyAreaItem::KeyAreaItem(QGraphicsItem *parent)
     : QGraphicsItem(parent)
     , m_key_area()
+    , m_key_area_geometry()
 {
     setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
@@ -52,17 +53,20 @@ KeyArea KeyAreaItem::keyArea() const
     return m_key_area;
 }
 
-void KeyAreaItem::setKeyArea(const KeyArea &ka)
+void KeyAreaItem::setKeyArea(const KeyArea &ka,
+                             const QRect &geometry)
 {
     if (m_key_area != ka) {
         m_key_area = ka;
+        m_key_area_geometry = geometry;
         update();
     }
 }
 
 QRectF KeyAreaItem::boundingRect() const
 {
-    return m_key_area.rect;
+    // TODO: translate to parentItem's topLeft corner?
+    return m_key_area_geometry;
 }
 
 void KeyAreaItem::paint(QPainter *painter,
@@ -70,12 +74,13 @@ void KeyAreaItem::paint(QPainter *painter,
                         QWidget *)
 {
     const KeyArea &ka(m_key_area);
+    const Area &area(ka.area());
 
     qDrawBorderPixmap(painter, boundingRect().toRect(),
-                      ka.background_borders, Utils::loadPixmap(ka.background));
+                      area.backgroundBorders(), Utils::loadPixmap(area.background()));
 
-    Q_FOREACH (const Key &k, ka.keys) {
-        KeyRenderer::render(painter, k, boundingRect().topLeft().toPoint());
+    Q_FOREACH (const Key &k, ka.keys()) {
+        Utils::renderKey(painter, k, boundingRect().topLeft().toPoint());
     }
 }
 
