@@ -32,6 +32,7 @@
 #include "wordengine.h"
 #include "spellchecker.h"
 
+#include <iostream>
 #ifdef HAVE_PRESAGE
 #include <presage.h>
 #endif
@@ -93,7 +94,12 @@ WordEnginePrivate::WordEnginePrivate()
     , presage_candidates(CandidatesCallback(candidates_context))
     , presage(&presage_candidates)
 #endif
-{}
+{
+#ifdef HAVE_PRESAGE
+    presage.config("Presage.Selector.SUGGESTIONS", "6");
+    presage.config("Presage.Selector.REPEAT_SUGGESTIONS", "yes");
+#endif
+}
 
 
 WordEngine::WordEngine(QObject *parent)
@@ -127,9 +133,8 @@ void WordEngine::onTextChanged(const Model::SharedText &text)
 #ifdef HAVE_PRESAGE
     // FIXME: Using surroundingLeft + preedit throws an exception in presage.
     // Using only preedit for now.
-    const QString &context = preedit;
+    const QString &context = (text->surroundingLeft() + preedit);
     d->candidates_context = context.toStdString();
-
     const std::vector<std::string> predictions = d->presage.predict();
 
     // TODO: Fine-tune presage behaviour to also perform error correction, not just word prediction.
