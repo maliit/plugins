@@ -30,12 +30,14 @@
  */
 
 #include "inputmethodhostprobe.h"
+#include <QtDebug>
 
 InputMethodHostProbe::InputMethodHostProbe()
-    : m_last_key_event(QEvent::None, 0, Qt::NoModifier)
+    : m_commit_string_history()
+    , m_last_preedit_string()
+    , m_last_key_event(QEvent::None, 0, Qt::NoModifier)
     , m_key_event_count(0)
-{
-}
+{}
 
 QString InputMethodHostProbe::commitStringHistory() const
 {
@@ -52,6 +54,25 @@ void InputMethodHostProbe::sendCommitString(const QString &string,
     Q_UNUSED(cursor_pos)
 
     m_commit_string_history.append(string);
+}
+
+QString InputMethodHostProbe::lastPreeditString() const
+{
+    return m_last_preedit_string;
+}
+
+void InputMethodHostProbe::sendPreeditString(const QString &string,
+                                             const QList<MInputMethod::PreeditTextFormat> &format,
+                                             int replace_start,
+                                             int replace_length,
+                                             int cursor_pos)
+{
+    Q_UNUSED(format)
+    Q_UNUSED(replace_start)
+    Q_UNUSED(replace_length)
+    Q_UNUSED(cursor_pos)
+
+    m_last_preedit_string = string;
 }
 
 QKeyEvent InputMethodHostProbe::lastKeyEvent() const

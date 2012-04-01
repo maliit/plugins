@@ -36,9 +36,9 @@
 #include "models/keyarea.h"
 #include "models/layout.h"
 #include "view/glass.h"
+#include "view/setup.h"
 #include "plugin/editor.h"
-
-#include <inputmethodhostprobe.h>
+#include "inputmethodhostprobe.h"
 
 #include <QtCore>
 #include <QtTest>
@@ -51,49 +51,83 @@ Q_DECLARE_METATYPE(Layout::Orientation)
 Q_DECLARE_METATYPE(QList<QMouseEvent*>)
 
 namespace {
-const int g_size = 64;
+const int g_size = 48;
+const int g_divider = 3;
 
-KeyArea createAbcdArea(int size)
+QPoint keyOriginLookup(const QString &name)
 {
-    const QSize key_size(size / 2, size /2);
+    static const int distance = g_size / g_divider;
+
+    if (name == "a") {
+        return QPoint(0, 0);
+    } else if (name == "b") {
+        return QPoint(distance, 0);
+    } else if (name == "b") {
+        return QPoint(distance, 0);
+    } else if (name == "c") {
+        return QPoint(0, distance);
+    } else if (name == "d") {
+        return QPoint(distance, distance);
+    } else if (name == "space") {
+        return QPoint(distance * 2, 0);
+    } else if (name == "return") {
+        return QPoint(distance * 2, distance);
+    }
+
+    return QPoint();
+}
+
+Key createKey(Key::Action action,
+              const QString &text)
+{
+    static const QSize size(g_size / g_divider, g_size / g_divider);
+
+    Key result;
+    result.setAction(action);
+    result.setOrigin(keyOriginLookup(text));
+    result.rArea().setSize(size);
+    result.rLabel().setText(text);
+
+    return result;
+}
+
+// Populate KeyArea with six keys, a, b, c, d, space and return. Notice how the KeyArea
+// covers the whole widget. Key width and height equals g_size / g_divider.
+// .-----------.
+// | a | b |<s>|
+// |---|---|---|
+// | c | d |<r>|
+// `-----------'
+KeyArea createAbcdArea()
+{
     KeyArea key_area;
     Area area;
-    area.setSize(QSize(size, size));
+    area.setSize(QSize(g_size, g_size));
     key_area.setArea(area);
 
-    Key keyA;
-    keyA.rLabel().setText("a");
-    keyA.rArea().setSize(key_size);
-    key_area.rKeys().append(keyA);
-
-    Key keyB;
-    keyB.setOrigin(QPoint(size / 2, 0));
-    keyB.rLabel().setText("b");
-    keyB.rArea().setSize(key_size);
-    key_area.rKeys().append(keyB);
-
-    Key keyC;
-    keyC.setOrigin(QPoint(0, size / 2));
-    keyC.rLabel().setText("c");
-    keyC.rArea().setSize(key_size);
-    key_area.rKeys().append(keyC);
-
-    Key keyD;
-    keyD.setOrigin(QPoint(size / 2, size / 2));
-    keyD.rLabel().setText("d");
-    keyD.rArea().setSize(key_size);
-    key_area.rKeys().append(keyD);
+    key_area.rKeys().append(createKey(Key::ActionInsert, "a"));
+    key_area.rKeys().append(createKey(Key::ActionInsert, "b"));
+    key_area.rKeys().append(createKey(Key::ActionInsert, "c"));
+    key_area.rKeys().append(createKey(Key::ActionInsert, "d"));
+    key_area.rKeys().append(createKey(Key::ActionSpace,  "space"));
+    key_area.rKeys().append(createKey(Key::ActionReturn, "return"));
 
     return key_area;
 }
 
-QMouseEvent *createReleaseEvent(int x,
-                                int y,
-                                Layout::Orientation orientation)
+QList<QMouseEvent *> createPressReleaseEvent(const QPoint &origin,
+                                             Layout::Orientation orientation)
 {
-    return new QMouseEvent(QKeyEvent::MouseButtonRelease,
-                           (orientation == Layout::Landscape) ? QPoint(x, y) : QPoint(y, g_size - x),
-                           Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    static const int offset(g_size / (g_divider * 2));
+
+    QList<QMouseEvent *> result;
+    QPoint pos = (orientation == Layout::Landscape) ? QPoint(origin.x() + offset, origin.y() + offset)
+                                                    : QPoint(origin.y() + offset, g_size - (origin.x() + offset));
+
+    result.append(new QMouseEvent(QKeyEvent::MouseButtonPress, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
+    result.append(new QMouseEvent(QKeyEvent::MouseButtonRelease, pos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
+
+    return result;
 }
 }
 
@@ -113,10 +147,10 @@ private:
 
     Q_SLOT void test_data()
     {
-        const int s_fourth = g_size / 4;
         QTest::addColumn<Layout::Orientation>("orientation");
         QTest::addColumn<QList<QMouseEvent*> >("mouse_events");
-        QTest::addColumn<QString>("expected_commit_string_history");
+        QTest::addColumn<QString>("expected_last_preedit_string");
+        QTest::addColumn<QString>("expected_commit_string");
 
         for (int orientation = 0; orientation < 2; ++orientation) {
             const Layout::Orientation layout_orientation(orientation == 0 ? Layout::Landscape
@@ -124,25 +158,38 @@ private:
             QTest::newRow("No mouse events: expect empty commit string.")
                 << layout_orientation
                 << (QList<QMouseEvent *>())
-                << "";
+                << "" << "";
+
+            QTest::newRow("Only return pressed: expect empty commit string.")
+                << layout_orientation
+                << (QList<QMouseEvent *>() << createPressReleaseEvent(keyOriginLookup("return"), layout_orientation))
+                << "" << "";
 
             QTest::newRow("Release outside of widget: expect empty commit string.")
                 << layout_orientation
-                << (QList<QMouseEvent *>() << createReleaseEvent(g_size * 2, g_size * 2, layout_orientation))
-                << "";
+                << (QList<QMouseEvent *>() << createPressReleaseEvent(QPoint(g_size * 2, g_size * 2), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("return"), layout_orientation))
+                << "" << "";
 
             QTest::newRow("Release button over key 'a': expect commit string 'a'.")
                 << layout_orientation
-                << (QList<QMouseEvent *>() << createReleaseEvent(s_fourth, s_fourth, layout_orientation))
-                << "a";
+                << (QList<QMouseEvent *>() << createPressReleaseEvent(keyOriginLookup("a"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("return"), layout_orientation))
+                << "a" << "a";
+
+            QTest::newRow("Release button over key 'a', but no commit: expect empty commit string.")
+                << layout_orientation
+                << (QList<QMouseEvent *>() << createPressReleaseEvent(keyOriginLookup("a"), layout_orientation))
+                << "a" << "";
 
             QTest::newRow("Release button over keys 'c, b, d, a': expect commit string 'cbda'.")
                 << layout_orientation
-                << (QList<QMouseEvent *>() << createReleaseEvent(s_fourth, s_fourth * 3, layout_orientation)
-                                           << createReleaseEvent(s_fourth * 3, s_fourth, layout_orientation)
-                                           << createReleaseEvent(s_fourth * 3, s_fourth * 3, layout_orientation)
-                                           << createReleaseEvent(s_fourth, s_fourth, layout_orientation))
-                << "cbda";
+                << (QList<QMouseEvent *>() << createPressReleaseEvent(keyOriginLookup("c"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("b"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("d"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("a"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("space"), layout_orientation))
+                << "cbda" << "cbda ";
         }
     }
 
@@ -150,7 +197,8 @@ private:
     {
         QFETCH(Layout::Orientation, orientation);
         QFETCH(QList<QMouseEvent*>, mouse_events);
-        QFETCH(QString, expected_commit_string_history);
+        QFETCH(QString, expected_last_preedit_string);
+        QFETCH(QString, expected_commit_string);
 
         QWidget window;
         Glass glass;
@@ -164,19 +212,8 @@ private:
         editor.setHost(&host);
         layout->setOrientation(orientation);
 
-        // TODO: Make sure this maps to how key events are handled between
-        // Glass, InputMethod and Editor in reality.
-        connect(&glass,  SIGNAL(keyReleased(Key,SharedLayout)),
-                &editor, SLOT(onKeyReleased(Key)));
-
-        // Populate KeyArea with four keys, a, b, c, d. Notice how the KeyArea
-        // covers the whole widget.
-        // .-------.
-        // | a | b |
-        // |---|---|
-        // | c | d |
-        // `-------'
-        const KeyArea &key_area(createAbcdArea(g_size));
+        Setup::connectGlassToTextEditor(&glass, &editor);
+        const KeyArea &key_area(createAbcdArea());
 
         layout->setExtendedPanel(key_area);
         layout->setActivePanel(Layout::ExtendedPanel);
@@ -186,7 +223,8 @@ private:
         }
 
         TestUtils::waitForSignal(&glass, SIGNAL(keyReleased(Key,SharedLayout)));
-        QCOMPARE(host.commitStringHistory(), expected_commit_string_history);
+        QCOMPARE(host.lastPreeditString(), expected_last_preedit_string);
+        QCOMPARE(host.commitStringHistory(), expected_commit_string);
     }
 };
 

@@ -44,6 +44,7 @@ class InputMethodHostProbe
 
 private:
     QString m_commit_string_history;
+    QString m_last_preedit_string;
     QKeyEvent m_last_key_event;
     int m_key_event_count;
 
@@ -51,11 +52,17 @@ public:
     InputMethodHostProbe();
 
     QString commitStringHistory() const;
-
     void sendCommitString(const QString &string,
                           int replace_start,
                           int replace_length,
                           int cursor_pos);
+
+    QString lastPreeditString() const;
+    void sendPreeditString(const QString &string,
+                           const QList<MInputMethod::PreeditTextFormat> &format,
+                           int replace_start, 
+                           int replace_length,
+                           int cursor_pos);
 
     QKeyEvent lastKeyEvent() const;
     int keyEventCount() const;
@@ -73,7 +80,6 @@ public:
     QRect cursorRectangle(bool&) {return QRect();}
     int anchorPosition(bool&) {return 0;}
     QString selection(bool&) {return QString();}
-    void sendPreeditString(const QString&, const QList<MInputMethod::PreeditTextFormat>&, int, int, int) {}
     void notifyImInitiatedHiding() {}
     void copy() {}
     void paste() {}
