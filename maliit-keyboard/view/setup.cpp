@@ -121,9 +121,6 @@ void connectGlassToTextEditor(Glass *glass,
     QObject::connect(glass,  SIGNAL(keyExited(Key,SharedLayout)),
                      editor, SLOT(onKeyExited(Key)));
 
-    QObject::connect(glass,  SIGNAL(wordCandidatePressed(WordCandidate,SharedLayout)),
-                     editor, SLOT(onWordCandidateReleased(WordCandidate)));
-
     QObject::connect(editor, SIGNAL(keyboardClosed()),
                      glass,  SIGNAL(keyboardClosed()));
 }
