@@ -132,7 +132,7 @@ QList<QMouseEvent *> createPressReleaseEvent(const QPoint &origin,
 }
 
 
-class TestCommitString
+class TestPreeditString
     : public QObject
 {
     Q_OBJECT
@@ -228,5 +228,5 @@ private:
     }
 };
 
-QTEST_MAIN(TestCommitString)
+QTEST_MAIN(TestPreeditString)
 #include "main.moc"

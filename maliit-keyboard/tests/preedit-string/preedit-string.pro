@@ -3,7 +3,7 @@ include(../common-check.pri)
 include(../../config-plugin.pri)
 
 TOP_BUILDDIR = $${OUT_PWD}/../../..
-TARGET = commit-string
+TARGET = preedit-string
 TEMPLATE = app
 QT = core testlib gui
 

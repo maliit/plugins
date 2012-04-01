@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS = \
     common \
     language-layout-switching \
-    commit-string \
+    preedit-string \
     repeat-backspace \
 
 language-layout-switching.depends = common
