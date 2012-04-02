@@ -190,6 +190,17 @@ private:
                                            << createPressReleaseEvent(keyOriginLookup("a"), layout_orientation)
                                            << createPressReleaseEvent(keyOriginLookup("space"), layout_orientation))
                 << "cbda" << "cbda ";
+
+            QTest::newRow("Typing two words: expect commit string 'ab cd', with last preedit being 'cd'.")
+                << layout_orientation
+                << (QList<QMouseEvent *>() << createPressReleaseEvent(keyOriginLookup("a"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("b"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("space"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("c"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("d"), layout_orientation)
+                                           << createPressReleaseEvent(keyOriginLookup("return"), layout_orientation))
+                << "cd" << "ab cd";
+
         }
     }
 
