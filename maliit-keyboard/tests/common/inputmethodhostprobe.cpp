@@ -64,7 +64,7 @@ int InputMethodHostProbe::keyEventCount() const
     return m_key_event_count;
 }
 
-void InputMethodHostProbe::sendKeyEvent(const QKeyEvent& event, MInputMethod::EventRequestType)
+void InputMethodHostProbe::sendKeyEvent(const QKeyEvent& event, Maliit::EventRequestType)
 {
     m_last_key_event = event;
     ++m_key_event_count;

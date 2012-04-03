@@ -56,13 +56,13 @@ public:
     //! \reimp
     virtual void show();
     Q_SLOT virtual void hide();
-    virtual void switchContext(MInputMethod::SwitchDirection direction,
+    virtual void switchContext(Maliit::SwitchDirection direction,
                                bool animated);
     virtual QList<MAbstractInputMethod::MInputMethodSubView>
-    subViews(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
+    subViews(Maliit::HandlerState state = Maliit::OnScreen) const;
     virtual void setActiveSubView(const QString &id,
-                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
-    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
+                                  Maliit::HandlerState state = Maliit::OnScreen);
+    virtual QString activeSubView(Maliit::HandlerState state = Maliit::OnScreen) const;
     virtual void handleAppOrientationChanged(int angle);
     //! \reimp_end
 

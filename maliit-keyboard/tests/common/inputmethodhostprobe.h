@@ -59,7 +59,7 @@ public:
 
     QKeyEvent lastKeyEvent() const;
     int keyEventCount() const;
-    void sendKeyEvent(const QKeyEvent& event, MInputMethod::EventRequestType);
+    void sendKeyEvent(const QKeyEvent& event, Maliit::EventRequestType);
 
     // unused reimpl
     int contentType(bool&) {return 0;}
@@ -73,21 +73,21 @@ public:
     QRect cursorRectangle(bool&) {return QRect();}
     int anchorPosition(bool&) {return 0;}
     QString selection(bool&) {return QString();}
-    void sendPreeditString(const QString&, const QList<MInputMethod::PreeditTextFormat>&, int, int, int) {}
+    void sendPreeditString(const QString&, const QList<Maliit::PreeditTextFormat>&, int, int, int) {}
     void notifyImInitiatedHiding() {}
     void copy() {}
     void paste() {}
     void setRedirectKeys(bool) {}
     void setDetectableAutoRepeat(bool) {}
     void setGlobalCorrectionEnabled(bool) {}
-    void setInputModeIndicator(MInputMethod::InputModeIndicator) {}
-    void switchPlugin(MInputMethod::SwitchDirection) {}
+    void setInputModeIndicator(Maliit::InputModeIndicator) {}
+    void switchPlugin(Maliit::SwitchDirection) {}
     void switchPlugin(const QString&) {}
     void setScreenRegion(const QRegion&) {}
     void setInputMethodArea(const QRegion&) {}
     void setSelection(int, int) {}
     void setOrientationAngleLocked(bool) {}
-    QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState) const {return QList<MImPluginDescription>();}
+    QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState) const {return QList<MImPluginDescription>();}
 };
 
 #endif // INPUTMETHODHOSTPROBE_H

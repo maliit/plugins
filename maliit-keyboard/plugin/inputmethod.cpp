@@ -180,7 +180,7 @@ void InputMethod::hide()
     inputMethodHost()->notifyImInitiatedHiding();
 }
 
-void InputMethod::switchContext(MInputMethod::SwitchDirection direction,
+void InputMethod::switchContext(Maliit::SwitchDirection direction,
                                 bool animated)
 {
     Q_UNUSED(direction)
@@ -188,7 +188,7 @@ void InputMethod::switchContext(MInputMethod::SwitchDirection direction,
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
-InputMethod::subViews(MInputMethod::HandlerState state) const
+InputMethod::subViews(Maliit::HandlerState state) const
 {
     Q_UNUSED(state)
     Q_D(const InputMethod);
@@ -206,7 +206,7 @@ InputMethod::subViews(MInputMethod::HandlerState state) const
 }
 
 void InputMethod::setActiveSubView(const QString &id,
-                                   MInputMethod::HandlerState state)
+                                   Maliit::HandlerState state)
 {
     Q_UNUSED(state)
     Q_D(InputMethod);
@@ -214,7 +214,7 @@ void InputMethod::setActiveSubView(const QString &id,
     d->layout_updater.setActiveKeyboardId(id);
 }
 
-QString InputMethod::activeSubView(MInputMethod::HandlerState state) const
+QString InputMethod::activeSubView(Maliit::HandlerState state) const
 {
     Q_UNUSED(state)
     Q_D(const InputMethod);
@@ -233,7 +233,7 @@ void InputMethod::onSwitchLeft()
 {
     // This API smells real bad.
     const QList<MImSubViewDescription> &list =
-        inputMethodHost()->surroundingSubViewDescriptions(MInputMethod::OnScreen);
+        inputMethodHost()->surroundingSubViewDescriptions(Maliit::OnScreen);
 
     if (list.count() > 0) {
         Q_EMIT activeSubViewChanged(list.at(0).id());
@@ -244,7 +244,7 @@ void InputMethod::onSwitchRight()
 {
     // This API smells real bad.
     const QList<MImSubViewDescription> &list =
-        inputMethodHost()->surroundingSubViewDescriptions(MInputMethod::OnScreen);
+        inputMethodHost()->surroundingSubViewDescriptions(Maliit::OnScreen);
 
     if (list.count() > 1) {
         Q_EMIT activeSubViewChanged(list.at(1).id());
