@@ -64,6 +64,7 @@ Key magnifyKey(const Key &key,
 {
     // FIXME: Remove test code
     // TEST CODE STARTS
+
     Font magnifier_font;
     magnifier_font.setName(style->fontName());
     magnifier_font.setSize(50);

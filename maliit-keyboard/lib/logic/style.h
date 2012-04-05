@@ -36,6 +36,7 @@
 #include "models/keydescription.h"
 
 #include <QtCore>
+#include <QFontDatabase>
 
 namespace MaliitKeyboard {
 
@@ -63,7 +64,7 @@ public:
     QByteArray icon(KeyDescription::Icon icon,
                     KeyDescription::State state) const;
 
-    QByteArray fontName(const QByteArray &group_id = QByteArray()) const;
+    QByteArray fontName() const;
     qreal fontSize(const QByteArray &group_id = QByteArray()) const;
 
     qreal keyHeight(Layout::Orientation orientation) const;

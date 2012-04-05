@@ -12,4 +12,7 @@ styles.files = styles/
 images.path = $$ORG_MALIIT_DIR
 images.files = images/
 
-INSTALLS += languages styles images
+fonts.path = $$ORG_MALIIT_DIR
+fonts.files = fonts/
+
+INSTALLS += languages styles images fonts

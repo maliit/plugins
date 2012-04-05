@@ -4,7 +4,7 @@ include(../common-check.pri)
 TOP_BUILDDIR = $${OUT_PWD}/../../..
 TARGET = language-layout-switching
 TEMPLATE = app
-QT = core testlib
+QT = core testlib gui
 
 INCLUDEPATH += ../../lib ../../
 LIBS += $${TOP_BUILDDIR}/$${MALIIT_KEYBOARD_LIB}

@@ -3,7 +3,7 @@ include(../config.pri)
 VERSION = 0.2.0
 TARGET = $${MALIIT_KEYBOARD_TARGET}
 TEMPLATE = lib
-QT = core
+QT = gui core
 CONFIG += staticlib
 
 include(models/models.pri)

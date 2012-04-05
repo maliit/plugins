@@ -37,6 +37,8 @@ namespace {
 const char *const styles_dir(MALIIT_KEYBOARD_STYLES_DIR);
 const QString profile_filename_format("%1/%2.ini");
 const QString key_with_format("key-width%2");
+const char *const fonts_dir(MALIIT_KEYBOARD_FONTS_DIR);
+const QString font_filename_format("%1/%2");
 
 QByteArray fromKeyWidth(KeyDescription::Width width)
 {
@@ -102,6 +104,18 @@ QMargins fromByteArray(const QByteArray &data)
     result.setTop(tokens.at(1).toInt());
     result.setRight(tokens.at(2).toInt());
     result.setBottom(tokens.at(3).toInt());
+
+    return result;
+}
+
+QByteArray buildFontId(KeyDescription::Style style,
+		       KeyDescription::State state,
+		       QByteArray prefix = QByteArray())
+{
+    QByteArray result("font/");
+    result.append(prefix);
+    result.append(fromKeyStyle(style));
+    result.append(fromKeyState(state));
 
     return result;
 }
@@ -235,9 +249,23 @@ QByteArray Style::icon(KeyDescription::Icon icon,
                               : d->store->value(buildIconId(icon, state)).toByteArray());
 }
 
-QByteArray Style::fontName(const QByteArray &group_id) const
+QByteArray Style::fontName() const
 {
-    Q_UNUSED(group_id)
+    Q_D(const Style);
+
+    // If a font file is specified, load it into the QFontDatabase
+    if (!d->store->value("font/font-filename").isNull()) {
+	QByteArray filename_bs = d->store->value("font/font-filename").toByteArray();
+	QString font_filename(filename_bs);
+	QFontDatabase::addApplicationFont(font_filename_format.arg(fonts_dir).arg(font_filename));
+    }
+
+    // If a font name is specified, use that, otherwise default to Nokia Pure
+    if(!d->store->value("font/font-name").isNull()) {
+	return (d->store.isNull() ? QByteArray()
+		: d->store->value("font/font-name").toByteArray());
+    } 
+    
     return QByteArray("Nokia Pure");
 }
 
