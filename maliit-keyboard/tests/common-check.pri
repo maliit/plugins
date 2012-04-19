@@ -8,7 +8,11 @@ qws {
     test_arguments += -qws
 }
 
+DATA_DIR = $$OUT_PWD/../../data
+
 check.commands = \
+    MALIIT_PLUGINS_DATADIR=$$DATA_DIR \
+    MALIIT_KEYBOARD_DATADIR=$$DATA_DIR \
     LD_LIBRARY_PATH=$$MALIIT_INSTALL_LIBS:$$[QT_INSTALL_LIBS]:$(LD_LIBRARY_PATH) \
     ./$$TARGET $$test_arguments
 
