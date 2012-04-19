@@ -48,11 +48,4 @@ void waitForSignal(QObject *obj,
     loop.exec();
 }
 
-QCoreApplication *createCoreApplication(const QString &app_name)
-{
-    static int argc = 1; \
-    static char* argv[] = { app_name.toLatin1().data() };
-    return new QCoreApplication(argc, argv);
-}
-
 } // namespace TestUtils

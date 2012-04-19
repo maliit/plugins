@@ -43,13 +43,6 @@ namespace TestUtils {
 void waitForSignal(QObject *obj,
                    const char *signal,
                    int timeout = 1000);
-
-QCoreApplication *createCoreApplication(const QString &app_name);
-
-#ifdef QT_GUI_LIB
-QApplication *createApplication(const QString &app_name);
-#endif
-
 } // namespace TestUtils
 
 #endif

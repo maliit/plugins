@@ -38,13 +38,5 @@
 
 namespace TestUtils {
 
-QApplication *createApplication(const QString &app_name)
-{
-    static int argc = 1;
-    static char* argv[] = { app_name.toLatin1().data() };
-    QApplication::setStyle(new QCommonStyle);
-    return new QApplication(argc, argv);
-}
-
 } // namespace TestUtils
 

@@ -51,7 +51,6 @@ class TestRepeatBackspace
     Q_OBJECT
 
 private:
-    QScopedPointer<QCoreApplication> m_app;
     QScopedPointer<Editor> editor;
     QScopedPointer<InputMethodHostProbe> host;
     EditorOptions options;
@@ -59,8 +58,6 @@ private:
 
     Q_SLOT void initTestCase()
     {
-        m_app.reset(TestUtils::createCoreApplication("repeat-backspace"));
-
         options.backspace_auto_repeat_delay = 50;
         options.backspace_auto_repeat_interval = 20;
 
@@ -211,6 +208,6 @@ private:
 
 };
 
-QTEST_APPLESS_MAIN(TestRepeatBackspace)
+QTEST_MAIN(TestRepeatBackspace)
 
 #include "main.moc"

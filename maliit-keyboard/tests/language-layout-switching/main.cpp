@@ -46,14 +46,6 @@ class TestLanguageLayoutSwitching
     Q_OBJECT
 
 private:
-    QScopedPointer<QCoreApplication> m_app;
-
-
-    Q_SLOT void initTestCase()
-    {
-        m_app.reset(TestUtils::createCoreApplication("language-layout-switching"));
-    }
-
     Q_SLOT void test_data()
     {
         QTest::addColumn<QString>("keyboard_id");
@@ -86,5 +78,5 @@ private:
     }
 };
 
-QTEST_APPLESS_MAIN(TestLanguageLayoutSwitching)
+QTEST_MAIN(TestLanguageLayoutSwitching)
 #include "main.moc"
