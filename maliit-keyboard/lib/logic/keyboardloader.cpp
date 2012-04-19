@@ -35,6 +35,7 @@
 #include <QRegExp>
 
 #include "parser/layoutparser.h"
+#include "coreutils.h"
 
 #include "keyboardloader.h"
 
@@ -45,13 +46,13 @@ using namespace MaliitKeyboard;
 // From http://doc.qt.nokia.com/4.7/qdir.html#separator:
 // If you always use "/", Qt will translate your paths to conform
 // to the underlying operating system.
-const char *const languages_dir(MALIIT_PLUGINS_DATA_DIR "/languages");
+QString languages_dir(CoreUtils::pluginDataDirectory() + "/languages");
 
 typedef const QStringList (LayoutParser::*ParserFunc)() const;
 
 TagKeyboardPtr get_tag_keyboard(const QString& id)
 {
-    QFile file(QString::fromLatin1(languages_dir) + "/" + id + ".xml");
+    QFile file(languages_dir + "/" + id + ".xml");
 
     if (file.exists()) {
         file.open(QIODevice::ReadOnly);
@@ -214,7 +215,7 @@ Keyboard get_imported_keyboard(const QString &id,
                                const QString &default_file,
                                int page = 0)
 {
-    QFile file(QString::fromLatin1(languages_dir) + "/" + id + ".xml");
+    QFile file(languages_dir + "/" + id + ".xml");
 
     if (file.exists()) {
         file.open(QIODevice::ReadOnly);
@@ -227,7 +228,7 @@ Keyboard get_imported_keyboard(const QString &id,
             const QStringList f_results((parser.*func)());
 
             Q_FOREACH (const QString &f_result, f_results) {
-                const QFileInfo file_info(QString::fromLatin1(languages_dir) + "/" + f_result);
+                const QFileInfo file_info(languages_dir + "/" + f_result);
 
                 if (file_info.exists() and file_info.isFile()) {
                     const TagKeyboardPtr keyboard(get_tag_keyboard(file_info.baseName()));
@@ -244,7 +245,7 @@ Keyboard get_imported_keyboard(const QString &id,
 
             Q_FOREACH (const QString &import, imports) {
                 if (file_regexp.exactMatch(import)) {
-                    QFileInfo file_info(QString::fromLatin1(languages_dir) + "/" + import);
+                    QFileInfo file_info(languages_dir + "/" + import);
 
                     if (file_info.exists() and file_info.isFile()) {
                         const TagKeyboardPtr keyboard(get_tag_keyboard(file_regexp.cap(1)));
@@ -254,7 +255,7 @@ Keyboard get_imported_keyboard(const QString &id,
             }
 
             // If we got there then we try to just load a file with name in default_file.
-            QFileInfo file_info(QString::fromLatin1(languages_dir) + "/" + default_file);
+            QFileInfo file_info(languages_dir + "/" + default_file);
 
             if (file_info.exists() and file_info.isFile()) {
                 const TagKeyboardPtr keyboard(get_tag_keyboard(file_info.baseName()));

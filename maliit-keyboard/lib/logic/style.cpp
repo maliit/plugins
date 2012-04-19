@@ -30,11 +30,12 @@
  */
 
 #include "style.h"
+#include "coreutils.h"
 
 namespace MaliitKeyboard {
 
 namespace {
-const char *const styles_dir(MALIIT_KEYBOARD_STYLES_DIR);
+QString styles_dir(MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/styles");
 const QString profile_filename_format("%1/%2.ini");
 const QString key_with_format("key-width%2");
 

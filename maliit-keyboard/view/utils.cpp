@@ -34,6 +34,7 @@
 #include "models/label.h"
 #include "models/key.h"
 #include "models/wordcandidate.h"
+#include "coreutils.h"
 
 #include <QtCore>
 #include <QPixmap>
@@ -43,7 +44,7 @@
 
 namespace {
 
-const char *const g_images_dir(MALIIT_KEYBOARD_IMAGES_DIR);
+QString g_images_dir(MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/images");
 QHash<QByteArray, QPixmap> g_pixmap_cache;
 
 }
@@ -63,7 +64,7 @@ QPixmap loadPixmap(const QByteArray &id)
         return result;
     }
 
-    QByteArray filename(g_images_dir);
+    QString filename(g_images_dir);
     filename.append('/');
     filename.append(id);
 
