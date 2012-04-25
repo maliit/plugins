@@ -325,8 +325,19 @@ void Renderer::setSurfaceFactory(AbstractSurfaceFactory *factory)
     Q_D(Renderer);
     d->factory = factory;
 
-    d->surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(factory->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeGraphicsView));
-    d->extended_surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(factory->create(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, d->surface));
+    // Assuming that factory == 0 means reset:
+    if (not d->factory) {
+        // Drop references => shared surface instances are eventually deleted:
+        d->surface.clear();
+        d->extended_surface.clear();
+        return;
+    }
+
+    d->surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(
+        factory->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeGraphicsView));
+
+    d->extended_surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(
+        factory->create(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, d->surface));
 }
 
 QRegion Renderer::region() const
