@@ -338,9 +338,7 @@ QRegion Renderer::region() const
 QWidget * Renderer::viewport() const
 {
     Q_D(const Renderer);
-    if (d->surface)
-        return d->surface->view()->viewport();
-    return 0;
+    return (d->surface.isNull() ? 0 : d->surface->view()->viewport());
 }
 
 void Renderer::addLayout(const SharedLayout &layout)
