@@ -125,7 +125,7 @@ public:
     }
 
     void show(QGraphicsItem *root,
-              QGraphicsItem *extendedRoot,
+              QGraphicsItem *extended_root,
               QRegion *region)
     {
         if (layout.isNull() || not region) {
@@ -140,7 +140,7 @@ public:
         }
 
         if (not extended_item) {
-            extended_item = new KeyAreaItem(extendedRoot);
+            extended_item = new KeyAreaItem(extended_root);
             extended_item->setZValue(ExtendedPanelZIndex);
         }
 
@@ -155,7 +155,7 @@ public:
         center_item->show();
         *region |= QRegion(mapToScreenCoordinates(layout->centerPanelGeometry(), layout->orientation()));
 
-        extended_item->setParentItem(extendedRoot);
+        extended_item->setParentItem(extended_root);
         extended_item->setKeyArea(layout->extendedPanel(), layout->extendedPanelGeometry());
         extended_item->update();
 
@@ -295,7 +295,7 @@ class RendererPrivate
 public:
     Maliit::Plugins::AbstractSurfaceFactory *factory;
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
-    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extendedSurface;
+    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extended_surface;
     QRegion region;
     QVector<LayoutItem> layout_items;
     QVector<KeyItem *> key_items;
@@ -304,6 +304,7 @@ public:
     explicit RendererPrivate()
         : factory(0)
         , surface()
+        , extended_surface()
         , region()
         , layout_items()
         , key_items()
@@ -325,7 +326,7 @@ void Renderer::setSurfaceFactory(AbstractSurfaceFactory *factory)
     d->factory = factory;
 
     d->surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(factory->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeGraphicsView));
-    d->extendedSurface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(factory->create(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, d->surface));
+    d->extended_surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(factory->create(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, d->surface));
 }
 
 QRegion Renderer::region() const
@@ -359,7 +360,7 @@ void Renderer::clearLayouts()
     d->key_items.clear();
     d->extended_key_items.clear();
     d->surface->clear();
-    d->extendedSurface->clear();
+    d->extended_surface->clear();
 }
 
 void Renderer::show()
@@ -385,14 +386,14 @@ void Renderer::show()
     for (int index = 0; index < d->layout_items.count(); ++index) {
         LayoutItem &li(d->layout_items[index]);
 
-        li.show(d->surface->root(), d->extendedSurface->root(), &d->region);
+        li.show(d->surface->root(), d->extended_surface->root(), &d->region);
         d->surface->setSize(QSize(li.layout->centerPanelGeometry().width(), li.layout->centerPanelGeometry().height() + li.layout->wordRibbonGeometry().height()));
         if (li.layout->activePanel() != Layout::ExtendedPanel) {
-            d->extendedSurface->hide();
+            d->extended_surface->hide();
         } else {
-            d->extendedSurface->setSize(li.layout->extendedPanelGeometry().size());
-            d->extendedSurface->setRelativePosition(li.layout->extendedPanelGeometry().bottomLeft());
-            d->extendedSurface->show();
+            d->extended_surface->setSize(li.layout->extendedPanelGeometry().size());
+            d->extended_surface->setRelativePosition(li.layout->extendedPanelGeometry().bottomLeft());
+            d->extended_surface->show();
         }
     }
 
@@ -408,7 +409,7 @@ void Renderer::hide()
     }
 
     d->surface->hide();
-    d->extendedSurface->hide();
+    d->extended_surface->hide();
     d->region = QRegion();
     Q_EMIT regionChanged(d->region);
 }
