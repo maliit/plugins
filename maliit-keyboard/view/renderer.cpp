@@ -395,8 +395,6 @@ void Renderer::show()
     for (int index = 0; index < d->layout_items.count(); ++index) {
         LayoutItem &li(d->layout_items[index]);
 
-        li.show(d->surface->root(), d->extended_surface->root(), &d->region);
-        d->surface->setSize(QSize(li.layout->centerPanelGeometry().width(), li.layout->centerPanelGeometry().height() + li.layout->wordRibbonGeometry().height()));
         if (li.layout->activePanel() != Layout::ExtendedPanel) {
             d->extended_surface->hide();
         } else {
@@ -404,6 +402,8 @@ void Renderer::show()
             d->extended_surface->setRelativePosition(li.layout->centerPanelGeometry().topLeft() + li.layout->extendedPanelOffset());
             d->extended_surface->show();
         }
+        li.show(d->surface->root(), d->extended_surface->root(), &d->region);
+        d->surface->setSize(QSize(li.layout->centerPanelGeometry().width(), li.layout->centerPanelGeometry().height() + li.layout->wordRibbonGeometry().height()));
     }
 
     Q_EMIT regionChanged(d->region);
