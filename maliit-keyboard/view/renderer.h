@@ -69,6 +69,7 @@ public:
     Q_SIGNAL void regionChanged(const QRegion &region);
 
     QWidget * viewport() const;
+    QWidget * extendedViewport() const;
 
     void addLayout(const SharedLayout &layout);
     void clearLayouts();

@@ -54,6 +54,7 @@ public:
     virtual ~Glass();
 
     void setWindow(QWidget *window);
+    void addExtendedWindow(QWidget *window);
 
     void addLayout(const SharedLayout &layout);
     void clearLayouts();

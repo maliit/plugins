@@ -352,6 +352,12 @@ QWidget * Renderer::viewport() const
     return (d->surface.isNull() ? 0 : d->surface->view()->viewport());
 }
 
+QWidget * Renderer::extendedViewport() const
+{
+    Q_D(const Renderer);
+    return (d->extended_surface.isNull() ? 0 : d->extended_surface->view()->viewport());
+}
+
 void Renderer::addLayout(const SharedLayout &layout)
 {
     Q_D(Renderer);

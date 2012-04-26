@@ -120,6 +120,11 @@ void Glass::setWindow(QWidget *window)
     d->window->installEventFilter(this);
 }
 
+void Glass::addExtendedWindow(QWidget *window)
+{
+    window->installEventFilter(this);
+}
+
 void Glass::addLayout(const SharedLayout &layout)
 {
     Q_D(Glass);

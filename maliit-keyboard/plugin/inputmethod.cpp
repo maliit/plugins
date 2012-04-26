@@ -93,6 +93,7 @@ public:
     {
         renderer.setSurfaceFactory(host->surfaceFactory());
         glass.setWindow(renderer.viewport());
+        glass.addExtendedWindow(renderer.extendedViewport());
         editor.setHost(host);
 
         WordRibbon ribbon;
