@@ -401,7 +401,7 @@ void Renderer::show()
             d->extended_surface->hide();
         } else {
             d->extended_surface->setSize(li.layout->extendedPanelGeometry().size());
-            d->extended_surface->setRelativePosition(li.layout->extendedPanelGeometry().bottomLeft());
+            d->extended_surface->setRelativePosition(li.layout->centerPanelGeometry().topLeft() + li.layout->extendedPanelOffset());
             d->extended_surface->show();
         }
     }

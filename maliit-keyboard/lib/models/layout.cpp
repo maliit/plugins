@@ -208,7 +208,7 @@ void Layout::setExtendedPanel(const KeyArea &extended)
 
 QRect Layout::extendedPanelGeometry() const
 {
-    return QRect(panelOrigin() + m_extended_panel_offset, m_extended.area().size());
+    return QRect(QPoint(), m_extended.area().size());
 }
 
 WordRibbon Layout::wordRibbon() const
