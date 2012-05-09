@@ -54,6 +54,22 @@ const qreal ExtendedPanelZIndex = 20.0f;
 
 const qreal ActiveKeyZIndex = 0.0f;
 
+QRect mapToScreenCoordinates(QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> container,
+                             const QRectF &rect,
+                             Layout::Orientation o)
+{
+    QPoint origin = container->view()->mapToGlobal(QPoint(0, 0));
+
+    switch (o) {
+    case Layout::Landscape:
+        return rect.translated(origin).toRect();
+    case Layout::Portrait:
+        return QRect(rect.y() + origin.y(), rect.x() + origin.x(), rect.height(), rect.width());
+    }
+
+    return QRect();
+}
+
 class LayoutItem {
 public:
     SharedLayout layout;
@@ -107,10 +123,13 @@ public:
         return 0;
     }
 
-    void show(QGraphicsItem *root,
-              QGraphicsItem *extended_root,
+    void show(QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> main,
+              QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extended,
               QRegion *region)
     {
+        QGraphicsItem *root = main->root();
+        QGraphicsItem *extended_root = extended->root();
+
         if (layout.isNull() || not region) {
             qCritical() << __PRETTY_FUNCTION__
                         << "Invalid region or layout!";
@@ -136,6 +155,7 @@ public:
         center_item->setKeyArea(layout->centerPanel(), layout->centerPanelGeometry());
         center_item->update();
         center_item->show();
+        *region |= QRegion(mapToScreenCoordinates(main, layout->centerPanelGeometry(), layout->orientation()));
 
         extended_item->setParentItem(extended_root);
         extended_item->setKeyArea(layout->extendedPanel(), layout->extendedPanelGeometry());
@@ -145,11 +165,13 @@ public:
         ribbon_item->setWordRibbon(layout->wordRibbon(), layout->wordRibbonGeometry());
         ribbon_item->update();
         ribbon_item->show();
+        *region |= QRegion(mapToScreenCoordinates(main, layout->wordRibbonGeometry(), layout->orientation()));
 
         if (layout->activePanel() != Layout::ExtendedPanel) {
             extended_item->hide();
         } else {
             extended_item->show();
+            *region |= QRegion(mapToScreenCoordinates(extended, layout->extendedPanelGeometry(), layout->orientation()));
         }
 
         root->show();
@@ -361,7 +383,7 @@ void Renderer::show()
             d->extended_surface->setRelativePosition(li.layout->extendedPanelOrigin());
             d->extended_surface->show();
         }
-        li.show(d->surface->root(), d->extended_surface->root(), &d->region);
+        li.show(d->surface, d->extended_surface, &d->region);
         d->surface->setSize(QSize(li.layout->centerPanelGeometry().width(), li.layout->centerPanelGeometry().height() + li.layout->wordRibbonGeometry().height()));
     }
 
