@@ -38,10 +38,6 @@
 #include "models/keyarea.h"
 #include "models/wordribbon.h"
 
-#ifdef MALIIT_KEYBOARD_HAVE_OPENGL
-#include <QGLWidget>
-#endif
-
 #include <maliit/plugins/abstractwidgetssurface.h>
 
 using Maliit::Plugins::AbstractGraphicsViewSurface;
@@ -208,49 +204,6 @@ public:
                        QWidget *)
     {}
 };
-
-QGraphicsView * createView(QWidget *widget,
-                           AbstractBackgroundBuffer *buffer)
-{
-    GraphicsView *view = new GraphicsView(widget);
-    view->setBackgroundBuffer(buffer);
-    view->resize(widget->size());
-    view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    view->setOptimizationFlags(QGraphicsView::DontClipPainter | QGraphicsView::DontSavePainterState);
-    QGraphicsScene *scene = new QGraphicsScene(view);
-    view->setScene(scene);
-    view->setSceneRect(widget->rect());
-    view->setFrameShape(QFrame::NoFrame);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-#ifdef MALIIT_KEYBOARD_HAVE_OPENGL
-    QGLWidget *gl_widget = new QGLWidget;
-    if (gl_widget->isValid()) {
-        view->setViewport(gl_widget);
-        view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    } else {
-        delete gl_widget;
-    }
-#endif
-
-    // If there is no buffer, it probably means we run stand-alone. But when
-    // run as a maliit-server plugin, the server takes care of making any
-    // background widget visible. Without the server, we have to make the
-    // QGraphicsView translucent ourselves:
-    if (not buffer) {
-        view->setBackgroundBrush(Qt::transparent);
-        view->setBackgroundRole(QPalette::NoRole);
-        view->setWindowFlags(Qt::FramelessWindowHint);
-        view->setAttribute(Qt::WA_NoSystemBackground);
-        view->viewport()->setAutoFillBackground(false);
-    }
-
-    scene->setSceneRect(widget->rect());
-    view->show();
-
-    return view;
-}
 
 void recycleKeyItem(QVector<KeyItem *> *key_items,
                     int index,

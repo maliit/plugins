@@ -30,11 +30,6 @@ INSTALL_LIBS = $$LIBDIR
 INSTALL_HEADERS = $$PREFIX/include
 INSTALL_DOCS = $$PREFIX/share/doc
 
-enable-opengl {
-    QT += opengl
-    DEFINES += MALIIT_KEYBOARD_HAVE_OPENGL
-}
-
 enable-coverage {
     LIBS += -lgcov
     QMAKE_CXXFLAGS += -g -fprofile-arcs -ftest-coverage -O0
