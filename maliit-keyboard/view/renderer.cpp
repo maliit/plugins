@@ -66,7 +66,6 @@ public:
     KeyAreaItem *center_item;
     KeyAreaItem *extended_item;
     WordRibbonItem *ribbon_item;
-    QRegion region;
 
     explicit LayoutItem()
         : layout()
@@ -75,7 +74,6 @@ public:
         , center_item(0)
         , extended_item(0)
         , ribbon_item(0)
-        , region()
     {}
 
     KeyAreaItem *activeItem() const
@@ -112,12 +110,11 @@ public:
     }
 
     void show(QGraphicsItem *root,
-              QGraphicsItem *extended_root,
-              QRegion *region)
+              QGraphicsItem *extended_root)
     {
-        if (layout.isNull() || not region) {
+        if (layout.isNull()) {
             qCritical() << __PRETTY_FUNCTION__
-                        << "Invalid region or layout!";
+                        << "Invalid layout!";
             return;
         }
 
@@ -281,7 +278,6 @@ public:
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extended_surface;
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> magnifier_surface;
-    QRegion region;
     QVector<LayoutItem> layout_items;
     QVector<KeyItem *> key_items;
     QVector<KeyItem *> extended_key_items;
@@ -292,7 +288,6 @@ public:
         , surface()
         , extended_surface()
         , magnifier_surface()
-        , region()
         , layout_items()
         , key_items()
         , extended_key_items()
@@ -330,12 +325,6 @@ void Renderer::setSurfaceFactory(AbstractSurfaceFactory *factory)
 
     d->magnifier_surface = qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(
         factory->create(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, d->surface));
-}
-
-QRegion Renderer::region() const
-{
-    Q_D(const Renderer);
-    return d->region;
 }
 
 const QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> Renderer::surface() const
@@ -395,8 +384,6 @@ void Renderer::show()
         key_item->hide();
     }
 
-    d->region = QRegion();
-
     for (int index = 0; index < d->layout_items.count(); ++index) {
         LayoutItem &li(d->layout_items[index]);
 
@@ -408,11 +395,9 @@ void Renderer::show()
             d->extended_surface->setRelativePosition(li.layout->extendedPanelOrigin());
             d->extended_surface->show();
         }
-        li.show(d->surface->root(), d->extended_surface->root(), &d->region);
+        li.show(d->surface->root(), d->extended_surface->root());
         d->surface->setSize(QSize(li.layout->centerPanelGeometry().width(), li.layout->centerPanelGeometry().height() + li.layout->wordRibbonGeometry().height()));
     }
-
-    Q_EMIT regionChanged(d->region);
 }
 
 void Renderer::hide()
@@ -426,8 +411,6 @@ void Renderer::hide()
     d->surface->hide();
     d->extended_surface->hide();
     d->magnifier_surface->hide();
-    d->region = QRegion();
-    Q_EMIT regionChanged(d->region);
 }
 
 void Renderer::onLayoutChanged(const SharedLayout &layout)

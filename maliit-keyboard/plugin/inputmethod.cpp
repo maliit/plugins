@@ -133,12 +133,6 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
     connect(&d->glass, SIGNAL(keyboardClosed()),
             inputMethodHost(), SLOT(notifyImInitiatedHiding()));
 
-    connect(&d->renderer, SIGNAL(regionChanged(QRegion)),
-            host,         SLOT(setInputMethodArea(QRegion)));
-
-    connect(&d->renderer, SIGNAL(regionChanged(QRegion)),
-            host,         SLOT(setScreenRegion(QRegion)));
-
     connect(&d->glass, SIGNAL(switchLeft(SharedLayout)),
             this,      SLOT(onSwitchLeft()));
 

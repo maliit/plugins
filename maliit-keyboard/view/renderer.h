@@ -66,9 +66,6 @@ public:
     //!                cleared, too.
     void setSurfaceFactory(Maliit::Plugins::AbstractSurfaceFactory *factory);
 
-    QRegion region() const;
-    Q_SIGNAL void regionChanged(const QRegion &region);
-
     const QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface() const;
     const QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extendedSurface() const;
 
