@@ -33,10 +33,104 @@
 #include "view/renderer.h"
 #include "view/glass.h"
 
+
+#include <maliit/plugins/abstractsurface.h>
+#include <maliit/plugins/abstractsurfacefactory.h>
+
 #include <QtCore>
 #include <QtTest>
 
 using namespace MaliitKeyboard;
+
+namespace {
+const QSize g_screen_size(200, 100);
+}
+
+namespace Maliit {
+namespace Plugins {
+
+class SurfaceProbe
+    : public AbstractSurface
+{
+private:
+    QSize m_size;
+    QPoint m_relpos;
+
+public:
+    explicit SurfaceProbe() {}
+    virtual ~SurfaceProbe() {}
+
+    //! \reimp
+    void show() {}
+    void hide() {}
+
+    QSize size() const
+    {
+        return m_size;
+    }
+
+    void setSize(const QSize &size)
+    {
+        m_size = size;
+    }
+
+    QPoint relativePosition() const
+    {
+        return m_relpos;
+    }
+
+    void setRelativePosition(const QPoint &position)
+    {
+        m_relpos = position;
+    }
+
+    QSharedPointer<AbstractSurface> parent() const
+    {
+        return QSharedPointer<AbstractSurface>();
+    }
+
+    QPoint translateEventPosition(const QPoint &eventPosition,
+                                  const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
+    {
+        Q_UNUSED(eventSurface)
+        return eventPosition;
+    }
+};
+
+class FactoryProbe
+    : public AbstractSurfaceFactory
+{
+public:
+    explicit FactoryProbe() {}
+    virtual ~FactoryProbe() {}
+
+    //! \reimp
+    QSize screenSize() const
+    {
+        return g_screen_size;
+    }
+
+    bool supported(AbstractSurface::Options options) const
+    {
+        Q_UNUSED(options);
+        return true;
+    }
+
+    virtual QSharedPointer<AbstractSurface> create(AbstractSurface::Options options,
+                                                   const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>())
+    {
+        Q_UNUSED(options)
+        Q_UNUSED(parent)
+
+        QSharedPointer<AbstractSurface> surface(new SurfaceProbe);
+        return surface;
+    }
+};
+
+}} // namespace Plugins, Maliit
+
+Q_DECLARE_METATYPE(Maliit::Plugins::AbstractSurfaceFactory *);
+Q_DECLARE_METATYPE(Maliit::Plugins::FactoryProbe *);
 
 class TestRendering
     : public QObject
@@ -47,16 +141,36 @@ private:
     Q_SLOT void initTestCase()
     {}
 
+    Q_SLOT void testSurfaceFactory_data()
+    {
+        using namespace Maliit::Plugins;
+        AbstractSurfaceFactory *invalid(0);
+        AbstractSurfaceFactory *probe(new FactoryProbe);
+
+        QTest::addColumn<Maliit::Plugins::AbstractSurfaceFactory *>("factory");
+        QTest::addColumn<bool>("expected_surface_valid");
+
+        QTest::newRow("invalid factory") << invalid << false;
+        QTest::newRow("use factory probe") << probe << true;
+    }
+
     Q_SLOT void testSurfaceFactory()
     {
+        QFETCH(Maliit::Plugins::AbstractSurfaceFactory *, factory);
+        QFETCH(bool, expected_surface_valid);
+
         Renderer renderer;
-        renderer.setSurfaceFactory(0);
+        renderer.setSurfaceFactory(factory);
 
         Glass glass;
         glass.setSurface(renderer.surface());
         glass.setExtendedSurface(renderer.extendedSurface());
 
+        QCOMPARE(renderer.surface().isNull(), not expected_surface_valid);
+        QCOMPARE(renderer.extendedSurface().isNull(), not expected_surface_valid);
+
         renderer.show();
+        renderer.hide();
     }
 };
 
