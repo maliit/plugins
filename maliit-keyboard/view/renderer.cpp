@@ -367,9 +367,12 @@ void Renderer::show()
 {
     Q_D(Renderer);
 
-    if (d->surface.isNull()) {
+    if (d->surface.isNull()
+        || d->extended_surface.isNull()
+        || d->magnifier_surface.isNull()) {
         qCritical() << __PRETTY_FUNCTION__
-                    << "No surface available, cannot show keyboard!";
+                    << "Some surfaces not available, cannot show keyboard!"
+                    << "Discarding show request.";
         return;
     }
 
@@ -377,7 +380,8 @@ void Renderer::show()
 
     if (not d->surface->view() || d->layout_items.isEmpty()) {
         qCritical() << __PRETTY_FUNCTION__
-                    << "No view or no layouts exists, aborting!";
+                    << "No view or no layouts exists!"
+                    << "Discarding show request";
         return;
     }
 
@@ -410,6 +414,15 @@ void Renderer::show()
 void Renderer::hide()
 {
     Q_D(Renderer);
+
+    if (d->surface.isNull()
+        || d->extended_surface.isNull()
+        || d->magnifier_surface.isNull()) {
+        qCritical() << __PRETTY_FUNCTION__
+                    << "Some surfaces not available, cannot hide keyboard!"
+                    << "Discarding hide request.";
+        return;
+    }
 
     Q_FOREACH (LayoutItem li, d->layout_items) {
         li.hide();
