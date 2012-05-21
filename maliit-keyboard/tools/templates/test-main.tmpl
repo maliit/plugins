@@ -46,14 +46,9 @@ class %{test_name}
     Q_OBJECT
 
 private:
-    QScopedPointer<QCoreApplication> m_app;
-
-
     Q_SLOT void initTestCase()
-    {
-        m_app.reset(TestUtils::createCoreApplication("%{dir_name}"));
-    }
+    {}
 };
 
-QTEST_APPLESS_MAIN(%{test_name})
+QTEST_MAIN(%{test_name})
 #include "main.moc"
