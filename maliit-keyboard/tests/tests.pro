@@ -4,6 +4,7 @@ SUBDIRS = \
     language-layout-switching \
     preedit-string \
     repeat-backspace \
+    rendering \
 
 language-layout-switching.depends = common
 preedit-string.depends = common
