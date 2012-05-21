@@ -367,11 +367,18 @@ void Renderer::show()
 {
     Q_D(Renderer);
 
+    if (d->surface.isNull()) {
+        qCritical() << __PRETTY_FUNCTION__
+                    << "No surface available, cannot show keyboard!";
+        return;
+    }
+
     d->surface->show();
 
     if (not d->surface->view() || d->layout_items.isEmpty()) {
         qCritical() << __PRETTY_FUNCTION__
                     << "No view or no layouts exists, aborting!";
+        return;
     }
 
     Q_FOREACH (QGraphicsItem *key_item, d->key_items) {
