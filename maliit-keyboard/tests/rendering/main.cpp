@@ -30,6 +30,7 @@
  */
 
 #include "utils.h"
+#include "models/layout.h"
 #include "view/renderer.h"
 #include "view/glass.h"
 
@@ -254,6 +255,10 @@ private:
         Glass glass;
         glass.setSurface(renderer.surface());
         glass.setExtendedSurface(renderer.extendedSurface());
+
+        SharedLayout layout(new Layout);
+        renderer.addLayout(layout);
+        glass.addLayout(layout);
 
         QCOMPARE(not renderer.surface().isNull(), expected_surface_valid);
         QCOMPARE(not renderer.extendedSurface().isNull(), expected_surface_valid && create_overlay_surfaces);
