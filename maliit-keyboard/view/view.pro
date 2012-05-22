@@ -27,6 +27,8 @@ HEADERS += \
     wordribbonitem.h \
     abstractbackgroundbuffer.h \
     graphicsview.h \
+    abstractfeedback.h \
+    nullfeedback.h \
 
 SOURCES += \
     utils.cpp \
@@ -39,5 +41,7 @@ SOURCES += \
     wordribbonitem.cpp \
     abstractbackgroundbuffer.cpp \
     graphicsview.cpp \
+    abstractfeedback.cpp \
+    nullfeedback.cpp \
 
 include(../word-prediction.pri)
