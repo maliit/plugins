@@ -33,6 +33,7 @@
 #include "glass.h"
 #include "renderer.h"
 #include "abstracttexteditor.h"
+#include "abstractfeedback.h"
 
 #include "models/key.h"
 #include "models/wordcandidate.h"
@@ -49,10 +50,12 @@ void connectAll(Glass *glass,
                 LayoutUpdater *updater,
                 Renderer *renderer,
                 AbstractTextEditor *editor,
-                Logic::WordEngine *engine)
+                Logic::WordEngine *engine,
+                AbstractFeedback *feedback)
 {
     connectGlassToLayoutUpdater(glass, updater);
     connectGlassToTextEditor(glass, editor);
+    connectGlassToFeedback(glass, feedback);
 
     connectLayoutUpdaterToRenderer(updater, renderer);
     connectLayoutUpdaterToTextEditor(updater, editor);
@@ -111,6 +114,21 @@ void connectGlassToTextEditor(Glass *glass,
 
     QObject::connect(editor, SIGNAL(keyboardClosed()),
                      glass,  SIGNAL(keyboardClosed()));
+}
+
+void connectGlassToFeedback (Glass *glass,
+                             AbstractFeedback *feedback)
+{
+    QObject::connect(glass,    SIGNAL(keyPressed(Key,SharedLayout)),
+                     feedback, SLOT(onKeyPressed()));
+    QObject::connect(glass,    SIGNAL(keyReleased(Key,SharedLayout)),
+                     feedback, SLOT(onKeyReleased()));
+    QObject::connect(glass,    SIGNAL(switchLeft(SharedLayout)),
+                     feedback, SLOT(onLayoutChanged()));
+    QObject::connect(glass,    SIGNAL(switchRight(SharedLayout)),
+                     feedback, SLOT(onLayoutChanged()));
+    QObject::connect(glass,    SIGNAL(keyboardClosed()),
+                     feedback, SLOT(onKeyboardHidden()));
 }
 
 void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,

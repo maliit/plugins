@@ -43,6 +43,7 @@
 #include "view/abstractbackgroundbuffer.h"
 #include "view/glass.h"
 #include "view/setup.h"
+#include "view/nullfeedback.h"
 
 #include <maliit/plugins/subviewdescription.h>
 #include <QApplication>
@@ -88,6 +89,7 @@ public:
     LayoutUpdater layout_updater;
     Editor editor;
     Logic::WordEngine word_engine;
+    NullFeedback null_feedback;
 
     explicit InputMethodPrivate(MAbstractInputMethodHost *host)
         : buffer(host)
@@ -96,6 +98,7 @@ public:
         , layout_updater()
         , editor(EditorOptions())
         , word_engine()
+        , null_feedback()
     {
         renderer.setSurfaceFactory(host->surfaceFactory());
         glass.setSurface(renderer.surface());
@@ -128,7 +131,7 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
 {
     Q_D(InputMethod);
 
-    Setup::connectAll(&d->glass, &d->layout_updater, &d->renderer, &d->editor, &d->word_engine);
+    Setup::connectAll(&d->glass, &d->layout_updater, &d->renderer, &d->editor, &d->word_engine, &d->null_feedback);
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
             this,      SLOT(hide()));

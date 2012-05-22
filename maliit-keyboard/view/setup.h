@@ -38,6 +38,7 @@ class Glass;
 class LayoutUpdater;
 class Renderer;
 class AbstractTextEditor;
+class AbstractFeedback;
 
 namespace Logic {
 class WordEngine;
@@ -49,12 +50,15 @@ void connectAll(Glass *glass,
                 LayoutUpdater *updater,
                 Renderer *renderer,
                 AbstractTextEditor *editor,
-                Logic::WordEngine *engine);
+                Logic::WordEngine *engine,
+                AbstractFeedback *feedback);
 
 void connectGlassToLayoutUpdater(Glass *glass,
                                  LayoutUpdater *updater);
 void connectGlassToTextEditor(Glass *glass,
                               AbstractTextEditor *editor);
+void connectGlassToFeedback(Glass *glass,
+                            AbstractFeedback *feedback);
 
 void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
                                       AbstractTextEditor *editor);

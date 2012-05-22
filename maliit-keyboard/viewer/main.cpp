@@ -44,6 +44,7 @@
 #include "view/renderer.h"
 #include "view/glass.h"
 #include "view/setup.h"
+#include "view/nullfeedback.h"
 
 #include <QApplication>
 #include <QWidget>
@@ -121,7 +122,8 @@ int main(int argc,
     lu1.setLayout(l1);
 
     MaliitKeyboard::Logic::WordEngine word_engine;
-    MaliitKeyboard::Setup::connectAll(&glass, &lu0, &renderer, dashboard->editor(), &word_engine);
+    MaliitKeyboard::NullFeedback null_feedback;
+    MaliitKeyboard::Setup::connectAll(&glass, &lu0, &renderer, dashboard->editor(), &word_engine, &null_feedback);
 
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);
     MaliitKeyboard::Setup::connectLayoutUpdaterToRenderer(&lu1, &renderer);
