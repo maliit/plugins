@@ -305,4 +305,32 @@ qreal Style::safetyMargin(Layout::Orientation orientation) const
                   QByteArray("safety-margin")).toReal();
 }
 
+QByteArray Style::keyPressSound() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value("sound/key-press").toByteArray());
+}
+
+QByteArray Style::keyReleaseSound() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value("sound/key-release").toByteArray());
+}
+
+QByteArray Style::layoutChangeSound() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value("sound/layout-change").toByteArray());
+}
+
+QByteArray Style::keyboardHideSound() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value("sound/keyboard-hide").toByteArray());
+}
+
 } // namespace MaliitKeyboard

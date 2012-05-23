@@ -77,6 +77,11 @@ public:
     qreal verticalOffset(Layout::Orientation orientation) const;
     qreal safetyMargin(Layout::Orientation orientation) const;
 
+    QByteArray keyPressSound() const;
+    QByteArray keyReleaseSound() const;
+    QByteArray layoutChangeSound() const;
+    QByteArray keyboardHideSound() const;
+
 private:
     const QScopedPointer<StylePrivate> d_ptr;
 };

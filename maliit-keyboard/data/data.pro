@@ -12,4 +12,7 @@ styles.files = styles/
 images.path = $$MALIIT_KEYBOARD_DATA_DIR
 images.files = images/
 
-INSTALLS += languages styles images
+sounds.path = $$MALIIT_KEYBOARD_DATA_DIR
+sounds.files = sounds/
+
+INSTALLS += languages styles images sounds
