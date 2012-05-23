@@ -1,4 +1,5 @@
 include(../config.pri)
+include(../view/view.pri)
 
 TOP_BUILDDIR = $${OUT_PWD}/../..
 TARGET = maliit-keyboard-viewer
