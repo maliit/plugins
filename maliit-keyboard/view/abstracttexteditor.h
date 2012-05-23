@@ -83,6 +83,7 @@ public:
     Q_SLOT void onKeyExited(const Key &key);
     Q_SLOT void replacePreedit(const QString &replacement,
                                ReplacementPolicy policy = ReplaceAndCommit);
+    Q_SLOT void clearPreedit();
 
     Q_SIGNAL void textChanged(const Model::SharedText &text);
     Q_SIGNAL void keyboardClosed();

@@ -131,7 +131,7 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
     Setup::connectAll(&d->glass, &d->layout_updater, &d->renderer, &d->editor, &d->word_engine);
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
-            inputMethodHost(), SLOT(notifyImInitiatedHiding()));
+            this,      SLOT(hide()));
 
     connect(&d->glass, SIGNAL(switchLeft(SharedLayout)),
             this,      SLOT(onSwitchLeft()));
@@ -157,6 +157,7 @@ void InputMethod::hide()
     Q_D(InputMethod);
     d->renderer.hide();
     d->layout_updater.resetOnKeyboardClosed();
+    d->editor.clearPreedit();
     inputMethodHost()->notifyImInitiatedHiding();
 }
 

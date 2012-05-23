@@ -222,6 +222,11 @@ void AbstractTextEditor::replacePreedit(const QString &replacement,
     }
 }
 
+void AbstractTextEditor::clearPreedit()
+{
+    replacePreedit("", ReplaceOnly);
+}
+
 void AbstractTextEditor::commitPreedit()
 {
     Q_D(AbstractTextEditor);
