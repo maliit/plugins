@@ -249,25 +249,29 @@ bool Glass::eventFilter(QObject *obj,
 
             const Key &last_key(Logic::keyHit(d->active_keys, rect, last_pos));
 
-            if (last_key.valid()) {
-                removeActiveKey(&d->active_keys, last_key);
-                d->long_press_timer.stop();
-                Q_EMIT keyExited(last_key, layout);
-            }
 
             const Key &key(Logic::keyHit(layout->activeKeyArea().keys(),
                                          layout->activeKeyAreaGeometry(),
-                                         pos, d->active_keys));
+                                         pos));
 
-            if (key.valid()) {
-                d->active_keys.append(key);
-
-                if (key.hasExtendedKeys()) {
-                    d->long_press_timer.start();
-                    d->long_press_layout = layout;
+            if (last_key != key) {
+                if (last_key.valid()) {
+                    removeActiveKey(&d->active_keys, last_key);
+                    d->long_press_timer.stop();
+                    Q_EMIT keyExited(last_key, layout);
                 }
 
-                Q_EMIT keyEntered(key, layout);
+                if (key.valid()) {
+                    d->active_keys.append(key);
+
+                    if (key.hasExtendedKeys()) {
+                        d->long_press_timer.start();
+                        d->long_press_layout = layout;
+                    }
+
+                    Q_EMIT keyEntered(key, layout);
+                }
+                // TODO: CHECK
                 return true;
             }
         }
