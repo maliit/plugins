@@ -477,13 +477,14 @@ void Renderer::onKeysChanged(const SharedLayout &layout)
             recycleKeyItem(key_items, index, active_keys.at(index), parent);
         }
 
-        d->magnifier_surface->hide();
         if (layout->magnifierKey().valid()) {
             d->magnifier_surface->setSize(layout->magnifierKey().area().size());
             d->magnifier_surface->setRelativePosition(layout->magnifierKeyOrigin());
             d->magnifier_surface->show();
             recycleKeyItem(&d->magnifier_key_items, magnifier_index, layout->magnifierKey(), d->magnifier_surface->root());
             ++magnifier_index;
+        } else {
+            d->magnifier_surface->hide();
         }
     }
 
