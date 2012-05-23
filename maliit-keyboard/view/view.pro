@@ -1,4 +1,5 @@
 include(../config.pri)
+include(view.pri)
 
 TOP_BUILDDIR = $${OUT_PWD}/../..
 VERSION = 0.2.0
@@ -29,6 +30,7 @@ HEADERS += \
     graphicsview.h \
     abstractfeedback.h \
     nullfeedback.h \
+    soundfeedback.h \
 
 SOURCES += \
     utils.cpp \
@@ -43,5 +45,6 @@ SOURCES += \
     graphicsview.cpp \
     abstractfeedback.cpp \
     nullfeedback.cpp \
+    soundfeedback.cpp \
 
 include(../word-prediction.pri)

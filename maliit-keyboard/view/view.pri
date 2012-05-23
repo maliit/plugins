@@ -1,0 +1,2 @@
+CONFIG += mobility
+MOBILITY += feedback
