@@ -52,7 +52,6 @@ void connectAll(Glass *glass,
                 Logic::WordEngine *engine)
 {
     connectGlassToLayoutUpdater(glass, updater);
-    connectGlassToRenderer(glass, renderer);
     connectGlassToTextEditor(glass, editor);
 
     connectLayoutUpdaterToRenderer(updater, renderer);
@@ -65,10 +64,6 @@ void connectAll(Glass *glass,
 void connectGlassToLayoutUpdater(Glass *glass,
                                  LayoutUpdater *updater)
 {
-
-    QObject::connect(glass,   SIGNAL(keyboardClosed()),
-                     updater, SLOT(resetOnKeyboardClosed()));
-
     QObject::connect(glass,   SIGNAL(switchLeft(SharedLayout)),
                      updater, SLOT(clearActiveKeysAndMagnifier()));
 
@@ -97,13 +92,6 @@ void connectGlassToLayoutUpdater(Glass *glass,
 
     QObject::connect(glass,   SIGNAL(wordCandidateReleased(WordCandidate,SharedLayout)),
                      updater, SLOT(onWordCandidateReleased(WordCandidate,SharedLayout)));
-}
-
-void connectGlassToRenderer(Glass *glass,
-                            Renderer *renderer)
-{
-    QObject::connect(glass, SIGNAL(keyboardClosed()),
-                     renderer, SLOT(hide()));
 }
 
 void connectGlassToTextEditor(Glass *glass,

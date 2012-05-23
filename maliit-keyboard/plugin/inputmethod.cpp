@@ -138,9 +138,6 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
 
     connect(&d->glass, SIGNAL(switchRight(SharedLayout)),
             this,      SLOT(onSwitchRight()));
-
-    connect(&d->editor, SIGNAL(keyboardClosed()),
-            this,       SLOT(hide()));
 }
 
 InputMethod::~InputMethod()
