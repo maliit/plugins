@@ -257,6 +257,14 @@ QByteArray Style::fontName(Layout::Orientation orientation) const
     return QByteArray("Nokia Pure");
 }
 
+QByteArray Style::fontColor(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("font-color")).toByteArray();
+}
+
 qreal Style::fontSize(Layout::Orientation orientation) const
 {
     Q_D(const Style);
@@ -271,6 +279,14 @@ qreal Style::candidateFontSize(Layout::Orientation orientation) const
     return lookup(d->store, orientation,
                   d->name.toLocal8Bit(),
                   QByteArray("candidate-font-size")).toReal();
+}
+
+qreal Style::magnifierFontSize(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("magnifier-font-size")).toReal();
 }
 
 qreal Style::candidateFontStretch(Layout::Orientation orientation) const

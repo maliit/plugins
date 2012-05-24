@@ -67,8 +67,10 @@ public:
                     KeyDescription::State state) const;
 
     QByteArray fontName(Layout::Orientation orientation) const;
+    QByteArray fontColor(Layout::Orientation orientation) const;
     qreal fontSize(Layout::Orientation orientation) const;
     qreal candidateFontSize(Layout::Orientation orientation) const;
+    qreal magnifierFontSize(Layout::Orientation orientation) const;
     qreal candidateFontStretch(Layout::Orientation orientation) const;
 
     qreal wordRibbonHeight(Layout::Orientation orientation) const;

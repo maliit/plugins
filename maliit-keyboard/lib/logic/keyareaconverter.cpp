@@ -62,10 +62,10 @@ KeyArea createFromKeyboard(Style *style,
     Font font;
     font.setName(style->fontName(orientation));
     font.setSize(style->fontSize(orientation));
-    font.setColor(QByteArray("#ffffff"));
+    font.setColor(style->fontColor(orientation));
 
     Font small_font(font);
-    small_font.setSize(12);
+    small_font.setSize(style->fontSize(orientation) * .8);
 
     static const QMargins bg_margins(style->keyBackgroundBorders());
 

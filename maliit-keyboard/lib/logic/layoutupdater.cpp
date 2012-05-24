@@ -147,15 +147,10 @@ Key magnifyKey(const Key &key,
                Layout::Orientation orientation,
                const QRectF &key_area_rect)
 {
-    // FIXME: Remove test code
-    // TEST CODE STARTS
     Font magnifier_font;
     magnifier_font.setName(style->fontName(orientation));
-    magnifier_font.setSize(50);
-    magnifier_font.setColor(QByteArray("#ffffff"));
-
-    static const QMargins bg_margins(6, 6, 6, 6);
-    // TEST CODE ENDS
+    magnifier_font.setColor(style->fontColor(orientation));
+    magnifier_font.setSize(style->magnifierFontSize(orientation));
 
     if (key.action() != Key::ActionInsert) {
         return Key();
@@ -179,7 +174,7 @@ Key magnifyKey(const Key &key,
     magnifier.rArea().setBackground(style->keyBackground(KeyDescription::NormalStyle,
                                                          KeyDescription::PressedState));
     magnifier.rArea().setSize(magnifier_rect.size());
-    magnifier.rArea().setBackgroundBorders(bg_margins);
+    magnifier.rArea().setBackgroundBorders(style->keyBackgroundBorders());
     magnifier.rLabel().setFont(magnifier_font);
     magnifier.setMargins(QMargins());
 
