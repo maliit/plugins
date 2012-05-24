@@ -37,6 +37,7 @@ Font::Font()
     : m_name()
     , m_size(0)
     , m_color()
+    , m_stretch(100)
 {}
 
 QByteArray Font::name() const
@@ -67,6 +68,16 @@ QByteArray Font::color() const
 void Font::setColor(const QByteArray &color)
 {
     m_color = color;
+}
+
+int Font::stretch() const
+{
+    return m_stretch;
+}
+
+void Font::setStretch(int stretch)
+{
+    m_stretch = stretch;
 }
 
 } // namespace MaliitKeyboard

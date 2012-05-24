@@ -90,6 +90,7 @@ void renderKey(QPainter *painter,
     QFont painter_font(key_font.name());
     painter_font.setBold(true);
     painter_font.setPixelSize(key_font.size());
+    painter_font.setStretch(key_font.stretch());
 
     painter->setFont(painter_font);
     painter->setPen(QColor(key_font.color().data()));

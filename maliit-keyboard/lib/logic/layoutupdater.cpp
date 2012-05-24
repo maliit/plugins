@@ -67,6 +67,7 @@ Key makeActive(const Key &key,
 
 void applyStyleToCandidate(WordCandidate *candidate,
                            const Style *style,
+                           Layout::Orientation orientation,
                            ActivationPolicy policy)
 {
     if (not candidate || not style) {
@@ -75,7 +76,8 @@ void applyStyleToCandidate(WordCandidate *candidate,
 
     Label &label(candidate->rLabel());
     Font f(label.font());
-    f.setSize(style->fontSize(orientation));
+    f.setSize(style->candidateFontSize(orientation));
+    f.setStretch(style->candidateFontStretch(orientation));
 
     QByteArray color;
     switch(policy) {
@@ -125,7 +127,7 @@ bool updateWordRibbon(const SharedLayout &layout,
 
         if (current.label().text() == candidate.label().text()
             && current.rect() == candidate.rect()) {
-            applyStyleToCandidate(&current, style, policy);
+            applyStyleToCandidate(&current, style, layout->orientation(), policy);
             layout->setWordRibbon(ribbon);
 
             return true;
@@ -529,7 +531,7 @@ void LayoutUpdater::onCandidatesUpdated(const QStringList &candidates)
         word_candidate.rLabel().setText(candidates.at(index));
         word_candidate.rArea().setSize(QSize(candidate_width, 56));
         word_candidate.setOrigin(QPoint(index * candidate_width, 0));
-        applyStyleToCandidate(&word_candidate, d->activeStyle(), DeactivateElement);
+        applyStyleToCandidate(&word_candidate, d->activeStyle(), orientation, DeactivateElement);
         ribbon.appendCandidate(word_candidate);
     }
 

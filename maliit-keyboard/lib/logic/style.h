@@ -68,6 +68,8 @@ public:
 
     QByteArray fontName(Layout::Orientation orientation) const;
     qreal fontSize(Layout::Orientation orientation) const;
+    qreal candidateFontSize(Layout::Orientation orientation) const;
+    qreal candidateFontStretch(Layout::Orientation orientation) const;
 
     qreal wordRibbonHeight(Layout::Orientation orientation) const;
     qreal keyHeight(Layout::Orientation orientation) const;

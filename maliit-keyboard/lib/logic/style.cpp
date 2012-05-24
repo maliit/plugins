@@ -265,6 +265,22 @@ qreal Style::fontSize(Layout::Orientation orientation) const
                   QByteArray("font-size")).toReal();
 }
 
+qreal Style::candidateFontSize(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("candidate-font-size")).toReal();
+}
+
+qreal Style::candidateFontStretch(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("candidate-font-stretch")).toReal();
+}
+
 qreal Style::wordRibbonHeight(Layout::Orientation orientation) const
 {
     Q_D(const Style);

@@ -42,6 +42,7 @@ private:
     QByteArray m_name;
     int m_size;
     QByteArray m_color;
+    int m_stretch;
 
 public:
     explicit Font();
@@ -54,6 +55,9 @@ public:
 
     QByteArray color() const;
     void setColor(const QByteArray &color);
+
+    int stretch() const;
+    void setStretch(int stretch);
 };
 
 } // namespace MaliitKeyboard
