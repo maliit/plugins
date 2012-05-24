@@ -49,6 +49,7 @@ private:
 public:
     explicit WordRibbon();
 
+    bool valid() const;
     QVector<WordCandidate> candidates() const;
     QVector<WordCandidate> & rCandidates();
     void appendCandidate(const WordCandidate &candidate);

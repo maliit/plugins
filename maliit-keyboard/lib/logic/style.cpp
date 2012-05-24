@@ -200,6 +200,13 @@ void Style::setStyleName(const QString &name)
     d->name = name;
 }
 
+QByteArray Style::wordRibbonBackground() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QByteArray()
+                              : d->store->value("background/word-ribbon").toByteArray());
+}
+
 QByteArray Style::keyAreaBackground() const
 {
     Q_D(const Style);
@@ -213,6 +220,13 @@ QByteArray Style::keyBackground(KeyDescription::Style style,
     Q_D(const Style);
     return (d->store.isNull() ? QByteArray()
                               : d->store->value(buildBackgroundId(style, state)).toByteArray());
+}
+
+QMargins Style::wordRibbonBackgroundBorders() const
+{
+    Q_D(const Style);
+    return (d->store.isNull() ? QMargins()
+                              : fromByteArray(d->store->value("background/word-ribbon-borders").toByteArray()));
 }
 
 QMargins Style::keyAreaBackgroundBorders() const
@@ -247,6 +261,14 @@ qreal Style::fontSize(const QByteArray &group_id) const
 {
     Q_UNUSED(group_id)
     return 20;
+}
+
+qreal Style::wordRibbonHeight(Layout::Orientation orientation) const
+{
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("word-ribbon-height")).toReal();
 }
 
 qreal Style::keyHeight(Layout::Orientation orientation) const

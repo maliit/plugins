@@ -102,9 +102,9 @@ void applyStyleToWordRibbon(WordRibbon *ribbon,
     }
 
     Area area;
-    area.setBackground(QByteArray("background.png"));
-    area.setBackgroundBorders(QMargins(0, 0, 0, 0));
-    area.setSize(QSize(style->keyAreaWidth(orientation), 40));
+    area.setBackground(style->wordRibbonBackground());
+    area.setBackgroundBorders(style->wordRibbonBackgroundBorders());
+    area.setSize(QSize(style->keyAreaWidth(orientation), style->wordRibbonHeight(orientation)));
     ribbon->setArea(area);
 }
 

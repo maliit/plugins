@@ -38,6 +38,11 @@ WordRibbon::WordRibbon()
     , m_area()
 {}
 
+bool WordRibbon::valid() const
+{
+    return not m_area.size().isEmpty();
+}
+
 void WordRibbon::appendCandidate(const WordCandidate &candidate)
 {
     m_candidates.append(candidate);
