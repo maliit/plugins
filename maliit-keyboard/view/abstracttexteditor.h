@@ -73,10 +73,6 @@ public:
 
     Model::SharedText text() const;
 
-    virtual void sendPreeditString(const QString &preedit) = 0;
-    virtual void sendCommitString(const QString &commit) = 0;
-    virtual void sendKeyEvent(const QKeyEvent &ev) = 0;
-
     Q_SLOT void onKeyPressed(const Key &key);
     Q_SLOT void onKeyReleased(const Key &key);
     Q_SLOT void onKeyEntered(const Key &key);
@@ -90,6 +86,10 @@ public:
 
 private:
     const QScopedPointer<AbstractTextEditorPrivate> d_ptr;
+
+    virtual void sendPreeditString(const QString &preedit) = 0;
+    virtual void sendCommitString(const QString &commit) = 0;
+    virtual void sendKeyEvent(const QKeyEvent &ev) = 0;
 
     void commitPreedit();
     Q_SLOT void autoRepeatBackspace();

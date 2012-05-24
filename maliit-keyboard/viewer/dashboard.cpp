@@ -51,6 +51,7 @@ public:
                              const EditorOptions &options,
                              QObject *parent = 0);
 
+private:
     //! \reimp
     virtual void sendPreeditString(const QString &preedit);
     virtual void sendCommitString(const QString &commit);

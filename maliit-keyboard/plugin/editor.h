@@ -57,6 +57,7 @@ public:
 
     void setHost(MAbstractInputMethodHost *host);
 
+private:
     //! \reimp
     virtual void sendPreeditString(const QString &preedit);
     virtual void sendCommitString(const QString &commit);
