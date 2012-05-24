@@ -92,6 +92,22 @@ void applyStyleToCandidate(WordCandidate *candidate,
     label.setFont(f);
 }
 
+// FIXME: Make word candidates fit word ribbon also after orientation change.
+void applyStyleToWordRibbon(WordRibbon *ribbon,
+                            const Style *style,
+                            Layout::Orientation orientation)
+{
+    if (not ribbon || not style) {
+        return;
+    }
+
+    Area area;
+    area.setBackground(QByteArray("background.png"));
+    area.setBackgroundBorders(QMargins(0, 0, 0, 0));
+    area.setSize(QSize(style->keyAreaWidth(orientation), 40));
+    ribbon->setArea(area);
+}
+
 bool updateWordRibbon(const SharedLayout &layout,
                       const WordCandidate &candidate,
                       const Style *style,
@@ -277,6 +293,13 @@ void LayoutUpdater::setLayout(const SharedLayout &layout)
         init();
         d->initialized = true;
     }
+
+    // FIXME: configure word ribbon for first time in same place as key areas.
+    if (not d->layout.isNull()) {
+        WordRibbon ribbon(d->layout->wordRibbon());
+        applyStyleToWordRibbon(&ribbon, &d->style, d->layout->orientation());
+        d->layout->setWordRibbon(ribbon);
+    }
 }
 
 void LayoutUpdater::setOrientation(Layout::Orientation orientation)
@@ -289,6 +312,11 @@ void LayoutUpdater::setOrientation(Layout::Orientation orientation)
         const KeyAreaConverter converter(&d->style, &d->loader, d->anchor);
         d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
                                                       : converter.keyArea(orientation));
+
+
+        WordRibbon ribbon(d->layout->wordRibbon());
+        applyStyleToWordRibbon(&ribbon, &d->style, orientation);
+        d->layout->setWordRibbon(ribbon);
 
         clearActiveKeysAndMagnifier();
         Q_EMIT layoutChanged(d->layout);

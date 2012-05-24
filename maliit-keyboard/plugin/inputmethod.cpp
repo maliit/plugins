@@ -117,14 +117,7 @@ public:
         glass.setExtendedSurface(renderer.extendedSurface());
         editor.setHost(host);
 
-        WordRibbon ribbon;
-        Area area;
-        area.setBackground(QByteArray("background.png"));
-        area.setBackgroundBorders(QMargins(0, 0, 0, 0));
-        area.setSize(QSize(854, 40));
-        ribbon.setArea(area);
-
-        layout->setWordRibbon(ribbon);
+        SharedLayout layout(new Layout);
         renderer.addLayout(layout);
         glass.addLayout(layout);
         layout_updater.setLayout(layout);
