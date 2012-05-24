@@ -75,7 +75,7 @@ void applyStyleToCandidate(WordCandidate *candidate,
 
     Label &label(candidate->rLabel());
     Font f(label.font());
-    f.setSize(17);
+    f.setSize(style->fontSize(orientation));
 
     QByteArray color;
     switch(policy) {
@@ -142,12 +142,13 @@ QRect adjustedRect(const QRect &rect, const QMargins &margins)
 
 Key magnifyKey(const Key &key,
                const Style *style,
+               Layout::Orientation orientation,
                const QRectF &key_area_rect)
 {
     // FIXME: Remove test code
     // TEST CODE STARTS
     Font magnifier_font;
-    magnifier_font.setName(style->fontName());
+    magnifier_font.setName(style->fontName(orientation));
     magnifier_font.setSize(50);
     magnifier_font.setColor(QByteArray("#ffffff"));
 
@@ -335,7 +336,7 @@ void LayoutUpdater::onKeyPressed(const Key &key,
     layout->appendActiveKey(makeActive(key, d->activeStyle()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(),
+        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->orientation(),
                                            d->layout->centerPanelGeometry()));
     }
 
@@ -382,7 +383,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     const qreal safety_margin(d->extended_keys_style.safetyMargin(orientation));
 
     QPoint offset(qMax<int>(safety_margin, key_center.x() - ext_panel_size.width() / 2),
-                  key_center.y() - d->extended_keys_style.verticalOffset(orientation));
+                  key.rect().top() - d->extended_keys_style.verticalOffset(orientation));
 
     if (offset.x() + ext_panel_size.width() > center_panel_size.width()) {
         offset.rx() = center_panel_size.width() - ext_panel_size.width() - safety_margin;
@@ -460,7 +461,8 @@ void LayoutUpdater::onKeyEntered(const Key &key,
     layout->appendActiveKey(makeActive(key, d->activeStyle()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->centerPanelGeometry()));
+        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->orientation(),
+                                           d->layout->centerPanelGeometry()));
     }
 
     Q_EMIT keysChanged(layout);

@@ -251,16 +251,18 @@ QByteArray Style::icon(KeyDescription::Icon icon,
                               : d->store->value(buildIconId(icon, state)).toByteArray());
 }
 
-QByteArray Style::fontName(const QByteArray &group_id) const
+QByteArray Style::fontName(Layout::Orientation orientation) const
 {
-    Q_UNUSED(group_id)
+    Q_UNUSED(orientation)
     return QByteArray("Nokia Pure");
 }
 
-qreal Style::fontSize(const QByteArray &group_id) const
+qreal Style::fontSize(Layout::Orientation orientation) const
 {
-    Q_UNUSED(group_id)
-    return 20;
+    Q_D(const Style);
+    return lookup(d->store, orientation,
+                  d->name.toLocal8Bit(),
+                  QByteArray("font-size")).toReal();
 }
 
 qreal Style::wordRibbonHeight(Layout::Orientation orientation) const

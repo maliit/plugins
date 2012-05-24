@@ -60,8 +60,8 @@ KeyArea createFromKeyboard(Style *style,
     style->setStyleName(kb.style_name);
 
     Font font;
-    font.setName(style->fontName());
-    font.setSize(style->fontSize());
+    font.setName(style->fontName(orientation));
+    font.setSize(style->fontSize(orientation));
     font.setColor(QByteArray("#ffffff"));
 
     Font small_font(font);

@@ -66,8 +66,8 @@ public:
     QByteArray icon(KeyDescription::Icon icon,
                     KeyDescription::State state) const;
 
-    QByteArray fontName(const QByteArray &group_id = QByteArray()) const;
-    qreal fontSize(const QByteArray &group_id = QByteArray()) const;
+    QByteArray fontName(Layout::Orientation orientation) const;
+    qreal fontSize(Layout::Orientation orientation) const;
 
     qreal wordRibbonHeight(Layout::Orientation orientation) const;
     qreal keyHeight(Layout::Orientation orientation) const;
