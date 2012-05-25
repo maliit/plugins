@@ -44,7 +44,14 @@
 #include "view/renderer.h"
 #include "view/glass.h"
 #include "view/setup.h"
+
+#ifdef HAVE_QT_MOBILITY
 #include "view/soundfeedback.h"
+typedef MaliitKeyboard::SoundFeedback DefaultFeedback;
+#else
+#include "view/nullfeedback.h"
+typedef MaliitKeyboard::NullFeedback DefaultFeedback;
+#endif
 
 #include <QApplication>
 #include <QWidget>
@@ -122,7 +129,7 @@ int main(int argc,
     lu1.setLayout(l1);
 
     MaliitKeyboard::Logic::WordEngine word_engine;
-    MaliitKeyboard::SoundFeedback feedback;
+    DefaultFeedback feedback;
     MaliitKeyboard::Setup::connectAll(&glass, &lu0, &renderer, dashboard->editor(), &word_engine, &feedback);
 
     MaliitKeyboard::Setup::connectGlassToLayoutUpdater(&glass, &lu1);

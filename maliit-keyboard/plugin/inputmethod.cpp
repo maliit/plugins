@@ -43,7 +43,14 @@
 #include "view/abstractbackgroundbuffer.h"
 #include "view/glass.h"
 #include "view/setup.h"
+
+#ifdef HAVE_QT_MOBILITY
 #include "view/soundfeedback.h"
+typedef MaliitKeyboard::SoundFeedback DefaultFeedback;
+#else
+#include "view/nullfeedback.h"
+typedef MaliitKeyboard::NullFeedback DefaultFeedback;
+#endif
 
 #include <maliit/plugins/subviewdescription.h>
 #include <QApplication>
@@ -89,7 +96,7 @@ public:
     LayoutUpdater layout_updater;
     Editor editor;
     Logic::WordEngine word_engine;
-    SoundFeedback feedback;
+    DefaultFeedback feedback;
 
     explicit InputMethodPrivate(MAbstractInputMethodHost *host)
         : buffer(host)

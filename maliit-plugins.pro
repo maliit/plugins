@@ -5,16 +5,17 @@ include(config.pri)
     help_string = \
         Important build options: \
         \\n\\t PREFIX: Install prefix for tools. Default: Maliit framework prefix \
-	\\n\\t\\t Note that the plugins themselves are installed under Maliit framework prefix \
+        \\n\\t\\t Note that the plugins themselves are installed under Maliit framework prefix \
         \\n\\t LIBDIR: Library install directory. Default: $$PREFIX/lib \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-presage: Use presage to calculate word candidates (maliit-keyboard-plugin only) \
         \\n\\t enable-hunspell: Use hunspell for error correction (maliit-keyboard-plugin only) \
+        \\n\\t disable-qt-mobility: Disable use of QtMobility (disables sound and haptic feedback) \
         \\n\\t notests: Do not attempt to build tests \
         \\nInfluential environment variables: \
         \\n\\t QMAKEFEATURES A mkspecs/features directory list to look for features. \
-	\\n\\t\\t Use it if a dependency is installed to non-default location. \
-	\\n\\t\\t Note that it must also be passed to qmake calls in subdirectories. \
+        \\n\\t\\t Use it if a dependency is installed to non-default location. \
+        \\n\\t\\t Note that it must also be passed to qmake calls in subdirectories. \
         \\nExamples: \
         \\n\\t qmake \
         \\n\\t qmake PREFIX=/usr LIBDIR=/usr/lib64 \

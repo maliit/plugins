@@ -30,7 +30,6 @@ HEADERS += \
     graphicsview.h \
     abstractfeedback.h \
     nullfeedback.h \
-    soundfeedback.h \
 
 SOURCES += \
     utils.cpp \
@@ -45,6 +44,10 @@ SOURCES += \
     graphicsview.cpp \
     abstractfeedback.cpp \
     nullfeedback.cpp \
-    soundfeedback.cpp \
+
+!disable-qt-mobility {
+    HEADERS += soundfeedback.h
+    SOURCES += soundfeedback.cpp
+}
 
 include(../word-prediction.pri)
