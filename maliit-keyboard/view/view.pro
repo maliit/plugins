@@ -45,7 +45,7 @@ SOURCES += \
     abstractfeedback.cpp \
     nullfeedback.cpp \
 
-!disable-qt-mobility {
+enable-qt-mobility {
     HEADERS += soundfeedback.h
     SOURCES += soundfeedback.cpp
 }
