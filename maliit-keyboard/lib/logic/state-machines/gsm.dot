@@ -1,0 +1,226 @@
+//           TODO: Layout switching - probably just draw an arrow
+// TODO continued: arrow from gsm_shown to itself which means
+// TODO continued: resetting all states inside. DONE, VERIFY
+
+// TODO: Add caps lock.
+
+// TODO: Add extended keyboard state, probably only for main view. DONE, VERIFY
+
+// TODO: Add recursive/counting key press state?
+
+//           TODO: move main/symview/number/phonenumber states
+// TODO continued: outside, so we can show them directly without
+// TODO continued: transitioning from main. This means five toplevel
+// TODO continued: states - hidden, main, symview, number and
+// TODO continued: phonenumber.
+
+//           TODO: if we want to show extended keyboards over another
+// TODO continued: extended keyboard then we will need to subclass
+// TODO continued: QAbstractState handling recursive entrances into
+// TODO continued: and exits from it.
+
+// TODO: Add state for split layouts?
+// (https://lh3.googleusercontent.com/-f9jZK-gbuS0/TqcAh0uEfzI/AAAAAAAAXeY/kLHY4hdlgbI/s640/photo%25203.PNG)
+
+// Inputs:
+
+// These come from keyboard:
+// key-press,
+// key-release,
+// key-long-press,
+// key-long-release,
+// extended-key-press,
+// extended-key-release,
+// extended-long-key-press,
+// extended-long-key-release,
+// shift-press,
+// shift-release,
+// symview-main-switch-release,
+// symview-cycler-release,
+// dead-press,
+// dead-release,
+// key-swipe-up,
+// key-swipe-down,
+// key-swipe-right,
+// key-swipe-left,
+// keyboard-swipe-up,
+// keyboard-swipe-down,
+// keyboard-swipe-left,
+// keyboard-swipe-right,
+//
+// These come from outside keyboard:
+// show-keyboard,
+// hide-keyboard,
+// show-main,
+// show-numbers,
+// show-dial-pad,
+// show-symview?
+
+digraph GSM {
+	// Default node style - rounded boxes.
+	node [shape=box style=rounded];
+	// This is to be able to point to clusters instead of states.
+	compound=true;
+
+	{ rank=same; gsm_begin [shape="point"]; }
+	{ rank=same; gsm_hidden; }
+
+	subgraph cluster_gsm_shown {
+		label="gsm_shown";
+		style="rounded";
+
+		gs_layout_switch_helper [shape=none, label="", style="invis", fixedsize=true, height=0, width=0];
+
+		subgraph cluster_gs_layout {
+			label="gs_layout";
+			style="dashed";
+
+			gl_begin [shape=point];
+			gl_central;
+			gl_left;
+			gl_right;
+
+			gl_begin -> gl_central;
+
+			gl_central -> gl_left [label="keyboard-swipe-left"];
+			gl_central -> gl_right [label="keyboard-swipe-right"];
+
+			gl_left -> gl_left [label="keyboard-swipe-left"];
+			gl_left -> gl_right [label="keyboard-swipe-right"];
+
+			gl_right -> gl_left [label="keyboard-swipe-left"];
+			gl_right -> gl_right [label="keyboard-swipe-right"];
+		} // subgraph cluster_gs_layout
+
+		subgraph cluster_gs_view {
+			label="gs_view";
+			style="dashed";
+
+			subgraph cluster_gv_main {
+				label="gs_main";
+				style="rounded";
+				gm_begin [shape=none, style="invis"];
+
+				// Dead key
+				subgraph cluster_gm_dead {
+					style="dashed";
+					label="gm_dead";
+					gd_begin [shape=point];
+					gd_none;
+					gd_pressed;
+					gd_latched;
+					gd_hold;
+
+					gd_begin -> gd_none;
+
+					// Intended use-cases:
+					// (hit = press and release)
+					// 1. press dead key (gd_pressed):
+					//    1a)
+					//       - release dead key (gd_latched),
+					//       - hit other key or release dead key to deactivate it (gd_none)
+					//    1b)
+					//       - hit some ordinary keys (gd_hold)
+					//       - release dead key (gd_none)
+					gd_none -> gd_pressed [label="dead-press"];
+
+					gd_pressed -> gd_latched [label="dead-release"];
+					gd_pressed -> gd_hold [label="key-release"];
+
+					gd_latched -> gd_none [label="dead-release/key-release"];
+
+					gd_hold -> gd_none [label="dead-release"]
+				} // subgraph cluster_gm_dead
+
+				// Shift
+				subgraph cluster_gm_caps {
+					shape="box";
+					style="dashed";
+					label="gm_caps";
+
+					gc_begin [shape=point];
+					gc_none;
+					gc_pressed;
+					gc_latched;
+					gc_hold;
+					gc_lock;
+
+					// intended use-cases:
+					// hit = press and release
+					// 1. press shift (gc_pressed):
+					//    1a) release shift key (gc_latched),
+					//       1a1)
+					//          - hit shift again (gc_lock)
+					//          - hit some ordinary keys
+					//          - hit shift (gc_none)
+					//       1a2) hit other key to type single capital letter (gc_none)
+					//    1b)
+					//       - hit some ordinary keys (gc_hold)
+					//       - release shift (gc_none)
+					gc_begin -> gc_none;
+
+					gc_none -> gc_pressed [label="shift-press"];
+
+					gc_pressed -> gc_latched [label="shift-release"];
+					gc_pressed -> gc_hold [label="key-release"];
+
+					gc_latched -> gc_lock [label="shift-release"];
+					gc_latched -> gc_none [label="key-release"];
+
+					gc_hold -> gc_none [label="shift-release"];
+
+					gc_lock -> gc_none [label="shift-release"];
+				} // subgraph cluster_gm_caps
+
+				// Extended keyboard
+				subgraph cluster_gm_extended {
+					style="dashed";
+					label="gm_extended";
+
+					ge_begin [shape=point];
+					ge_none;
+					ge_shown;
+
+					ge_begin -> ge_none;
+
+					ge_none -> ge_shown [label="key-long-press"];
+
+					ge_shown -> ge_none [label="extended-key-release/key-release"];
+					ge_shown -> ge_shown [label="extended-key-long-press"];
+				} // subgraph cluster_gm_extended
+			} // subgraph cluster_gv_main
+
+			gv_begin [shape=point];
+			gv_layout_switch_helper [shape=none, label="", style="invis", fixedsize=true, height=0, width=0];
+			gv_symview;
+			gv_phonenumbers;
+			gv_numbers;
+
+			gv_begin -> gm_begin [lhead="cluster_gv_main"];
+
+			gm_begin -> gv_symview [label="symview-main-switch-release" ltail="cluster_gv_main"];
+			gm_begin -> gv_phonenumbers [label="show-dial-pad" ltail="cluster_gv_main"];
+			gm_begin -> gv_numbers [label="show-numbers", ltail="cluster_gv_main"];
+
+			gv_symview -> gv_symview [label="symview-cycler-release"];
+			gv_symview -> gm_begin [label="symview-main-switch-release" lhead="cluster_gv_main"];
+
+			gv_phonenumbers -> gm_begin [label="show-main" lhead="cluster_gv_main"];
+
+			gv_numbers -> gm_begin [label="show-dial-pad", lhead="cluster_gv_main"];
+		} // subgraph cluster_gs_view
+
+		gs_hidden_helper [shape=none, label="", style="invis", fixedsize=true, height=0, width=0];
+
+		gv_layout_switch_helper -> gs_layout_switch_helper [ltail="cluster_gs_view", arrowhead=none];
+
+		gs_layout_switch_helper -> gv_layout_switch_helper [label="keyboard-swipe-left/keyboard-swipe-right", lhead="cluster_gs_view"];
+	} // subgraph cluster_gsm_shown
+
+	gsm_begin -> gsm_hidden;
+
+	gsm_hidden -> gs_hidden_helper [label="show-keyboard", lhead="cluster_gsm_shown"];
+
+	gs_hidden_helper -> gsm_hidden [label="keyboard-swipe-down/hide-keyboard", ltail="cluster_gsm_shown"];
+
+} // digraph GSM
