@@ -204,12 +204,9 @@ public:
         , view_machine()
         , deadkey_machine()
         , anchor()
-        , style()
-        , extended_keys_style()
-    {
-        style.setProfile("nokia-n9");
-        extended_keys_style.setProfile("nokia-n9-extended-keys");
-    }
+        , style("nokia-n9")
+        , extended_keys_style("nokia-n9-extended-keys")
+    {}
 
     bool inShiftedState() const
     {

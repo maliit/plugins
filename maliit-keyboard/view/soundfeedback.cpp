@@ -29,11 +29,11 @@
  *
  */
 
-#include <QFeedbackFileEffect>
-
 #include "coreutils.h"
 #include "logic/style.h"
 #include "soundfeedback.h"
+
+#include <QFeedbackFileEffect>
 
 QTM_USE_NAMESPACE
 
@@ -53,6 +53,9 @@ class SoundFeedbackPrivate
 {
 public:
     QFeedbackFileEffect m_effects[EffectsCount];
+    /* FIXME: Let MaliitKeyboard::InputMethod set profile of
+     * style. Also means we need to inject style into consumers of
+     * it. */
     Style m_style;
 
     SoundFeedbackPrivate();
@@ -61,13 +64,10 @@ public:
 };
 
 SoundFeedbackPrivate::SoundFeedbackPrivate()
+    : m_effects()
+    , m_style("nokia-n9")
 {
     const QString sounds_dir = MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/sounds/";
-
-    /* FIXME: Let MaliitKeyboard::InputMethod set profile of
-     * style. Also means we need to inject style into consumers of
-     * it. */
-    m_style.setProfile("nokia-n9");
 
     setupEffect(KeyPressEffect, sounds_dir, m_style.keyPressSound());
     setupEffect(KeyReleaseEffect, sounds_dir, m_style.keyReleaseSound());

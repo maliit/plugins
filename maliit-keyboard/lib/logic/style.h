@@ -51,14 +51,13 @@ class Style
 
 public:
     enum Directory {
-        Images,
-        Sounds
+        Images, //!< used to query image directoryPath().
+        Sounds  //!< used to query sounds directoryPath().
     };
 
-    explicit Style();
+    explicit Style(const QString &profile);
     virtual ~Style();
 
-    virtual void setProfile(const QString &profile);
     virtual void setStyleName(const QString &name);
     virtual QString directoryPath(Directory directory);
 
