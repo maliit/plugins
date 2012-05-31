@@ -41,17 +41,26 @@ namespace MaliitKeyboard {
 
 class StylePrivate;
 
+class Style;
+typedef QSharedPointer<Style> SharedStyle;
+
 class Style
 {
     Q_DISABLE_COPY(Style)
     Q_DECLARE_PRIVATE(Style)
 
 public:
+    enum Directory {
+        Images,
+        Sounds
+    };
+
     explicit Style();
     virtual ~Style();
 
-    void setProfile(const QString &profile);
-    void setStyleName(const QString &name);
+    virtual void setProfile(const QString &profile);
+    virtual void setStyleName(const QString &name);
+    virtual QString directoryPath(Directory directory);
 
     QByteArray wordRibbonBackground() const;
     QByteArray keyAreaBackground() const;

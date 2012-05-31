@@ -35,9 +35,11 @@
 namespace MaliitKeyboard {
 
 namespace {
-QString styles_dir(MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/styles");
-const QString profile_filename_format("%1/%2.ini");
-const QString key_with_format("key-width%2");
+QString g_styles_dir(MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/styles");
+const QString g_profile_filename_format("%1/%2/main.ini");
+const QString g_profile_image_directory_path_format("%1/%2/images");
+const QString g_profile_sounds_directory_path_format("%1/%2/sounds");
+const QString g_key_with_format("key-width%2");
 
 QByteArray fromKeyWidth(KeyDescription::Width width)
 {
@@ -169,11 +171,13 @@ QVariant lookup(const QScopedPointer<QSettings> &store,
 class StylePrivate
 {
 public:
-    QString name;
+    QString profile;
+    QString style_name;
     QScopedPointer<QSettings> store;
 
     explicit StylePrivate()
-        : name()
+        : profile()
+        , style_name()
         , store()
     {}
 };
@@ -189,15 +193,45 @@ void Style::setProfile(const QString &profile)
 {
     Q_D(Style);
 
-    d->store.reset(new QSettings(profile_filename_format
-                                 .arg(styles_dir).arg(profile),
-                                 QSettings::IniFormat));
+    if (d->profile != profile) {
+        d->profile = profile;
+        const QString file_name(g_profile_filename_format
+                                .arg(g_styles_dir).arg(profile));
+
+        d->store.reset(new QSettings(file_name, QSettings::IniFormat));
+
+        if (d->store->status() != QSettings::NoError) {
+            d->profile.clear();
+            qWarning() << __PRETTY_FUNCTION__
+                       << "Could not read INI file:"
+                       << file_name;
+        }
+    }
 }
 
 void Style::setStyleName(const QString &name)
 {
     Q_D(Style);
-    d->name = name;
+    d->style_name = name;
+}
+
+QString Style::directoryPath(Directory directory)
+{
+    Q_D(Style);
+
+    if (d->profile.isEmpty()) {
+        return QString();
+    }
+
+    switch (directory) {
+    case Images:
+        return g_profile_image_directory_path_format.arg(g_styles_dir).arg(d->profile);
+
+    case Sounds:
+        return g_profile_sounds_directory_path_format.arg(g_styles_dir).arg(d->profile);
+    }
+
+    return QString();
 }
 
 QByteArray Style::wordRibbonBackground() const
@@ -261,7 +295,7 @@ QByteArray Style::fontColor(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("font-color")).toByteArray();
 }
 
@@ -269,7 +303,7 @@ qreal Style::fontSize(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("font-size")).toReal();
 }
 
@@ -277,7 +311,7 @@ qreal Style::smallFontSize(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("small-font-size")).toReal();
 }
 
@@ -285,7 +319,7 @@ qreal Style::candidateFontSize(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("candidate-font-size")).toReal();
 }
 
@@ -293,7 +327,7 @@ qreal Style::magnifierFontSize(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("magnifier-font-size")).toReal();
 }
 
@@ -301,7 +335,7 @@ qreal Style::candidateFontStretch(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("candidate-font-stretch")).toReal();
 }
 
@@ -309,7 +343,7 @@ qreal Style::wordRibbonHeight(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("word-ribbon-height")).toReal();
 }
 
@@ -317,7 +351,7 @@ qreal Style::keyHeight(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("key-height")).toReal();
 }
 
@@ -326,7 +360,7 @@ qreal Style::keyWidth(Layout::Orientation orientation,
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("key-width").append(fromKeyWidth(width))).toReal();
 }
 
@@ -334,7 +368,7 @@ qreal Style::keyAreaWidth(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("key-area-width")).toReal();
 }
 
@@ -342,7 +376,7 @@ qreal Style::keyMargin(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("key-margins")).toReal();
 }
 
@@ -350,7 +384,7 @@ qreal Style::keyAreaPadding(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("key-area-paddings")).toReal();
 }
 
@@ -358,7 +392,7 @@ qreal Style::verticalOffset(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("vertical-offset")).toReal();
 }
 
@@ -366,7 +400,7 @@ qreal Style::safetyMargin(Layout::Orientation orientation) const
 {
     Q_D(const Style);
     return lookup(d->store, orientation,
-                  d->name.toLocal8Bit(),
+                  d->style_name.toLocal8Bit(),
                   QByteArray("safety-margin")).toReal();
 }
 
