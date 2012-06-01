@@ -34,6 +34,7 @@
 #include "models/label.h"
 #include "models/key.h"
 #include "models/wordcandidate.h"
+#include "logic/style.h"
 #include "coreutils.h"
 
 #include <QtCore>
@@ -44,7 +45,7 @@
 
 namespace {
 
-QString g_images_dir(MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/images");
+MaliitKeyboard::Style *g_style = 0;
 QHash<QByteArray, QPixmap> g_pixmap_cache;
 
 }
@@ -58,13 +59,17 @@ QPixmap loadPixmap(const QByteArray &id)
         return QPixmap();
     }
 
+    if (not g_style) {
+        g_style = new Style("nokia-n9");
+    }
+
     const QPixmap &result(g_pixmap_cache.value(id));
 
     if (not result.isNull()) {
         return result;
     }
 
-    QString filename(g_images_dir);
+    QString filename(g_style->directoryPath(Style::Images));
     filename.append('/');
     filename.append(id);
 

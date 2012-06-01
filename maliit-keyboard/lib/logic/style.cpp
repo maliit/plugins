@@ -44,7 +44,7 @@ namespace MaliitKeyboard {
 namespace {
 QString g_styles_dir(MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/styles");
 const QString g_main_fn_format("%1/%2/main.ini");
-const QString g_extended_keys_fn_format("%1/%2/extended_keys.ini");
+const QString g_extended_keys_fn_format("%1/%2/extended-keys.ini");
 const QString g_profile_image_directory_path_format("%1/%2/images");
 const QString g_profile_sounds_directory_path_format("%1/%2/sounds");
 }

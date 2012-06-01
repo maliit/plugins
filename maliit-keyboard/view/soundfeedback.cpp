@@ -68,7 +68,7 @@ SoundFeedbackPrivate::SoundFeedbackPrivate()
     : m_effects()
     , m_style("nokia-n9")
 {
-    const QString sounds_dir = MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/sounds/";
+    const QString sounds_dir = m_style.directoryPath(Style::Sounds);
     const StyleAttributes *attributes(m_style.attributes());
 
     setupEffect(KeyPressEffect, sounds_dir, attributes->keyPressSound());
