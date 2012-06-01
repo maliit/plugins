@@ -54,8 +54,12 @@ public:
         Sounds  //!< used to query sounds directoryPath().
     };
 
-    explicit Style(const QString &profile);
+    explicit Style();
     virtual ~Style();
+
+    void setProfile(const QString &profile);
+    QString profile() const;
+    QStringList availableProfiles() const;
 
     virtual QString directoryPath(Directory directory) const;
 

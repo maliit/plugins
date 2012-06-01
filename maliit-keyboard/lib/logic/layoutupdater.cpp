@@ -210,8 +210,10 @@ public:
         , view_machine()
         , deadkey_machine()
         , anchor()
-        , style("nokia-n9")
-    {}
+        , style()
+    {
+        style.setProfile("nokia-n9");
+    }
 
     bool inShiftedState() const
     {

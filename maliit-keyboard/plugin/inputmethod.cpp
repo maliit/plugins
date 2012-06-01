@@ -38,6 +38,7 @@
 
 #include "logic/layoutupdater.h"
 #include "logic/wordengine.h"
+#include "logic/style.h"
 
 #include "view/renderer.h"
 #include "view/abstractbackgroundbuffer.h"
@@ -100,6 +101,7 @@ public:
     Logic::WordEngine word_engine;
     DefaultFeedback feedback;
     SharedLayout layout;
+    SharedStyle style;
 
     explicit InputMethodPrivate(MAbstractInputMethodHost *host)
         : surfaceFactory(host->surfaceFactory())
@@ -111,7 +113,11 @@ public:
         , word_engine()
         , feedback()
         , layout(new Layout)
+        , style(new Style)
     {
+        // FIXME: Get style profile via settings API. Also need to show available profiles.
+        style->setProfile("nokia-n9");
+
         renderer.setSurfaceFactory(surfaceFactory);
         glass.setSurface(renderer.surface());
         glass.setExtendedSurface(renderer.extendedSurface());

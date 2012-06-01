@@ -60,7 +60,8 @@ QPixmap loadPixmap(const QByteArray &id)
     }
 
     if (not g_style) {
-        g_style = new Style("nokia-n9");
+        g_style = new Style;
+        g_style->setProfile("nokia-n9");
     }
 
     const QPixmap &result(g_pixmap_cache.value(id));
