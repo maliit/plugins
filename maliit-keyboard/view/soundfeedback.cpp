@@ -38,6 +38,10 @@
 
 QTM_USE_NAMESPACE
 
+//! \class MaliitKeyboard::SoundFeedback
+//! Provides a sound-playing feedback backend. Used as default backend if
+//! QtMobility is configured and ready to use.
+
 namespace MaliitKeyboard {
 
 enum EffectIndex
@@ -105,6 +109,8 @@ void SoundFeedbackPrivate::setupEffect(EffectIndex index,
     effects[index].setSource(QUrl::fromLocalFile(sounds_dir + "/" + file));
 }
 
+//! @param parent The owner of this instance. Can be 0, in case QObject
+//!               ownership is not required.
 SoundFeedback::SoundFeedback(QObject *parent)
     : AbstractFeedback(parent)
     , d_ptr(new SoundFeedbackPrivate)

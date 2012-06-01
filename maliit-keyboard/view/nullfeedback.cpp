@@ -31,8 +31,14 @@
 
 #include "nullfeedback.h"
 
+//! \class MaliitKeyboard::NullFeedback
+//! Provides a null backend for AbstractFeedback which does nothing. Used as
+//! default backend if no better one is found.
+
 namespace MaliitKeyboard {
 
+//! @param parent The owner of this instance. Can be 0, in case QObject
+//!               ownership is not required.
 NullFeedback::NullFeedback(QObject *parent)
     : AbstractFeedback(parent)
 {}
