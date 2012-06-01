@@ -29,10 +29,10 @@
  *
  */
 
-#include "coreutils.h"
+#include "soundfeedback.h"
+
 #include "logic/style.h"
 #include "models/styleattributes.h"
-#include "soundfeedback.h"
 
 #include <QFeedbackFileEffect>
 
@@ -54,10 +54,7 @@ class SoundFeedbackPrivate
 {
 public:
     QFeedbackFileEffect m_effects[EffectsCount];
-    /* FIXME: Let MaliitKeyboard::InputMethod set profile of
-     * style. Also means we need to inject style into consumers of
-     * it. */
-    Style m_style;
+    SharedStyle style;
 
     SoundFeedbackPrivate();
     void playEffect(EffectIndex play_index);
@@ -66,18 +63,8 @@ public:
 
 SoundFeedbackPrivate::SoundFeedbackPrivate()
     : m_effects()
-    , m_style()
-{
-    m_style.setProfile("nokia-n9");
-
-    const QString sounds_dir = m_style.directoryPath(Style::Sounds);
-    const StyleAttributes *attributes(m_style.attributes());
-
-    setupEffect(KeyPressEffect, sounds_dir, attributes->keyPressSound());
-    setupEffect(KeyReleaseEffect, sounds_dir, attributes->keyReleaseSound());
-    setupEffect(LayoutChangeEffect, sounds_dir, attributes->layoutChangeSound());
-    setupEffect(KeyboardHideEffect, sounds_dir, attributes->keyboardHideSound());
-}
+    , style()
+{}
 
 void SoundFeedbackPrivate::playEffect(EffectIndex play_index)
 {
@@ -111,7 +98,7 @@ void SoundFeedbackPrivate::setupEffect(EffectIndex index, const QString &sounds_
         return;
     }
 
-    m_effects[index].setSource(QUrl::fromLocalFile(sounds_dir + file));
+    m_effects[index].setSource(QUrl::fromLocalFile(sounds_dir + "/" + file));
 }
 
 SoundFeedback::SoundFeedback(QObject *parent)
@@ -121,6 +108,24 @@ SoundFeedback::SoundFeedback(QObject *parent)
 
 SoundFeedback::~SoundFeedback()
 {}
+
+void SoundFeedback::setStyle(const SharedStyle &style)
+{
+    Q_D(SoundFeedback);
+    d->style = style;
+
+    if (d->style.isNull()) {
+        return;
+    }
+
+    const QString path(d->style->directoryPath(Style::Sounds));
+    const StyleAttributes *attributes(d->style->attributes());
+
+    d->setupEffect(KeyPressEffect, path, attributes->keyPressSound());
+    d->setupEffect(KeyReleaseEffect, path, attributes->keyReleaseSound());
+    d->setupEffect(LayoutChangeEffect, path, attributes->layoutChangeSound());
+    d->setupEffect(KeyboardHideEffect, path, attributes->keyboardHideSound());
+}
 
 void SoundFeedback::playPressFeedback()
 {

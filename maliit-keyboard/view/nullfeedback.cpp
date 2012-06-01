@@ -40,6 +40,11 @@ NullFeedback::NullFeedback(QObject *parent)
 NullFeedback::~NullFeedback()
 {}
 
+void NullFeedback::setStyle(const SharedStyle &style)
+{
+    Q_UNUSED(style)
+}
+
 void NullFeedback::playPressFeedback()
 {}
 

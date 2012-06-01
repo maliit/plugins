@@ -46,6 +46,8 @@ public:
     explicit NullFeedback(QObject *parent = 0);
     virtual ~NullFeedback();
 
+    virtual void setStyle(const SharedStyle &style);
+
 private:
     virtual void playPressFeedback();
     virtual void playReleaseFeedback();

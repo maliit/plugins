@@ -101,10 +101,10 @@ void applyStyleToCandidate(WordCandidate *candidate,
 
 // FIXME: Make word candidates fit word ribbon also after orientation change.
 void applyStyleToWordRibbon(WordRibbon *ribbon,
-                            const Style *style,
+                            const SharedStyle &style,
                             Layout::Orientation orientation)
 {
-    if (not ribbon || not style) {
+    if (not ribbon || style.isNull()) {
         return;
     }
 
@@ -200,7 +200,7 @@ public:
     ViewMachine view_machine;
     DeadkeyMachine deadkey_machine;
     QPoint anchor;
-    Style style;
+    SharedStyle style;
 
     explicit LayoutUpdaterPrivate()
         : initialized(false)
@@ -211,9 +211,7 @@ public:
         , deadkey_machine()
         , anchor()
         , style()
-    {
-        style.setProfile("nokia-n9");
-    }
+    {}
 
     bool inShiftedState() const
     {
@@ -237,7 +235,7 @@ public:
     const StyleAttributes * activeStyleAttributes() const
     {
         return (layout->activePanel() == Layout::ExtendedPanel
-                ? style.extendedKeysAttributes() : style.attributes());
+                ? style->extendedKeysAttributes() : style->attributes());
     }
 };
 
@@ -297,9 +295,9 @@ void LayoutUpdater::setLayout(const SharedLayout &layout)
     }
 
     // FIXME: configure word ribbon for first time in same place as key areas.
-    if (not d->layout.isNull()) {
+    if (not d->layout.isNull() || not d->style.isNull()) {
         WordRibbon ribbon(d->layout->wordRibbon());
-        applyStyleToWordRibbon(&ribbon, &d->style, d->layout->orientation());
+        applyStyleToWordRibbon(&ribbon, d->style, d->layout->orientation());
         d->layout->setWordRibbon(ribbon);
     }
 }
@@ -308,21 +306,26 @@ void LayoutUpdater::setOrientation(Layout::Orientation orientation)
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout && d->layout->orientation() != orientation) {
+    if (d->layout && d->style && d->layout->orientation() != orientation) {
         d->layout->setOrientation(orientation);
 
-        const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
+        const KeyAreaConverter converter(d->style->attributes(), &d->loader, d->anchor);
         d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
                                                       : converter.keyArea(orientation));
 
-
         WordRibbon ribbon(d->layout->wordRibbon());
-        applyStyleToWordRibbon(&ribbon, &d->style, orientation);
+        applyStyleToWordRibbon(&ribbon, d->style, orientation);
         d->layout->setWordRibbon(ribbon);
 
         clearActiveKeysAndMagnifier();
         Q_EMIT layoutChanged(d->layout);
     }
+}
+
+void LayoutUpdater::setStyle(const SharedStyle &style)
+{
+    Q_D(LayoutUpdater);
+    d->style = style;
 }
 
 void LayoutUpdater::onKeyPressed(const Key &key,
@@ -364,14 +367,14 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     Q_UNUSED(key);
     Q_D(LayoutUpdater);
 
-    if (d->layout != layout || d->layout.isNull()) {
+    if (d->layout != layout || d->layout.isNull() || d->style.isNull()) {
         return;
     }
 
     clearActiveKeysAndMagnifier();
 
     const Layout::Orientation orientation(d->layout->orientation());
-    const KeyAreaConverter converter(d->style.extendedKeysAttributes(), &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style->extendedKeysAttributes(), &d->loader, d->anchor);
     KeyArea ext_ka(converter.extendedKeyArea(orientation, key));
 
     if (not ext_ka.hasKeys()) {
@@ -381,7 +384,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     const QSize &ext_panel_size(ext_ka.area().size());
     const QSize &center_panel_size(d->layout->centerPanel().area().size());
     const QPointF &key_center(key.rect().center());
-    const StyleAttributes *attributes(d->style.extendedKeysAttributes());
+    const StyleAttributes *attributes(d->style->extendedKeysAttributes());
     const qreal safety_margin(attributes->safetyMargin(orientation));
 
     QPoint offset(qMax<int>(safety_margin, key_center.x() - ext_panel_size.width() / 2),
@@ -598,14 +601,14 @@ void LayoutUpdater::switchToMainView()
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout.isNull()) {
+    if (d->layout.isNull() || d->style.isNull()) {
         return;
     }
 
     d->layout->clearActiveKeys();
     d->layout->clearMagnifierKey();
 
-    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style->attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
                                                   : converter.keyArea(orientation));
@@ -617,11 +620,11 @@ void LayoutUpdater::switchToPrimarySymView()
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout.isNull()) {
+    if (d->layout.isNull() || d->style.isNull()) {
         return;
     }
 
-    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style->attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     d->layout->setCenterPanel(converter.symbolsKeyArea(orientation, 0));
 
@@ -636,11 +639,11 @@ void LayoutUpdater::switchToSecondarySymView()
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout.isNull()) {
+    if (d->layout.isNull() || d->style.isNull()) {
         return;
     }
 
-    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style->attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     d->layout->setCenterPanel(converter.symbolsKeyArea(orientation, 1));
 
@@ -651,11 +654,11 @@ void LayoutUpdater::switchToAccentedView()
 {
     Q_D(LayoutUpdater);
 
-    if (d->layout.isNull()) {
+    if (d->layout.isNull() || d->style.isNull()) {
         return;
     }
 
-    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style->attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     const Key accent(d->deadkey_machine.accentKey());
     d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedDeadKeyArea(orientation, accent)

@@ -115,9 +115,6 @@ public:
         , layout(new Layout)
         , style(new Style)
     {
-        // FIXME: Get style profile via settings API. Also need to show available profiles.
-        style->setProfile("nokia-n9");
-
         renderer.setSurfaceFactory(surfaceFactory);
         glass.setSurface(renderer.surface());
         glass.setExtendedSurface(renderer.extendedSurface());
@@ -126,6 +123,12 @@ public:
         renderer.addLayout(layout);
         glass.addLayout(layout);
         layout_updater.setLayout(layout);
+
+        // FIXME: Get style profile via settings API. Also need to show available profiles.
+        style->setProfile(style->availableProfiles().first());
+        renderer.setImagesDirectoryPath(style->directoryPath(Style::Images));
+        layout_updater.setStyle(style);
+        feedback.setStyle(style);
 
         const QSize &screen_size(surfaceFactory->screenSize());
         layout->setScreenSize(screen_size);

@@ -37,6 +37,7 @@
 #include "models/key.h"
 #include "models/wordcandidate.h"
 #include "models/layout.h"
+#include "logic/style.h"
 
 #include <QtCore>
 
@@ -64,6 +65,8 @@ public:
 
     void setLayout(const SharedLayout &layout);
     Q_SLOT void setOrientation(Layout::Orientation orientation);
+
+    void setStyle(const SharedStyle &style);
 
     // Key signal handlers:
     Q_SLOT void onKeyPressed(const Key &key,

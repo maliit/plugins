@@ -49,6 +49,8 @@ public:
     explicit SoundFeedback(QObject *parent = 0);
     virtual ~SoundFeedback();
 
+    virtual void setStyle(const SharedStyle &style);
+
 private:
     const QScopedPointer<SoundFeedbackPrivate> d_ptr;
 

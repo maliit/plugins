@@ -32,6 +32,7 @@
 #ifndef MALIIT_KEYBOARD_ABSTRACTFEEDBACK_H
 #define MALIIT_KEYBOARD_ABSTRACTFEEDBACK_H
 
+#include "logic/style.h"
 #include <QtCore>
 
 namespace MaliitKeyboard {
@@ -45,6 +46,8 @@ class AbstractFeedback
 public:
     explicit AbstractFeedback(QObject *parent = 0);
     virtual ~AbstractFeedback() = 0;
+
+    virtual void setStyle(const SharedStyle &style) = 0;
 
     Q_SLOT void onKeyPressed();
     Q_SLOT void onKeyReleased();

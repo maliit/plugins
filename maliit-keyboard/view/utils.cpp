@@ -45,7 +45,7 @@
 
 namespace {
 
-MaliitKeyboard::Style *g_style = 0;
+QString g_images_directory_path;
 QHash<QByteArray, QPixmap> g_pixmap_cache;
 
 }
@@ -53,15 +53,15 @@ QHash<QByteArray, QPixmap> g_pixmap_cache;
 namespace MaliitKeyboard {
 namespace Utils {
 
+void setImagesDirectoryPath(const QString &path)
+{
+    g_images_directory_path = path;
+}
+
 QPixmap loadPixmap(const QByteArray &id)
 {
     if (id.isEmpty()) {
         return QPixmap();
-    }
-
-    if (not g_style) {
-        g_style = new Style;
-        g_style->setProfile("nokia-n9");
     }
 
     const QPixmap &result(g_pixmap_cache.value(id));
@@ -70,10 +70,7 @@ QPixmap loadPixmap(const QByteArray &id)
         return result;
     }
 
-    QString filename(g_style->directoryPath(Style::Images));
-    filename.append('/');
-    filename.append(id);
-
+    QString filename(g_images_directory_path + "/" + id);
     QPixmap new_pixmap(filename);
     g_pixmap_cache.insert(id, new_pixmap);
 

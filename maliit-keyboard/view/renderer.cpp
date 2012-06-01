@@ -34,6 +34,7 @@
 #include "keyitem.h"
 #include "wordribbonitem.h"
 #include "graphicsview.h"
+#include "utils.h"
 
 #include "models/keyarea.h"
 #include "models/wordribbon.h"
@@ -282,6 +283,7 @@ public:
     QVector<KeyItem *> key_items;
     QVector<KeyItem *> extended_key_items;
     QVector<KeyItem *> magnifier_key_items;
+    QString images_directory_path;
 
     explicit RendererPrivate()
         : factory(0)
@@ -361,6 +363,11 @@ void Renderer::clearLayouts()
     d->surface->clear();
     d->extended_surface->clear();
     d->magnifier_surface->clear();
+}
+
+void Renderer::setImagesDirectoryPath(const QString &path)
+{
+    Utils::setImagesDirectoryPath(path);
 }
 
 void Renderer::show()

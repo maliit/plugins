@@ -32,6 +32,7 @@
 #ifndef MALIIT_KEYBOARD_UTILS_H
 #define MALIIT_KEYBOARD_UTILS_H
 
+class QString;
 class QPixmap;
 class QByteArray;
 class QPainter;
@@ -44,6 +45,7 @@ class WordCandidate;
 
 namespace Utils {
 
+void setImagesDirectoryPath(const QString &path);
 QPixmap loadPixmap(const QByteArray &id);
 void renderKey(QPainter *painter,
                const Key &key,

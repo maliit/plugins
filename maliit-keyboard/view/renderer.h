@@ -71,6 +71,7 @@ public:
 
     void addLayout(const SharedLayout &layout);
     void clearLayouts();
+    void setImagesDirectoryPath(const QString &path);
 
     Q_SLOT void show();
     Q_SLOT void hide();
