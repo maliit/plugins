@@ -31,6 +31,10 @@
 
 #include "styleattributes.h"
 
+//! \class StyleAttributes
+//! This class allows to query style attributes, such as image names and font
+//! sizes. Styling attributes are read from INI files.
+
 namespace MaliitKeyboard {
 namespace {
 

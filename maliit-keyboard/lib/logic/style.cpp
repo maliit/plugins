@@ -33,9 +33,10 @@
 #include "coreutils.h"
 
 //! \class Style
-//! Style is a container for styling attributes, such as image names and font
-//! sizes. Styling attributes are read from INI files, according to the
-//! profile.
+//! Style is a container for StyleAttributes, which can read style attributes
+//! from INI files. Style makes sure that the proper style directories are
+//! used, depending on the given profile. It also maps the known INI files to
+//! the StyleAttributes instances.
 //!
 //! This class is uncopyable; use SharedStyle instead.
 
