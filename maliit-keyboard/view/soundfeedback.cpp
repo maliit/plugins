@@ -53,16 +53,18 @@ enum EffectIndex
 class SoundFeedbackPrivate
 {
 public:
-    QFeedbackFileEffect m_effects[EffectsCount];
+    QFeedbackFileEffect effects[EffectsCount];
     SharedStyle style;
 
     SoundFeedbackPrivate();
     void playEffect(EffectIndex play_index);
-    void setupEffect(EffectIndex index, const QString &sounds_dir, const QByteArray &file);
+    void setupEffect(EffectIndex index,
+                     const QString &sounds_dir,
+                     const QByteArray &file);
 };
 
 SoundFeedbackPrivate::SoundFeedbackPrivate()
-    : m_effects()
+    : effects()
     , style()
 {}
 
@@ -74,7 +76,7 @@ void SoundFeedbackPrivate::playEffect(EffectIndex play_index)
      * maybe differentiating between interruptible and uninterruptible
      * effects). */
     for (int index(0); index < EffectsCount; ++index) {
-        QFeedbackFileEffect& effect(m_effects[index]);
+        QFeedbackFileEffect& effect(effects[index]);
 
         if (index == play_index) {
             effect.start();
@@ -92,13 +94,15 @@ void SoundFeedbackPrivate::playEffect(EffectIndex play_index)
  * WARNING: QSoundEffect(pulseaudio): Error decoding source
  * WARNING: QMutex::unlock: mutex lock failure: Invalid argument
  */
-void SoundFeedbackPrivate::setupEffect(EffectIndex index, const QString &sounds_dir, const QByteArray &file)
+void SoundFeedbackPrivate::setupEffect(EffectIndex index,
+                                       const QString &sounds_dir,
+                                       const QByteArray &file)
 {
     if (file.isEmpty()) {
         return;
     }
 
-    m_effects[index].setSource(QUrl::fromLocalFile(sounds_dir + "/" + file));
+    effects[index].setSource(QUrl::fromLocalFile(sounds_dir + "/" + file));
 }
 
 SoundFeedback::SoundFeedback(QObject *parent)
@@ -130,28 +134,24 @@ void SoundFeedback::setStyle(const SharedStyle &style)
 void SoundFeedback::playPressFeedback()
 {
     Q_D(SoundFeedback);
-
     d->playEffect(KeyPressEffect);
 }
 
 void SoundFeedback::playReleaseFeedback()
 {
     Q_D(SoundFeedback);
-
     d->playEffect(KeyReleaseEffect);
 }
 
 void SoundFeedback::playLayoutChangeFeedback()
 {
     Q_D(SoundFeedback);
-
     d->playEffect(LayoutChangeEffect);
 }
 
 void SoundFeedback::playKeyboardHideFeedback()
 {
     Q_D(SoundFeedback);
-
     d->playEffect(KeyboardHideEffect);
 }
 
