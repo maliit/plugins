@@ -293,13 +293,6 @@ void LayoutUpdater::setLayout(const SharedLayout &layout)
         init();
         d->initialized = true;
     }
-
-    // FIXME: configure word ribbon for first time in same place as key areas.
-    if (not d->layout.isNull() || not d->style.isNull()) {
-        WordRibbon ribbon(d->layout->wordRibbon());
-        applyStyleToWordRibbon(&ribbon, d->style, d->layout->orientation());
-        d->layout->setWordRibbon(ribbon);
-    }
 }
 
 void LayoutUpdater::setOrientation(Layout::Orientation orientation)
@@ -595,6 +588,12 @@ void LayoutUpdater::onKeyboardsChanged()
     d->shift_machine.restart();
     d->deadkey_machine.restart();
     d->view_machine.restart();
+
+    if (not d->layout.isNull() || not d->style.isNull()) {
+        WordRibbon ribbon(d->layout->wordRibbon());
+        applyStyleToWordRibbon(&ribbon, d->style, d->layout->orientation());
+        d->layout->setWordRibbon(ribbon);
+    }
 }
 
 void LayoutUpdater::switchToMainView()
