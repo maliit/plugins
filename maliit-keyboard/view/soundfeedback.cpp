@@ -31,6 +31,7 @@
 
 #include "coreutils.h"
 #include "logic/style.h"
+#include "models/styleattributes.h"
 #include "soundfeedback.h"
 
 #include <QFeedbackFileEffect>
@@ -68,11 +69,12 @@ SoundFeedbackPrivate::SoundFeedbackPrivate()
     , m_style("nokia-n9")
 {
     const QString sounds_dir = MaliitKeyboard::CoreUtils::maliitKeyboardDataDirectory() + "/sounds/";
+    const StyleAttributes *attributes(m_style.attributes());
 
-    setupEffect(KeyPressEffect, sounds_dir, m_style.keyPressSound());
-    setupEffect(KeyReleaseEffect, sounds_dir, m_style.keyReleaseSound());
-    setupEffect(LayoutChangeEffect, sounds_dir, m_style.layoutChangeSound());
-    setupEffect(KeyboardHideEffect, sounds_dir, m_style.keyboardHideSound());
+    setupEffect(KeyPressEffect, sounds_dir, attributes->keyPressSound());
+    setupEffect(KeyReleaseEffect, sounds_dir, attributes->keyReleaseSound());
+    setupEffect(LayoutChangeEffect, sounds_dir, attributes->layoutChangeSound());
+    setupEffect(KeyboardHideEffect, sounds_dir, attributes->keyboardHideSound());
 }
 
 void SoundFeedbackPrivate::playEffect(EffectIndex play_index)

@@ -37,7 +37,7 @@
 
 namespace MaliitKeyboard {
 
-class Style;
+class StyleAttributes;
 class KeyboardLoader;
 class KeyArea;
 class Key;
@@ -45,12 +45,12 @@ class Key;
 class KeyAreaConverter
 {
 private:
-    Style * const m_style;
+    StyleAttributes * const m_attributes;
     KeyboardLoader * const m_loader;
     QPoint m_anchor;
 
 public:
-    explicit KeyAreaConverter(Style *style,
+    explicit KeyAreaConverter(StyleAttributes *attributes,
                               KeyboardLoader *loader,
                               const QPoint &anchor);
     virtual ~KeyAreaConverter();

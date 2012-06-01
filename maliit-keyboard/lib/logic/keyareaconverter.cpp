@@ -31,18 +31,18 @@
 
 #include "keyareaconverter.h"
 
-#include "style.h"
-#include "keyboardloader.h"
+#include "models/styleattributes.h"
 #include "models/area.h"
 #include "models/keyarea.h"
 #include "models/key.h"
+#include "logic/keyboardloader.h"
 
 #include <QtCore>
 
 namespace MaliitKeyboard {
 namespace {
 
-KeyArea createFromKeyboard(Style *style,
+KeyArea createFromKeyboard(StyleAttributes *attributes,
                            const Keyboard &source,
                            Layout::Orientation orientation,
                            bool is_extended_keyarea = false)
@@ -51,28 +51,28 @@ KeyArea createFromKeyboard(Style *style,
     KeyArea ka;
     Keyboard kb(source);
 
-    if (not style) {
+    if (not attributes) {
         qCritical() << __PRETTY_FUNCTION__
                     << "No style given, aborting.";
         return ka;
     }
 
-    style->setStyleName(kb.style_name);
+    attributes->setStyleName(kb.style_name);
 
     Font font;
-    font.setName(style->fontName(orientation));
-    font.setSize(style->fontSize(orientation));
-    font.setColor(style->fontColor(orientation));
+    font.setName(attributes->fontName(orientation));
+    font.setSize(attributes->fontSize(orientation));
+    font.setColor(attributes->fontColor(orientation));
 
     Font small_font(font);
-    small_font.setSize(style->smallFontSize(orientation));
+    small_font.setSize(attributes->smallFontSize(orientation));
 
-    static const QMargins bg_margins(style->keyBackgroundBorders());
+    static const QMargins bg_margins(attributes->keyBackgroundBorders());
 
-    const qreal max_width(style->keyAreaWidth(orientation));
-    const qreal key_height(style->keyHeight(orientation));
-    const qreal margin = style->keyMargin(orientation);
-    const qreal padding = style->keyAreaPadding(orientation);
+    const qreal max_width(attributes->keyAreaWidth(orientation));
+    const qreal key_height(attributes->keyHeight(orientation));
+    const qreal margin = attributes->keyMargin(orientation);
+    const qreal padding = attributes->keyAreaPadding(orientation);
 
     QPoint pos(0, 0);
     QVector<int> row_indices;
@@ -97,12 +97,12 @@ KeyArea createFromKeyboard(Style *style,
             ++spacer_count;
         }
 
-        width = style->keyWidth(orientation, desc.width);
+        width = attributes->keyWidth(orientation, desc.width);
 
         const qreal key_margin((at_row_start || at_row_end) ? margin + padding : margin * 2);
 
         Area area;
-        area.setBackground(style->keyBackground(desc.style, KeyDescription::NormalState));
+        area.setBackground(attributes->keyBackground(desc.style, KeyDescription::NormalState));
         area.setBackgroundBorders(bg_margins);
         area.setSize(QSize(width + key_margin, key_height));
         key.setArea(area);
@@ -115,7 +115,7 @@ KeyArea createFromKeyboard(Style *style,
         key.rLabel().setFont(text.count() > 1 ? small_font : font);
 
         if (text.isEmpty()) {
-            key.setIcon(style->icon(desc.icon,
+            key.setIcon(attributes->icon(desc.icon,
                                     KeyDescription::NormalState));
         }
 
@@ -165,8 +165,8 @@ KeyArea createFromKeyboard(Style *style,
     }
 
     Area area;
-    area.setBackground(style->keyAreaBackground());
-    area.setBackgroundBorders(style->keyAreaBackgroundBorders());
+    area.setBackground(attributes->keyAreaBackground());
+    area.setBackgroundBorders(attributes->keyAreaBackgroundBorders());
     area.setSize(QSize((is_extended_keyarea ? consumed_width : max_width),
                        pos.y() + key_height));
 
@@ -177,16 +177,15 @@ KeyArea createFromKeyboard(Style *style,
 }
 }
 
-KeyAreaConverter::KeyAreaConverter(Style *style,
+KeyAreaConverter::KeyAreaConverter(StyleAttributes *attributes,
                                    KeyboardLoader *loader,
                                    const QPoint &anchor)
-    : m_style(style)
+    : m_attributes(attributes)
     , m_loader(loader)
     , m_anchor(anchor)
 {
-    if (not style || not loader) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "Neither style nor loader can be null.";
+    if (not attributes || not loader) {
+        qFatal("Neither attributes nor loader can be null.");
     }
 }
 
@@ -195,56 +194,56 @@ KeyAreaConverter::~KeyAreaConverter()
 
 KeyArea KeyAreaConverter::keyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->keyboard(), orientation);
+    return createFromKeyboard(m_attributes, m_loader->keyboard(), orientation);
 }
 
 KeyArea KeyAreaConverter::nextKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->nextKeyboard(), orientation);
+    return createFromKeyboard(m_attributes, m_loader->nextKeyboard(), orientation);
 }
 
 KeyArea KeyAreaConverter::previousKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->previousKeyboard(), orientation);
+    return createFromKeyboard(m_attributes, m_loader->previousKeyboard(), orientation);
 }
 
 KeyArea KeyAreaConverter::shiftedKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->shiftedKeyboard(), orientation);
+    return createFromKeyboard(m_attributes, m_loader->shiftedKeyboard(), orientation);
 }
 
 KeyArea KeyAreaConverter::symbolsKeyArea(Layout::Orientation orientation,
                                          int page) const
 {
-    return createFromKeyboard(m_style, m_loader->symbolsKeyboard(page), orientation);
+    return createFromKeyboard(m_attributes, m_loader->symbolsKeyboard(page), orientation);
 }
 
 KeyArea KeyAreaConverter::deadKeyArea(Layout::Orientation orientation,
                                       const Key &dead) const
 {
-    return createFromKeyboard(m_style, m_loader->deadKeyboard(dead), orientation);
+    return createFromKeyboard(m_attributes, m_loader->deadKeyboard(dead), orientation);
 }
 
 KeyArea KeyAreaConverter::shiftedDeadKeyArea(Layout::Orientation orientation,
                                              const Key &dead) const
 {
-    return createFromKeyboard(m_style, m_loader->shiftedDeadKeyboard(dead), orientation);
+    return createFromKeyboard(m_attributes, m_loader->shiftedDeadKeyboard(dead), orientation);
 }
 
 KeyArea KeyAreaConverter::extendedKeyArea(Layout::Orientation orientation,
                                           const Key &key) const
 {
-    return createFromKeyboard(m_style, m_loader->extendedKeyboard(key), orientation, true);
+    return createFromKeyboard(m_attributes, m_loader->extendedKeyboard(key), orientation, true);
 }
 
 KeyArea KeyAreaConverter::numberKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->numberKeyboard(), orientation);
+    return createFromKeyboard(m_attributes, m_loader->numberKeyboard(), orientation);
 }
 
 KeyArea KeyAreaConverter::phoneNumberKeyArea(Layout::Orientation orientation) const
 {
-    return createFromKeyboard(m_style, m_loader->phoneNumberKeyboard(), orientation);
+    return createFromKeyboard(m_attributes, m_loader->phoneNumberKeyboard(), orientation);
 }
 
 } // namespace MaliitKeyboard

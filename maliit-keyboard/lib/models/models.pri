@@ -12,6 +12,7 @@ HEADERS += \
     wordribbon.h \
     layout.h \
     text.h \
+    styleattributes.h \
 
 SOURCES += \
     area.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
     wordribbon.cpp \
     layout.cpp \
     text.cpp \
+    styleattributes.cpp \
 
 DEPENDPATH += $$MODELS_DIR
 

@@ -39,6 +39,7 @@
 #include "models/wordribbon.h"
 #include "models/wordcandidate.h"
 #include "models/text.h"
+#include "models/styleattributes.h"
 
 #include "logic/keyareaconverter.h"
 #include "logic/state-machines/shiftmachine.h"
@@ -54,30 +55,34 @@ enum ActivationPolicy {
 };
 
 Key makeActive(const Key &key,
-               const Style *style)
+               const StyleAttributes *attributes)
 {
+    if (not attributes) {
+        return key;
+    }
+
     Key k(key);
 
     // FIXME: Use correct key style, but where to look it up?
-    k.rArea().setBackground(style->keyBackground(KeyDescription::NormalStyle, KeyDescription::PressedState));
-    k.rArea().setBackgroundBorders(style->keyBackgroundBorders());
+    k.rArea().setBackground(attributes->keyBackground(KeyDescription::NormalStyle, KeyDescription::PressedState));
+    k.rArea().setBackgroundBorders(attributes->keyBackgroundBorders());
 
     return k;
 }
 
 void applyStyleToCandidate(WordCandidate *candidate,
-                           const Style *style,
+                           const StyleAttributes *attributes,
                            Layout::Orientation orientation,
                            ActivationPolicy policy)
 {
-    if (not candidate || not style) {
+    if (not candidate || not attributes) {
         return;
     }
 
     Label &label(candidate->rLabel());
     Font f(label.font());
-    f.setSize(style->candidateFontSize(orientation));
-    f.setStretch(style->candidateFontStretch(orientation));
+    f.setSize(attributes->candidateFontSize(orientation));
+    f.setStretch(attributes->candidateFontStretch(orientation));
 
     QByteArray color;
     switch(policy) {
@@ -104,18 +109,20 @@ void applyStyleToWordRibbon(WordRibbon *ribbon,
     }
 
     Area area;
-    area.setBackground(style->wordRibbonBackground());
-    area.setBackgroundBorders(style->wordRibbonBackgroundBorders());
-    area.setSize(QSize(style->keyAreaWidth(orientation), style->wordRibbonHeight(orientation)));
+    StyleAttributes *const a(style->attributes());
+
+    area.setBackground(a->wordRibbonBackground());
+    area.setBackgroundBorders(a->wordRibbonBackgroundBorders());
+    area.setSize(QSize(a->keyAreaWidth(orientation), a->wordRibbonHeight(orientation)));
     ribbon->setArea(area);
 }
 
 bool updateWordRibbon(const SharedLayout &layout,
                       const WordCandidate &candidate,
-                      const Style *style,
+                      const StyleAttributes *attributes,
                       ActivationPolicy policy)
 {
-    if (layout.isNull() || not style) {
+    if (layout.isNull() || not attributes) {
         return false;
     }
 
@@ -127,7 +134,7 @@ bool updateWordRibbon(const SharedLayout &layout,
 
         if (current.label().text() == candidate.label().text()
             && current.rect() == candidate.rect()) {
-            applyStyleToCandidate(&current, style, layout->orientation(), policy);
+            applyStyleToCandidate(&current, attributes, layout->orientation(), policy);
             layout->setWordRibbon(ribbon);
 
             return true;
@@ -143,14 +150,14 @@ QRect adjustedRect(const QRect &rect, const QMargins &margins)
 }
 
 Key magnifyKey(const Key &key,
-               const Style *style,
+               const StyleAttributes *attributes,
                Layout::Orientation orientation,
                const QRectF &key_area_rect)
 {
     Font magnifier_font;
-    magnifier_font.setName(style->fontName(orientation));
-    magnifier_font.setColor(style->fontColor(orientation));
-    magnifier_font.setSize(style->magnifierFontSize(orientation));
+    magnifier_font.setName(attributes->fontName(orientation));
+    magnifier_font.setColor(attributes->fontColor(orientation));
+    magnifier_font.setSize(attributes->magnifierFontSize(orientation));
 
     if (key.action() != Key::ActionInsert) {
         return Key();
@@ -171,10 +178,10 @@ Key magnifyKey(const Key &key,
     }
 
     magnifier.setOrigin(magnifier_rect.topLeft());
-    magnifier.rArea().setBackground(style->keyBackground(KeyDescription::NormalStyle,
-                                                         KeyDescription::PressedState));
+    magnifier.rArea().setBackground(attributes->keyBackground(KeyDescription::NormalStyle,
+                                                     KeyDescription::PressedState));
     magnifier.rArea().setSize(magnifier_rect.size());
-    magnifier.rArea().setBackgroundBorders(style->keyBackgroundBorders());
+    magnifier.rArea().setBackgroundBorders(attributes->keyBackgroundBorders());
     magnifier.rLabel().setFont(magnifier_font);
     magnifier.setMargins(QMargins());
 
@@ -194,7 +201,6 @@ public:
     DeadkeyMachine deadkey_machine;
     QPoint anchor;
     Style style;
-    Style extended_keys_style;
 
     explicit LayoutUpdaterPrivate()
         : initialized(false)
@@ -205,7 +211,6 @@ public:
         , deadkey_machine()
         , anchor()
         , style("nokia-n9")
-        , extended_keys_style("nokia-n9-extended-keys")
     {}
 
     bool inShiftedState() const
@@ -227,10 +232,10 @@ public:
                 deadkey_machine.inState(DeadkeyMachine::latched_deadkey_state));
     }
 
-    const Style * activeStyle() const
+    const StyleAttributes * activeStyleAttributes() const
     {
         return (layout->activePanel() == Layout::ExtendedPanel
-                ? &extended_keys_style : &style);
+                ? style.extendedKeysAttributes() : style.attributes());
     }
 };
 
@@ -304,7 +309,7 @@ void LayoutUpdater::setOrientation(Layout::Orientation orientation)
     if (d->layout && d->layout->orientation() != orientation) {
         d->layout->setOrientation(orientation);
 
-        const KeyAreaConverter converter(&d->style, &d->loader, d->anchor);
+        const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
         d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
                                                       : converter.keyArea(orientation));
 
@@ -327,10 +332,10 @@ void LayoutUpdater::onKeyPressed(const Key &key,
         return;
     }
 
-    layout->appendActiveKey(makeActive(key, d->activeStyle()));
+    layout->appendActiveKey(makeActive(key, d->activeStyleAttributes()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->orientation(),
+        layout->setMagnifierKey(magnifyKey(key, d->activeStyleAttributes(), d->layout->orientation(),
                                            d->layout->centerPanelGeometry()));
     }
 
@@ -364,7 +369,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     clearActiveKeysAndMagnifier();
 
     const Layout::Orientation orientation(d->layout->orientation());
-    const KeyAreaConverter converter(&d->extended_keys_style, &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style.extendedKeysAttributes(), &d->loader, d->anchor);
     KeyArea ext_ka(converter.extendedKeyArea(orientation, key));
 
     if (not ext_ka.hasKeys()) {
@@ -374,10 +379,11 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     const QSize &ext_panel_size(ext_ka.area().size());
     const QSize &center_panel_size(d->layout->centerPanel().area().size());
     const QPointF &key_center(key.rect().center());
-    const qreal safety_margin(d->extended_keys_style.safetyMargin(orientation));
+    const StyleAttributes *attributes(d->style.extendedKeysAttributes());
+    const qreal safety_margin(attributes->safetyMargin(orientation));
 
     QPoint offset(qMax<int>(safety_margin, key_center.x() - ext_panel_size.width() / 2),
-                  key.rect().top() - d->extended_keys_style.verticalOffset(orientation));
+                  key.rect().top() - attributes->verticalOffset(orientation));
 
     if (offset.x() + ext_panel_size.width() > center_panel_size.width()) {
         offset.rx() = center_panel_size.width() - ext_panel_size.width() - safety_margin;
@@ -452,10 +458,10 @@ void LayoutUpdater::onKeyEntered(const Key &key,
         return;
     }
 
-    layout->appendActiveKey(makeActive(key, d->activeStyle()));
+    layout->appendActiveKey(makeActive(key, d->activeStyleAttributes()));
 
     if (d->layout->activePanel() == Layout::CenterPanel) {
-        layout->setMagnifierKey(magnifyKey(key, d->activeStyle(), d->layout->orientation(),
+        layout->setMagnifierKey(magnifyKey(key, d->activeStyleAttributes(), d->layout->orientation(),
                                            d->layout->centerPanelGeometry()));
     }
 
@@ -514,16 +520,16 @@ void LayoutUpdater::onCandidatesUpdated(const QStringList &candidates)
     WordRibbon ribbon(d->layout->wordRibbon());
     ribbon.clearCandidates();
 
-    const Style * const style(d->activeStyle());
+    const StyleAttributes * const attributes(d->activeStyleAttributes());
     const Layout::Orientation orientation(d->layout->orientation());
-    const int candidate_width(style->keyAreaWidth(orientation) / (orientation == Layout::Landscape ? 6 : 4));
+    const int candidate_width(attributes->keyAreaWidth(orientation) / (orientation == Layout::Landscape ? 6 : 4));
 
     for (int index = 0; index < candidates.count(); ++index) {
         WordCandidate word_candidate;
         word_candidate.rLabel().setText(candidates.at(index));
         word_candidate.rArea().setSize(QSize(candidate_width, 56));
         word_candidate.setOrigin(QPoint(index * candidate_width, 0));
-        applyStyleToCandidate(&word_candidate, d->activeStyle(), orientation, DeactivateElement);
+        applyStyleToCandidate(&word_candidate, d->activeStyleAttributes(), orientation, DeactivateElement);
         ribbon.appendCandidate(word_candidate);
     }
 
@@ -537,7 +543,7 @@ void LayoutUpdater::onWordCandidatePressed(const WordCandidate &candidate,
     Q_D(LayoutUpdater);
 
     if (layout == d->layout
-        && updateWordRibbon(d->layout, candidate, d->activeStyle(), ActivateElement)) {
+        && updateWordRibbon(d->layout, candidate, d->activeStyleAttributes(), ActivateElement)) {
         Q_EMIT wordCandidatesChanged(d->layout);
     }
 }
@@ -548,7 +554,7 @@ void LayoutUpdater::onWordCandidateReleased(const WordCandidate &candidate,
     Q_D(LayoutUpdater);
 
     if (layout == d->layout
-        && updateWordRibbon(d->layout, candidate, d->activeStyle(), DeactivateElement)) {
+        && updateWordRibbon(d->layout, candidate, d->activeStyleAttributes(), DeactivateElement)) {
         Q_EMIT wordCandidatesChanged(d->layout);
         Q_EMIT wordCandidateSelected(candidate.label().text());
     }
@@ -597,7 +603,7 @@ void LayoutUpdater::switchToMainView()
     d->layout->clearActiveKeys();
     d->layout->clearMagnifierKey();
 
-    const KeyAreaConverter converter(&d->style, &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedKeyArea(orientation)
                                                   : converter.keyArea(orientation));
@@ -613,7 +619,7 @@ void LayoutUpdater::switchToPrimarySymView()
         return;
     }
 
-    const KeyAreaConverter converter(&d->style, &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     d->layout->setCenterPanel(converter.symbolsKeyArea(orientation, 0));
 
@@ -632,7 +638,7 @@ void LayoutUpdater::switchToSecondarySymView()
         return;
     }
 
-    const KeyAreaConverter converter(&d->style, &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     d->layout->setCenterPanel(converter.symbolsKeyArea(orientation, 1));
 
@@ -647,7 +653,7 @@ void LayoutUpdater::switchToAccentedView()
         return;
     }
 
-    const KeyAreaConverter converter(&d->style, &d->loader, d->anchor);
+    const KeyAreaConverter converter(d->style.attributes(), &d->loader, d->anchor);
     const Layout::Orientation orientation(d->layout->orientation());
     const Key accent(d->deadkey_machine.accentKey());
     d->layout->setCenterPanel(d->inShiftedState() ? converter.shiftedDeadKeyArea(orientation, accent)

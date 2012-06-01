@@ -32,8 +32,7 @@
 #ifndef MALIIT_KEYBOARD_STYLE_H
 #define MALIIT_KEYBOARD_STYLE_H
 
-#include "models/layout.h"
-#include "models/keydescription.h"
+#include "models/styleattributes.h"
 
 #include <QtCore>
 
@@ -58,45 +57,10 @@ public:
     explicit Style(const QString &profile);
     virtual ~Style();
 
-    virtual void setStyleName(const QString &name);
-    virtual QString directoryPath(Directory directory);
+    virtual QString directoryPath(Directory directory) const;
 
-    QByteArray wordRibbonBackground() const;
-    QByteArray keyAreaBackground() const;
-    QByteArray keyBackground(KeyDescription::Style style,
-                             KeyDescription::State state) const;
-
-    QMargins wordRibbonBackgroundBorders() const;
-    QMargins keyAreaBackgroundBorders() const;
-    QMargins keyBackgroundBorders() const;
-
-    QByteArray icon(KeyDescription::Icon icon,
-                    KeyDescription::State state) const;
-
-    QByteArray fontName(Layout::Orientation orientation) const;
-    QByteArray fontColor(Layout::Orientation orientation) const;
-    qreal fontSize(Layout::Orientation orientation) const;
-    qreal smallFontSize(Layout::Orientation orientation) const;
-    qreal candidateFontSize(Layout::Orientation orientation) const;
-    qreal magnifierFontSize(Layout::Orientation orientation) const;
-    qreal candidateFontStretch(Layout::Orientation orientation) const;
-
-    qreal wordRibbonHeight(Layout::Orientation orientation) const;
-    qreal keyHeight(Layout::Orientation orientation) const;
-    qreal keyWidth(Layout::Orientation orientation,
-                   KeyDescription::Width width) const;
-    qreal keyAreaWidth(Layout::Orientation orientation) const;
-
-    qreal keyMargin(Layout::Orientation orientation) const;
-    qreal keyAreaPadding(Layout::Orientation orienation) const;
-
-    qreal verticalOffset(Layout::Orientation orientation) const;
-    qreal safetyMargin(Layout::Orientation orientation) const;
-
-    QByteArray keyPressSound() const;
-    QByteArray keyReleaseSound() const;
-    QByteArray layoutChangeSound() const;
-    QByteArray keyboardHideSound() const;
+    StyleAttributes * attributes() const;
+    StyleAttributes * extendedKeysAttributes() const;
 
 private:
     const QScopedPointer<StylePrivate> d_ptr;
