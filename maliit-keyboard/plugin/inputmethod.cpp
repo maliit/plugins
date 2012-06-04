@@ -55,6 +55,7 @@ typedef MaliitKeyboard::NullFeedback DefaultFeedback;
 
 #include <maliit/plugins/subviewdescription.h>
 #include <maliit/plugins/abstractsurfacefactory.h>
+#include <maliit/plugins/abstractpluginsetting.h>
 
 #include <QApplication>
 #include <QWidget>
@@ -102,6 +103,7 @@ public:
     DefaultFeedback feedback;
     SharedLayout layout;
     SharedStyle style;
+    QScopedPointer<Maliit::Plugins::AbstractPluginSetting> styleSetting;
 
     explicit InputMethodPrivate(MAbstractInputMethodHost *host)
         : surfaceFactory(host->surfaceFactory())
@@ -124,8 +126,16 @@ public:
         glass.addLayout(layout);
         layout_updater.setLayout(layout);
 
-        // FIXME: Get style profile via settings API. Also need to show available profiles.
-        style->setProfile(style->availableProfiles().first());
+        QVariantMap attrs;
+        QStringList available_styles = style->availableProfiles();
+
+        attrs[Maliit::SettingEntryAttributes::defaultValue] = available_styles.first();
+        attrs[Maliit::SettingEntryAttributes::valueDomain] = available_styles;
+        attrs[Maliit::SettingEntryAttributes::valueDomainDescriptions] = available_styles;
+
+        styleSetting.reset(host->registerPluginSetting("current_style", QT_TR_NOOP("Keyboard style"),
+                                                       Maliit::StringType, attrs));
+        style->setProfile(styleSetting->value().toString());
         renderer.setImagesDirectoryPath(style->directoryPath(Style::Images));
         layout_updater.setStyle(style);
         feedback.setStyle(style);
@@ -155,6 +165,9 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
             this,      SLOT(onSwitchRight()));
     connect(d->surfaceFactory, SIGNAL(screenSizeChanged(QSize)),
             this,              SLOT(onScreenSizeChange(QSize)));
+
+    connect(d->styleSetting.data(), SIGNAL(valueChanged()),
+            this,                   SLOT(onStyleSettingChange()));
 }
 
 InputMethod::~InputMethod()
@@ -252,6 +265,13 @@ void InputMethod::onScreenSizeChange(const QSize &size)
 
     d->layout->setScreenSize(size);
     d->layout_updater.setOrientation(size.width() >= size.height() ? Layout::Landscape : Layout::Portrait);
+}
+
+void InputMethod::onStyleSettingChange()
+{
+    Q_D(InputMethod);
+
+    d->style->setProfile(d->styleSetting->value().toString());
 }
 
 } // namespace MaliitKeyboard
