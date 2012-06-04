@@ -34,18 +34,20 @@
 
 #include <QtCore>
 
-class Hunspell;
-
 namespace MaliitKeyboard {
 namespace Logic {
 
+class SpellCheckerPrivate;
+
 class SpellChecker
 {
+    Q_DISABLE_COPY(SpellChecker)
+    Q_DECLARE_PRIVATE(SpellChecker)
 public:
     // FIXME: Find better way to discover default dictionaries.
     // FIXME: Allow changing languages in between.
-    explicit SpellChecker(const QString &dictionaryPath = QString("/usr/share/hunspell/en_GB"),
-                          const QString &userDictionary = QString("%1/.config/hunspell/en_GB.dic").arg(QDir::homePath()));
+    explicit SpellChecker(const QString &dictionary_path = QString("/usr/share/hunspell/en_GB"),
+                          const QString &user_dictionary = QString("%1/.config/hunspell/en_GB.dic").arg(QDir::homePath()));
 
     ~SpellChecker();
 
@@ -56,11 +58,7 @@ public:
     void addToUserWordlist(const QString &word);
 
 private:
-    void putWord(const QString &word);
-    QScopedPointer<Hunspell> m_hunspell;
-    QString m_user_dictionary_path;
-    QString m_encoding;
-    QTextCodec *m_codec;
+    const QScopedPointer<SpellCheckerPrivate> d_ptr;
 };
 
 }} // namespace Logic, MaliitKeyboard
