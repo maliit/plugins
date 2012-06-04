@@ -5,6 +5,7 @@ enable-presage {
 }
 
 enable-hunspell {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += hunspell
     DEFINES += HAVE_HUNSPELL
-    LIBS += -lhunspell
 }
