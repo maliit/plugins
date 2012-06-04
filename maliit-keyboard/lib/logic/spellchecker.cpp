@@ -29,6 +29,9 @@
  *
  */
 
+//! \class MaliitKeyboard::Logic::SpellChecker
+//! Checks spelling and suggest words. Currently Spellchecker is
+//! implemented by using Hunspell.
 #include "spellchecker.h"
 
 #ifdef HAVE_HUNSPELL
@@ -94,12 +97,23 @@ SpellCheckerPrivate::SpellCheckerPrivate(const QString &dictionary_path,
     enabled = true;
 }
 
+//! Creates a spellchecker using passed dictionary and extensible user dictionary.
+//!
+//! \param dictionary_path path to dictionary
+//! \param user_dictionary path to user dictionary
 SpellChecker::SpellChecker(const QString &dictionary_path,
                            const QString &user_dictionary)
     : d_ptr(new SpellCheckerPrivate(dictionary_path,
                                     user_dictionary))
 {}
 
+//! \brief Checks spelling of given \a word.
+//!
+//! Ignored words are treated as having correct spelling.
+//!
+//! \param word word to check for spelling.
+//!
+//! \return \c true if the word has correct spelling (or is ignored), otherwise \c false.
 bool SpellChecker::spell(const QString &word)
 {
     Q_D(SpellChecker);
@@ -115,6 +129,12 @@ bool SpellChecker::spell(const QString &word)
     return d->hunspell.spell(d->codec->fromUnicode(word));
 }
 
+//! \brief Gives some suggestions for given \a word.
+//!
+//! \param word Base for suggestions.
+//! \param limit Suggestion count limit (-1 for no limits).
+//!
+//! \return a list of suggestions.
 QStringList SpellChecker::suggest(const QString &word,
                                   int limit)
 {
@@ -146,6 +166,11 @@ QStringList SpellChecker::suggest(const QString &word,
 SpellChecker::~SpellChecker()
 {}
 
+//! Marks given \a word as ignored.
+//!
+//! Ignored words are not checked for spelling.
+//!
+//! \param word word to ignore.
 void SpellChecker::ignoreWord(const QString &word)
 {
     Q_D(SpellChecker);
@@ -157,6 +182,11 @@ void SpellChecker::ignoreWord(const QString &word)
     d->ignored_words.insert(word);
 }
 
+//! Adds given \a word to user dictionary.
+//!
+//! Passed word will be used for spellchecking and suggesting.
+//!
+//! \param word word to be added to user dictionary.
 void SpellChecker::addToUserWordlist(const QString &word)
 {
     Q_D(SpellChecker);
