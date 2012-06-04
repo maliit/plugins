@@ -35,7 +35,21 @@
 #include "hunspell/hunspell.hxx"
 #else
 class Hunspell
-{};
+{
+public:
+    Hunspell(const char *, const char *, const char * = NULL) : encoding("UTF-8") {}
+    int add_dic (const char *, const char * = NULL) { return 0; }
+    char *get_dic_encoding() { return encoding.data(); }
+    int spell(const char *, int * = NULL, char ** = NULL) { return 1; }
+    int suggest(char *** lst, const char *) { if (lst) { *lst = NULL; } return 0; }
+    void free_list(char ***, int) {}
+    int add(const char *) { return 0; }
+private:
+    // Using QByteArray here instead of just returning "UTF-8" in get_dic_encoding
+    // to avoid a following warning:
+    // warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+    QByteArray encoding;
+};
 #endif
 
 #include <QFile>
