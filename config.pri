@@ -21,6 +21,10 @@ isEmpty(LIBDIR) {
    LIBDIR = $$PREFIX/lib
 }
 
+isEmpty(MALIIT_DEFAULT_PROFILE) {
+   MALIIT_DEFAULT_PROFILE = nokia-n9
+}
+
 contains(QT_CONFIG, embedded) {
     CONFIG += qws
 }

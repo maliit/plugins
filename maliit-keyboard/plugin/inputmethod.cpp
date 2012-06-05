@@ -129,7 +129,7 @@ public:
         QVariantMap attrs;
         QStringList available_styles = style->availableProfiles();
 
-        attrs[Maliit::SettingEntryAttributes::defaultValue] = available_styles.first();
+        attrs[Maliit::SettingEntryAttributes::defaultValue] = MALIIT_DEFAULT_PROFILE;
         attrs[Maliit::SettingEntryAttributes::valueDomain] = available_styles;
         attrs[Maliit::SettingEntryAttributes::valueDomainDescriptions] = available_styles;
 
