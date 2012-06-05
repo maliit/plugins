@@ -95,6 +95,10 @@ public:
     void setOrientationAngleLocked(bool) {}
     QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState) const {return QList<MImPluginDescription>();}
     Maliit::Plugins::AbstractSurfaceFactory* surfaceFactory() { return 0; }
+    Maliit::Plugins::AbstractPluginSetting* registerPluginSetting(const QString &,
+                                                                  const QString &,
+                                                                  Maliit::SettingEntryType ,
+                                                                  const QVariantMap &) { return 0; }
 };
 
 #endif // INPUTMETHODHOSTPROBE_H
