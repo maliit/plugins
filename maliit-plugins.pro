@@ -12,6 +12,7 @@ include(config.pri)
         \\n\\t enable-hunspell: Use hunspell for error correction (maliit-keyboard-plugin only) \
         \\n\\t enable-qt-mobility: Enable use of QtMobility (enables sound and haptic feedback) \
         \\n\\t notests: Do not attempt to build tests \
+        \\n\\t nodoc : Do not build documentation \
         \\nInfluential environment variables: \
         \\n\\t QMAKEFEATURES A mkspecs/features directory list to look for features. \
         \\n\\t\\t Use it if a dependency is installed to non-default location. \
@@ -32,6 +33,8 @@ TEMPLATE = subdirs
 SUBDIRS = \
     nemo-keyboard \
     maliit-keyboard \
+
+!nodoc:SUBDIRS += doc
 
 DIST_NAME = $$MALIIT_PACKAGENAME-$$MALIIT_VERSION
 DIST_PATH = $$OUT_PWD/$$DIST_NAME
