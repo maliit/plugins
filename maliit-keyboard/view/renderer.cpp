@@ -279,6 +279,7 @@ public:
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extended_surface;
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> magnifier_surface;
+    SharedStyle style;
     QVector<LayoutItem> layout_items;
     QVector<KeyItem *> key_items;
     QVector<KeyItem *> extended_key_items;
@@ -365,9 +366,17 @@ void Renderer::clearLayouts()
     d->magnifier_surface->clear();
 }
 
-void Renderer::setImagesDirectoryPath(const QString &path)
+void Renderer::setStyle(const SharedStyle &style)
 {
-    Utils::setImagesDirectoryPath(path);
+    Q_D(Renderer);
+    if (d->style) {
+        disconnect(d->style.data(), SIGNAL(profileChanged()),
+                   this,            SLOT(applyProfile()));
+    }
+    d->style = style;
+    connect(d->style.data(), SIGNAL(profileChanged()),
+            this,            SLOT(applyProfile()));
+    applyProfile();
 }
 
 void Renderer::show()
@@ -523,6 +532,13 @@ void Renderer::onWordCandidatesChanged(const SharedLayout &layout)
         }
     }
 
+}
+
+void Renderer::applyProfile()
+{
+    Q_D(Renderer);
+
+    Utils::setImagesDirectoryPath(d->style->directoryPath(Style::Images));
 }
 
 } // namespace MaliitKeyboard

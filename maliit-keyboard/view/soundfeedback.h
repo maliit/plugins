@@ -58,6 +58,8 @@ private:
     virtual void playReleaseFeedback();
     virtual void playLayoutChangeFeedback();
     virtual void playKeyboardHideFeedback();
+
+    Q_SLOT void applyProfile();
 };
 
 } // namespace MaliitKeyboard

@@ -70,8 +70,9 @@ public:
 };
 
 
-Style::Style()
-    : d_ptr(new StylePrivate)
+Style::Style(QObject *parent)
+    : QObject(parent),
+      d_ptr(new StylePrivate)
 {}
 
 
@@ -106,6 +107,8 @@ void Style::setProfile(const QString &profile)
 
     d->attributes.reset(attributes);
     d->extended_keys_attributes.reset(extended_keys_attributes);
+
+    Q_EMIT profileChanged();
 }
 
 

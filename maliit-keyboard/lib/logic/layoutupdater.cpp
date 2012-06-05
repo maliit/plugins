@@ -222,10 +222,19 @@ public:
                 shift_machine.inState(ShiftMachine::latched_shift_state));
     }
 
+    bool arePrimarySymbolsShown() const
+    {
+        return view_machine.inState(ViewMachine::symbols0_state);
+    }
+
+    bool areSecondarySymbolsShown() const
+    {
+        return view_machine.inState(ViewMachine::symbols1_state);
+    }
+
     bool areSymbolsShown() const
     {
-        return (view_machine.inState(ViewMachine::symbols0_state) or
-                view_machine.inState(ViewMachine::symbols1_state));
+        return arePrimarySymbolsShown() or areSecondarySymbolsShown();
     }
 
     bool inDeadkeyState() const
@@ -320,7 +329,13 @@ void LayoutUpdater::setOrientation(Layout::Orientation orientation)
 void LayoutUpdater::setStyle(const SharedStyle &style)
 {
     Q_D(LayoutUpdater);
+    if (d->style) {
+        disconnect(d->style.data(), SIGNAL(profileChanged()),
+                   this,            SLOT(applyProfile()));
+    }
     d->style = style;
+    connect(d->style.data(), SIGNAL(profileChanged()),
+            this,            SLOT(applyProfile()));
 }
 
 void LayoutUpdater::onKeyPressed(const Key &key,
@@ -604,6 +619,25 @@ void LayoutUpdater::syncLayoutToView()
     }
 
     if (d->inDeadkeyState()) {
+        switchToAccentedView();
+    } else {
+        switchToMainView();
+    }
+}
+
+void LayoutUpdater::applyProfile()
+{
+    Q_D(const LayoutUpdater);
+
+    if (not d->layout) {
+        return;
+    }
+
+    if (d->arePrimarySymbolsShown()) {
+        switchToPrimarySymView();
+    } else if (d->areSecondarySymbolsShown()) {
+        switchToSecondarySymView();
+    } else if (d->inDeadkeyState()) {
         switchToAccentedView();
     } else {
         switchToMainView();

@@ -122,12 +122,24 @@ SoundFeedback::~SoundFeedback()
 void SoundFeedback::setStyle(const SharedStyle &style)
 {
     Q_D(SoundFeedback);
+    if (d->style) {
+        disconnect(d->style.data(), SIGNAL(profileChanged()),
+                   this,            SLOT(applyProfile()));
+    }
     d->style = style;
 
     if (d->style.isNull()) {
         return;
     }
 
+    connect(d->style.data(), SIGNAL(profileChanged()),
+            this,            SLOT(applyProfile()));
+    applyProfile();
+}
+
+void SoundFeedback::applyProfile()
+{
+    Q_D(SoundFeedback);
     const QString path(d->style->directoryPath(Style::Sounds));
     const StyleAttributes *attributes(d->style->attributes());
 

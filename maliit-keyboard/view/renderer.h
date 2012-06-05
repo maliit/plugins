@@ -34,6 +34,7 @@
 
 #include "abstractbackgroundbuffer.h"
 #include "models/layout.h"
+#include "logic/style.h"
 
 #include <QtGui>
 
@@ -71,7 +72,7 @@ public:
 
     void addLayout(const SharedLayout &layout);
     void clearLayouts();
-    void setImagesDirectoryPath(const QString &path);
+    void setStyle(const SharedStyle &style);
 
     Q_SLOT void show();
     Q_SLOT void hide();
@@ -82,6 +83,8 @@ public:
 
 
 private:
+    Q_SLOT void applyProfile();
+
     const QScopedPointer<RendererPrivate> d_ptr;
 };
 

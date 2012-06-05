@@ -136,7 +136,7 @@ public:
         styleSetting.reset(host->registerPluginSetting("current_style", QT_TR_NOOP("Keyboard style"),
                                                        Maliit::StringType, attrs));
         style->setProfile(styleSetting->value().toString());
-        renderer.setImagesDirectoryPath(style->directoryPath(Style::Images));
+        renderer.setStyle(style);
         layout_updater.setStyle(style);
         feedback.setStyle(style);
 

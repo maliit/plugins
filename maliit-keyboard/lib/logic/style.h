@@ -43,8 +43,9 @@ class StylePrivate;
 class Style;
 typedef QSharedPointer<Style> SharedStyle;
 
-class Style
+class Style : public QObject
 {
+    Q_OBJECT
     Q_DISABLE_COPY(Style)
     Q_DECLARE_PRIVATE(Style)
 
@@ -54,7 +55,7 @@ public:
         Sounds  //!< used to query sounds directoryPath().
     };
 
-    explicit Style();
+    explicit Style(QObject *parent = 0);
     virtual ~Style();
 
     void setProfile(const QString &profile);
@@ -65,6 +66,8 @@ public:
 
     StyleAttributes * attributes() const;
     StyleAttributes * extendedKeysAttributes() const;
+
+    Q_SIGNAL void profileChanged();
 
 private:
     const QScopedPointer<StylePrivate> d_ptr;

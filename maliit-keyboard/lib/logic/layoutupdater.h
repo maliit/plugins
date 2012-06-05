@@ -118,6 +118,8 @@ private:
 
     Q_SLOT void switchToAccentedView();
 
+    Q_SLOT void applyProfile();
+
     const QScopedPointer<LayoutUpdaterPrivate> d_ptr;
 };
 
