@@ -32,7 +32,6 @@
 #include "wordengine.h"
 #include "spellchecker.h"
 
-#include <iostream>
 #ifdef HAVE_PRESAGE
 #include <presage.h>
 #endif
