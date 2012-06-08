@@ -382,7 +382,8 @@ qreal StyleAttributes::keyHeight(Layout::Orientation orientation) const
 
 //! \brief Looks up the key width.
 //! @param orientation The layout orientation (landscape or portrait).
-//! @returns Value of "${style}\${orientation}\key-size".
+//! @param width The key width type.
+//! @returns Value of "${style}\${orientation}\key-width-${width}".
 qreal StyleAttributes::keyWidth(Layout::Orientation orientation,
                                 KeyDescription::Width width) const
 {
