@@ -163,10 +163,12 @@ Key magnifyKey(const Key &key,
         return Key();
     }
 
-    QRect magnifier_rect(adjustedRect(key.rect(), key.margins()).topLeft(),
+    const QRect adjusted_key_rect(adjustedRect(key.rect(), key.margins()));
+    QRect magnifier_rect(adjusted_key_rect.topLeft(),
                          QSize(attributes->magnifierKeyWidth(orientation),
                                attributes->magnifierKeyHeight(orientation)));
-    magnifier_rect.translate(0, -1 * attributes->verticalOffset(orientation));
+    magnifier_rect.translate((adjusted_key_rect.width() - magnifier_rect.width()) / 2,
+                             -1 * attributes->verticalOffset(orientation));
 
     const QRect &mapped(magnifier_rect.translated(key_area_rect.topLeft().toPoint()));
 
