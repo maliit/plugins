@@ -144,6 +144,11 @@ bool updateWordRibbon(const SharedLayout &layout,
     return false;
 }
 
+QRect adjustedRect(const QRect &rect, const QMargins &margins)
+{
+    return rect.adjusted(margins.left(), margins.top(), -margins.right(), -margins.bottom());
+}
+
 Key magnifyKey(const Key &key,
                const StyleAttributes *attributes,
                Layout::Orientation orientation,
@@ -158,8 +163,9 @@ Key magnifyKey(const Key &key,
         return Key();
     }
 
-    QRect magnifier_rect(key.origin(), QSize(attributes->magnifierKeyWidth(orientation),
-                                             attributes->magnifierKeyHeight(orientation)));
+    QRect magnifier_rect(adjustedRect(key.rect(), key.margins()).topLeft(),
+                         QSize(attributes->magnifierKeyWidth(orientation),
+                               attributes->magnifierKeyHeight(orientation)));
     magnifier_rect.translate(0, -1 * attributes->verticalOffset(orientation));
 
     const QRect &mapped(magnifier_rect.translated(key_area_rect.topLeft().toPoint()));
