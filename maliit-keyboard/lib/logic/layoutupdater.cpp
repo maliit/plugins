@@ -144,11 +144,6 @@ bool updateWordRibbon(const SharedLayout &layout,
     return false;
 }
 
-QRect adjustedRect(const QRect &rect, const QMargins &margins)
-{
-    return rect.adjusted(margins.left(), margins.top(), -margins.right(), -margins.bottom());
-}
-
 Key magnifyKey(const Key &key,
                const StyleAttributes *attributes,
                Layout::Orientation orientation,
@@ -163,11 +158,10 @@ Key magnifyKey(const Key &key,
         return Key();
     }
 
-    Key magnifier(key);
-    // Remove the reactive area (margin) from around the key (because the magnifier key should be just the key itself)
-    QRect magnifier_rect(adjustedRect(key.rect(), key.margins())
-                         .translated(0, -1 * attributes->verticalOffset(orientation))
-                         .adjusted(-20, -20, 20, 20));
+    QRect magnifier_rect(key.origin(), QSize(attributes->magnifierKeyWidth(orientation),
+                                             attributes->magnifierKeyHeight(orientation)));
+    magnifier_rect.translate(0, -1 * attributes->verticalOffset(orientation));
+
     const QRect &mapped(magnifier_rect.translated(key_area_rect.topLeft().toPoint()));
 
     const int delta_left(mapped.left()
@@ -183,6 +177,7 @@ Key magnifyKey(const Key &key,
         magnifier_rect.translate(delta_right, 0);
     }
 
+    Key magnifier(key);
     magnifier.setOrigin(magnifier_rect.topLeft());
     magnifier.rArea().setBackground(attributes->magnifierKeyBackground());
     magnifier.rArea().setSize(magnifier_rect.size());

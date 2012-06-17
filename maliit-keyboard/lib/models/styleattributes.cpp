@@ -385,6 +385,17 @@ qreal StyleAttributes::wordRibbonHeight(Layout::Orientation orientation) const
 }
 
 
+//! \brief Looks up the magnifier key height.
+//! @param orientation The layout orientation (landscape or portrait).
+//! @returns Value of "${style}\${orientation}\magnifier-key-height".
+qreal StyleAttributes::magnifierKeyHeight(Layout::Orientation orientation) const
+{
+    return lookup(m_store, orientation,
+                  m_style_name.toLocal8Bit(),
+                  QByteArray("magnifier-key-height")).toReal();
+}
+
+
 //! \brief Looks up the key height.
 //! @param orientation The layout orientation (landscape or portrait).
 //! @returns Value of "${style}\${orientation}\key-height".
@@ -393,6 +404,17 @@ qreal StyleAttributes::keyHeight(Layout::Orientation orientation) const
     return lookup(m_store, orientation,
                   m_style_name.toLocal8Bit(),
                   QByteArray("key-height")).toReal();
+}
+
+
+//! \brief Looks up the magnifier key width.
+//! @param orientation The layout orientation (landscape or portrait).
+//! @returns Value of "${style}\${orientation}\magnifier-key-width".
+qreal StyleAttributes::magnifierKeyWidth(Layout::Orientation orientation) const
+{
+    return lookup(m_store, orientation,
+                  m_style_name.toLocal8Bit(),
+                  QByteArray("magnifier-key-width")).toReal();
 }
 
 

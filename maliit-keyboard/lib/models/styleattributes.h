@@ -72,7 +72,10 @@ public:
     qreal candidateFontStretch(Layout::Orientation orientation) const;
 
     qreal wordRibbonHeight(Layout::Orientation orientation) const;
+    qreal magnifierKeyHeight(Layout::Orientation orientation) const;
     qreal keyHeight(Layout::Orientation orientation) const;
+
+    qreal magnifierKeyWidth(Layout::Orientation orientation) const;
     qreal keyWidth(Layout::Orientation orientation,
                    KeyDescription::Width width) const;
     qreal keyAreaWidth(Layout::Orientation orientation) const;
