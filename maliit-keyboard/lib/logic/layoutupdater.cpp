@@ -165,11 +165,17 @@ Key magnifyKey(const Key &key,
 
     Key magnifier(key);
     // Remove the reactive area (margin) from around the key (because the magnifier key should be just the key itself)
-    QRect magnifier_rect(adjustedRect(key.rect(), key.margins()).translated(0, -120).adjusted(-20, -20, 20, 20));
+    QRect magnifier_rect(adjustedRect(key.rect(), key.margins())
+                         .translated(0, -1 * attributes->verticalOffset(orientation))
+                         .adjusted(-20, -20, 20, 20));
     const QRect &mapped(magnifier_rect.translated(key_area_rect.topLeft().toPoint()));
 
-    const int delta_left(mapped.left() - (key_area_rect.left() + 10));
-    const int delta_right((key_area_rect.right() - 10) - mapped.right());
+    const int delta_left(mapped.left()
+                         - (key_area_rect.left()
+                         + attributes->safetyMargin(orientation)));
+    const int delta_right((key_area_rect.right()
+                           - attributes->safetyMargin(orientation))
+                          - mapped.right());
 
     if (delta_left < 0) {
         magnifier_rect.translate(qAbs<int>(delta_left), 0);
@@ -387,6 +393,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
 
     const Layout::Orientation orientation(d->layout->orientation());
     StyleAttributes * const extended_attributes(d->style->extendedKeysAttributes());
+    const qreal vertical_offset(d->style->attributes()->verticalOffset(orientation));
     const KeyAreaConverter converter(extended_attributes, &d->loader, d->anchor);
     KeyArea ext_ka(converter.extendedKeyArea(orientation, key));
 
@@ -400,7 +407,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     const qreal safety_margin(extended_attributes->safetyMargin(orientation));
 
     QPoint offset(qMax<int>(safety_margin, key_center.x() - ext_panel_size.width() / 2),
-                  key.rect().top() - extended_attributes->verticalOffset(orientation));
+                  key.rect().top() - vertical_offset);
 
     if (offset.x() + ext_panel_size.width() > center_panel_size.width()) {
         offset.rx() = center_panel_size.width() - ext_panel_size.width() - safety_margin;

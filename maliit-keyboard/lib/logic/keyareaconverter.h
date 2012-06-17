@@ -47,7 +47,7 @@ class KeyAreaConverter
 private:
     StyleAttributes * const m_attributes;
     KeyboardLoader * const m_loader;
-    QPoint m_anchor;
+    const QPoint m_anchor;
 
 public:
     explicit KeyAreaConverter(StyleAttributes *attributes,
