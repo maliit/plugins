@@ -386,7 +386,8 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     clearActiveKeysAndMagnifier();
 
     const Layout::Orientation orientation(d->layout->orientation());
-    const KeyAreaConverter converter(d->style->extendedKeysAttributes(), &d->loader, d->anchor);
+    StyleAttributes * const extended_attributes(d->style->extendedKeysAttributes());
+    const KeyAreaConverter converter(extended_attributes, &d->loader, d->anchor);
     KeyArea ext_ka(converter.extendedKeyArea(orientation, key));
 
     if (not ext_ka.hasKeys()) {
@@ -396,11 +397,10 @@ void LayoutUpdater::onKeyLongPressed(const Key &key,
     const QSize &ext_panel_size(ext_ka.area().size());
     const QSize &center_panel_size(d->layout->centerPanel().area().size());
     const QPointF &key_center(key.rect().center());
-    const StyleAttributes *attributes(d->style->extendedKeysAttributes());
-    const qreal safety_margin(attributes->safetyMargin(orientation));
+    const qreal safety_margin(extended_attributes->safetyMargin(orientation));
 
     QPoint offset(qMax<int>(safety_margin, key_center.x() - ext_panel_size.width() / 2),
-                  key.rect().top() - attributes->verticalOffset(orientation));
+                  key.rect().top() - extended_attributes->verticalOffset(orientation));
 
     if (offset.x() + ext_panel_size.width() > center_panel_size.width()) {
         offset.rx() = center_panel_size.width() - ext_panel_size.width() - safety_margin;
