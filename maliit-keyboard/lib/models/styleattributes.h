@@ -84,6 +84,7 @@ public:
     qreal keyAreaPadding(Layout::Orientation orienation) const;
 
     qreal verticalOffset(Layout::Orientation orientation) const;
+    qreal magnifierKeyLabelOffset(Layout::Orientation orientation) const;
     qreal safetyMargin(Layout::Orientation orientation) const;
 
     QByteArray keyPressSound() const;

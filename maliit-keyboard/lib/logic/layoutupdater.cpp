@@ -183,6 +183,14 @@ Key magnifyKey(const Key &key,
     magnifier.rArea().setSize(magnifier_rect.size());
     magnifier.rArea().setBackgroundBorders(attributes->magnifierKeyBackgroundBorders());
     magnifier.rLabel().setFont(magnifier_font);
+
+    // Compute label rectangle, contains the text:
+    const qreal label_offset(attributes->magnifierKeyLabelOffset(orientation));
+    const QSize &magnifier_size(magnifier.area().size());
+    const QRect label_rect(0, 0,
+                           magnifier_size.width(),
+                           magnifier_size.height() - label_offset);
+    magnifier.rLabel().setRect(label_rect);
     magnifier.setMargins(QMargins());
 
     return magnifier;

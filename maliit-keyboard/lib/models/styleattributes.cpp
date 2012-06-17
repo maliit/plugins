@@ -486,6 +486,17 @@ qreal StyleAttributes::verticalOffset(Layout::Orientation orientation) const
 }
 
 
+//! \brief Looks up the vertical offset to position label inside magnifier key.
+//! @param orientation The layout orientation (landscape or portrait).
+//! @returns Value of "${style}\${orientation}\magnifier-key-label-offset".
+qreal StyleAttributes::magnifierKeyLabelOffset(Layout::Orientation orientation) const
+{
+    return lookup(m_store, orientation,
+                  m_style_name.toLocal8Bit(),
+                  QByteArray("magnifier-key-label-offset")).toReal();
+}
+
+
 //! \brief Looks up the safety margin.
 //!
 //! Try to never put magnifier or extended key area within safety margin,
