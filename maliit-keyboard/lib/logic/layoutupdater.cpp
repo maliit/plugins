@@ -184,10 +184,9 @@ Key magnifyKey(const Key &key,
     }
 
     magnifier.setOrigin(magnifier_rect.topLeft());
-    magnifier.rArea().setBackground(attributes->keyBackground(KeyDescription::NormalStyle,
-                                                     KeyDescription::PressedState));
+    magnifier.rArea().setBackground(attributes->magnifierKeyBackground());
     magnifier.rArea().setSize(magnifier_rect.size());
-    magnifier.rArea().setBackgroundBorders(attributes->keyBackgroundBorders());
+    magnifier.rArea().setBackgroundBorders(attributes->magnifierKeyBackgroundBorders());
     magnifier.rLabel().setFont(magnifier_font);
     magnifier.setMargins(QMargins());
 

@@ -51,11 +51,13 @@ public:
     virtual void setStyleName(const QString &name);
     QByteArray wordRibbonBackground() const;
     QByteArray keyAreaBackground() const;
+    QByteArray magnifierKeyBackground() const;
     QByteArray keyBackground(KeyDescription::Style style,
                              KeyDescription::State state) const;
 
     QMargins wordRibbonBackgroundBorders() const;
     QMargins keyAreaBackgroundBorders() const;
+    QMargins magnifierKeyBackgroundBorders() const;
     QMargins keyBackgroundBorders() const;
 
     QByteArray icon(KeyDescription::Icon icon,

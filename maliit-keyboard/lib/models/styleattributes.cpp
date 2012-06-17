@@ -223,6 +223,14 @@ QByteArray StyleAttributes::keyAreaBackground() const
 }
 
 
+//! \brief Looks up the background image name for the key magnifier.
+//! @returns Value of "background\magnifier-key"
+QByteArray StyleAttributes::magnifierKeyBackground() const
+{
+    return m_store->value("background/magnifier-key").toByteArray();
+}
+
+
 //! \brief Looks up the background image name for keys, depending on style
 //!        and state.
 //! @param style The key style (normal, special, deadkey).
@@ -252,6 +260,14 @@ QMargins StyleAttributes::wordRibbonBackgroundBorders() const
 QMargins StyleAttributes::keyAreaBackgroundBorders() const
 {
     return fromByteArray(m_store->value("background/key-area-borders").toByteArray());
+}
+
+
+//! \brief Looks up the borders for 9-tiling magnifier key background.
+//! @returns Value of "background\magnifier-key-borders".
+QMargins StyleAttributes::magnifierKeyBackgroundBorders() const
+{
+    return fromByteArray(m_store->value("background/magnifier-key-borders").toByteArray());
 }
 
 
