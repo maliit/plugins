@@ -1,13 +1,25 @@
 NEXT
-====
+======
 
 CHANGES SINCE 0.92.1
-* Implemented spell checking with Hunspell
+* Implemented spell checking with Hunspell:
   - Requires Hunspell's development files. Use qmake CONFIG+=enable-hunspell
     to enable this feature.
   - Used best together with presage.
-* Expose keyboard style as a plugin setting.
+* Expose keyboard style as a plugin setting:
   - Add MALIIT_DEFAULT_PROFILE option to specify default keyboard style.
+* New Gnome3 style:
+  - Use qmake MALIIT_DEFAULT_PROFILE=gnome3 to activate.
+* Improved magnifier key styling:
+  - Can specify separate background graphics: "background\magnifier-key",
+    "background\magnifier-key-borders".
+  - Can specify magnifier size:
+    "${style}\[landscape|portrait]\magnifier-key-[width|height]".
+  - Can move text inside magnifier key:
+    "${style}\[landscape|portrait]\magnifier-key-label-offset".
+  - Use "${style}\[landscape|portrait]\vertical-offset" to position both,
+    magnifier key and extended keys. Also moved the style attribute from
+    extended-keys.ini to main.ini.
 
 0.92.1
 ======
