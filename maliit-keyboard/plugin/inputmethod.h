@@ -54,6 +54,8 @@ public:
     //! \reimp
     virtual void show();
     Q_SLOT virtual void hide();
+    virtual void setPreedit(const QString &preedit,
+                            int cursor_position);
     virtual void switchContext(Maliit::SwitchDirection direction,
                                bool animated);
     virtual QList<MAbstractInputMethod::MInputMethodSubView>

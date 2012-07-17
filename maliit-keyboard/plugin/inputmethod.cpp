@@ -188,6 +188,14 @@ void InputMethod::hide()
     inputMethodHost()->notifyImInitiatedHiding();
 }
 
+void InputMethod::setPreedit(const QString &preedit,
+                             int cursor_position)
+{
+    Q_UNUSED(cursor_position)
+    Q_D(InputMethod);
+    d->editor.replacePreedit(preedit, AbstractTextEditor::ReplaceOnly);
+}
+
 void InputMethod::switchContext(Maliit::SwitchDirection direction,
                                 bool animated)
 {
