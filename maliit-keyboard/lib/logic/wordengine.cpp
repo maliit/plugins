@@ -111,6 +111,10 @@ WordEngine::~WordEngine()
 
 void WordEngine::onTextChanged(const Model::SharedText &text)
 {
+#ifdef DISABLE_PREEDIT
+    Q_UNUSED(text)
+    return;
+#else
     if (text.isNull()) {
         qWarning() << __PRETTY_FUNCTION__
                    << "No text model specified.";
@@ -158,6 +162,7 @@ void WordEngine::onTextChanged(const Model::SharedText &text)
     }
 
     Q_EMIT candidatesUpdated(d->candidates);
+#endif
 }
 
 }} // namespace Logic, MaliitKeyboard

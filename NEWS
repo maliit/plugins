@@ -1,3 +1,14 @@
+NEXT
+======
+
+CHANGES SINCE 0.92.2
+* Add configure option to disable preedit
+  - In this mode, all text is committed immediately. Works around
+    https://bugzilla.gnome.org/show_bug.cgi?id=680097 and can be used as a
+    "fix" for the corresponding MALIIT#173.
+  - Use qmake CONFIG+=disable-preedit, which is automatically set if neither
+    CONFIG+=enable-hunspell nor CONFIG+=enable-presage is used.
+
 0.92.2
 ======
 

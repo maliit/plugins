@@ -11,6 +11,7 @@ include(config.pri)
         \\nRecognised CONFIG flags: \
         \\n\\t enable-presage: Use presage to calculate word candidates (maliit-keyboard-plugin only) \
         \\n\\t enable-hunspell: Use hunspell for error correction (maliit-keyboard-plugin only) \
+        \\n\\t disable-preedit: Always commit characters and never use preedit (maliit-keyboard-plugin only) \
         \\n\\t enable-qt-mobility: Enable use of QtMobility (enables sound and haptic feedback) \
         \\n\\t notests: Do not attempt to build tests \
         \\n\\t nodoc : Do not build documentation \

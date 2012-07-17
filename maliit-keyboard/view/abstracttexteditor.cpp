@@ -126,7 +126,11 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
     switch(key.action()) {
     case Key::ActionInsert:
         d->text->appendToPreedit(text);
+#ifdef DISABLE_PREEDIT
+        commitPreedit();
+#else
         sendPreeditString(d->text->preedit());
+#endif
         Q_EMIT textChanged(d->text);
         break;
 
