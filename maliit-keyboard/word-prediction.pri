@@ -10,6 +10,6 @@ enable-hunspell {
     DEFINES += HAVE_HUNSPELL
 }
 
-disable-preedit|!(enable-presage|enable-hunspell) {
+disable-preedit|!enable-presage:!enable-hunspell {
     DEFINES += DISABLE_PREEDIT
 }
