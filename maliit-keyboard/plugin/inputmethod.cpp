@@ -156,7 +156,7 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
     Setup::connectAll(&d->glass, &d->layout_updater, &d->renderer, &d->editor, &d->word_engine, &d->feedback);
 
     connect(&d->glass, SIGNAL(keyboardClosed()),
-            this,      SLOT(hide()));
+            this,      SLOT(onKeyboardClosed()));
 
     connect(&d->glass, SIGNAL(switchLeft(SharedLayout)),
             this,      SLOT(onSwitchLeft()));
@@ -185,7 +185,6 @@ void InputMethod::hide()
     d->renderer.hide();
     d->layout_updater.resetOnKeyboardClosed();
     d->editor.clearPreedit();
-    inputMethodHost()->notifyImInitiatedHiding();
 }
 
 void InputMethod::setPreedit(const QString &preedit,
@@ -279,6 +278,12 @@ void InputMethod::onStyleSettingChanged()
 {
     Q_D(InputMethod);
     d->style->setProfile(d->styleSetting->value().toString());
+}
+
+void InputMethod::onKeyboardClosed()
+{
+    hide();
+    inputMethodHost()->notifyImInitiatedHiding();
 }
 
 } // namespace MaliitKeyboard

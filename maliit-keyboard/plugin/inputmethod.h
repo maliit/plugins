@@ -72,6 +72,7 @@ private:
 
     Q_SLOT void onScreenSizeChange(const QSize &size);
     Q_SLOT void onStyleSettingChanged();
+    Q_SLOT void onKeyboardClosed();
 
     const QScopedPointer<InputMethodPrivate> d_ptr;
 };
