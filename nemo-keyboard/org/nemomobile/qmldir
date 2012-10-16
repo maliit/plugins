@@ -1,7 +1,7 @@
-LandscapeVKB 1.0 LandscapeVKB.qml
-PortraitVKB 1.0 PortraitVKB.qml
+KeyboardBase 1.0 KeyboardBase.qml
 RussianPortrait 1.0 RussianPortrait.qml
 EnglishPortrait 1.0 EnglishPortrait.qml
+EnglishLandscape 1.0 EnglishLandscape.qml
 CharacterKey 1.0 CharacterKey.qml
 FunctionKey 1.0 FunctionKey.qml
 PluginClose  1.0 PluginClose.qml

@@ -38,20 +38,20 @@ Item {
     width: MInputMethodQuick.screenWidth
     height: MInputMethodQuick.screenHeight
 
-    Item {
+    KeyboardBase {
         id: root
         transformOrigin: Item.Center
+        width: parent.width
+        height: parent.height
 
-        LandscapeVKB {
+        EnglishLandscape {
             id: vkb_landscape
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            visible: layout == vkb_landscape
         }
 
-        PortraitVKB {
+        EnglishPortrait {
             id: vkb_portrait
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            visible: layout == vkb_portrait
         }
 
         Component.onCompleted: {
@@ -77,20 +77,9 @@ Item {
             PropertyChanges {
                 target: root
                 rotation: 0
-                width: parent.width
-                height: parent.height
                 x: 0
                 y: 0
-            }
-
-            PropertyChanges {
-                target: vkb_portrait;
-                opacity: 0
-            }
-
-            PropertyChanges {
-                target: vkb_landscape;
-                opacity: 1
+                layout: vkb_landscape
             }
         },
 
@@ -106,20 +95,9 @@ Item {
             PropertyChanges {
                 target: root
                 rotation: 90
-                width: parent.height
-                height: parent.width
                 x: (parent.width - parent.height) / 2
                 y: (parent.height - parent.width) / 2
-            }
-
-            PropertyChanges {
-                target: vkb_portrait
-                opacity: 1
-            }
-
-            PropertyChanges {
-                target: vkb_landscape;
-                opacity: 0
+                layout: vkb_portrait
             }
         },
 
@@ -135,20 +113,9 @@ Item {
             PropertyChanges {
                 target: root
                 rotation: 180
-                width: parent.width
-                height: parent.height
                 x: 0
                 y: 0
-            }
-
-            PropertyChanges {
-                target: vkb_portrait;
-                opacity: 0
-            }
-
-            PropertyChanges {
-                target: vkb_landscape;
-                opacity: 1
+                layout: vkb_landscape
             }
         },
 
@@ -165,20 +132,9 @@ Item {
             PropertyChanges {
                 target: root
                 rotation: 270
-                width: parent.height
-                height: parent.width
                 x: (parent.width - parent.height) / 2
                 y: (parent.height - parent.width) / 2
-            }
-
-            PropertyChanges {
-                target: vkb_portrait
-                opacity: 1
-            }
-
-            PropertyChanges {
-                target: vkb_landscape;
-                opacity: 0
+                layout: vkb_portrait
             }
         }
     ]
@@ -190,13 +146,6 @@ Item {
 
             RotationAnimation {
                 target: root;
-                duration: 400;
-                easing.type: Easing.InOutQuad
-            }
-
-            PropertyAnimation {
-                targets: [vkb_landscape, vkb_portrait];
-                properties: "opacity";
                 duration: 400;
                 easing.type: Easing.InOutQuad
             }
