@@ -32,19 +32,15 @@
 import QtQuick 1.1
 import org.nemomobile 1.0
 
-Rectangle {
+Item {
     id: canvas
     transformOrigin: Item.Center
     width: MInputMethodQuick.screenWidth
     height: MInputMethodQuick.screenHeight
-    color: "transparent"
-    opacity: 1
 
-    Rectangle {
+    Item {
         id: root
         transformOrigin: Item.Center
-        color: "transparent"
-        opacity: 1
 
         PluginClose {
             LandscapeVKB {
