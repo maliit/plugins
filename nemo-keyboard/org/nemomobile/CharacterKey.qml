@@ -32,7 +32,7 @@
 import QtQuick 1.1
 import "KeyboardUiConstants.js" as UI
 
-Item {
+Image {
     id: aCharKey
     property string caption: ""
     property string captionShifted: ""
@@ -42,11 +42,10 @@ Item {
     property string sizeType: "keyboard-key-43x60.png"
     property bool pressed: false
 
-    Image {
-        id: keyImage
-        source: sizeType
-        opacity: (aCharKey.pressed) ? 0.5 : 1
-    }
+    property alias text: key_label.text
+
+    source: sizeType
+    opacity: pressed ? 0.5 : 1
 
     Text {
         id: key_label
@@ -59,43 +58,5 @@ Item {
         color: UI.TEXT_COLOR
         text: (inSymView && symView.length) > 0 ? (inSymView2 ? symView2 : symView) : (isShifted ? captionShifted : caption)
     }
-
-    Popper {
-        id: popper
-        anchors { bottom: parent.top; horizontalCenter: parent.horizontalCenter }
-        text: key_label.text
-        pressed: aCharKey.pressed
-    }
-
-    MouseArea {
-        id: mouse_area
-        anchors.fill: parent
-
-        onPressed: {
-            aCharKey.pressed = true
-            MInputMethodQuick.sendCommit(key_label.text)
-        }
-
-        onPressAndHold: charRepeater.start()
-
-        onReleased: {
-            charRepeater.stop()
-            aCharKey.pressed = false
-            isShifted = isShiftLocked ? isShifted : false
-        }
-
-        onCanceled: {
-            charRepeater.stop()
-            aCharKey.pressed = false
-        }
-
-        onExited: charRepeater.stop()
-    }
-
-    Timer {
-        id: charRepeater
-        interval: 80; repeat: true
-        triggeredOnStart: true
-        onTriggered: MInputMethodQuick.sendCommit(key_label.text)
-    }
 }
+
