@@ -2,6 +2,7 @@
  * This file is part of Maliit plugins
  *
  * Copyright (C) Jakub Pavelek <jpavelek@live.com>
+ * Copyright (C) 2012 John Brooks <john.brooks@dereferenced.net>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -30,12 +31,10 @@
 import QtQuick 1.0
 import "KeyboardUiConstants.js" as UI
 
-
-Column {
+MouseArea {
+    id: keyboardBase
     anchors.fill: parent
-    anchors.topMargin: 8
-    anchors.horizontalCenter: parent.horizontalCenter
-    spacing: 16
+
     property variant row1:["q1€", "w2£", "e3$", "r4¥", "t5₹", "y6%", "u7<", "i8>", "o9[", "p0]"]
     property variant row2: ["a*`", "s#^", "d+|", "f-_", "g=§", "h({", "j)}", "k?¿", "l!¡"]
     property variant row3: ["z@«", "x~»", "c/\"", "v\\“", "b'”", "n;„", "m:&"]
@@ -54,109 +53,173 @@ Column {
 
     property string layoutName: "English (UK)"
 
-    Row { //Row 1
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: keyMargin
-        Repeater {
-            model: row1
-            CharacterKey {
-                width: keyWidth; height: keyHeight
-                caption: row1[index][0]
-                captionShifted: row1[index][0].toUpperCase()
-                symView: row1[index][1]
-                symView2: row1[index][2]
-            }
-        }
-    } //end Row1
+    property int startX
+    property int startY
+    property Item pressedKey
 
-    Row { //Row 2
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        spacing: keyMargin
-        Repeater {
-            model: row2
-            CharacterKey {
-                width: keyWidth; height: keyHeight
-                caption: row2[index][0]
-                captionShifted: row2[index][0].toUpperCase()
-                symView: row2[index][1]
-                symView2: row2[index][2]
-            }
-        }
+    onPressed: {
+        startX = mouse.x
+        startY = mouse.y
+        updatePressedKey(mouse.x, mouse.y);
     }
 
-    Row { //Row 3
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 32 : 16
-        FunctionKey {
-            width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
-            icon: inSymView ? ""
-                            : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
-                                              : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
-                                                            : "icon-m-input-methods-shift-lowercase.svg"
+    onPositionChanged: updatePressedKey(mouse.x, mouse.y);
 
-            caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
-
-            onClickedPass: {
-                if (inSymView) {
-                    inSymView2 = !inSymView2
-                } else {
-                    isShifted = (!isShifted)
-                    isShiftLocked = false
-                }
-            }
-            onPressedAndHoldPass: {
-                if (!inSymView) {
-                    isShifted = true
-                    isShiftLocked = true
-                }
-            }
+    onReleased: {
+        // Hide keyboard if flicked down by >40%
+        if (mouse.y - startY > (height * 0.4)) {
+            MInputMethodQuick.userHide();
+            return;
         }
 
-        Row {
+        if (pressedKey == null)
+            return;
+
+        MInputMethodQuick.sendCommit(pressedKey.text);
+        if (!isShiftLocked)
+            isShifted = false;
+
+        pressedKey.pressed = false;
+        pressedKey = null;
+    }
+
+    function updatePressedKey(x, y) {
+        var key = keyAt(x, y);
+        if (pressedKey !== null && pressedKey !== key)
+            pressedKey.pressed = false;
+        pressedKey = key;
+        if (pressedKey !== null)
+            pressedKey.pressed = true;
+    }
+
+    function keyAt(x, y) {
+        var item = keyArea;
+        x -= keyArea.x;
+        y -= keyArea.y;
+
+        while ((item = item.childAt(x, y)) != null) {
+            if (typeof item.text !== 'undefined') {
+                return item;
+            }
+
+            // Cheaper mapToItem, assuming we're not using anything fancy.
+            x -= item.x;
+            y -= item.y;
+        }
+
+        return null;
+    }
+
+    Column {
+        id: keyArea
+        spacing: 16
+        y: 8
+
+        Row { //Row 1
+            anchors.horizontalCenter: parent.horizontalCenter
             spacing: keyMargin
             Repeater {
-                model: row3
+                model: row1
                 CharacterKey {
                     width: keyWidth; height: keyHeight
-                    caption: row3[index][0]
-                    captionShifted: row3[index][0].toUpperCase()
-                    symView: row3[index][1]
-                    symView2: row3[index][2]
+                    caption: row1[index][0]
+                    captionShifted: row1[index][0].toUpperCase()
+                    symView: row1[index][1]
+                    symView2: row1[index][2]
+                }
+            }
+        } //end Row1
+
+        Row { //Row 2
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            spacing: keyMargin
+            Repeater {
+                model: row2
+                CharacterKey {
+                    width: keyWidth; height: keyHeight
+                    caption: row2[index][0]
+                    captionShifted: row2[index][0].toUpperCase()
+                    symView: row2[index][1]
+                    symView2: row2[index][2]
                 }
             }
         }
 
-        FunctionKey {
-            width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
-            icon: "icon-m-input-methods-backspace.svg"
-            repeat: true
-            onClickedPass: MInputMethodQuick.sendCommit("\b")
-        }
-    }
+        Row { //Row 3
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: (columns == 11) ? 32 : 16
+            FunctionKey {
+                width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
+                icon: inSymView ? ""
+                                : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
+                                                  : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
+                                                                : "icon-m-input-methods-shift-lowercase.svg"
 
-    Row { //Row 4
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 19 : 16
-        FunctionKey {
-            width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
-            caption: inSymView ? "ABC" : "?123"
-            onClickedPass: { inSymView = (!inSymView) }
+                caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
+
+                onClickedPass: {
+                    if (inSymView) {
+                        inSymView2 = !inSymView2
+                    } else {
+                        isShifted = (!isShifted)
+                        isShiftLocked = false
+                    }
+                }
+                onPressedAndHoldPass: {
+                    if (!inSymView) {
+                        isShifted = true
+                        isShiftLocked = true
+                    }
+                }
+            }
+
+            Row {
+                spacing: keyMargin
+                Repeater {
+                    model: row3
+                    CharacterKey {
+                        width: keyWidth; height: keyHeight
+                        caption: row3[index][0]
+                        captionShifted: row3[index][0].toUpperCase()
+                        symView: row3[index][1]
+                        symView2: row3[index][2]
+                    }
+                }
+            }
+
+            FunctionKey {
+                width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
+                icon: "icon-m-input-methods-backspace.svg"
+                repeat: true
+                onClickedPass: MInputMethodQuick.sendCommit("\b")
+            }
         }
 
-        Row {
-            spacing: 8
-            CharacterKey { caption: ","; captionShifted: ","; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
-            CharacterKey { caption: " "; captionShifted: " "; width: 136; height: keyHeight; sizeType: "keyboard-key-136x60.png" }
-            CharacterKey { caption: "."; captionShifted: "."; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
-        }
+        Row { //Row 4
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: (columns == 11) ? 19 : 16
+            FunctionKey {
+                width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
+                caption: inSymView ? "ABC" : "?123"
+                onClickedPass: { inSymView = (!inSymView) }
+            }
 
-        FunctionKey {
-            width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
-            icon: MInputMethodQuick.actionKeyOverride.icon
-            repeat: true
-            caption: MInputMethodQuick.actionKeyOverride.label
-            onClickedPass: MInputMethodQuick.activateActionKey()
+            Row {
+                spacing: 8
+                CharacterKey { caption: ","; captionShifted: ","; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
+                CharacterKey { caption: " "; captionShifted: " "; width: 136; height: keyHeight; sizeType: "keyboard-key-136x60.png" }
+                CharacterKey { caption: "."; captionShifted: "."; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
+            }
+
+            FunctionKey {
+                width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
+                icon: MInputMethodQuick.actionKeyOverride.icon
+                repeat: true
+                caption: MInputMethodQuick.actionKeyOverride.label
+                onClickedPass: MInputMethodQuick.activateActionKey()
+            }
         }
     }
 }
+
