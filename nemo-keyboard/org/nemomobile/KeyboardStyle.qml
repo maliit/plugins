@@ -29,7 +29,7 @@
  *
  */
 
-import Qt 4.7
+import QtQuick 1.1
 
 Item {
     property string background: "#d9d9d9"
