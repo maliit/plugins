@@ -42,18 +42,16 @@ Item {
         id: root
         transformOrigin: Item.Center
 
-        PluginClose {
-            LandscapeVKB {
-                id: vkb_landscape
-                anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+        LandscapeVKB {
+            id: vkb_landscape
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
 
-            PortraitVKB {
-                id: vkb_portrait
-                anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+        PortraitVKB {
+            id: vkb_portrait
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         Component.onCompleted: {
