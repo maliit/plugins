@@ -32,10 +32,11 @@ import "KeyboardUiConstants.js" as UI
 
 Image {
     id: popper
-    visible: false
     source: "popper.png"
-    property alias text: popperText.text
-    property bool pressed: false
+    opacity: 0
+
+    property Item target: null
+
     Text {
         id: popperText
         text: ""
@@ -48,19 +49,39 @@ Image {
         color: UI.TEXT_COLOR_POPPER
     }
 
-    onPressedChanged: {
-        if (pressed) {
-            popper.visible = true
-        } else {
-            animatePopperFade.start()
+    states: State {
+        name: "active"
+        when: target !== null
+
+        PropertyChanges {
+            target: popperText
+            text: target.text
+        }
+
+        PropertyChanges {
+            target: popper
+            opacity: 1
+
+            x: popper.parent.mapFromItem(target, 0, 0).x + (target.width - popper.width) / 2
+            y: popper.parent.mapFromItem(target, 0, 0).y - popper.height
         }
     }
-    Timer {
-        id: animatePopperFade
-        interval: 50
-        running: false
-        repeat: false
-        onTriggered: popper.visible = false
-    }
 
+    transitions: Transition {
+        from: "active"
+
+        SequentialAnimation {
+            PauseAnimation {
+                duration: 50
+            }
+            PropertyAction {
+                target: popper
+                properties: "opacity, x, y"
+            }
+            PropertyAction {
+                target: popperText
+                property: "text"
+            }
+        }
+    }
 }
