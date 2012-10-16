@@ -29,7 +29,7 @@
  *
  */
 
-import Qt 4.7
+import QtQuick 1.1
 
 //! This component is used to close QML plugin by veritical flicking
 Flickable {
