@@ -1,8 +1,9 @@
 /*
- * This file is part of Maliit plugins
+ * This file is part of Maliit Plugins
  *
- * Copyright (C) Jakub Pavelek <jpavelek@live.com>
- * Copyright (C) 2012 John Brooks <john.brooks@dereferenced.net>
+ * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies). All rights reserved.
+ *
+ * Contact: Mohammad Anwari <Mohammad.Anwari@nokia.com>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -32,16 +33,18 @@ import QtQuick 1.1
 import "KeyboardUiConstants.js" as UI
 
 Column {
-    id: keyArea
+    id: vkb
     anchors.fill: parent
-    anchors.topMargin: 8
+    anchors.topMargin: 4
+    anchors.horizontalCenter: parent.horizontalCenter
+    spacing: 12
 
     property bool isShifted: false
     property bool isShiftLocked: false
     property bool inSymView: false
     property bool inSymView2: false
 
-    property variant row1: ["q1€", "w2£", "e3$", "r4¥", "t5₹", "y6%", "u7<", "i8>", "o9[", "p0]"]
+    property variant row1:["q1€", "w2£", "e3$", "r4¥", "t5₹", "y6%", "u7<", "i8>", "o9[", "p0]"]
     property variant row2: ["a*`", "s#^", "d+|", "f-_", "g=§", "h({", "j)}", "k?¿", "l!¡"]
     property variant row3: ["z@«", "x~»", "c/\"", "v\\“", "b'”", "n;„", "m:&"]
     property variant accents_row1: ["", "", "eèéêë", "", "tþ", "yý", "uûùúü", "iîïìí", "oöôòó", ""]
@@ -49,11 +52,11 @@ Column {
     property variant accents_row3: ["", "", "cç", "", "", "nñ", ""]
 
     property int columns: Math.max(row1.length, row2.length, row3.length)
-    property int keyWidth: (columns == 11) ? UI.portraitWidthNarrow : UI.portraitWidth
-    property int keyHeight: UI.portraitHeight
-    property int keyMargin: (columns == 11) ? UI.portraitMarginNarrow : UI.portraitMargin
-
-    spacing: 16
+    property int keyWidth: (columns == 11) ? UI.landscapeWidthNarrow
+                                           : UI.landscapeWidth
+    property int keyHeight: UI.landscapeHeight
+    property int keyMargin: (columns == 11) ? UI.landscapeMarginNarrow
+                                            : UI.landscapeMargin
 
     Row { //Row 1
         anchors.horizontalCenter: parent.horizontalCenter
@@ -62,42 +65,46 @@ Column {
             model: row1
             CharacterKey {
                 width: keyWidth; height: keyHeight
+                sizeType: "keyboard-key-72x46.png"
                 caption: row1[index][0]
                 captionShifted: row1[index][0].toUpperCase()
                 symView: row1[index][1]
                 symView2: row1[index][2]
             }
         }
+
     } //end Row1
 
     Row { //Row 2
         anchors.horizontalCenter: parent.horizontalCenter
-
         spacing: keyMargin
         Repeater {
             model: row2
             CharacterKey {
                 width: keyWidth; height: keyHeight
+                sizeType: "keyboard-key-72x46.png"
                 caption: row2[index][0]
                 captionShifted: row2[index][0].toUpperCase()
                 symView: row2[index][1]
                 symView2: row2[index][2]
             }
         }
-    }
+    } //end Row2
 
     Row { //Row 3
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 32 : 16
+        spacing: (columns == 11) ? 6 : 8
+
         FunctionKey {
-            width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
+            width: 110; height: keyHeight
+            landscape: true
             icon: inSymView ? ""
-                            : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
-                                              : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
-                                                            : "icon-m-input-methods-shift-lowercase.svg"
+                : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
+                : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
+                : "icon-m-input-methods-shift-lowercase.svg"
 
             caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
-
+            opacity: (mouseArea.containsMouse || (isShiftLocked && (!inSymView))) ? 0.6 : 1
             onClickedPass: {
                 if (inSymView) {
                     inSymView2 = !inSymView2
@@ -120,6 +127,7 @@ Column {
                 model: row3
                 CharacterKey {
                     width: keyWidth; height: keyHeight
+                    sizeType: "keyboard-key-72x46.png"
                     caption: row3[index][0]
                     captionShifted: row3[index][0].toUpperCase()
                     symView: row3[index][1]
@@ -129,36 +137,39 @@ Column {
         }
 
         FunctionKey {
-            width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
-            icon: "icon-m-input-methods-backspace.svg"
+            width: 110; height: keyHeight
+            landscape: true
             repeat: true
-            onClickedPass: MInputMethodQuick.sendCommit("\b")
+            icon: "icon-m-input-methods-backspace.svg"
+            onClickedPass: MInputMethodQuick.sendCommit("\b");
         }
-    }
+    } //end Row3
 
     Row { //Row 4
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 19 : 16
+        spacing: (columns == 11) ? 6 : 8
         FunctionKey {
-            width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
+            width: 145; height: keyHeight
+            landscape: true
             caption: inSymView ? "ABC" : "?123"
-            onClickedPass: { inSymView = (!inSymView) }
+            onClickedPass: inSymView = (!inSymView)
         }
 
         Row {
-            spacing: 8
-            CharacterKey { caption: ","; captionShifted: ","; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
-            CharacterKey { caption: " "; captionShifted: " "; width: 136; height: keyHeight; sizeType: "keyboard-key-136x60.png" }
-            CharacterKey { caption: "."; captionShifted: "."; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
+            spacing: keyMargin
+            CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
+            CharacterKey { caption: " "; captionShifted: " "; width: 228; height: keyHeight; sizeType: "keyboard-key-228x46.png" }
+            CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
         }
 
         FunctionKey {
-            width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
-            icon: MInputMethodQuick.actionKeyOverride.icon
+            width: 145; height: keyHeight
+            landscape: true
             repeat: true
+            icon: MInputMethodQuick.actionKeyOverride.icon
             caption: MInputMethodQuick.actionKeyOverride.label
             onClickedPass: MInputMethodQuick.activateActionKey()
         }
-    }
+    } //end Row4
 }
 
