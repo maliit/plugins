@@ -38,7 +38,7 @@ MouseArea {
 
     property Item pressedKey
 
-    onLayoutChanged: layout.parent = keyboardBase
+    onLayoutChanged: if (layout) layout.parent = keyboardBase
 
     Rectangle {
         id: background

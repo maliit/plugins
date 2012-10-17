@@ -38,20 +38,28 @@ Item {
     width: MInputMethodQuick.screenWidth
     height: MInputMethodQuick.screenHeight
 
-    KeyboardBase {
+    Item {
         id: root
         transformOrigin: Item.Center
         width: parent.width
         height: parent.height
 
-        EnglishLandscape {
-            id: vkb_landscape
-            visible: layout == vkb_landscape
-        }
+        KeyboardBase {
+            id: keyboard
+            width: layout ? layout.width : 0
+            height: layout ? layout.height : 0
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
 
-        EnglishPortrait {
-            id: vkb_portrait
-            visible: layout == vkb_portrait
+            EnglishLandscape {
+                id: vkb_landscape
+                visible: keyboard.layout == vkb_landscape
+            }
+
+            EnglishPortrait {
+                id: vkb_portrait
+                visible: keyboard.layout == vkb_portrait
+            }
         }
 
         Component.onCompleted: {
@@ -61,96 +69,73 @@ Item {
     }
 
     focus: true
-    state: MInputMethodQuick.appOrientation
+
+    function updateIMArea() {
+        var x = 0, y = 0, width = 0, height = 0;
+        var angle = MInputMethodQuick.appOrientation;
+
+        switch (angle) {
+        case 0:
+            y = MInputMethodQuick.screenHeight - vkb_landscape.height;
+        case 180:
+            x = (MInputMethodQuick.screenWidth - vkb_landscape.width) / 2;
+            width = vkb_landscape.width;
+            height = vkb_landscape.height;
+            break;
+
+        case 270:
+            x = MInputMethodQuick.screenWidth - vkb_portrait.height;
+        case 90:
+            y = (MInputMethodQuick.screenHeight - vkb_portrait.width) / 2;
+            width = vkb_portrait.height;
+            height = vkb_portrait.width;
+            break;
+        }
+
+        MInputMethodQuick.setInputMethodArea(Qt.rect(x, y, width, height));
+    }
 
     states: [
         State {
-            name: "0"
+            name: "landscape"
+            when: MInputMethodQuick.appOrientation == 0 || MInputMethodQuick.appOrientation == 180
 
             StateChangeScript {
-                script: MInputMethodQuick.setInputMethodArea(
-                    Qt.rect((MInputMethodQuick.screenWidth - vkb_landscape.width) / 2,
-                            MInputMethodQuick.screenHeight - vkb_landscape.height,
-                            vkb_landscape.width, vkb_landscape.height))
+                script: updateIMArea();
             }
 
             PropertyChanges {
                 target: root
-                rotation: 0
+                rotation: MInputMethodQuick.appOrientation
                 x: 0
                 y: 0
+            }
+
+            PropertyChanges {
+                target: keyboard
                 layout: vkb_landscape
             }
         },
 
         State {
-            name: "90"
+            name: "portrait"
+            when: MInputMethodQuick.appOrientation == 90 || MInputMethodQuick.appOrientation == 270
 
             StateChangeScript {
-                script: MInputMethodQuick.setInputMethodArea(
-                    Qt.rect(0, (MInputMethodQuick.screenHeight - vkb_portrait.width) / 2,
-                            vkb_portrait.height, vkb_portrait.width))
+                script: updateIMArea();
             }
 
             PropertyChanges {
                 target: root
-                rotation: 90
+                rotation: MInputMethodQuick.appOrientation
                 x: (parent.width - parent.height) / 2
-                y: (parent.height - parent.width) / 2
-                layout: vkb_portrait
-            }
-        },
-
-        State {
-            name: "180"
-
-            StateChangeScript {
-                script: MInputMethodQuick.setInputMethodArea(
-                    Qt.rect((MInputMethodQuick.screenWidth - vkb_landscape.width) / 2,
-                            0, vkb_landscape.width, vkb_landscape.height))
             }
 
             PropertyChanges {
-                target: root
-                rotation: 180
-                x: 0
-                y: 0
-                layout: vkb_landscape
-            }
-        },
-
-        State {
-            name: "270"
-
-            StateChangeScript {
-                script: MInputMethodQuick.setInputMethodArea(
-                    Qt.rect(MInputMethodQuick.screenWidth - vkb_portrait.height,
-                            (MInputMethodQuick.screenHeight - vkb_portrait.width) / 2,
-                            vkb_portrait.height, vkb_portrait.width))
-            }
-
-            PropertyChanges {
-                target: root
-                rotation: 270
-                x: (parent.width - parent.height) / 2
-                y: (parent.height - parent.width) / 2
+                target: keyboard
                 layout: vkb_portrait
             }
         }
     ]
-
-    transitions: [
-        Transition {
-            from: "*"
-            to: "*"
-
-            RotationAnimation {
-                target: root;
-                duration: 400;
-                easing.type: Easing.InOutQuad
-            }
-        }
-    ]
-
 }
 
