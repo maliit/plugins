@@ -34,9 +34,9 @@ import "KeyboardUiConstants.js" as UI
 
 Column {
     id: vkb
-    anchors.fill: parent
-    anchors.topMargin: 4
-    anchors.horizontalCenter: parent.horizontalCenter
+    width: UI.LANDSCAPE_WIDTH
+    height: UI.LANDSCAPE_HEIGHT
+    y: 4
     spacing: 12
 
     property bool isShifted: false
