@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
-<keyboard title="Македонски" version="1.0" catalog="mk_mk" language="mk_mk">
+<keyboard title="Македонски јазик (Macedonian)" version="1.0" autocapitalization="false" catalog="mk_mk" language="mk_mk">
   <layout type="general">
     <section id="main">
       <row>
@@ -13,32 +13,32 @@
           <binding shift="true" label="Њ"/>
         </key>
         <key>
-          <binding label="е" extended_labels="è€"/>
-          <binding shift="true" label="Е" extended_labels="È€"/>
+          <binding label="е"/>
+          <binding shift="true" label="Е"/>
         </key>
         <key>
           <binding label="р"/>
           <binding shift="true" label="Р"/>
         </key>
         <key>
-          <binding label="т" />
-          <binding shift="true" label="Т" />
-        </key>
-        <key>
-          <binding label="ѕ"/>
-          <binding shift="true" label="Ѕ"/>
+          <binding label="т"/>
+          <binding shift="true" label="Т"/>
+        </key>        
+	<key>
+          <binding label="з"/>
+          <binding shift="true" label="З"/>
         </key>
         <key>
           <binding label="у"/>
           <binding shift="true" label="У"/>
         </key>
         <key>
-          <binding label="и" extended_labels="ѝ"/>
-          <binding shift="true" label="И" extended_labels="ѝ"/>
+          <binding label="и"/>
+          <binding shift="true" label="И"/>
         </key>
         <key>
           <binding label="о"/>
-          <binding shift="true" label="O"/>
+          <binding shift="true" label="О"/>
         </key>
         <key>
           <binding label="п"/>
@@ -49,19 +49,18 @@
           <binding shift="true" label="Ш"/>
         </key>
       </row>
-
       <row>
         <key>
-          <binding label="а" />
-          <binding shift="true" label="А" />
+          <binding label="а"/>
+          <binding shift="true" label="А"/>
         </key>
         <key>
-          <binding label="с" extended_labels="$"/>
-          <binding shift="true" label="С" extended_labels="$"/>
+          <binding label="с"/>
+          <binding shift="true" label="С"/>
         </key>
         <key>
-          <binding label="д" />
-          <binding shift="true" label="Д" />
+          <binding label="д"/>
+          <binding shift="true" label="Д"/>
         </key>
         <key>
           <binding label="ф"/>
@@ -70,8 +69,8 @@
         <key>
           <binding label="г"/>
           <binding shift="true" label="Г"/>
-        </key>
-        <key>
+        </key>        
+	<key>
           <binding label="х"/>
           <binding shift="true" label="Х"/>
         </key>
@@ -96,15 +95,13 @@
           <binding shift="true" label="Ќ"/>
         </key>
       </row>
-
       <row>
-        <key style="special">
+        <key style="special" width="x-large">
           <binding action="shift"/>
         </key>
-
         <key>
-          <binding label="з"/>
-          <binding shift="true" label="З"/>
+          <binding label="ѕ"/>
+          <binding shift="true" label="Ѕ"/>
         </key>
         <key>
           <binding label="џ"/>
@@ -131,31 +128,163 @@
           <binding shift="true" label="М"/>
         </key>
         <key>
-          <binding label="ѓ"/>
-          <binding shift="true" label="Ѓ"/>
-        </key>
-        <key>
           <binding label="ж"/>
           <binding shift="true" label="Ж"/>
         </key>
-
-
-        <key style="special">
+        <key style="special" width="x-large">
           <binding action="backspace"/>
         </key>
       </row>
-
       <row>
-        <key style="special" width="large">
-          <binding action="sym" label="?123"/>
+        <key style="special" width="x-large">
+          <binding action="sym" label="+!="/>
         </key>
-
-        <key><binding label=";"/></key>
-        <key id="emailUrlKey"><binding label=","/></key>
-        <key width="xx-large"><binding action="space"/></key>
-        <key><binding label="."/></key>
-        <key><binding label=":"/></key>
-
+        <key>
+          <binding label="Ћ"/>
+          <binding shift="true" label="ЃЂ"/>
+        </key>
+        <key>
+          <binding label="ћ"/>
+          <binding shift="true" label="ђ"/>
+        </key>
+        <key style="special" width="stretched">
+          <binding action="space"/>
+        </key>
+        <key>
+          <binding label="§"/>
+          <binding shift="true" label="€"/>
+        </key>
+        <key>
+          <binding label="ѓ"/>
+          <binding shift="true" label="Ѓ"/>
+        </key>
+        <key style="special" width="x-large" id="actionKey">
+          <binding action="return"/>
+        </key>
+      </row>
+    </section>
+    <section id="symbols0" type="non-sloppy">
+      <row>
+        <key>
+          <binding label="1"/>
+       </key>
+        <key>
+          <binding label="2"/>
+        </key>
+        <key>
+          <binding label="3"/>
+        </key>
+        <key>
+          <binding label="4"/>
+        </key>
+        <key>
+          <binding label="5"/>
+        </key>
+        <key>
+          <binding label="6"/>
+        </key>
+        <key>
+          <binding label="7"/>
+        </key>
+        <key>
+          <binding label="8"/>
+        </key>
+        <key>
+          <binding label="9"/>
+        </key>
+        <key>
+          <binding label="0"/>
+        </key>
+        <key>
+          <binding label="'"/>
+        </key>
+      </row>
+      <row>
+        <key>
+          <binding label="+"/>
+        </key>
+        <key>
+          <binding label="\"/>
+        </key>
+        <key>
+          <binding label="/"/>
+        </key>
+        <key>
+          <binding label="%"/>
+        </key>
+        <key>
+          <binding label="#"/>
+        </key>
+        <key>
+          <binding label="?"/>
+        </key>
+        <key>
+          <binding label="!"/>
+        </key>
+        <key>
+          <binding label="|"/>
+        </key>
+        <key>
+          <binding label="&#x0022;"/>
+        </key>
+        <key>
+          <binding label="&#x0027;"/>
+        </key>
+        <key>
+          <binding label="@"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="shift"/>
+        </key>
+        <key>
+          <binding label=","/>
+        </key>
+        <key>
+          <binding label="."/>
+        </key>
+        <key>
+          <binding label="("/>
+        </key>
+        <key>
+          <binding label=")"/>
+        </key>
+        <key>
+          <binding label="€"/>
+        </key>
+        <key>
+          <binding label="£"/>
+        </key>
+        <key>
+          <binding label="$"/>
+        </key>
+        <key>
+          <binding label="₹"/>
+        </key>
+        <key style="special" width="x-large">
+          <binding action="backspace"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="sym" label="љ"/>
+        </key>
+        <key>
+          <binding label="="/>
+         </key>
+        <key>
+          <binding label="+"/>
+        </key>
+        <key style="special" width="stretched">
+          <binding action="space"/>
+        </key>
+        <key>
+          <binding label="-"/>
+        </key>
+        <key>
+          <binding label="*"/>
+        </key>
         <key style="special" width="x-large" id="actionKey">
           <binding action="return"/>
         </key>
@@ -163,5 +292,4 @@
     </section>
   </layout>
 
-  <import file="symbols_ru_uk.xml"/>
 </keyboard>

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
+<keyboard title="বাংলা (Bengali)" version="1.0" autocapitalization="false" catalog="bn_in" language="bn_in">
+  <layout type="general">
+    <section id="main">
+      <row>
+        <key>
+          <binding label="ৌ"/>
+          <binding shift="true" label="ঔ"/>
+        </key>
+        <key>
+          <binding label="ৈ"/>
+          <binding shift="true" label="ঐ"/>
+        </key>
+        <key>
+          <binding label="া"/>
+          <binding shift="true" label="আ"/>
+        </key>
+        <key>
+          <binding label="ী"/>
+          <binding shift="true" label="ঈ"/>
+        </key>
+        <key>
+          <binding label="ূ"/>
+          <binding shift="true" label="ঊ"/>
+        </key>        
+	<key>
+          <binding label="ব"/>
+          <binding shift="true" label="ভ"/>
+        </key>
+        <key>
+          <binding label="হ"/>
+          <binding shift="true" label="ঙ"/>
+        </key>
+        <key>
+          <binding label="গ"/>
+          <binding shift="true" label="ঘ"/>
+        </key>
+        <key>
+          <binding label="দ"/>
+          <binding shift="true" label="ধ"/>
+        </key>
+        <key>
+          <binding label="জ"/>
+          <binding shift="true" label="ঝ"/>
+        </key>
+        <key>
+          <binding label="ড"/>
+          <binding shift="true" label="ঢ"/>
+        </key>
+      </row>
+      <row>
+        <key>
+          <binding label="ো"/>
+          <binding shift="true" label="ও"/>
+        </key>
+        <key>
+          <binding label="ে"/>
+          <binding shift="true" label="এ"/>
+        </key>
+        <key>
+          <binding label="্"/>
+          <binding shift="true" label="অ"/>
+        </key>
+        <key>
+          <binding label="ি"/>
+          <binding shift="true" label="ই"/>
+        </key>
+        <key>
+          <binding label="ু"/>
+          <binding shift="true" label="উ"/>
+        </key>        
+	<key>
+          <binding label="প"/>
+          <binding shift="true" label="ফ"/>
+        </key>
+        <key>
+          <binding label="র"/>
+          <binding shift="true" label="ঢ়"/>
+        </key>
+        <key>
+          <binding label="ক"/>
+          <binding shift="true" label="খ"/>
+        </key>
+        <key>
+          <binding label="ত"/>
+          <binding shift="true" label="থ"/>
+        </key>
+        <key>
+          <binding label="চ"/>
+          <binding shift="true" label="ছ"/>
+        </key>
+        <key>
+          <binding label="ট"/>
+          <binding shift="true" label="ঠ"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="shift"/>
+        </key>
+        <key>
+          <binding label="ৎ"/>
+          <binding shift="true" label="ঃ"/>
+        </key>
+        <key>
+          <binding label="ং"/>
+          <binding shift="true" label="ঁ"/>
+        </key>
+        <key>
+          <binding label="ম"/>
+          <binding shift="true" label="ণ"/>
+        </key>
+        <key>
+          <binding label="ন"/>
+          <binding shift="true" label="ন"/>
+        </key>
+        <key>
+          <binding label="ব"/>
+          <binding shift="true" label="ব"/>
+        </key>
+        <key>
+          <binding label="ল"/>
+          <binding shift="true" label="শ"/>
+        </key>
+        <key>
+          <binding label="স"/>
+          <binding shift="true" label="ষ"/>
+        </key>
+        <key>
+          <binding label="য়"/>
+          <binding shift="true" label="য"/>
+        </key>
+        <key style="special" width="x-large">
+          <binding action="backspace"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="sym" label="+!="/>
+        </key>
+        <key>
+          <binding label="়"/>
+          <binding shift="true" label="ক্ষ"/>
+        </key>
+        <key>
+          <binding label="ৃ"/>
+          <binding shift="true" label="ত্র"/>
+        </key>
+        <key style="special" width="stretched">
+          <binding action="space"/>
+        </key>
+        <key>
+          <binding label="ৠ"/>
+          <binding shift="true" label="র্"/>
+        </key>
+        <key>
+          <binding label="শ্র"/>
+          <binding shift="true" label="ঞ"/>
+        </key>
+        <key style="special" width="x-large" id="actionKey">
+          <binding action="return"/>
+        </key>
+      </row>
+    </section>
+    <section id="symbols0" type="non-sloppy">
+      <row>
+        <key>
+          <binding label="১"/>
+          <binding shift="true" label="1"/>
+       </key>
+        <key>
+          <binding label="২"/>
+          <binding shift="true" label="2"/>
+        </key>
+        <key>
+          <binding label="৩"/>
+          <binding shift="true" label="3"/>
+        </key>
+        <key>
+          <binding label="৪"/>
+          <binding shift="true" label="4"/>
+        </key>
+        <key>
+          <binding label="৫"/>
+          <binding shift="true" label="5"/>
+        </key>
+        <key>
+          <binding label="৬"/>
+          <binding shift="true" label="6"/>
+        </key>
+        <key>
+          <binding label="৭"/>
+          <binding shift="true" label="7 "/>
+        </key>
+        <key>
+          <binding label="৮"/>
+          <binding shift="true" label="8"/>
+        </key>
+        <key>
+          <binding label="৯"/>
+          <binding shift="true" label="9"/>
+        </key>
+        <key>
+          <binding label="০"/>
+          <binding shift="true" label="0"/>
+        </key>
+        <key>
+          <binding label="_"/>
+        </key>
+      </row>
+      <row>
+        <key>
+          <binding label="ৄ"/>
+        </key>
+        <key>
+          <binding label="ৣ"/>
+        </key>
+        <key>
+          <binding label="৺"/>
+        </key>
+        <key>
+          <binding label="ৡ"/>
+        </key>
+        <key>
+          <binding label="ড়"/>
+        </key>
+        <key>
+          <binding label="?"/>
+        </key>
+        <key>
+          <binding label=","/>
+        </key>
+        <key>
+          <binding label="."/>
+        </key>
+        <key>
+          <binding label="ৱ"/>
+          <binding shift="true" label="&#x0022;"/>
+        </key>
+        <key>
+          <binding label="ৰ"/>
+          <binding shift="true" label="&#x0027;"/>
+        </key>
+        <key>
+          <binding label="@"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="shift"/>
+        </key>
+        <key>
+          <binding label="%"/>
+        </key>
+        <key>
+          <binding label="#"/>
+        </key>
+        <key>
+          <binding label="("/>
+        </key>
+        <key>
+          <binding label=")"/>
+        </key>
+        <key>
+          <binding label="!"/>
+        </key>
+        <key>
+          <binding label="£"/>
+        </key>
+        <key>
+          <binding label="$"/>
+        </key>
+        <key>
+          <binding label="₹"/>
+        </key>
+        <key style="special" width="x-large">
+          <binding action="backspace"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="sym" label="অ"/>
+        </key>
+        <key>
+          <binding label="="/>
+         </key>
+        <key>
+          <binding label="+"/>
+        </key>
+        <key style="special" width="stretched">
+          <binding action="space"/>
+        </key>
+        <key>
+          <binding label="-"/>
+        </key>
+        <key>
+          <binding label="*"/>
+        </key>
+        <key style="special" width="x-large" id="actionKey">
+          <binding action="return"/>
+        </key>
+      </row>
+    </section>
+  </layout>
+
+</keyboard>
+

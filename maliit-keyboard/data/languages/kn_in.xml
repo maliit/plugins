@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE keyboard SYSTEM 'VirtualKeyboardLayout.dtd'>
+<keyboard title="ಕನ್ನಡ (Kannada)" version="1.0" autocapitalization="false" catalog="kn_in" language="kn_in" >
+  <layout type="general">
+    <section id="main">
+      <row>
+        <key>
+          <binding label="ౌ"/>
+          <binding shift="true" label="ఔ"/>
+        </key>
+        <key>
+          <binding label="ై"/>
+          <binding shift="true" label="ఐ"/>
+        </key>
+        <key>
+          <binding label="ా"/>
+          <binding shift="true" label="ఆ"/>
+        </key>
+        <key>
+          <binding label="ీ"/>
+          <binding shift="true" label="ఈ"/>
+        </key>
+        <key>
+          <binding label="ూ"/>
+          <binding shift="true" label="ఊ"/>
+        </key>        
+	<key>
+          <binding label="బ"/>
+          <binding shift="true" label="భ"/>
+        </key>
+        <key>
+          <binding label="హ"/>
+          <binding shift="true" label="ఙ"/>
+        </key>
+        <key>
+          <binding label="గ"/>
+          <binding shift="true" label="ఘ"/>
+        </key>
+        <key>
+          <binding label="ద"/>
+          <binding shift="true" label="ధ"/>
+        </key>
+        <key>
+          <binding label="జ"/>
+          <binding shift="true" label="ఝ"/>
+        </key>
+        <key>
+          <binding label="డ"/>
+          <binding shift="true" label="ఢ"/>
+        </key>
+      </row>
+      <row>
+        <key>
+          <binding label="ో"/>
+          <binding shift="true" label="ఓ"/>
+        </key>
+        <key>
+          <binding label="ే"/>
+          <binding shift="true" label="ఏ"/>
+        </key>
+        <key>
+          <binding label="్"/>
+          <binding shift="true" label="అ"/>
+        </key>
+        <key>
+          <binding label="ి"/>
+          <binding shift="true" label="ఇ"/>
+        </key>
+        <key>
+          <binding label="ు"/>
+          <binding shift="true" label="ఉ"/>
+        </key>        
+	<key>
+          <binding label="ప"/>
+          <binding shift="true" label="ఫ"/>
+        </key>
+        <key>
+          <binding label="ర"/>
+          <binding shift="true" label="ఱ"/>
+        </key>
+        <key>
+          <binding label="క"/>
+          <binding shift="true" label="ఖ"/>
+        </key>
+        <key>
+          <binding label="త"/>
+          <binding shift="true" label="థ"/>
+        </key>
+        <key>
+          <binding label="చ"/>
+          <binding shift="true" label="ఛ"/>
+        </key>
+        <key>
+          <binding label="ట"/>
+          <binding shift="true" label="ఠ"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="shift"/>
+        </key>
+        <key>
+          <binding label="ె"/>
+          <binding shift="true" label="ఎ"/>
+        </key>
+        <key>
+          <binding label="ం"/>
+          <binding shift="true" label="ః"/>
+        </key>
+        <key>
+          <binding label="మ"/>
+          <binding shift="true" label="ణ"/>
+        </key>
+        <key>
+          <binding label="న"/>
+          <binding shift="true" label="ృ"/>
+        </key>
+        <key>
+          <binding label="వ"/>
+        </key>
+        <key>
+          <binding label="ల"/>
+          <binding shift="true" label="ౕ"/>
+        </key>
+        <key>
+          <binding label="స"/>
+          <binding shift="true" label="శ"/>
+        </key>
+        <key>
+          <binding label="య"/>
+          <binding shift="true" label="ష"/>
+        </key>
+        <key style="special" width="x-large">
+          <binding action="backspace"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="sym" label="+!="/>
+        </key>
+        <key>
+          <binding label="ొ"/>
+          <binding shift="true" label="ఒ"/>
+        </key>
+        <key>
+          <binding label="ఞ"/>
+        </key>
+        <key style="special" width="stretched">
+          <binding action="space"/>
+        </key>
+        <key>
+          <binding label="ఁ"/>
+          <binding shift="true" label="ౠ"/>
+        </key>
+        <key>
+          <binding label="ౄ"/>
+          <binding shift="true" label="ౡ"/>
+        </key>
+        <key style="special" width="x-large" id="actionKey">
+          <binding action="return"/>
+        </key>
+      </row>
+    </section>
+    <section id="symbols0" type="non-sloppy">
+      <row>
+        <key>
+          <binding label="౧"/>
+          <binding shift="true" label="1"/>
+       </key>
+        <key>
+          <binding label="౨"/>
+          <binding shift="true" label="2"/>
+        </key>
+        <key>
+          <binding label="౩"/>
+          <binding shift="true" label="3"/>
+        </key>
+        <key>
+          <binding label="౪"/>
+          <binding shift="true" label="4"/>
+        </key>
+        <key>
+          <binding label="౫"/>
+          <binding shift="true" label="5"/>
+        </key>
+        <key>
+          <binding label="౬"/>
+          <binding shift="true" label="6"/>
+        </key>
+        <key>
+          <binding label="౭"/>
+          <binding shift="true" label="7 "/>
+        </key>
+        <key>
+          <binding label="౮"/>
+          <binding shift="true" label="8"/>
+        </key>
+        <key>
+          <binding label="౯"/>
+          <binding shift="true" label="9"/>
+        </key>
+        <key>
+          <binding label="౦"/>
+          <binding shift="true" label="0"/>
+        </key>
+        <key>
+          <binding label="_"/>
+        </key>
+      </row>
+      <row>
+        <key>
+          <binding label="൰"/>
+        </key>
+        <key>
+          <binding label="&#x0022;"/>
+        </key>
+        <key>
+          <binding label="&#x0027;"/>
+        </key>
+        <key>
+          <binding label="{"/>
+        </key>
+        <key>
+          <binding label="}"/>
+        </key>
+        <key>
+          <binding label="?"/>
+        </key>
+        <key>
+          <binding label=","/>
+        </key>
+        <key>
+          <binding label="."/>
+        </key>
+        <key>
+          <binding label="ఞ"/>
+        </key>
+        <key>
+          <binding label="ఋ"/>
+        </key>
+        <key>
+          <binding label="@"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="shift"/>
+        </key>
+        <key>
+          <binding label="%"/>
+        </key>
+        <key>
+          <binding label="#"/>
+        </key>
+        <key>
+          <binding label="("/>
+        </key>
+        <key>
+          <binding label=")"/>
+        </key>
+        <key>
+          <binding label="!"/>
+        </key>
+        <key>
+          <binding label="£"/>
+        </key>
+        <key>
+          <binding label="$"/>
+        </key>
+        <key>
+          <binding label="₹"/>
+        </key>
+        <key style="special" width="x-large">
+          <binding action="backspace"/>
+        </key>
+      </row>
+      <row>
+        <key style="special" width="x-large">
+          <binding action="sym" label="అ"/>
+        </key>
+        <key>
+          <binding label="="/>
+         </key>
+        <key>
+          <binding label="+"/>
+        </key>
+        <key style="special" width="stretched">
+          <binding action="space"/>
+        </key>
+        <key>
+          <binding label="-"/>
+        </key>
+        <key>
+          <binding label="*"/>
+        </key>
+        <key style="special" width="x-large" id="actionKey">
+          <binding action="return"/>
+        </key>
+      </row>
+    </section>
+  </layout>
+
+</keyboard>
