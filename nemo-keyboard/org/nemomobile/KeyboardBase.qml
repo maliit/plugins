@@ -51,6 +51,10 @@ MouseArea {
         z: 10
         target: pressedKey
     }
+    Timer {
+        id: pressTimer
+        interval: 500
+    }
 
     /* Mouse handling */
     property int _startX
@@ -59,12 +63,13 @@ MouseArea {
     onPressed: {
         _startX = mouse.x
         _startY = mouse.y
+        pressTimer.start()
         updatePressedKey(mouse.x, mouse.y);
     }
 
     onPositionChanged: {
-        // Hide keyboard if flicked down by >20%
-        if (mouse.y - _startY > (height * 0.2)) {
+        // Hide keyboard on flick down
+        if (pressTimer.running && (mouse.y - _startY > (height * 0.3))) {
             MInputMethodQuick.userHide();
             pressedKey.pressed = false;
             pressedKey = null;
