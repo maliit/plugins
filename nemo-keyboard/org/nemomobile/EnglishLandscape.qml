@@ -34,15 +34,16 @@ import "KeyboardUiConstants.js" as UI
 
 Column {
     id: vkb
+
     width: UI.LANDSCAPE_WIDTH
     height: UI.LANDSCAPE_HEIGHT
     y: 4
     spacing: 12
 
-    property bool isShifted: false
-    property bool isShiftLocked: false
-    property bool inSymView: false
-    property bool inSymView2: false
+    property bool isShifted
+    property bool isShiftLocked
+    property bool inSymView
+    property bool inSymView2
 
     property variant row1:["q1€", "w2£", "e3$", "r4¥", "t5₹", "y6%", "u7<", "i8>", "o9[", "p0]"]
     property variant row2: ["a*`", "s#^", "d+|", "f-_", "g=§", "h({", "j)}", "k?¿", "l!¡"]

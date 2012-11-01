@@ -34,14 +34,14 @@ import "KeyboardUiConstants.js" as UI
 
 Image {
     id: aCharKey
-    property string caption: ""
-    property string captionShifted: ""
-    property int fontSize: UI.FONT_SIZE
-    property string symView: ""
-    property string symView2: ""
-    property string sizeType: "keyboard-key-43x60.png"
-    property bool pressed: false
 
+    property string caption
+    property string captionShifted
+    property int fontSize: UI.FONT_SIZE
+    property string symView
+    property string symView2
+    property string sizeType: "keyboard-key-43x60.png"
+    property bool pressed
     property alias text: key_label.text
 
     source: sizeType
@@ -56,7 +56,8 @@ Image {
         font.pixelSize: fontSize
         font.bold: true
         color: UI.TEXT_COLOR
-        text: (inSymView && symView.length) > 0 ? (inSymView2 ? symView2 : symView) : (isShifted ? captionShifted : caption)
+        text: (inSymView && symView.length) > 0 ? (inSymView2 ? symView2 : symView)
+                                                : (isShifted ? captionShifted : caption)
     }
 }
 
