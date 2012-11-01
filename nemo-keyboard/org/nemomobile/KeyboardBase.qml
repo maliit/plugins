@@ -101,7 +101,7 @@ MouseArea {
         y -= layout.y;
 
         while ((item = item.childAt(x, y)) != null) {
-            if (typeof item.text !== 'undefined') {
+            if (typeof item.text !== 'undefined' && typeof item.pressed !== 'undefined') {
                 return item;
             }
 
