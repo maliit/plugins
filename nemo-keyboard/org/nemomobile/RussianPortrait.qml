@@ -42,6 +42,7 @@ Column {
     anchors.topMargin: 8
     anchors.horizontalCenter: parent.horizontalCenter
     spacing: 16
+
     property variant row1: ["й1€", "ц2£", "у3$", "к4¥", "е5₹", "н6%", "г7<", "ш8>", "щ9[", "з0]", "х0]"]
     property variant row2: ["ф*`", "ы#^", "в+|", "а-_", "п=§", "р{}", "о?¿", "л!¡", "д!¡", "ж!¡", "э!¡"]
     property variant row3: ["я@«", "ч~»", "с/\"", "м\\“", "и'”", "т;„", "ь:&", "б;„", "ю:&"]
@@ -53,11 +54,10 @@ Column {
     property int keyWidth: (columns == 11) ? UI.portraitWidthNarrow : UI.portraitWidth
     property int keyHeight: UI.portraitHeight
     property int keyMargin: (columns == 11) ? UI.portraitMarginNarrow : UI.portraitMargin
-    property bool isShifted: false
-    property bool isShiftLocked: false
-    property bool inSymView: false
-    property bool inSymView2: false
-
+    property bool isShifted
+    property bool isShiftLocked
+    property bool inSymView
+    property bool inSymView2
     property string layoutName: "Русский"
 
     Row { //Row 1

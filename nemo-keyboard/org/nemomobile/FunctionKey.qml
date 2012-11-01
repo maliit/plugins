@@ -34,33 +34,36 @@ import "KeyboardUiConstants.js" as UI
 
 Item {
     id: aFunctKey
-    property string icon: ""
-    property string caption: ""
+
+    property string icon
+    property string caption
     property alias mouseArea: mouse_area
     property int fontSize: UI.FONT_SIZE
     property int sourceWidth: -1
     property int sourceHeight: -1
-    property bool landscape: false
-    property bool repeat: false
+    property bool landscape
+    property bool repeat
 
     signal clickedPass()
     signal released()
     signal pressedAndHoldPass()
 
-
     Image {
         id: leftBit
-        source: (landscape) ? "meegotouch-keyboard-function-key-left-landscape.png" : "meegotouch-keyboard-function-key-left.png"
+        source: (landscape) ? "meegotouch-keyboard-function-key-left-landscape.png"
+                            : "meegotouch-keyboard-function-key-left.png"
         anchors { left: parent.left; top: parent.top }
     }
     Image {
         id: midBit
-        source: (landscape) ?  "meegotouch-keyboard-function-key-mid-landscape.png" :  "meegotouch-keyboard-function-key-mid.png"
+        source: (landscape) ?  "meegotouch-keyboard-function-key-mid-landscape.png"
+                            :  "meegotouch-keyboard-function-key-mid.png"
         anchors { left: leftBit.right; top: parent.top; right: rightBit.left}
     }
     Image {
         id: rightBit
-        source: (landscape) ?  "meegotouch-keyboard-function-key-right-landscape.png" : "meegotouch-keyboard-function-key-right.png"
+        source: (landscape) ?  "meegotouch-keyboard-function-key-right-landscape.png"
+                            : "meegotouch-keyboard-function-key-right.png"
         anchors { top: parent.top; right: parent.right }
     }
 

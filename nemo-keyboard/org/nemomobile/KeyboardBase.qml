@@ -35,7 +35,6 @@ MouseArea {
     id: keyboardBase
 
     property Item layout
-
     property Item pressedKey
 
     onLayoutChanged: if (layout) layout.parent = keyboardBase

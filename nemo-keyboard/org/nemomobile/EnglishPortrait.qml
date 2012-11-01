@@ -33,14 +33,16 @@ import "KeyboardUiConstants.js" as UI
 
 Column {
     id: keyArea
+
     width: UI.PORTRAIT_WIDTH
     height: UI.PORTRAIT_HEIGHT
     y: 8
+    spacing: 16
 
-    property bool isShifted: false
-    property bool isShiftLocked: false
-    property bool inSymView: false
-    property bool inSymView2: false
+    property bool isShifted
+    property bool isShiftLocked
+    property bool inSymView
+    property bool inSymView2
 
     property variant row1: ["q1€", "w2£", "e3$", "r4¥", "t5₹", "y6%", "u7<", "i8>", "o9[", "p0]"]
     property variant row2: ["a*`", "s#^", "d+|", "f-_", "g=§", "h({", "j)}", "k?¿", "l!¡"]
@@ -53,8 +55,6 @@ Column {
     property int keyWidth: (columns == 11) ? UI.portraitWidthNarrow : UI.portraitWidth
     property int keyHeight: UI.portraitHeight
     property int keyMargin: (columns == 11) ? UI.portraitMarginNarrow : UI.portraitMargin
-
-    spacing: 16
 
     Row { //Row 1
         anchors.horizontalCenter: parent.horizontalCenter
