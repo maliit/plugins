@@ -1,32 +1,29 @@
 MODELS_DIR = ./models
 
 HEADERS += \
-    area.h \
-    font.h \
-    label.h \
-    key.h \
-    keyarea.h \
-    keyboard.h \
-    keydescription.h \
-    wordcandidate.h \
-    wordribbon.h \
-    layout.h \
-    text.h \
-    styleattributes.h \
+    models/area.h \
+    models/font.h \
+    models/label.h \
+    models/key.h \
+    models/keyarea.h \
+    models/keyboard.h \
+    models/keydescription.h \
+    models/wordcandidate.h \
+    models/wordribbon.h \
+    models/layout.h \
+    models/text.h \
+    models/styleattributes.h \
 
 SOURCES += \
-    area.cpp \
-    font.cpp \
-    label.cpp \
-    key.cpp \
-    keyarea.cpp \
-    wordcandidate.cpp \
-    wordribbon.cpp \
-    layout.cpp \
-    text.cpp \
-    styleattributes.cpp \
+    models/area.cpp \
+    models/font.cpp \
+    models/label.cpp \
+    models/key.cpp \
+    models/keyarea.cpp \
+    models/wordcandidate.cpp \
+    models/wordribbon.cpp \
+    models/layout.cpp \
+    models/text.cpp \
+    models/styleattributes.cpp \
 
 DEPENDPATH += $$MODELS_DIR
-
-
-

@@ -1,25 +1,25 @@
 PARSER_DIR = ./parser
 
 HEADERS += \
-    layoutparser.h \
-    tagbinding.h \
-    tagkeyboard.h \
-    tagkey.h \
-    taglayout.h \
-    tagrowelement.h \
-    tagrow.h \
-    tagsection.h \
-    tagspacer.h
+    parser/layoutparser.h \
+    parser/tagbinding.h \
+    parser/tagkeyboard.h \
+    parser/tagkey.h \
+    parser/taglayout.h \
+    parser/tagrowelement.h \
+    parser/tagrow.h \
+    parser/tagsection.h \
+    parser/tagspacer.h
 
 SOURCES += \
-    layoutparser.cpp \
-    tagbinding.cpp \
-    tagkeyboard.cpp \
-    tagkey.cpp \
-    taglayout.cpp \
-    tagrow.cpp \
-    tagrowelement.cpp \
-    tagsection.cpp \
-    tagspacer.cpp
+    parser/layoutparser.cpp \
+    parser/tagbinding.cpp \
+    parser/tagkeyboard.cpp \
+    parser/tagkey.cpp \
+    parser/taglayout.cpp \
+    parser/tagrow.cpp \
+    parser/tagrowelement.cpp \
+    parser/tagsection.cpp \
+    parser/tagspacer.cpp
 
 DEPENDPATH += $$PARSER_DIR

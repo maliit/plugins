@@ -1,15 +1,15 @@
 STATE_MACHINES_DIR = $$LOGIC_DIR/state-machines
 
 HEADERS += \
-    abstractstatemachine.h \
-    shiftmachine.h \
-    viewmachine.h \
-    deadkeymachine.h \
+    logic/state-machines/abstractstatemachine.h \
+    logic/state-machines/shiftmachine.h \
+    logic/state-machines/viewmachine.h \
+    logic/state-machines/deadkeymachine.h \
 
 SOURCES += \
-    abstractstatemachine.cpp \
-    shiftmachine.cpp \
-    viewmachine.cpp \
-    deadkeymachine.cpp \
+    logic/state-machines/abstractstatemachine.cpp \
+    logic/state-machines/shiftmachine.cpp \
+    logic/state-machines/viewmachine.cpp \
+    logic/state-machines/deadkeymachine.cpp \
 
 DEPENDPATH += $$STATE_MACHINES_DIR
