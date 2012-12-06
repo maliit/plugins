@@ -194,6 +194,9 @@ StyleAttributes::StyleAttributes(const QSettings *store)
     }
 }
 
+//! \brief Destructor
+StyleAttributes::~StyleAttributes()
+{}
 
 //! \brief Sets the active style name.
 //!

@@ -47,6 +47,7 @@ private:
 
 public:
     explicit StyleAttributes(const QSettings *store);
+    virtual ~StyleAttributes();
 
     virtual void setStyleName(const QString &name);
     QByteArray wordRibbonBackground() const;
