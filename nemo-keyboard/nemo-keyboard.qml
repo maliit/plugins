@@ -34,22 +34,67 @@ import org.nemomobile 1.0
 
 Item {
     id: canvas
-    transformOrigin: Item.Center
+
     width: MInputMethodQuick.screenWidth
     height: MInputMethodQuick.screenHeight
 
+    function updateIMArea() {
+        if (!MInputMethodQuick.active)
+            return
+
+        var x = 0, y = 0, width = 0, height = 0;
+        var angle = MInputMethodQuick.appOrientation
+
+        switch (angle) {
+        case 0:
+            y = MInputMethodQuick.screenHeight - vkb_landscape.height
+        case 180:
+            x = (MInputMethodQuick.screenWidth - vkb_landscape.width) / 2
+            width = vkb_landscape.width
+            height = vkb_landscape.height
+            break;
+
+        case 270:
+            x = MInputMethodQuick.screenWidth - vkb_portrait.height
+        case 90:
+            y = (MInputMethodQuick.screenHeight - vkb_portrait.width) / 2
+            width = vkb_portrait.height
+            height = vkb_portrait.width
+            break;
+        }
+
+        MInputMethodQuick.setInputMethodArea(Qt.rect(x, y, width, height))
+        MInputMethodQuick.setScreenRegion(Qt.rect(x, y, width, height))
+    }
+
     Item {
+        // container at the of current orientation. allows actual keyboard to show relative to that.
         id: root
-        transformOrigin: Item.Center
-        width: parent.width
-        height: parent.height
+
+        property bool landscape: MInputMethodQuick.appOrientation == 0 || MInputMethodQuick.appOrientation == 180
+
+        width: landscape ? parent.width : parent.height
+        height: 1
+        transformOrigin: Item.TopLeft
+        rotation: MInputMethodQuick.appOrientation
+        x: MInputMethodQuick.appOrientation == 180 || MInputMethodQuick.appOrientation == 270
+           ? parent.width : 0
+        y: MInputMethodQuick.appOrientation == 0 || MInputMethodQuick.appOrientation == 270
+           ? parent.height : 0
+
+        onRotationChanged: updateIMArea()
 
         KeyboardBase {
             id: keyboard
+            layout: root.landscape ? vkb_landscape : vkb_portrait
             width: layout ? layout.width : 0
             height: layout ? layout.height : 0
-            anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
+
+            onHeightChanged: {
+                if (MInputMethodQuick.active)
+                    y = -height
+            }
 
             EnglishLandscape {
                 id: vkb_landscape
@@ -60,6 +105,58 @@ Item {
                 id: vkb_portrait
                 visible: keyboard.layout == vkb_portrait
             }
+
+            Connections {
+                target: MInputMethodQuick
+                onActiveChanged: {
+                    if (MInputMethodQuick.active) {
+                        hideAnimation.stop()
+                        showAnimation.start()
+                    } else {
+                        showAnimation.stop()
+                        hideAnimation.start()
+                    }
+                }
+            }
+
+            SequentialAnimation {
+                id: hideAnimation
+
+                ScriptAction {
+                    script: MInputMethodQuick.setInputMethodArea(Qt.rect(0, 0, 0, 0))
+                }
+
+                NumberAnimation {
+                    target: keyboard
+                    property: "y"
+                    to: 0
+                    duration: 500
+                    easing.type: Easing.InOutCubic
+                }
+
+                ScriptAction {
+                    script: MInputMethodQuick.setScreenRegion(Qt.rect(0, 0, 0, 0))
+                }
+            }
+
+            SequentialAnimation {
+                id: showAnimation
+
+                ScriptAction {
+                    script: {
+                        canvas.visible = true // framework currently initially hides. Make sure visible
+                        updateIMArea()
+                    }
+                }
+
+                NumberAnimation {
+                    target: keyboard
+                    property: "y"
+                    to: -keyboard.height
+                    duration: 500
+                    easing.type: Easing.InOutCubic
+                }
+            }
         }
 
         Component.onCompleted: {
@@ -67,80 +164,5 @@ Item {
             MInputMethodQuick.actionKeyOverride.setDefaultLabel("")
         }
     }
-
-    focus: true
-
-    function updateIMArea() {
-        var x = 0, y = 0, width = 0, height = 0;
-        var angle = MInputMethodQuick.appOrientation;
-
-        switch (angle) {
-        case 0:
-            y = MInputMethodQuick.screenHeight - vkb_landscape.height;
-        case 180:
-            x = (MInputMethodQuick.screenWidth - vkb_landscape.width) / 2;
-            width = vkb_landscape.width;
-            height = vkb_landscape.height;
-            break;
-
-        case 270:
-            x = MInputMethodQuick.screenWidth - vkb_portrait.height;
-        case 90:
-            y = (MInputMethodQuick.screenHeight - vkb_portrait.width) / 2;
-            width = vkb_portrait.height;
-            height = vkb_portrait.width;
-            break;
-        }
-
-        MInputMethodQuick.setInputMethodArea(Qt.rect(x, y, width, height));
-    }
-
-    states: [
-        State {
-            name: "landscape"
-            when: MInputMethodQuick.appOrientation == 0 || MInputMethodQuick.appOrientation == 180
-
-            StateChangeScript {
-                script: updateIMArea();
-            }
-
-            PropertyChanges {
-                target: root
-                rotation: MInputMethodQuick.appOrientation
-                x: 0
-                y: 0
-                width: parent.width
-                height: parent.height
-            }
-
-            PropertyChanges {
-                target: keyboard
-                layout: vkb_landscape
-            }
-        },
-
-        State {
-            name: "portrait"
-            when: MInputMethodQuick.appOrientation == 90 || MInputMethodQuick.appOrientation == 270
-
-            StateChangeScript {
-                script: updateIMArea();
-            }
-
-            PropertyChanges {
-                target: root
-                rotation: MInputMethodQuick.appOrientation
-                x: (parent.width - parent.height) / 2
-                y: (parent.height - parent.width) / 2
-                width: parent.height
-                height: parent.width
-            }
-
-            PropertyChanges {
-                target: keyboard
-                layout: vkb_portrait
-            }
-        }
-    ]
 }
 
