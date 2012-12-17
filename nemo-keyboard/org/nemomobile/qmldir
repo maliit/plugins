@@ -3,6 +3,8 @@ RussianPortrait 1.0 RussianPortrait.qml
 EnglishPortrait 1.0 EnglishPortrait.qml
 EnglishLandscape 1.0 EnglishLandscape.qml
 CharacterKey 1.0 CharacterKey.qml
+PortraitCharacterKey 1.0 PortraitCharacterKey.qml
+LandscapeCharacterKey 1.0 LandscapeCharacterKey.qml
 FunctionKey 1.0 FunctionKey.qml
 PluginClose  1.0 PluginClose.qml
 PluginSwitch 1.0 PluginSwitch.qml

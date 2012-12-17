@@ -36,8 +36,11 @@ Column {
 
     width: UI.PORTRAIT_WIDTH
     height: UI.PORTRAIT_HEIGHT
-    y: 8
-    spacing: 16
+
+    property int topPadding: UI.portraitVerticalPadding
+    property int bottomPadding: UI.portraitVerticalPadding
+    property int leftPadding: UI.portraitHorizontalPadding
+    property int rightPadding: UI.portraitHorizontalPadding
 
     property bool isShifted
     property bool isShiftLocked
@@ -51,18 +54,13 @@ Column {
     property variant accents_row2: ["aäàâáãå", "", "dð", "", "", "", "", "", ""]
     property variant accents_row3: ["", "", "cç", "", "", "nñ", ""]
 
-    property int columns: Math.max(row1.length, row2.length, row3.length)
-    property int keyWidth: (columns == 11) ? UI.portraitWidthNarrow : UI.portraitWidth
     property int keyHeight: UI.portraitHeight
-    property int keyMargin: (columns == 11) ? UI.portraitMarginNarrow : UI.portraitMargin
 
     Row { //Row 1
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: keyMargin
         Repeater {
             model: row1
-            CharacterKey {
-                width: keyWidth; height: keyHeight
+            PortraitCharacterKey {
                 caption: row1[index][0]
                 captionShifted: row1[index][0].toUpperCase()
                 symView: row1[index][1]
@@ -73,12 +71,9 @@ Column {
 
     Row { //Row 2
         anchors.horizontalCenter: parent.horizontalCenter
-
-        spacing: keyMargin
         Repeater {
             model: row2
-            CharacterKey {
-                width: keyWidth; height: keyHeight
+            PortraitCharacterKey {
                 caption: row2[index][0]
                 captionShifted: row2[index][0].toUpperCase()
                 symView: row2[index][1]
@@ -89,9 +84,12 @@ Column {
 
     Row { //Row 3
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 32 : 16
         FunctionKey {
-            width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
+            width: UI.PORTRAIT_SHIFT_WIDTH
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding
             icon: inSymView ? ""
                             : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
                                               : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
@@ -116,11 +114,9 @@ Column {
         }
 
         Row {
-            spacing: keyMargin
             Repeater {
                 model: row3
-                CharacterKey {
-                    width: keyWidth; height: keyHeight
+                PortraitCharacterKey {
                     caption: row3[index][0]
                     captionShifted: row3[index][0].toUpperCase()
                     symView: row3[index][1]
@@ -130,7 +126,12 @@ Column {
         }
 
         FunctionKey {
-            width: UI.PORTRAIT_SHIFT_WIDTH; height: keyHeight
+            width: UI.PORTRAIT_SHIFT_WIDTH
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding
+
             icon: "icon-m-input-methods-backspace.svg"
             repeat: true
             onClickedPass: MInputMethodQuick.sendCommit("\b")
@@ -139,22 +140,43 @@ Column {
 
     Row { //Row 4
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 19 : 16
         FunctionKey {
-            width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
+            width: UI.PORTRAIT_OTT_WIDTH + 20 // extra reactive area on left
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding + 20
+            rightPadding: keyArea.rightPadding
+
             caption: inSymView ? "ABC" : "?123"
             onClickedPass: { inSymView = (!inSymView) }
         }
 
-        Row {
-            spacing: 8
-            CharacterKey { caption: ","; captionShifted: ","; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
-            CharacterKey { caption: " "; captionShifted: " "; width: 136; height: keyHeight; sizeType: "keyboard-key-136x60.png" }
-            CharacterKey { caption: "."; captionShifted: "."; width: 56; height: keyHeight; sizeType: "keyboard-key-56x60.png" }
+        PortraitCharacterKey {
+            caption: ","
+            captionShifted: ","
+            width: 56
+            sizeType: "keyboard-key-56x60.png"
+        }
+        PortraitCharacterKey {
+            caption: " "
+            captionShifted: " "
+            width: 136
+            sizeType: "keyboard-key-136x60.png"
+        }
+        PortraitCharacterKey {
+            caption: "."
+            captionShifted: "."
+            width: 56
+            sizeType: "keyboard-key-56x60.png"
         }
 
         FunctionKey {
-            width: UI.PORTRAIT_OTT_WIDTH; height: keyHeight
+            width: UI.PORTRAIT_OTT_WIDTH + 20
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding + 20
+
             icon: MInputMethodQuick.actionKeyOverride.icon
             repeat: true
             caption: MInputMethodQuick.actionKeyOverride.label

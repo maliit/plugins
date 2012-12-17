@@ -33,12 +33,10 @@ import QtQuick 2.0
 import "KeyboardUiConstants.js" as UI
 
 Column {
-    id: vkb
+    id: keyArea
 
     width: UI.LANDSCAPE_WIDTH
     height: UI.LANDSCAPE_HEIGHT
-    y: 4
-    spacing: 12
 
     property bool isShifted
     property bool isShiftLocked
@@ -52,20 +50,18 @@ Column {
     property variant accents_row2: ["aäàâáãå", "", "dð", "", "", "", "", "", ""]
     property variant accents_row3: ["", "", "cç", "", "", "nñ", ""]
 
-    property int columns: Math.max(row1.length, row2.length, row3.length)
-    property int keyWidth: (columns == 11) ? UI.landscapeWidthNarrow
-                                           : UI.landscapeWidth
+    property int topPadding: UI.landscapeVerticalPadding
+    property int bottomPadding: UI.landscapeVerticalPadding
+    property int leftPadding: UI.landscapeHorizontalPadding
+    property int rightPadding: UI.landscapeHorizontalPadding
     property int keyHeight: UI.landscapeHeight
-    property int keyMargin: (columns == 11) ? UI.landscapeMarginNarrow
-                                            : UI.landscapeMargin
 
     Row { //Row 1
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: keyMargin
+
         Repeater {
             model: row1
-            CharacterKey {
-                width: keyWidth; height: keyHeight
+            LandscapeCharacterKey {
                 sizeType: "keyboard-key-72x46.png"
                 caption: row1[index][0]
                 captionShifted: row1[index][0].toUpperCase()
@@ -73,16 +69,14 @@ Column {
                 symView2: row1[index][2]
             }
         }
-
     } //end Row1
 
     Row { //Row 2
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: keyMargin
+
         Repeater {
             model: row2
-            CharacterKey {
-                width: keyWidth; height: keyHeight
+            LandscapeCharacterKey {
                 sizeType: "keyboard-key-72x46.png"
                 caption: row2[index][0]
                 captionShifted: row2[index][0].toUpperCase()
@@ -94,15 +88,19 @@ Column {
 
     Row { //Row 3
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 6 : 8
 
         FunctionKey {
-            width: 110; height: keyHeight
+            width: 110
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding
+
             landscape: true
             icon: inSymView ? ""
                 : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
-                : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
-                : "icon-m-input-methods-shift-lowercase.svg"
+                                  : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
+                                                : "icon-m-input-methods-shift-lowercase.svg"
 
             caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
             opacity: (mouseArea.containsMouse || (isShiftLocked && (!inSymView))) ? 0.6 : 1
@@ -122,23 +120,24 @@ Column {
             }
         }
 
-        Row {
-            spacing: keyMargin
-            Repeater {
-                model: row3
-                CharacterKey {
-                    width: keyWidth; height: keyHeight
-                    sizeType: "keyboard-key-72x46.png"
-                    caption: row3[index][0]
-                    captionShifted: row3[index][0].toUpperCase()
-                    symView: row3[index][1]
-                    symView2: row3[index][2]
-                }
+        Repeater {
+            model: row3
+            LandscapeCharacterKey {
+                sizeType: "keyboard-key-72x46.png"
+                caption: row3[index][0]
+                captionShifted: row3[index][0].toUpperCase()
+                symView: row3[index][1]
+                symView2: row3[index][2]
             }
         }
 
         FunctionKey {
-            width: 110; height: keyHeight
+            width: 120
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding + 10
+
             landscape: true
             repeat: true
             icon: "icon-m-input-methods-backspace.svg"
@@ -148,23 +147,45 @@ Column {
 
     Row { //Row 4
         anchors.horizontalCenter: parent.horizontalCenter
-        spacing: (columns == 11) ? 6 : 8
+
         FunctionKey {
-            width: 145; height: keyHeight
+            width: 145
+            height: keyHeight
             landscape: true
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding
+
             caption: inSymView ? "ABC" : "?123"
             onClickedPass: inSymView = (!inSymView)
         }
 
-        Row {
-            spacing: keyMargin
-            CharacterKey { caption: ","; captionShifted: ","; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
-            CharacterKey { caption: " "; captionShifted: " "; width: 228; height: keyHeight; sizeType: "keyboard-key-228x46.png" }
-            CharacterKey { caption: "."; captionShifted: "."; width: 120; height: keyHeight; sizeType: "keyboard-key-120x46.png" }
+        LandscapeCharacterKey {
+            width: 120
+            caption: ","
+            captionShifted: ","
+            sizeType: "keyboard-key-120x46.png"
+        }
+        LandscapeCharacterKey {
+            width: 228
+            caption: " "
+            captionShifted: " "
+            sizeType: "keyboard-key-228x46.png"
+        }
+        LandscapeCharacterKey {
+            width: 120
+            caption: "."
+            captionShifted: "."
+            sizeType: "keyboard-key-120x46.png"
         }
 
         FunctionKey {
-            width: 145; height: keyHeight
+            width: 155
+            height: keyHeight
+            topPadding: keyArea.topPadding
+            leftPadding: keyArea.leftPadding
+            rightPadding: keyArea.rightPadding + 10
+
             landscape: true
             repeat: true
             icon: MInputMethodQuick.actionKeyOverride.icon

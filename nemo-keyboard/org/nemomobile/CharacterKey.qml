@@ -32,20 +32,32 @@
 import QtQuick 2.0
 import "KeyboardUiConstants.js" as UI
 
-Image {
+Item  {
     id: aCharKey
 
     property string caption
     property string captionShifted
-    property int fontSize: UI.FONT_SIZE
     property string symView
     property string symView2
     property string sizeType: "keyboard-key-43x60.png"
     property bool pressed
+    property int fontSize: UI.FONT_SIZE
     property alias text: key_label.text
+    property bool landscape
+    property int leftPadding
+    property int rightPadding
+    property int topPadding
+    property int bottomPadding
 
-    source: sizeType
-    opacity: pressed ? 0.5 : 1
+    Image {
+        source: sizeType
+        opacity: pressed ? 0.5 : 1
+        anchors.fill: parent
+        anchors.leftMargin: leftPadding
+        anchors.rightMargin: rightPadding
+        anchors.topMargin: topPadding
+        anchors.bottomMargin: bottomPadding
+    }
 
     Text {
         id: key_label
