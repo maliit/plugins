@@ -43,6 +43,9 @@ Item {
     property int sourceHeight: -1
     property bool landscape
     property bool repeat
+    property int leftPadding
+    property int rightPadding
+    property int topPadding
 
     signal clickedPass()
     signal released()
@@ -52,19 +55,34 @@ Item {
         id: leftBit
         source: (landscape) ? "meegotouch-keyboard-function-key-left-landscape.png"
                             : "meegotouch-keyboard-function-key-left.png"
-        anchors { left: parent.left; top: parent.top }
+        anchors {
+            left: parent.left
+            leftMargin: leftPadding
+            top: parent.top
+            topMargin: topPadding
+        }
     }
     Image {
         id: midBit
-        source: (landscape) ?  "meegotouch-keyboard-function-key-mid-landscape.png"
-                            :  "meegotouch-keyboard-function-key-mid.png"
-        anchors { left: leftBit.right; top: parent.top; right: rightBit.left}
+        source: (landscape) ? "meegotouch-keyboard-function-key-mid-landscape.png"
+                            : "meegotouch-keyboard-function-key-mid.png"
+        anchors {
+            left: leftBit.right
+            right: rightBit.left
+            top: parent.top
+            topMargin: topPadding
+        }
     }
     Image {
         id: rightBit
-        source: (landscape) ?  "meegotouch-keyboard-function-key-right-landscape.png"
+        source: (landscape) ? "meegotouch-keyboard-function-key-right-landscape.png"
                             : "meegotouch-keyboard-function-key-right.png"
-        anchors { top: parent.top; right: parent.right }
+        anchors {
+            top: parent.top
+            topMargin: topPadding
+            right: parent.right
+            rightMargin: rightPadding
+        }
     }
 
 
@@ -100,6 +118,7 @@ Item {
 
     Image {
         anchors.centerIn: parent
+        anchors.horizontalCenterOffset: (leftPadding - rightPadding) / 2
         source: icon
         sourceSize.width: (sourceWidth == -1) ? width : sourceWidth
         sourceSize.height: (sourceHeight == -1) ? height : sourceHeight
@@ -107,6 +126,7 @@ Item {
 
     Text {
         anchors.centerIn: parent
+        anchors.horizontalCenterOffset: (leftPadding - rightPadding) / 2
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.family: "sans"
