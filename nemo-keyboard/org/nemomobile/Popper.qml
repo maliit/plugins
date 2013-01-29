@@ -51,7 +51,7 @@ Image {
 
     states: State {
         name: "active"
-        when: target !== null
+        when: target !== null && target.showPopper
 
         PropertyChanges {
             target: popperText

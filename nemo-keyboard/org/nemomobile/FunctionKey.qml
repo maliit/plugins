@@ -32,24 +32,16 @@
 import QtQuick 1.1
 import "KeyboardUiConstants.js" as UI
 
-Item {
+KeyBase {
     id: aFunctKey
 
     property string icon
     property string caption
-    property alias mouseArea: mouse_area
-    property int fontSize: UI.FONT_SIZE
     property int sourceWidth: -1
     property int sourceHeight: -1
-    property bool landscape
-    property bool repeat
-    property int leftPadding
-    property int rightPadding
-    property int topPadding
 
-    signal clickedPass()
-    signal released()
-    signal pressedAndHoldPass()
+    opacity: pressed ? 0.6 : 1.0
+    showPopper: false
 
     Image {
         id: leftBit
@@ -84,38 +76,6 @@ Item {
             rightMargin: rightPadding
         }
     }
-
-
-    MouseArea {
-        id: mouse_area
-        anchors.fill: parent
-
-        onClicked: clickedPass()
-        onPressed: aFunctKey.opacity = 0.6
-
-        onPressAndHold: {
-            if (repeat) { functRepeater.start() }
-            pressedAndHoldPass()
-        }
-
-        onReleased: {
-            functRepeater.stop()
-            parent.released()
-            aFunctKey.opacity = 1
-        }
-
-        onCanceled:{ functRepeater.stop(); aFunctKey.opacity = 1 }
-
-        onExited: functRepeater.stop()
-    }
-
-    Timer {
-        id: functRepeater
-        interval: 80; repeat: true
-        triggeredOnStart: true
-        onTriggered: parent.clickedPass()
-    }
-
     Image {
         anchors.centerIn: parent
         anchors.horizontalCenterOffset: (leftPadding - rightPadding) / 2

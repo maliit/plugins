@@ -1,9 +1,9 @@
 /*
  * This file is part of Maliit plugins
  *
- * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies). All rights reserved.
+ * Copyright (C) 2011 Jolla ltd. and/or its subsidiary(-ies). All rights reserved.
  *
- * Contact: Jakub Pavelek <jpavelek@live.com>
+ * Contact: Pekka Vuorela <pekka.vuorela@jollamobile.com>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -13,7 +13,7 @@
  * Redistributions in binary form must reproduce the above copyright notice, this list
  * of conditions and the following disclaimer in the documentation and/or other materials
  * provided with the distribution.
- * Neither the name of Nokia Corporation nor the names of its contributors may be
+ * Neither the name of Jolla ltd nor the names of its contributors may be
  * used to endorse or promote products derived from this software without specific
  * prior written permission.
  *
@@ -30,40 +30,28 @@
  */
 
 import QtQuick 1.1
-import "KeyboardUiConstants.js" as UI
 
-KeyBase  {
-    id: aCharKey
+FunctionKey {
+    icon: inSymView ? ""
+                    : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
+                                      : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
+                                                    : "icon-m-input-methods-shift-lowercase.svg"
 
-    property string caption
-    property string captionShifted
-    property string symView
-    property string symView2
-    property string sizeType: "keyboard-key-43x60.png"
-    property int fontSize: UI.FONT_SIZE
-    property alias text: key_label.text
-
-    Image {
-        source: sizeType
-        opacity: pressed ? 0.5 : 1
-        anchors.fill: parent
-        anchors.leftMargin: leftPadding
-        anchors.rightMargin: rightPadding
-        anchors.topMargin: topPadding
-        anchors.bottomMargin: bottomPadding
-    }
-
-    Text {
-        id: key_label
-        anchors.centerIn: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.family: "sans"
-        font.pixelSize: fontSize
-        font.bold: true
-        color: UI.TEXT_COLOR
-        text: (inSymView && symView.length) > 0 ? (inSymView2 ? symView2 : symView)
-                                                : (isShifted ? captionShifted : caption)
+    caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
+    key: Qt.Key_Shift
+    onClicked: {
+        if (inSymView) {
+            inSymView2 = !inSymView2
+        } else {
+            if (isShiftLocked) {
+                isShiftLocked = false
+                isShifted = false
+            } else {
+                if (isShifted)
+                    isShiftLocked = true
+                else
+                    isShifted = true
+            }
+        }
     }
 }
-

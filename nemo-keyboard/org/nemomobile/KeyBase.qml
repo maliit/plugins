@@ -1,9 +1,9 @@
 /*
  * This file is part of Maliit plugins
  *
- * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies). All rights reserved.
+ * Copyright (C) 2013 Jolla ltd and/or its subsidiary(-ies). All rights reserved.
  *
- * Contact: Jakub Pavelek <jpavelek@live.com>
+ * Contact: Pekka Vuorela <pekka.vuorela@jollamobile.com>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -32,38 +32,18 @@
 import QtQuick 1.1
 import "KeyboardUiConstants.js" as UI
 
-KeyBase  {
-    id: aCharKey
-
-    property string caption
-    property string captionShifted
-    property string symView
-    property string symView2
-    property string sizeType: "keyboard-key-43x60.png"
+Item {
+    property int leftPadding
+    property int rightPadding
+    property int topPadding
+    property int bottomPadding
+    property bool landscape
     property int fontSize: UI.FONT_SIZE
-    property alias text: key_label.text
+    property bool pressed
+    property bool repeat
+    property string text
+    property int key: Qt.Key_unknown
+    property bool showPopper: true
 
-    Image {
-        source: sizeType
-        opacity: pressed ? 0.5 : 1
-        anchors.fill: parent
-        anchors.leftMargin: leftPadding
-        anchors.rightMargin: rightPadding
-        anchors.topMargin: topPadding
-        anchors.bottomMargin: bottomPadding
-    }
-
-    Text {
-        id: key_label
-        anchors.centerIn: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.family: "sans"
-        font.pixelSize: fontSize
-        font.bold: true
-        color: UI.TEXT_COLOR
-        text: (inSymView && symView.length) > 0 ? (inSymView2 ? symView2 : symView)
-                                                : (isShifted ? captionShifted : caption)
-    }
+    signal clicked
 }
-
