@@ -3,6 +3,7 @@
  *
  * Copyright (C) Jakub Pavelek <jpavelek@live.com>
  * Copyright (C) 2012 John Brooks <john.brooks@dereferenced.net>
+ * Copyright (C) 2013 Jolla Ltd.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -84,33 +85,12 @@ Column {
 
     Row { //Row 3
         anchors.horizontalCenter: parent.horizontalCenter
-        FunctionKey {
+        ShiftKey {
             width: UI.PORTRAIT_SHIFT_WIDTH
             height: keyHeight
             topPadding: keyArea.topPadding
             leftPadding: keyArea.leftPadding
             rightPadding: keyArea.rightPadding
-            icon: inSymView ? ""
-                            : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
-                                              : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
-                                                            : "icon-m-input-methods-shift-lowercase.svg"
-
-            caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
-
-            onClickedPass: {
-                if (inSymView) {
-                    inSymView2 = !inSymView2
-                } else {
-                    isShifted = (!isShifted)
-                    isShiftLocked = false
-                }
-            }
-            onPressedAndHoldPass: {
-                if (!inSymView) {
-                    isShifted = true
-                    isShiftLocked = true
-                }
-            }
         }
 
         Row {
@@ -125,30 +105,24 @@ Column {
             }
         }
 
-        FunctionKey {
+        BackspaceKey {
             width: UI.PORTRAIT_SHIFT_WIDTH
             height: keyHeight
             topPadding: keyArea.topPadding
             leftPadding: keyArea.leftPadding
             rightPadding: keyArea.rightPadding
-
-            icon: "icon-m-input-methods-backspace.svg"
-            repeat: true
-            onClickedPass: MInputMethodQuick.sendCommit("\b")
         }
     }
 
     Row { //Row 4
         anchors.horizontalCenter: parent.horizontalCenter
-        FunctionKey {
+
+        SymbolKey {
             width: UI.PORTRAIT_OTT_WIDTH + 20 // extra reactive area on left
             height: keyHeight
             topPadding: keyArea.topPadding
             leftPadding: keyArea.leftPadding + 20
             rightPadding: keyArea.rightPadding
-
-            caption: inSymView ? "ABC" : "?123"
-            onClickedPass: { inSymView = (!inSymView) }
         }
 
         PortraitCharacterKey {
@@ -160,6 +134,7 @@ Column {
         PortraitCharacterKey {
             caption: " "
             captionShifted: " "
+            showPopper: false
             width: 136
             sizeType: "keyboard-key-136x60.png"
         }
@@ -170,17 +145,12 @@ Column {
             sizeType: "keyboard-key-56x60.png"
         }
 
-        FunctionKey {
+        EnterKey {
             width: UI.PORTRAIT_OTT_WIDTH + 20
             height: keyHeight
             topPadding: keyArea.topPadding
             leftPadding: keyArea.leftPadding
             rightPadding: keyArea.rightPadding + 20
-
-            icon: MInputMethodQuick.actionKeyOverride.icon
-            repeat: true
-            caption: MInputMethodQuick.actionKeyOverride.label
-            onClickedPass: MInputMethodQuick.activateActionKey()
         }
     }
 }

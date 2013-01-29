@@ -6,6 +6,10 @@ CharacterKey 1.0 CharacterKey.qml
 PortraitCharacterKey 1.0 PortraitCharacterKey.qml
 LandscapeCharacterKey 1.0 LandscapeCharacterKey.qml
 FunctionKey 1.0 FunctionKey.qml
+BackspaceKey 1.0 BackspaceKey.qml
+EnterKey 1.0 EnterKey.qml
+ShiftKey 1.0 ShiftKey.qml
+SymbolKey 1.0 SymbolKey.qml
 PluginClose  1.0 PluginClose.qml
 PluginSwitch 1.0 PluginSwitch.qml
 Popper 1.0 Popper.qml

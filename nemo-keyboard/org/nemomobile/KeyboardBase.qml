@@ -54,6 +54,19 @@ MouseArea {
         id: pressTimer
         interval: 500
     }
+    Timer {
+        id: autorepeatTimer
+        repeat: true
+        onTriggered: {
+            interval = 80
+            if (pressedKey != null) {
+                pressedKey.clicked()
+            } else {
+                stop()
+            }
+        }
+    }
+
 
     /* Mouse handling */
     property int _startX
@@ -63,40 +76,56 @@ MouseArea {
         _startX = mouse.x
         _startY = mouse.y
         pressTimer.start()
-        updatePressedKey(mouse.x, mouse.y);
+        updatePressedKey(mouse.x, mouse.y)
     }
 
     onPositionChanged: {
         // Hide keyboard on flick down
         if (pressTimer.running && (mouse.y - _startY > (height * 0.3))) {
-            MInputMethodQuick.userHide();
-            pressedKey.pressed = false;
-            pressedKey = null;
-            return;
+            MInputMethodQuick.userHide()
+            pressedKey.pressed = false
+            pressedKey = null
+            autorepeatTimer.stop()
+            return
         }
 
         updatePressedKey(mouse.x, mouse.y);
     }
 
     onReleased: {
+        autorepeatTimer.stop()
+
         if (pressedKey == null)
-            return;
+            return
 
-        MInputMethodQuick.sendCommit(pressedKey.text);
-        if (!layout.isShiftLocked)
-            layout.isShifted = false;
+        if (pressedKey.text.length)
+            MInputMethodQuick.sendCommit(pressedKey.text)
+        if (!layout.isShiftLocked && pressedKey.key !== Qt.Key_Shift)
+            layout.isShifted = false
 
-        pressedKey.pressed = false;
-        pressedKey = null;
+        pressedKey.pressed = false
+        pressedKey.clicked()
+        pressedKey = null
     }
 
     function updatePressedKey(x, y) {
-        var key = keyAt(x, y);
-        if (pressedKey !== null && pressedKey !== key)
-            pressedKey.pressed = false;
-        pressedKey = key;
+        var key = keyAt(x, y)
+        if (pressedKey === key)
+            return;
+
+        autorepeatTimer.stop()
         if (pressedKey !== null)
-            pressedKey.pressed = true;
+            pressedKey.pressed = false
+
+        pressedKey = key
+
+        if (pressedKey !== null) {
+            pressedKey.pressed = true
+            if (pressedKey.repeat) {
+                autorepeatTimer.interval = 800
+                autorepeatTimer.start()
+            }
+        }
     }
 
     function keyAt(x, y) {
