@@ -1,3 +1,17 @@
+0.81.4
+======
+
+CHANGES SINCE 0.81.3
+* Implement show/hide transition for nemo keyboard
+* Remove gaps between keys in nemo keyboard
+* Make close gesture less sensitive in nemo keyboard
+* More robust key detection in nemo keyboard
+* Simplify orientation logic
+* Clean up nemo keyboard code
+
+BUG FIXES
+Fixes: NEMO#451 - Use a single MouseArea for the whole keyboard
+
 0.81.3
 ======
 
