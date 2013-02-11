@@ -145,5 +145,14 @@ MouseArea {
 
         return null;
     }
+
+    function resetKeyboard() {
+        if (!layout)
+            return
+        layout.isShifted = false
+        layout.isShiftLocked = false
+        layout.inSymView = false
+        layout.inSymView2 = false
+    }
 }
  
