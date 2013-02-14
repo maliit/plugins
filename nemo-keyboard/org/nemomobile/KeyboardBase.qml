@@ -83,7 +83,8 @@ MouseArea {
         // Hide keyboard on flick down
         if (pressTimer.running && (mouse.y - _startY > (height * 0.3))) {
             MInputMethodQuick.userHide()
-            pressedKey.pressed = false
+            if (pressedKey)
+                pressedKey.pressed = false
             pressedKey = null
             autorepeatTimer.stop()
             return
