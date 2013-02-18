@@ -122,10 +122,6 @@ Item {
                         hideAnimation.start()
                     }
                 }
-                onFocusTargetChanged: {
-                    if (activeEditor)
-                        keyboard.resetKeyboard()
-                }
             }
 
             SequentialAnimation {
