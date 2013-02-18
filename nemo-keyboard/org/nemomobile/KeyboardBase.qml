@@ -30,6 +30,7 @@
 
 import QtQuick 1.1
 import "KeyboardUiConstants.js" as UI
+import com.meego.maliitquick 1.0
 
 MouseArea {
     id: keyboardBase
@@ -60,13 +61,25 @@ MouseArea {
         onTriggered: {
             interval = 80
             if (pressedKey != null) {
-                pressedKey.clicked()
+                handleKeyClick()
             } else {
                 stop()
             }
         }
     }
 
+    Connections {
+        target: MInputMethodQuick
+        onCursorPositionChanged: {
+            applyAutocaps()
+        }
+        onFocusTargetChanged: {
+            if (activeEditor) {
+                resetKeyboard()
+                applyAutocaps()
+            }
+        }
+    }
 
     /* Mouse handling */
     property int _startX
@@ -96,17 +109,39 @@ MouseArea {
     onReleased: {
         autorepeatTimer.stop()
 
-        if (pressedKey == null)
+        if (pressedKey === null)
             return
 
-        if (pressedKey.text.length)
+        handleKeyClick()
+        pressedKey.pressed = false
+        pressedKey = null
+    }
+
+    function handleKeyClick() {
+        var resetShift = !layout.isShiftLocked
+
+        if (pressedKey.key === Qt.Key_Shift) {
+            resetShift = false
+        }
+
+        if (pressedKey.text.length) {
             MInputMethodQuick.sendCommit(pressedKey.text)
-        if (!layout.isShiftLocked && pressedKey.key !== Qt.Key_Shift)
+        } else if (pressedKey.key === Qt.Key_Return) {
+            MInputMethodQuick.activateActionKey()
+        } else if (pressedKey.key === Qt.Key_Backspace) {
+            if (MInputMethodQuick.surroundingTextValid && MInputMethodQuick.cursorPosition == 0) {
+                resetShift = false
+            }
+
+            MInputMethodQuick.sendCommit("\b")
+        } else  {
+            resetShift = false
+        }
+
+        if (resetShift)
             layout.isShifted = false
 
-        pressedKey.pressed = false
         pressedKey.clicked()
-        pressedKey = null
     }
 
     function updatePressedKey(x, y) {
@@ -154,6 +189,25 @@ MouseArea {
         layout.isShiftLocked = false
         layout.inSymView = false
         layout.inSymView2 = false
+    }
+
+    function applyAutocaps() {
+        if (MInputMethodQuick.surroundingTextValid
+                && MInputMethodQuick.contentType === Maliit.FreeTextContentType
+                && !MInputMethodQuick.hiddenText
+                && layout && layout.isShiftLocked === false) {
+            var position = MInputMethodQuick.cursorPosition
+            var text = MInputMethodQuick.surroundingText.substring(0, position)
+
+            if (position == 0
+                    || (position == 1 && text[0] === " ")
+                    || (position >= 2 && text[position - 1] === " "
+                        && ".?!".indexOf(text[position - 2]) >= 0)) {
+                layout.isShifted = true
+            } else {
+                layout.isShifted = false
+            }
+        }
     }
 }
  

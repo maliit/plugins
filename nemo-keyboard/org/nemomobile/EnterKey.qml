@@ -35,5 +35,5 @@ FunctionKey {
     icon: MInputMethodQuick.actionKeyOverride.icon
     repeat: true
     caption: MInputMethodQuick.actionKeyOverride.label
-    onClicked: MInputMethodQuick.activateActionKey()
+    key: Qt.Key_Return
 }

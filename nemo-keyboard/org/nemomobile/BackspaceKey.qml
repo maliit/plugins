@@ -34,5 +34,5 @@ import QtQuick 1.1
 FunctionKey {
     icon: "icon-m-input-methods-backspace.svg"
     repeat: true
-    onClicked: MInputMethodQuick.sendCommit("\b")
+    key: Qt.Key_Backspace
 }
