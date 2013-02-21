@@ -194,6 +194,7 @@ MouseArea {
     function applyAutocaps() {
         if (MInputMethodQuick.surroundingTextValid
                 && MInputMethodQuick.contentType === Maliit.FreeTextContentType
+                && MInputMethodQuick.autoCapitalizationEnabled
                 && !MInputMethodQuick.hiddenText
                 && layout && layout.isShiftLocked === false) {
             var position = MInputMethodQuick.cursorPosition
