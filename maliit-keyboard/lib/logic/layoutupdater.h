@@ -68,6 +68,8 @@ public:
 
     void setStyle(const SharedStyle &style);
 
+    Q_SLOT void reset();
+
     // Key signal handlers:
     Q_SLOT void onKeyPressed(const Key &key,
                              const SharedLayout &layout);
@@ -82,7 +84,6 @@ public:
     Q_SLOT void onKeyExited(const Key &key,
                             const SharedLayout &layout);
     Q_SLOT void clearActiveKeysAndMagnifier();
-    Q_SLOT void resetOnKeyboardClosed();
     Q_SLOT void onCandidatesUpdated(const QStringList &candidates);
 
     // WordCandidate signal handlers:

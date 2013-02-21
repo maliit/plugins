@@ -180,9 +180,11 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
 InputMethod::~InputMethod()
 {}
 
+// This function gets called on focus-change, too!
 void InputMethod::show()
 {
     Q_D(InputMethod);
+    d->layout_updater.reset();
     d->renderer.show();
 }
 
@@ -190,7 +192,6 @@ void InputMethod::hide()
 {
     Q_D(InputMethod);
     d->renderer.hide();
-    d->layout_updater.resetOnKeyboardClosed();
     d->editor.clearPreedit();
 }
 

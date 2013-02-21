@@ -560,15 +560,14 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
     d->layout->clearMagnifierKey();
 }
 
-void LayoutUpdater::resetOnKeyboardClosed()
+void LayoutUpdater::reset()
 {
-    Q_D(const LayoutUpdater);
+    // HACKHACKHACK: Restarting the state machines will make the main layout
+    // visible (if the main surface is visible)! This means it's only safe to
+    // call reset when showing the keyboard, not when trying to hide it.
 
-    clearActiveKeysAndMagnifier();
-    d->layout->setExtendedPanel(KeyArea());
-    d->layout->setActivePanel(Layout::CenterPanel);
-    // we do not emit layoutChanged(): there is no need to do it at close and
-    // if we do, rendered re-shows the keyboard
+    // Resets state machines and word candidates => has reset semantics:
+    onKeyboardsChanged();
 }
 
 void LayoutUpdater::onCandidatesUpdated(const QStringList &candidates)
