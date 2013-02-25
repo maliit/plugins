@@ -133,7 +133,7 @@ MouseArea {
                 resetShift = false
             }
 
-            MInputMethodQuick.sendCommit("\b")
+            MInputMethodQuick.sendKey(Qt.Key_Backspace, 0, "\b", Maliit.KeyClick)
         } else  {
             resetShift = false
         }
