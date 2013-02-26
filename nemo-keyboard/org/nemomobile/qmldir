@@ -14,3 +14,4 @@ PluginClose  1.0 PluginClose.qml
 PluginSwitch 1.0 PluginSwitch.qml
 Popper 1.0 Popper.qml
 InputHandler 1.0 InputHandler.qml
+PreeditTestHandler 1.0 PreeditTestHandler.qml

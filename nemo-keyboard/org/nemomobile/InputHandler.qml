@@ -45,15 +45,18 @@ Item {
         onTriggered: {
             interval = 80
             if (pressedKey !== null) {
-                handleKeyClick()
+                _handleKeyClick()
             } else {
                 stop()
             }
         }
     }
 
-    function handleKeyPress(key) {
+    function _handleKeyPress(key) {
         pressedKey = key
+
+        if (handleKeyPress())
+            return
 
         if (pressedKey.repeat) {
             autorepeatTimer.interval = 800
@@ -61,12 +64,19 @@ Item {
         }
     }
 
-    function handleKeyRelease() {
+    function _handleKeyRelease() {
         pressedKey = null
+
+        if (handleKeyRelease())
+            return
+
         autorepeatTimer.stop()
     }
 
-    function handleKeyClick() {
+    function _handleKeyClick() {
+        if (handleKeyClick())
+            return
+
         var resetShift = !keyboard.layout.isShiftLocked
 
         if (pressedKey.key === Qt.Key_Shift) {
@@ -89,10 +99,32 @@ Item {
 
         if (resetShift)
             keyboard.layout.isShifted = false
-
     }
 
-    function reset() {
+    function _reset() {
         autorepeatTimer.stop()
+        reset()
+    }
+
+
+    // called when button gets down. can be reimplemented to handle input. return true input is consumed
+    function handleKeyPress() {
+        return false
+    }
+
+    // called when button click was fully done or on autorepeat. can be reimplemented to handle input.
+    // return true input was consumed.
+    function handleKeyClick() {
+        return false
+    }
+
+    // called when button got up either by moving out of the button or after click was done.
+    // can be reimplemented. return true if input was consumed.
+    function handleKeyRelease() {
+        return false
+    }
+
+    // called when input state needs to be reset
+    function reset() {
     }
 }
