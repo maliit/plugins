@@ -40,6 +40,7 @@ MouseArea {
 
     onLayoutChanged: if (layout) layout.parent = keyboard
 
+    // Can be changed to PreeditTestHandler to have another mode of input
     InputHandler {
         id: inputHandler
     }
@@ -89,7 +90,7 @@ MouseArea {
         if (pressTimer.running && (mouse.y - _startY > (height * 0.3))) {
             MInputMethodQuick.userHide()
             if (pressedKey) {
-                inputHandler.handleKeyRelease()
+                inputHandler._handleKeyRelease()
                 pressedKey.pressed = false
             }
             pressedKey = null
@@ -103,9 +104,9 @@ MouseArea {
         if (pressedKey === null)
             return
 
-        inputHandler.handleKeyClick()
+        inputHandler._handleKeyClick()
         pressedKey.clicked()
-        inputHandler.handleKeyRelease()
+        inputHandler._handleKeyRelease()
 
         pressedKey.pressed = false
         pressedKey = null
@@ -116,7 +117,7 @@ MouseArea {
         if (pressedKey === key)
             return
 
-        inputHandler.handleKeyRelease()
+        inputHandler._handleKeyRelease()
 
         if (pressedKey !== null)
             pressedKey.pressed = false
@@ -125,7 +126,7 @@ MouseArea {
 
         if (pressedKey !== null) {
             pressedKey.pressed = true
-            inputHandler.handleKeyPress(pressedKey)
+            inputHandler._handleKeyPress(pressedKey)
         }
     }
 
@@ -154,7 +155,7 @@ MouseArea {
         layout.isShiftLocked = false
         layout.inSymView = false
         layout.inSymView2 = false
-        inputHandler.reset()
+        inputHandler._reset()
     }
 
     function applyAutocaps() {
