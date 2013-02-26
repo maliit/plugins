@@ -33,12 +33,16 @@ import "KeyboardUiConstants.js" as UI
 import com.meego.maliitquick 1.0
 
 MouseArea {
-    id: keyboardBase
+    id: keyboard
 
     property Item layout
     property Item pressedKey
 
-    onLayoutChanged: if (layout) layout.parent = keyboardBase
+    onLayoutChanged: if (layout) layout.parent = keyboard
+
+    InputHandler {
+        id: inputHandler
+    }
 
     Rectangle {
         id: background
@@ -54,18 +58,6 @@ MouseArea {
     Timer {
         id: pressTimer
         interval: 500
-    }
-    Timer {
-        id: autorepeatTimer
-        repeat: true
-        onTriggered: {
-            interval = 80
-            if (pressedKey != null) {
-                handleKeyClick()
-            } else {
-                stop()
-            }
-        }
     }
 
     Connections {
@@ -96,60 +88,36 @@ MouseArea {
         // Hide keyboard on flick down
         if (pressTimer.running && (mouse.y - _startY > (height * 0.3))) {
             MInputMethodQuick.userHide()
-            if (pressedKey)
+            if (pressedKey) {
+                inputHandler.handleKeyRelease()
                 pressedKey.pressed = false
+            }
             pressedKey = null
-            autorepeatTimer.stop()
             return
         }
 
-        updatePressedKey(mouse.x, mouse.y);
+        updatePressedKey(mouse.x, mouse.y)
     }
 
     onReleased: {
-        autorepeatTimer.stop()
-
         if (pressedKey === null)
             return
 
-        handleKeyClick()
+        inputHandler.handleKeyClick()
+        pressedKey.clicked()
+        inputHandler.handleKeyRelease()
+
         pressedKey.pressed = false
         pressedKey = null
-    }
-
-    function handleKeyClick() {
-        var resetShift = !layout.isShiftLocked
-
-        if (pressedKey.key === Qt.Key_Shift) {
-            resetShift = false
-        }
-
-        if (pressedKey.text.length) {
-            MInputMethodQuick.sendCommit(pressedKey.text)
-        } else if (pressedKey.key === Qt.Key_Return) {
-            MInputMethodQuick.activateActionKey()
-        } else if (pressedKey.key === Qt.Key_Backspace) {
-            if (MInputMethodQuick.surroundingTextValid && MInputMethodQuick.cursorPosition == 0) {
-                resetShift = false
-            }
-
-            MInputMethodQuick.sendKey(Qt.Key_Backspace, 0, "\b", Maliit.KeyClick)
-        } else  {
-            resetShift = false
-        }
-
-        if (resetShift)
-            layout.isShifted = false
-
-        pressedKey.clicked()
     }
 
     function updatePressedKey(x, y) {
         var key = keyAt(x, y)
         if (pressedKey === key)
-            return;
+            return
 
-        autorepeatTimer.stop()
+        inputHandler.handleKeyRelease()
+
         if (pressedKey !== null)
             pressedKey.pressed = false
 
@@ -157,29 +125,26 @@ MouseArea {
 
         if (pressedKey !== null) {
             pressedKey.pressed = true
-            if (pressedKey.repeat) {
-                autorepeatTimer.interval = 800
-                autorepeatTimer.start()
-            }
+            inputHandler.handleKeyPress(pressedKey)
         }
     }
 
     function keyAt(x, y) {
-        var item = layout;
-        x -= layout.x;
-        y -= layout.y;
+        var item = layout
+        x -= layout.x
+        y -= layout.y
 
         while ((item = item.childAt(x, y)) != null) {
             if (typeof item.text !== 'undefined' && typeof item.pressed !== 'undefined') {
-                return item;
+                return item
             }
 
             // Cheaper mapToItem, assuming we're not using anything fancy.
-            x -= item.x;
-            y -= item.y;
+            x -= item.x
+            y -= item.y
         }
 
-        return null;
+        return null
     }
 
     function resetKeyboard() {
@@ -189,6 +154,7 @@ MouseArea {
         layout.isShiftLocked = false
         layout.inSymView = false
         layout.inSymView2 = false
+        inputHandler.reset()
     }
 
     function applyAutocaps() {
