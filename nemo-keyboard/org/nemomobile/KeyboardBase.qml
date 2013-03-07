@@ -72,6 +72,9 @@ MouseArea {
                 applyAutocaps()
             }
         }
+        onInputMethodReset: {
+            inputHandler._reset()
+        }
     }
 
     /* Mouse handling */
