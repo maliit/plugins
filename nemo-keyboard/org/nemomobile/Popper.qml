@@ -29,58 +29,82 @@
 
 import QtQuick 2.0
 import "KeyboardUiConstants.js" as UI
+import com.meego.maliitquick 1.0 as Maliit
 
-Image {
+Maliit.Tooltip {
     id: popper
-    source: "popper.png"
-    opacity: 0
-
     property Item target: null
+    width: MInputMethodQuick.appOrientation == 0 || MInputMethodQuick.appOrientation == 180 ? popperImage.width : popperImage.height
+    height: MInputMethodQuick.appOrientation == 0 || MInputMethodQuick.appOrientation == 180 ? popperImage.height : popperImage.width
+    
+    alignment: {
+        switch (MInputMethodQuick.appOrientation) {
+            case 0: return Qt.AlignHCenter|Qt.AlignTop;
+            case 180: return Qt.AlignHCenter|Qt.AlignBottom;
+            case 90: return Qt.AlignVCenter|Qt.AlignRight;
+            case 270: return Qt.AlignVCenter|Qt.AlignLeft;
+            case 0:
+            default: return Qt.AlignHCenter|Qt.AlignTop;
+        }
+    }
 
-    Text {
-        id: popperText
-        text: ""
+    Image {
+        id: popperImage
+        source: "popper.png"
+        opacity: 0
         anchors.centerIn: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.family: "sans"
-        font.pixelSize: UI.FONT_SIZE_POPPER
-        font.bold: true
-        color: UI.TEXT_COLOR_POPPER
-    }
+        rotation: MInputMethodQuick.appOrientation
+        transformOrigin: Item.Center
 
-    states: State {
-        name: "active"
-        when: target !== null && target.showPopper
-
-        PropertyChanges {
-            target: popperText
-            text: target.text
+        Text {
+            id: popperText
+            text: ""
+            anchors.centerIn: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.family: "sans"
+            font.pixelSize: UI.FONT_SIZE_POPPER
+            font.bold: true
+            color: UI.TEXT_COLOR_POPPER
         }
 
-        PropertyChanges {
-            target: popper
-            opacity: 1
+        states: State {
+            name: "active"
+            when: target !== null && target.showPopper
 
-            x: popper.parent.mapFromItem(target, 0, 0).x + (target.width - popper.width) / 2
-            y: popper.parent.mapFromItem(target, 0, 0).y - popper.height
-        }
-    }
-
-    transitions: Transition {
-        from: "active"
-
-        SequentialAnimation {
-            PauseAnimation {
-                duration: 50
-            }
-            PropertyAction {
-                target: popper
-                properties: "opacity, x, y"
-            }
-            PropertyAction {
+            PropertyChanges {
                 target: popperText
-                property: "text"
+                text: target.text
+            }
+
+            PropertyChanges {
+                target: popperImage
+                opacity: 1
+            }
+
+            PropertyChanges {
+                target: popper
+
+                visualParent: target
+                visible: true
+            }
+        }
+
+        transitions: Transition {
+            from: "active"
+
+            SequentialAnimation {
+                PauseAnimation {
+                    duration: 50
+                }
+                PropertyAction {
+                    target: popperImage
+                    properties: "opacity"
+                }
+                PropertyAction {
+                    target: popperText
+                    property: "text"
+                }
             }
         }
     }

@@ -53,7 +53,6 @@ MouseArea {
 
     Popper {
         id: popper
-        z: 10
         target: pressedKey
     }
     Timer {
