@@ -42,13 +42,11 @@
 #include <QtWidgets>
 #endif
 
-// FIXME: Remove maliit-plugins dependency from renderer, because otherwise
-// maliit-keyboard-viewer can't be used w/o the Maliit framework.
-#include <maliit/plugins/abstractsurfacefactory.h>
-#include <maliit/plugins/abstractwidgetssurface.h>
+class MAbstractInputMethodHost;
 
 namespace MaliitKeyboard {
 
+class Surface;
 class RendererPrivate;
 
 class Renderer
@@ -62,13 +60,12 @@ public:
     explicit Renderer(QObject *parent = 0);
     virtual ~Renderer();
 
-    //! Sets the factory used to create surfaces.
-    //! \param factory the factory instance. If set to 0, all surfaces are
-    //!                cleared, too.
-    void setSurfaceFactory(Maliit::Plugins::AbstractSurfaceFactory *factory);
+    //! Sets the host where created QWindows are registered
+    //! \param host the host instance.
+    void setHost(MAbstractInputMethodHost *host);
 
-    const QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface() const;
-    const QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extendedSurface() const;
+    Surface *surface() const;
+    Surface *extendedSurface() const;
 
     void setStyle(const SharedStyle &style);
 
