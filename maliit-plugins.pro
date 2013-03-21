@@ -16,8 +16,9 @@ include(config.pri)
         \\n\\t enable-qt-mobility: Enable use of QtMobility (enables sound and haptic feedback) \
         \\n\\t notests: Do not attempt to build tests \
         \\n\\t nodoc: Do not build documentation \
-        \\n\\t disable-maliit-keyboard: Don't build the C++ reference keyboard (Maliit Keyboard) \
-        \\n\\t disable-nemo-keyboard: Don't build the QML reference keyboard (Nemo Keyboard) \
+        \\n\\t disable-maliit-keyboard: Do not build the C++ reference keyboard (Maliit Keyboard) \
+        \\n\\t disable-nemo-keyboard: Do not build the QML reference keyboard (Nemo Keyboard) \
+        \\n\\t disable-background-translucency : Do not set translucent background hint on surfaces (workaround for non-compositing WMs) \
         \\nInfluential environment variables: \
         \\n\\t QMAKEFEATURES A mkspecs/features directory list to look for features. \
         \\n\\t\\t Use it if a dependency is installed to non-default location. \

@@ -28,6 +28,7 @@ HEADERS += \
     wordribbonitem.h \
     abstractfeedback.h \
     nullfeedback.h \
+    surface.h \
 
 SOURCES += \
     utils.cpp \
@@ -40,10 +41,15 @@ SOURCES += \
     wordribbonitem.cpp \
     abstractfeedback.cpp \
     nullfeedback.cpp \
+    surface.cpp \
 
 enable-qt-mobility {
     HEADERS += soundfeedback.h
     SOURCES += soundfeedback.cpp
+}
+
+disable-background-translucency {
+    DEFINES += DISABLE_TRANSLUCENT_BACKGROUND_HINT
 }
 
 include(../word-prediction.pri)
