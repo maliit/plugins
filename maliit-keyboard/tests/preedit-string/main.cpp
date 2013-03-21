@@ -44,9 +44,10 @@
 #include "plugin/updatenotifier.h"
 #include "inputmethodhostprobe.h"
 #include "wordengineprobe.h"
+#include "view/surface.h"
 
-#include <maliit/plugins/testsurfacefactory.h>
 #include <maliit/plugins/updateevent.h>
+#include <maliit/namespace.h>
 
 #include <QtTest>
 #include <QtCore>
@@ -185,17 +186,17 @@ struct SetupTest : public BasicSetupTest
         : BasicSetupTest(enable_word_engine)
         , glass()
         , layout(new Logic::Layout)
-        , surface(Maliit::Plugins::createTestGraphicsViewSurface())
-        , extended_surface(Maliit::Plugins::createTestGraphicsViewSurface(surface))
+        , surface(new Surface(0, Maliit::PositionCenterBottom, &host))
+        , extended_surface(new Surface(surface.data(), Maliit::PositionOverlay, &host))
         , key_area(createAbcdArea())
     {
         // geometry stuff is usually done by maliit-server, so we need
         // to do it manually here:
-        //surface->view()->viewport()->setGeometry(0, 0, g_size, g_size);
-        surface->view()->setSceneRect(0, 0, g_size, g_size);
+        //surface->viewport()->setGeometry(0, 0, g_size, g_size);
+        surface->setSceneRect(0, 0, g_size, g_size);
         surface->scene()->setSceneRect(0, 0, g_size, g_size);
-        glass.setSurface(surface);
-        glass.setExtendedSurface(extended_surface);
+        glass.setSurface(surface.data());
+        glass.setExtendedSurface(extended_surface.data());
         glass.addLayout(&layout);
         layout.setOrientation(orientation);
 
@@ -207,8 +208,8 @@ struct SetupTest : public BasicSetupTest
 
     Glass glass;
     Logic::Layout layout;
-    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
-    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> extended_surface;
+    QScopedPointer<Surface> surface;
+    QScopedPointer<Surface> extended_surface;
     KeyArea key_area;
 };
 
@@ -341,7 +342,7 @@ private:
         SetupTest test_setup(orientation, word_engine_enabled);
 
         Q_FOREACH (QMouseEvent *ev, mouse_events) {
-            QApplication::instance()->postEvent(test_setup.surface->view()->viewport(), ev);
+            QApplication::instance()->postEvent(test_setup.surface->viewport(), ev);
         }
 
         TestUtils::waitForSignal(&test_setup.glass, SIGNAL(keyReleased(Key,Logic::Layout *)));
@@ -621,7 +622,7 @@ private:
         test_setup.notifier.notify(update_event.data());
 
         Q_FOREACH (QMouseEvent *ev, events) {
-            QApplication::instance()->postEvent(test_setup.surface->view()->viewport(), ev);
+            QApplication::instance()->postEvent(test_setup.surface->viewport(), ev);
         }
 
         TestUtils::waitForSignal(&test_setup.glass, SIGNAL(keyReleased(Key,Logic::Layout *)));
