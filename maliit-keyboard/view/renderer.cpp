@@ -124,18 +124,22 @@ public:
     QVector<KeyItem *> extended_key_items;
     QVector<KeyItem *> magnifier_key_items;
     QString images_directory_path;
+    bool active;
 
     explicit RendererPrivate()
         : host(0)
         , surface()
         , extended_surface()
         , magnifier_surface()
+        , style()
         , center_item(new KeyAreaItem)
         , extended_item(new KeyAreaItem)
         , ribbon_item(new WordRibbonItem)
         , key_items()
         , extended_key_items()
         , magnifier_key_items()
+        , images_directory_path()
+        , active(false)
     {
         center_item->setZValue(CenterPanelZIndex);
         extended_item->setZValue(ExtendedPanelZIndex);
@@ -212,6 +216,8 @@ void Renderer::show()
         return;
     }
 
+    d->active = true;
+
     d->surface->show();
     d->extended_surface->show();
 
@@ -234,6 +240,8 @@ void Renderer::hide()
                     << "Discarding hide request.";
         return;
     }
+
+    d->active = false;
 
     d->surface->hide();
     d->extended_surface->hide();
@@ -287,7 +295,9 @@ void Renderer::onCenterPanelChanged(const KeyArea &key_area,
     if (d->center_item->isVisible()) {
         d->surface->setSize(QSize(ka_size.width() + origin.x(),
                                   ka_size.height() + origin.y()));
-        d->surface->show();
+        if (d->active) {
+            d->surface->show();
+        }
     } else {
         d->surface->hide();
     }
