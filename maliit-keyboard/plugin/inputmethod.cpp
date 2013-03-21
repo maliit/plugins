@@ -191,10 +191,10 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
     connect(&d->glass, SIGNAL(keyboardClosed()),
             this,      SLOT(onKeyboardClosed()));
 
-    connect(&d->glass, SIGNAL(switchLeft(Logic::Layout)),
+    connect(&d->glass, SIGNAL(switchLeft(Logic::Layout *)),
             this,      SLOT(onLeftLayoutSelected()));
 
-    connect(&d->glass, SIGNAL(switchRight(Logic::Layout)),
+    connect(&d->glass, SIGNAL(switchRight(Logic::Layout *)),
             this,      SLOT(onRightLayoutSelected()));
 
     connect(&d->editor, SIGNAL(leftLayoutSelected()),
