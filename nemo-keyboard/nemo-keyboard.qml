@@ -35,8 +35,8 @@ import org.nemomobile 1.0
 Item {
     id: canvas
 
-    width: MInputMethodQuick.screenWidth
-    height: MInputMethodQuick.screenHeight
+    width: keyboard.width
+    height: keyboard.height
 
     function updateIMArea() {
         if (!MInputMethodQuick.active)
@@ -47,24 +47,36 @@ Item {
 
         switch (angle) {
         case 0:
-            y = MInputMethodQuick.screenHeight - vkb_landscape.height
-        case 180:
-            x = (MInputMethodQuick.screenWidth - vkb_landscape.width) / 2
+            x = 0
+            y = keyboard.tooltip.height
             width = vkb_landscape.width
-            height = vkb_landscape.height
+            height = vkb_landscape.height + keyboard.tooltip.width
+        case 180:
+            x = 0
+            y = 0
+            width = vkb_landscape.width
+            height = vkb_landscape.height + keyboard.tooltip.height
             break;
 
         case 270:
-            x = MInputMethodQuick.screenWidth - vkb_portrait.height
+            x = keyboard.tooltip.width
+            y = 0
+            width = vkb_portrait.height + keyboard.tooltip.width
+            height = vkb_portrait.width
         case 90:
-            y = (MInputMethodQuick.screenHeight - vkb_portrait.width) / 2
-            width = vkb_portrait.height
+            x = 0;
+            y = 0;
+            width = vkb_portrait.height + keyboard.tooltip.width
             height = vkb_portrait.width
             break;
         }
 
         MInputMethodQuick.setInputMethodArea(Qt.rect(x, y, width, height))
         MInputMethodQuick.setScreenRegion(Qt.rect(x, y, width, height))
+        canvas.width = width
+        canvas.height = height
+        canvas.x = x
+        canvas.y = y
     }
 
     Item {

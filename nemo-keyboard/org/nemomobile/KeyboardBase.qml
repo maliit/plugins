@@ -51,6 +51,7 @@ MouseArea {
         color: UI.BG_COLOR
     }
 
+    property Item tooltip: popper
     Popper {
         id: popper
         z: 10
