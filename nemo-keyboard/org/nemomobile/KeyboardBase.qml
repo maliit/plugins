@@ -103,6 +103,13 @@ MouseArea {
         updatePressedKey(mouse.x, mouse.y)
     }
 
+    onCanceled: {
+        if (pressedKey) {
+            pressedKey.pressed = false
+            pressedKey = null
+        }
+    }
+
     onReleased: {
         if (pressedKey === null)
             return
