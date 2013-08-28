@@ -576,10 +576,17 @@ void AbstractTextEditor::replaceAndCommitPreedit(const QString &replacement)
     }
 }
 
-//! \brief Clears preedit.
+//! \brief Clears preedit. Does *not* update preedit in application, use replacePreedit instead.
 void AbstractTextEditor::clearPreedit()
 {
-    replacePreedit("");
+    Q_D(AbstractTextEditor);
+
+    if (not d->valid()) {
+        return;
+    }
+
+    d->text->setPreedit("");
+    d->word_engine->computeCandidates(d->text.data());
 }
 
 //! \brief Returns whether preedit functionality is enabled.
