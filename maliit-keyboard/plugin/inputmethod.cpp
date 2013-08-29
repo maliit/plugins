@@ -31,6 +31,8 @@
  */
 
 #include "inputmethod.h"
+#include "surfaces.h"
+#include "canvas.h"
 #include "editor.h"
 #include "updatenotifier.h"
 #include "maliitcontext.h"
@@ -76,41 +78,6 @@ typedef QMap<QString, SharedOverride>::const_iterator OverridesIterator;
 
 namespace {
 
-void makeQuickViewTransparent(QQuickView *view)
-{
-    QSurfaceFormat format;
-    format.setAlphaBufferSize(8);
-    view->setFormat(format);
-    view->setColor(QColor(Qt::transparent));
-}
-
-QQuickView *getSurface (MAbstractInputMethodHost *host)
-{
-    QScopedPointer<QQuickView> view(new QQuickView (0));
-
-    host->registerWindow (view.data(), Maliit::PositionCenterBottom);
-
-    makeQuickViewTransparent(view.data());
-
-    return view.take ();
-}
-
-QQuickView *getOverlaySurface (MAbstractInputMethodHost *host, QQuickView *parent)
-{
-    QScopedPointer<QQuickView> view(new QQuickView (0));
-
-    view->setTransientParent(parent);
-
-    host->registerWindow (view.data(), Maliit::PositionOverlay);
-
-    makeQuickViewTransparent(view.data());
-
-    return view.take ();
-}
-
-const QString g_maliit_keyboard_qml(MALIIT_KEYBOARD_DATA_DIR "/maliit-keyboard.qml");
-const QString g_maliit_keyboard_extended_qml(MALIIT_KEYBOARD_DATA_DIR "/maliit-keyboard-extended.qml");
-const QString g_maliit_magnifier_qml(MALIIT_KEYBOARD_DATA_DIR "/maliit-magnifier.qml");
 
 Key overrideToKey(const SharedOverride &override)
 {
@@ -159,9 +126,7 @@ LayoutGroup::LayoutGroup()
 class InputMethodPrivate
 {
 public:
-    QScopedPointer<QQuickView> surface;
-    QScopedPointer<QQuickView> extended_surface;
-    QScopedPointer<QQuickView> magnifier_surface;
+    QScopedPointer<View> view;
     Editor editor;
     DefaultFeedback feedback;
     SharedStyle style;
@@ -185,9 +150,8 @@ public:
 
 InputMethodPrivate::InputMethodPrivate(InputMethod *const q,
                                        MAbstractInputMethodHost *host)
-    : surface(getSurface(host))
-    , extended_surface(getOverlaySurface(host, surface.data()))
-    , magnifier_surface(getOverlaySurface(host, surface.data()))
+// TODO: When to allocate Surfaces and when to allocate Canvas for View?
+    : view(new Surfaces(host))
     , editor(EditorOptions(), new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures)
     , feedback()
     , style(new Style)
@@ -219,24 +183,9 @@ InputMethodPrivate::InputMethodPrivate(InputMethod *const q,
 
     connectToNotifier();
 
-    // TODO: Figure out whether two views can share one engine.
-    QQmlEngine *const engine(surface->engine());
-    engine->addImportPath(MALIIT_KEYBOARD_DATA_DIR);
-    setContextProperties(engine->rootContext());
-
-    surface->setSource(QUrl::fromLocalFile(g_maliit_keyboard_qml));
-
-    QQmlEngine *const extended_engine(extended_surface->engine());
-    extended_engine->addImportPath(MALIIT_KEYBOARD_DATA_DIR);
-    setContextProperties(extended_engine->rootContext());
-
-    extended_surface->setSource(QUrl::fromLocalFile(g_maliit_keyboard_extended_qml));
-
-    QQmlEngine *const magnifier_engine(magnifier_surface->engine());
-    magnifier_engine->addImportPath(MALIIT_KEYBOARD_DATA_DIR);
-    setContextProperties(magnifier_engine->rootContext());
-
-    magnifier_surface->setSource(QUrl::fromLocalFile(g_maliit_magnifier_qml));
+    setContextProperties(view->context());
+    setContextProperties(view->extendedKeysContext());
+    setContextProperties(view->magnifierContext());
 }
 
 
@@ -275,6 +224,10 @@ void InputMethodPrivate::connectToNotifier()
 
 void InputMethodPrivate::setContextProperties(QQmlContext *qml_context)
 {
+    if (not qml_context) {
+        return;
+    }
+
     qml_context->setContextProperty("maliit", &context);
     qml_context->setContextProperty("maliit_layout", &layout.model);
     qml_context->setContextProperty("maliit_event_handler", &layout.event_handler);
@@ -358,17 +311,7 @@ InputMethod::~InputMethod()
 void InputMethod::show()
 {
     Q_D(InputMethod);
-
-    const QRect &rect = d->surface->screen()->availableGeometry();
-
-    d->surface->setGeometry(QRect(QPoint(rect.x() + (rect.width() - d->layout.model.width()) / 2,
-                                         rect.y() + rect.height() - d->layout.model.height()),
-                                  QSize(d->layout.model.width(),
-                                        d->layout.model.height())));
-
-    d->surface->show();
-    d->extended_surface->show();
-    d->magnifier_surface->show();
+    d->view->show();
 }
 
 void InputMethod::hide()
@@ -376,9 +319,7 @@ void InputMethod::hide()
     Q_D(InputMethod);
     d->layout.updater.resetOnKeyboardClosed();
     d->editor.clearPreedit();
-    d->surface->hide();
-    d->extended_surface->hide();
-    d->magnifier_surface->hide();
+    d->view->hide();
 }
 
 void InputMethod::setPreedit(const QString &preedit,
@@ -709,49 +650,49 @@ void InputMethod::updateKey(const QString &key_id,
 void InputMethod::onLayoutWidthChanged(int width)
 {
     Q_D(InputMethod);
-    d->surface->setWidth(width);
+    d->view->setWidth(width);
 }
 
 void InputMethod::onLayoutHeightChanged(int height)
 {
     Q_D(InputMethod);
-    d->surface->setHeight(height);
+    d->view->setHeight(height);
 }
 
 void InputMethod::onExtendedLayoutWidthChanged(int width)
 {
     Q_D(InputMethod);
-    d->extended_surface->setWidth(width);
+    d->view->setExtendedKeysWidth(width);
 }
 
 void InputMethod::onExtendedLayoutHeightChanged(int height)
 {
     Q_D(InputMethod);
-    d->extended_surface->setHeight(height);
+    d->view->setExtendedKeysHeight(height);
 }
 
 void InputMethod::onExtendedLayoutOriginChanged(const QPoint &origin)
 {
     Q_D(InputMethod);
-    d->extended_surface->setPosition(d->surface->position() + origin);
+    d->view->setExtendedKeysOrigin(origin);
 }
 
 void InputMethod::onMagnifierLayoutWidthChanged(int width)
 {
     Q_D(InputMethod);
-    d->magnifier_surface->setWidth(width);
+    d->view->setMagnifierWidth(width);
 }
 
 void InputMethod::onMagnifierLayoutHeightChanged(int height)
 {
     Q_D(InputMethod);
-    d->magnifier_surface->setHeight(height);
+    d->view->setMagnifierHeight(height);
 }
 
 void InputMethod::onMagnifierLayoutOriginChanged(const QPoint &origin)
 {
     Q_D(InputMethod);
-    d->magnifier_surface->setPosition(d->surface->position() + origin);
+    d->view->setMagnifierOrigin(origin);
 }
 
 } // namespace MaliitKeyboard
