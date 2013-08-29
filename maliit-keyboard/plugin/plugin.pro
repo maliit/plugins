@@ -25,6 +25,9 @@ HEADERS += \
     editor.h \
     updatenotifier.h \
     maliitcontext.h \
+    view.h \
+    canvas.h \
+    surfaces.h \
 
 SOURCES += \
     plugin.cpp \
@@ -32,6 +35,9 @@ SOURCES += \
     editor.cpp \
     updatenotifier.cpp \
     maliitcontext.cpp \
+    view.cpp \
+    canvas.cpp \
+    surfaces.cpp \
 
 target.path += $${MALIIT_PLUGINS_DIR}
 INSTALLS += target
