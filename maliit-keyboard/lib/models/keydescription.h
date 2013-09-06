@@ -38,6 +38,8 @@ namespace MaliitKeyboard {
 struct KeyDescription
 {
     enum Width {
+        XXSmall,
+        XSmall,
         Small,
         Medium,
         Large,

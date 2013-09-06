@@ -57,6 +57,8 @@ public:
     };
 
     enum Width {
+        XXSmall,
+        XSmall,
         Small,
         Medium,
         Large,

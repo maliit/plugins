@@ -46,6 +46,8 @@ QByteArray fromKeyWidth(KeyDescription::Width width)
 {
     switch(width) {
     case KeyDescription::Medium: return QByteArray();
+    case KeyDescription::XXSmall: return QByteArray("-xxsmall");
+    case KeyDescription::XSmall: return QByteArray("-xsmall");
     case KeyDescription::Small: return QByteArray("-small");
     case KeyDescription::Large: return QByteArray("-large");
     case KeyDescription::XLarge: return QByteArray("-xlarge");
