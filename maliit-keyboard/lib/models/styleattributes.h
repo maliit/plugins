@@ -80,6 +80,8 @@ public:
     qreal wordRibbonHeight(Logic::LayoutHelper::Orientation orientation) const;
     qreal magnifierKeyHeight(Logic::LayoutHelper::Orientation orientation) const;
     qreal keyHeight(Logic::LayoutHelper::Orientation orientation) const;
+    qreal keyTopRowHeight(Logic::LayoutHelper::Orientation orientation) const;
+    qreal keyBottomRowHeight(Logic::LayoutHelper::Orientation orientation) const;
 
     qreal magnifierKeyWidth(Logic::LayoutHelper::Orientation orientation) const;
     qreal keyWidth(Logic::LayoutHelper::Orientation orientation,

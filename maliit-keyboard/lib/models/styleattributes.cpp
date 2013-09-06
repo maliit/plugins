@@ -442,6 +442,28 @@ qreal StyleAttributes::keyHeight(Logic::LayoutHelper::Orientation orientation) c
 }
 
 
+//! \brief Looks up the key height for keys in the top row.
+//! @param orientation The layout orientation (landscape or portrait).
+//! @returns Value of "${style}\${orientation}\key-height".
+qreal StyleAttributes::keyTopRowHeight(Logic::LayoutHelper::Orientation orientation) const
+{
+    return lookup(m_store, orientation,
+                  m_style_name.toLocal8Bit(),
+                  QByteArray("key-top-row-height")).toReal();
+}
+
+
+//! \brief Looks up the key height for keys in the bottom row.
+//! @param orientation The layout orientation (landscape or portrait).
+//! @returns Value of "${style}\${orientation}\key-height".
+qreal StyleAttributes::keyBottomRowHeight(Logic::LayoutHelper::Orientation orientation) const
+{
+    return lookup(m_store, orientation,
+                  m_style_name.toLocal8Bit(),
+                  QByteArray("key-bottom-row-height")).toReal();
+}
+
+
 //! \brief Looks up the magnifier key width.
 //! @param orientation The layout orientation (landscape or portrait).
 //! @returns Value of "${style}\${orientation}\magnifier-key-width".

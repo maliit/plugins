@@ -86,6 +86,8 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
 
     const qreal max_width(attributes->keyAreaWidth(orientation));
     const qreal key_height(attributes->keyHeight(orientation));
+    const qreal key_top_row_height(attributes->keyTopRowHeight(orientation));
+    const qreal key_bottom_row_height(attributes->keyBottomRowHeight(orientation));
     const qreal margin = attributes->keyMargin(orientation);
     const qreal padding = attributes->keyAreaPadding(orientation);
 
@@ -93,14 +95,23 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
     QVector<int> row_indices;
     int spacer_count = 0;
     qreal consumed_width = 0;
-
+    const int num_rows = kb.key_descriptions.last().row;
 
     for (int index = 0; index < kb.keys.count(); ++index) {
         row_indices.append(index);
         Key &key(kb.keys[index]);
         const KeyDescription &desc(kb.key_descriptions.at(index));
+
+        qreal row_height = 0;
+        if (desc.row == 0 && key_top_row_height > 0.0) {
+            row_height = key_top_row_height;
+        } else if (desc.row == num_rows && key_bottom_row_height > 0.0) {
+            row_height = key_bottom_row_height;
+        } else {
+            row_height = key_height;
+        }
+
         int width = 0;
-        pos.setY(key_height * desc.row);
 
         bool at_row_start((index == 0)
                           || (kb.key_descriptions.at(index - 1).row < desc.row));
@@ -119,7 +130,7 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
         Area area;
         area.setBackground(attributes->keyBackground(key.style(), KeyDescription::NormalState));
         area.setBackgroundBorders(bg_margins);
-        area.setSize(QSize(width + key_margin, key_height));
+        area.setSize(QSize(width + key_margin, row_height));
         key.setArea(area);
 
         key.setOrigin(pos);
@@ -139,6 +150,7 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
         pos.rx() += key.rect().width();
 
         if (at_row_end) {
+            pos.ry() += row_height;
             if (not is_extended_keyarea
                 && spacer_count > 0 && pos.x() < max_width + 1) {
                 const int spacer_width = qMax<int>(0, max_width - pos.x()) / spacer_count;
@@ -188,7 +200,7 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
     area.setBackground(attributes->keyAreaBackground());
     area.setBackgroundBorders(attributes->keyAreaBackgroundBorders());
     area.setSize(QSize((is_extended_keyarea ? consumed_width : max_width),
-                       pos.y() + key_height));
+                       pos.y()));
 
     ka.setArea(area);
     ka.setOrigin(is_extended_keyarea ? QPoint(0, -attributes->verticalOffset(orientation))
