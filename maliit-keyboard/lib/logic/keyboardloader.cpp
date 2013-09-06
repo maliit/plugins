@@ -146,6 +146,12 @@ QPair<Key, KeyDescription> keyAndDescFromTags(const TagKeyPtr &key,
     case Key::ActionClose:
         skey_description.icon = KeyDescription::CloseIcon;
         break;
+    case Key::ActionCancel:
+        skey_description.icon = KeyDescription::CancelIcon;
+        break;
+    case Key::ActionLayoutMenu:
+        skey_description.icon = KeyDescription::LayoutMenuIcon;
+        break;
     case Key::ActionLeftLayout:
         skey_description.icon = KeyDescription::LeftLayoutIcon;
         break;

@@ -76,6 +76,8 @@ QByteArray fromKeyIcon(KeyDescription::Icon icon)
     case KeyDescription::ShiftLatchedIcon: return QByteArray("shift-latched");
     case KeyDescription::CapsLockIcon: return QByteArray("caps-lock");
     case KeyDescription::CloseIcon: return QByteArray("close");
+    case KeyDescription::CancelIcon: return QByteArray("cancel");
+    case KeyDescription::LayoutMenuIcon: return QByteArray("layout-menu");
     case KeyDescription::LeftLayoutIcon: return QByteArray("left-layout");
     case KeyDescription::RightLayoutIcon: return QByteArray("right-layout");
     case KeyDescription::CustomIcon: return QByteArray();

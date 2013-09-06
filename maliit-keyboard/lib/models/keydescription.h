@@ -60,6 +60,8 @@ struct KeyDescription
         ShiftLatchedIcon,
         CapsLockIcon,
         CloseIcon,
+        CancelIcon,
+        LayoutMenuIcon,
         LeftLayoutIcon,
         RightLayoutIcon,
         CustomIcon

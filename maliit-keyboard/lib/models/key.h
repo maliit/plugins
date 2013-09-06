@@ -66,6 +66,7 @@ public:
         ActionRight, //!< Key moves cursor position to right, in text editor.
         ActionDown, //!< Key moves cursor position to next line, in text editor.
         ActionClose, //!< Key closes the virtual keyboard.
+        ActionCancel, //!< Similar to ActionClose, but undoes changes.
         ActionCommand, //!< Key executes a command.
         ActionTab, //!< Key moves cursor position by one tab, in text editor.
         ActionDead, //!< Switches keyboard to deadkey variation, using key's label as lookup.

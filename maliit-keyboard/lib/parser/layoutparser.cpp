@@ -392,9 +392,10 @@ void LayoutParser::parseKey(const TagRowPtr &row)
 void LayoutParser::parseBinding(const TagBindingContainerPtr &binding_container)
 {
     static const QStringList actionValues(QString::fromLatin1(
-        "insert,shift,backspace,space,cycle,layout_menu,sym,return,commit,"
+        "insert,shift,backspace,space,cycle,layout-menu,sym,return,commit,"
         "decimal_separator,plus_minus_toggle,switch,on_off_toggle,compose,"
-        "left,up,right,down,close,tab,dead,left-layout,right-layout,command"
+        "left,up,right,down,close,cancel,tab,dead,left-layout,right-layout,"
+        "command"
     ).split(','));
     Q_ASSERT(actionValues.count() == Key::NumActions);
 
