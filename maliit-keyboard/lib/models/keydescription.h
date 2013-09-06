@@ -48,6 +48,10 @@ struct KeyDescription
 
     enum Icon {
         NoIcon,
+        LeftIcon,
+        RightIcon,
+        UpIcon,
+        DownIcon,
         ReturnIcon,
         BackspaceIcon,
         ShiftIcon,

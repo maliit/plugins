@@ -122,6 +122,18 @@ QPair<Key, KeyDescription> keyAndDescFromTags(const TagKeyPtr &key,
     skey_description.width = static_cast<KeyDescription::Width>(key->width());
 
     switch (skey.action()) {
+    case Key::ActionLeft:
+        skey_description.icon = KeyDescription::LeftIcon;
+        break;
+    case Key::ActionRight:
+        skey_description.icon = KeyDescription::RightIcon;
+        break;
+    case Key::ActionUp:
+        skey_description.icon = KeyDescription::UpIcon;
+        break;
+    case Key::ActionDown:
+        skey_description.icon = KeyDescription::DownIcon;
+        break;
     case Key::ActionBackspace:
         skey_description.icon = KeyDescription::BackspaceIcon;
         break;

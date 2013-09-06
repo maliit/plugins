@@ -64,6 +64,10 @@ QByteArray fromKeyIcon(KeyDescription::Icon icon)
 {
     switch (icon) {
     case KeyDescription::NoIcon: return QByteArray();
+    case KeyDescription::LeftIcon: return QByteArray("left");
+    case KeyDescription::RightIcon: return QByteArray("right");
+    case KeyDescription::UpIcon: return QByteArray("up");
+    case KeyDescription::DownIcon: return QByteArray("down");
     case KeyDescription::ReturnIcon: return QByteArray("return");
     case KeyDescription::BackspaceIcon: return QByteArray("backspace");
     case KeyDescription::ShiftIcon: return QByteArray("shift");
