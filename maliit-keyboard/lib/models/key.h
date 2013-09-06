@@ -77,7 +77,8 @@ public:
     enum Style {
         StyleNormalKey,
         StyleSpecialKey,
-        StyleDeadKey
+        StyleDeadKey,
+        StyleDigits
     };
 
 private:

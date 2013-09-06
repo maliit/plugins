@@ -52,7 +52,8 @@ public:
     enum Style {
         Normal,
         Special,
-        DeadKey
+        DeadKey,
+        Digits
     };
 
     enum Width {

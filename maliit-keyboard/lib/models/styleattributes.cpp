@@ -92,6 +92,7 @@ QByteArray fromKeyStyle(Key::Style style)
     case Key::StyleNormalKey: return QByteArray("normal");
     case Key::StyleDeadKey: return QByteArray("dead");
     case Key::StyleSpecialKey: return QByteArray("special");
+    case Key::StyleDigits: return QByteArray("digits");
     }
 
     return QByteArray();

@@ -352,7 +352,7 @@ void LayoutParser::parseRow(const TagRowContainerPtr &row_container)
 
 void LayoutParser::parseKey(const TagRowPtr &row)
 {
-    static const QStringList styleValues(QString::fromLatin1("normal,special,deadkey").split(','));
+    static const QStringList styleValues(QString::fromLatin1("normal,special,deadkey,digits").split(','));
     static const QStringList widthValues(QString::fromLatin1("small,medium,large,x-large,xx-large,stretched").split(','));
 
     const QXmlStreamAttributes attributes(m_xml.attributes());
