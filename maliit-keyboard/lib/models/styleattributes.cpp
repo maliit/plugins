@@ -99,6 +99,7 @@ QByteArray fromKeyStyle(Key::Style style)
     case Key::StyleDeadKey: return QByteArray("dead");
     case Key::StyleSpecialKey: return QByteArray("special");
     case Key::StyleDigits: return QByteArray("digits");
+    case Key::StyleActivated: return QByteArray("activated");
     }
 
     return QByteArray();

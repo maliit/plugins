@@ -78,7 +78,8 @@ public:
         StyleNormalKey,
         StyleSpecialKey,
         StyleDeadKey,
-        StyleDigits
+        StyleDigits,
+        StyleActivated
     };
 
 private:

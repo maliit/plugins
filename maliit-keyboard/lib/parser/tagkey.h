@@ -53,7 +53,8 @@ public:
         Normal,
         Special,
         DeadKey,
-        Digits
+        Digits,
+        Activated
     };
 
     enum Width {
