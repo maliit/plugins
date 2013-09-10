@@ -60,8 +60,8 @@ rtl: Something with right-to-left, but the same exists for <binding>.
 id: An ID for key overrides, not used.
 -->
 <!ATTLIST key
-  style (normal | special | deadkey) "normal"
-  width (small | medium | large | x-large | xx-large | stretched) "medium"
+  style (normal | special | deadkey | digits | activated) "normal"
+  width (xx-small | x-small | small | medium | large | x-large | xx-large | stretched) "medium"
   rtl (true | false) "false"
   id CDATA #IMPLIED
 >
