@@ -3,13 +3,3 @@ Maliit Keyboard
 
 This is a C++ based reference plugin. It focuses on good performance and decent
 usability.
-
-
-Known issues
-============
-
-On multi-screen setups, Qt's QDesktopWidget will not always report the invidual
-screen sizes, but instead only report the full virtual screen size. Since this
-information is used to position the virtual keyboard, it can somtimes lead to
-the virtual keyboard ending up in weird places. To workaround this issue, try
-swapping the monitor layout.
