@@ -39,46 +39,34 @@ KeyBase {
     property string caption
     property int sourceWidth: -1
     property int sourceHeight: -1
+    property string imagesrc: bgimg.source
 
-    opacity: pressed ? 0.6 : 1.0
+    topPadding: UI.portraitVerticalPadding
+    bottomPadding: UI.portraitVerticalPadding
+    leftPadding: UI.portraitHorizontalPadding
+    rightPadding: UI.portraitHorizontalPadding
+
     showPopper: false
 
-    Image {
-        id: leftBit
-        source: (landscape) ? "meegotouch-keyboard-function-key-left-landscape.png"
-                            : "meegotouch-keyboard-function-key-left.png"
+    BorderImage {
+        id: bgimg
+        width: 38; height: 60;
+        border { left: 1; top: 4; right: 1; bottom:0 }
+        horizontalTileMode: BorderImage.Repeat
+        verticalTileMode: BorderImage.Repeat
+        source: parent.pressed ? "keyboard-key-portrait-function-pressed.png" : "keyboard-key-portrait-function.png"
         anchors {
             left: parent.left
-            leftMargin: leftPadding
-            top: parent.top
-            topMargin: topPadding
-        }
-    }
-    Image {
-        id: midBit
-        source: (landscape) ? "meegotouch-keyboard-function-key-mid-landscape.png"
-                            : "meegotouch-keyboard-function-key-mid.png"
-        anchors {
-            left: leftBit.right
-            right: rightBit.left
-            top: parent.top
-            topMargin: topPadding
-        }
-    }
-    Image {
-        id: rightBit
-        source: (landscape) ? "meegotouch-keyboard-function-key-right-landscape.png"
-                            : "meegotouch-keyboard-function-key-right.png"
-        anchors {
-            top: parent.top
-            topMargin: topPadding
             right: parent.right
+            top: parent.top
+            topMargin: topPadding
+            leftMargin: leftPadding
             rightMargin: rightPadding
         }
     }
+
     Image {
         anchors.centerIn: parent
-        anchors.horizontalCenterOffset: (leftPadding - rightPadding) / 2
         source: icon
         sourceSize.width: (sourceWidth == -1) ? width : sourceWidth
         sourceSize.height: (sourceHeight == -1) ? height : sourceHeight
@@ -86,7 +74,6 @@ KeyBase {
 
     Text {
         anchors.centerIn: parent
-        anchors.horizontalCenterOffset: (leftPadding - rightPadding) / 2
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.family: "sans"

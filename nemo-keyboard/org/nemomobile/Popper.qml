@@ -33,8 +33,10 @@ import "KeyboardUiConstants.js" as UI
 Image {
     id: popper
     source: "popper.png"
+    width: 56
+    height: 84
     opacity: 0
-
+    anchors.bottomMargin: 8
     property Item target: null
 
     Text {
@@ -44,9 +46,9 @@ Image {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.family: "sans"
-        font.pixelSize: UI.FONT_SIZE_POPPER
+        font.pixelSize: 64
         font.bold: true
-        color: UI.TEXT_COLOR_POPPER
+        color: "white"
     }
 
     states: State {

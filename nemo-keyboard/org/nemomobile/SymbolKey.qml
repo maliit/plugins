@@ -32,6 +32,6 @@
 import QtQuick 2.0
 
 FunctionKey {
-    caption: inSymView ? "ABC" : "?123"
+    caption: inSymView ? "ABC" : "123?"
     onClicked: inSymView = (!inSymView)
 }

@@ -33,9 +33,9 @@ import QtQuick 2.0
 
 FunctionKey {
     icon: inSymView ? ""
-                    : (isShiftLocked) ? "icon-m-input-methods-capslock.svg"
-                                      : (isShifted) ? "icon-m-input-methods-shift-uppercase.svg"
-                                                    : "icon-m-input-methods-shift-lowercase.svg"
+                    : (isShiftLocked) ? "icon-m-input-methods-capslock.png"
+                                      : (isShifted) ? "icon-m-input-methods-shift-uppercase.png"
+                                                    : "icon-m-input-methods-shift-lowercase.png"
 
     caption: inSymView ? (inSymView2 ? "2/2" : "1/2") : ""
     key: Qt.Key_Shift
@@ -47,8 +47,9 @@ FunctionKey {
                 isShiftLocked = false
                 isShifted = false
             } else {
-                if (isShifted)
+                if (isShifted) {
                     isShiftLocked = true
+                }
                 else
                     isShifted = true
             }

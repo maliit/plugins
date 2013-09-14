@@ -41,14 +41,14 @@ var landscapeHeight = 58
 var landscapeHorizontalPadding = 3
 var landscapeVerticalPadding = 6
 
-var portraitWidth = 47
+var portraitWidth = 48
 var portraitHeight = 80
-var portraitHorizontalPadding = 2
-var portraitVerticalPadding = 8
+var portraitHorizontalPadding = 4
+var portraitVerticalPadding = 10
 
 var PORTRAIT_NARROW_OTT_WIDTH = 60;
 var PORTRAIT_OTT_WIDTH = 88;
-var PORTRAIT_SHIFT_WIDTH = 62
+var PORTRAIT_SHIFT_WIDTH = 52;
 var FONT_SIZE_RUSSIAN = 18;
 
 var FONT_SIZE = 28;

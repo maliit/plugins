@@ -89,8 +89,6 @@ Column {
             width: UI.PORTRAIT_SHIFT_WIDTH
             height: keyHeight
             topPadding: keyArea.topPadding
-            leftPadding: keyArea.leftPadding
-            rightPadding: keyArea.rightPadding
         }
 
         Row {
@@ -118,11 +116,9 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
 
         SymbolKey {
-            width: UI.PORTRAIT_OTT_WIDTH + 20 // extra reactive area on left
+            width: 104
             height: keyHeight
             topPadding: keyArea.topPadding
-            leftPadding: keyArea.leftPadding + 20
-            rightPadding: keyArea.rightPadding
         }
 
         PortraitCharacterKey {
@@ -131,13 +127,15 @@ Column {
             width: 56
             sizeType: "keyboard-key-56x60.png"
         }
+
         PortraitCharacterKey {
             caption: " "
             captionShifted: " "
             showPopper: false
-            width: 136
+            width: 146
             sizeType: "keyboard-key-136x60.png"
         }
+
         PortraitCharacterKey {
             caption: "."
             captionShifted: "."
@@ -146,11 +144,9 @@ Column {
         }
 
         EnterKey {
-            width: UI.PORTRAIT_OTT_WIDTH + 20
+            width: 64
             height: keyHeight
             topPadding: keyArea.topPadding
-            leftPadding: keyArea.leftPadding
-            rightPadding: keyArea.rightPadding + 20
         }
     }
 }

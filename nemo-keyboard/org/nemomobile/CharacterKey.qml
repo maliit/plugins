@@ -42,10 +42,15 @@ KeyBase  {
     property string sizeType: "keyboard-key-43x60.png"
     property int fontSize: UI.FONT_SIZE
     property alias text: key_label.text
+    property alias imagesrc: bgimage.source
 
-    Image {
-        source: sizeType
-        opacity: pressed ? 0.5 : 1
+    BorderImage {
+        id: bgImage
+        width: 38; height: 60
+        border {left: 1; top:4; right:1;bottom:0}
+        horizontalTileMode: BorderImage.Repeat
+        verticalTileMode: BorderImage.Repeat
+        source: parent.pressed ? "keyboard-key-portrait-pressed.png" : "keyboard-key-portrait.png"
         anchors.fill: parent
         anchors.leftMargin: leftPadding
         anchors.rightMargin: rightPadding

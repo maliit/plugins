@@ -45,10 +45,12 @@ MouseArea {
         id: inputHandler
     }
 
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: UI.BG_COLOR
+    BorderImage {
+        width: 480; height: 318;
+        border { left: 1; top: 4; right: 1; bottom:0 }
+        horizontalTileMode: BorderImage.Repeat
+        verticalTileMode: BorderImage.Repeat
+        source: "vkb-body.png"
     }
 
     Popper {
