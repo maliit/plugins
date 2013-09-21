@@ -35,7 +35,7 @@
 
 #include "models/key.h"
 #include "models/wordcandidate.h"
-#include "view/abstracttexteditor.h"
+#include "logic/abstracttexteditor.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
 #include <QtCore>
@@ -43,7 +43,7 @@
 namespace MaliitKeyboard {
 
 class Editor
-    : public AbstractTextEditor
+    : public Logic::AbstractTextEditor
 {
     Q_OBJECT
     Q_DISABLE_COPY(Editor)
@@ -52,7 +52,7 @@ private:
     MAbstractInputMethodHost *m_host;
 
 public:
-    explicit Editor(const EditorOptions &options,
+    explicit Editor(const Logic::EditorOptions &options,
                     Model::Text *text,
                     Logic::AbstractWordEngine *word_engine,
                     Logic::AbstractLanguageFeatures *language_features,

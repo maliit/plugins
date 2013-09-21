@@ -166,7 +166,7 @@ MImUpdateEvent *createUpdateEvent(const QString &surrounding_text,
 struct BasicSetupTest
 {
     BasicSetupTest(bool enable_word_engine = true)
-        : editor(EditorOptions(), new Model::Text, new Logic::WordEngineProbe, new Logic::LanguageFeatures, 0)
+        : editor(Logic::EditorOptions(), new Model::Text, new Logic::WordEngineProbe, new Logic::LanguageFeatures, 0)
         , host()
         , notifier()
     {

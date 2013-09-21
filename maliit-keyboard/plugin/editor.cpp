@@ -41,18 +41,18 @@ namespace MaliitKeyboard {
 
 namespace {
 
-QEvent::Type toQEventType(AbstractTextEditor::KeyState state)
+QEvent::Type toQEventType(Logic::AbstractTextEditor::KeyState state)
 {
     switch(state) {
     default:
-    case AbstractTextEditor::KeyStatePressed: return QEvent::KeyPress;
-    case AbstractTextEditor::KeyStateReleased: return QEvent::KeyRelease;
+    case Logic::AbstractTextEditor::KeyStatePressed: return QEvent::KeyPress;
+    case Logic::AbstractTextEditor::KeyStateReleased: return QEvent::KeyRelease;
     }
 }
 
 }
 
-Editor::Editor(const EditorOptions &options,
+Editor::Editor(const Logic::EditorOptions &options,
                Model::Text *text,
                Logic::AbstractWordEngine *word_engine,
                Logic::AbstractLanguageFeatures *language_features,

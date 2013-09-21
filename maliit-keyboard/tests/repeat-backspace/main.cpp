@@ -57,7 +57,7 @@ class TestRepeatBackspace
 private:
     QScopedPointer<Editor> editor;
     QScopedPointer<InputMethodHostProbe> host;
-    EditorOptions options;
+    Logic::EditorOptions options;
     int delay;
 
     Q_SLOT void initTestCase()

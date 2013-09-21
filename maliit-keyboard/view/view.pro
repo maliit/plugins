@@ -19,14 +19,12 @@ contains(QT_MAJOR_VERSION, 4) {
 
 HEADERS += \
     setup.h \
-    abstracttexteditor.h \
     abstractfeedback.h \
     nullfeedback.h \
     surface.h \
 
 SOURCES += \
     setup.cpp \
-    abstracttexteditor.cpp \
     abstractfeedback.cpp \
     nullfeedback.cpp \
     surface.cpp \

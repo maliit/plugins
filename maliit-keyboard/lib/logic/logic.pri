@@ -8,6 +8,7 @@ HEADERS += \
     logic/keyareaconverter.h \
     logic/style.h \
     logic/spellchecker.h \
+    logic/abstracttexteditor.h \
     logic/abstractwordengine.h \
     logic/wordengine.h \
     logic/abstractlanguagefeatures.h \
@@ -22,6 +23,7 @@ SOURCES += \
     logic/keyareaconverter.cpp \
     logic/style.cpp \
     logic/spellchecker.cpp \
+    logic/abstracttexteditor.cpp \
     logic/abstractwordengine.cpp \
     logic/wordengine.cpp \
     logic/abstractlanguagefeatures.cpp \

@@ -37,10 +37,10 @@ namespace MaliitKeyboard {
 
 class Glass;
 class Renderer;
-class AbstractTextEditor;
 class AbstractFeedback;
 
 namespace Logic {
+class AbstractTextEditor;
 class LayoutHelper;
 class LayoutUpdater;
 class EventHandler;
@@ -54,13 +54,13 @@ namespace Setup {
 
 void connectAll(Logic::EventHandler *event_handler,
                 Logic::LayoutUpdater *updater,
-                AbstractTextEditor *editor);
+                Logic::AbstractTextEditor *editor);
 
 void connectEventHandlerToTextEditor(Logic::EventHandler *event_handler,
-                                     AbstractTextEditor *editor);
+                                     Logic::AbstractTextEditor *editor);
 
 void connectLayoutUpdaterToTextEditor(Logic::LayoutUpdater *updater,
-                                      AbstractTextEditor *editor);
+                                      Logic::AbstractTextEditor *editor);
 }} // namespace Setup, MaliitKeyboard
 
 #endif // MALIIT_KEYBOARD_SETUP_H

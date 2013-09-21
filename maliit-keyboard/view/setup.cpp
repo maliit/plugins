@@ -31,7 +31,6 @@
  */
 
 #include "setup.h"
-#include "abstracttexteditor.h"
 #include "abstractfeedback.h"
 
 #include "models/layout.h"
@@ -39,6 +38,7 @@
 #include "models/wordcandidate.h"
 #include "models/text.h"
 
+#include "logic/abstracttexteditor.h"
 #include "logic/layouthelper.h"
 #include "logic/layoutupdater.h"
 #include "logic/eventhandler.h"
@@ -48,7 +48,7 @@ namespace Setup {
 
 void connectAll(Logic::EventHandler *event_handler,
                 Logic::LayoutUpdater *updater,
-                AbstractTextEditor *editor)
+                Logic::AbstractTextEditor *editor)
 {
     // TODO: Connect event handler to feedback.
     connectEventHandlerToTextEditor(event_handler, editor);
@@ -56,7 +56,7 @@ void connectAll(Logic::EventHandler *event_handler,
 }
 
 void connectEventHandlerToTextEditor(Logic::EventHandler *event_handler,
-                                     AbstractTextEditor *editor)
+                                     Logic::AbstractTextEditor *editor)
 {
     QObject::connect(event_handler, SIGNAL(keyPressed(Key)),
                      editor,        SLOT(onKeyPressed(Key)));
@@ -72,7 +72,7 @@ void connectEventHandlerToTextEditor(Logic::EventHandler *event_handler,
 }
 
 void connectLayoutUpdaterToTextEditor(Logic::LayoutUpdater *updater,
-                                      AbstractTextEditor *editor)
+                                      Logic::AbstractTextEditor *editor)
 {
     QObject::connect(updater, SIGNAL(wordCandidateSelected(QString)),
                      editor,  SLOT(replaceAndCommitPreedit(QString)));

@@ -188,7 +188,7 @@ InputMethodPrivate::InputMethodPrivate(InputMethod *const q,
     : surface(getSurface(host))
     , extended_surface(getOverlaySurface(host, surface.data()))
     , magnifier_surface(getOverlaySurface(host, surface.data()))
-    , editor(EditorOptions(), new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures)
+    , editor(Logic::EditorOptions(), new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures)
     , feedback()
     , style(new Style)
     , notifier()
