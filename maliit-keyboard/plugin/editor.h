@@ -67,8 +67,11 @@ private:
                                    Model::Text::PreeditFace face,
                                    const Replacement &replacement);
     virtual void sendCommitString(const QString &commit);
-    virtual void sendKeyEvent(const QKeyEvent &ev);
-    virtual void invokeAction(const QString &command, const QKeySequence &sequence);
+    virtual void sendKeyEvent(KeyState state,
+                              Qt::Key key,
+                              Qt::KeyboardModifier modifier);
+    virtual void invokeAction(const QString &action,
+                              const QString &key_sequence);
     //! \reimp_end
 };
 

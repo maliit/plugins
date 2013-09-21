@@ -40,7 +40,6 @@
 #include "logic/abstractlanguagefeatures.h"
 
 #include <QtCore>
-#include <QtGui/QKeyEvent>
 
 namespace MaliitKeyboard {
 
@@ -98,6 +97,11 @@ public:
         int cursor_position;
     };
 
+    enum KeyState {
+        KeyStatePressed,
+        KeyStateReleased
+    };
+
     explicit AbstractTextEditor(const EditorOptions &options,
                                 Model::Text *text,
                                 Logic::AbstractWordEngine *word_engine,
@@ -150,8 +154,8 @@ private:
                                    Model::Text::PreeditFace face,
                                    const Replacement &replacement) = 0;
     virtual void sendCommitString(const QString &commit) = 0;
-    virtual void sendKeyEvent(const QKeyEvent &ev) = 0;
-    virtual void invokeAction(const QString &action, const QKeySequence &sequence) = 0;
+    virtual void sendKeyEvent(KeyState state, Qt::Key key, Qt::KeyboardModifier modifier) = 0;
+    virtual void invokeAction(const QString &action, const QString &key_sequence) = 0;
 
     void commitPreedit();
     Q_SLOT void autoRepeatBackspace();

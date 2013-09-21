@@ -39,6 +39,19 @@
 
 namespace MaliitKeyboard {
 
+namespace {
+
+QEvent::Type toQEventType(AbstractTextEditor::KeyState state)
+{
+    switch(state) {
+    default:
+    case AbstractTextEditor::KeyStatePressed: return QEvent::KeyPress;
+    case AbstractTextEditor::KeyStateReleased: return QEvent::KeyRelease;
+    }
+}
+
+}
+
 Editor::Editor(const EditorOptions &options,
                Model::Text *text,
                Logic::AbstractWordEngine *word_engine,
@@ -87,24 +100,27 @@ void Editor::sendCommitString(const QString &commit)
     m_host->sendCommitString(commit);
 }
 
-void Editor::sendKeyEvent(const QKeyEvent &ev)
+void Editor::sendKeyEvent(KeyState state,
+                          Qt::Key key,
+                          Qt::KeyboardModifier modifier)
 {
     if (not m_host) {
         qWarning() << __PRETTY_FUNCTION__
                      << "Host not set, ignoring.";
     }
 
-    m_host->sendKeyEvent(ev);
+    m_host->sendKeyEvent(QKeyEvent(toQEventType(state), key, modifier));
 }
 
-void Editor::invokeAction(const QString &action, const QKeySequence &sequence)
+void Editor::invokeAction(const QString &action,
+                          const QString &key_sequence)
 {
     if (not m_host) {
         qWarning() << __PRETTY_FUNCTION__
                      << "Host not set, ignoring.";
     }
 
-    m_host->invokeAction(action, sequence);
+    m_host->invokeAction(action, QKeySequence::fromString(key_sequence));
 }
 
 } // namespace MaliitKeyboard

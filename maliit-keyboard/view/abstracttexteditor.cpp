@@ -499,7 +499,7 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
         break;
 
     case Key::ActionCommand:
-        invokeAction(text, QKeySequence::fromString(key.commandSequence()));
+        invokeAction(text, key.commandSequence());
         break;
 
     default:
@@ -508,8 +508,7 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
 
     if (event_key != Qt::Key_unknown) {
         commitPreedit();
-        QKeyEvent ev(QEvent::KeyPress, event_key, Qt::NoModifier);
-        sendKeyEvent(ev);
+        sendKeyEvent(KeyStatePressed, event_key, Qt::NoModifier);
     }
 }
 
@@ -680,8 +679,7 @@ void AbstractTextEditor::autoRepeatBackspace()
 {
     Q_D(AbstractTextEditor);
 
-    QKeyEvent ev(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
-    sendKeyEvent(ev);
+    sendKeyEvent(KeyStatePressed, Qt::Key_Backspace, Qt::NoModifier);
     d->backspace_sent = true;
     d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_interval);
 }
