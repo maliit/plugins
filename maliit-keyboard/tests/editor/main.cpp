@@ -117,7 +117,7 @@ private:
         QFETCH(QString, expected_commit_history);
 
         Logic::WordEngineProbe *word_engine = new Logic::WordEngineProbe;
-        Editor editor(Logic::EditorOptions(), new Model::Text, word_engine, new Logic::LanguageFeatures);
+        Editor editor(new Model::Text, word_engine, new Logic::LanguageFeatures);
 
         InputMethodHostProbe host;
         editor.setHost(&host);
@@ -187,7 +187,7 @@ private:
         QFETCH(int, expected_auto_caps_activated_count);
 
         Logic::WordEngineProbe *word_engine = new Logic::WordEngineProbe;
-        Editor editor(Logic::EditorOptions(), new Model::Text, word_engine, new Logic::LanguageFeatures);
+        Editor editor(new Model::Text, word_engine, new Logic::LanguageFeatures);
         QSignalSpy auto_caps_activated_spy(&editor, SIGNAL(autoCapsActivated()));
 
         InputMethodHostProbe host;

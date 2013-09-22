@@ -1,3 +1,11 @@
+[next]
+======
+
+CHANGES SINCE 0.99.0
+* New plugin settings:
+  - auto_repeat_behaviour: A tuple of integers, comma-separated, controlling
+    delay and interval of pressed-down keys.
+
 0.99.0
 ======
 
@@ -18,17 +26,17 @@ CHANGES SINCE 0.94.0
 * New LanguageFeatures class to deal with language-dependent features such as
   auto-caps.
 * New plugin settings:
-  - auto-caps-enabled: Looks for punctuation marks and auto-capitalizes the
+  - auto_caps_enabled: Looks for punctuation marks and auto-capitalizes the
     next letter.
-  - hide-word-ribbon-in-portrait-mode: This can be used to save screen real 
+  - hide_word_ribbon_in_portrait_mode: This can be used to save screen real 
     estate in portrait mode (but disables word prediction).
-  - auto-correct-enabled: Use the primary word candidate instead of what the
+  - auto_correct_enabled: Use the primary word candidate instead of what the
     user typed, if the word is not in dictionary. This haappens on pressing
     space or return.
-  - word-engine-enabled: This can be used to disable both word prediction and
+  - word_engine_enabled: This can be used to disable both word prediction and
     error correction. Notice that if Maliit Keyboard is compiled without preedit
     support then this setting has no effect.
-  - feedback-enabled: This controls (audio) feedback when pressing keys. The
+  - feedback_enabled: This controls (audio) feedback when pressing keys. The
     current styling profile needs to provide audio files for this setting to take
     effect.
 * Preedit activation allows the user to edit previously entered words and get

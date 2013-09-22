@@ -35,6 +35,7 @@
 #include "models/key.h"
 #include "models/wordcandidate.h"
 #include "models/text.h"
+#include "models/styleattributes.h"
 #include "logic/abstractwordengine.h"
 #include "logic/abstractlanguagefeatures.h"
 
@@ -42,14 +43,6 @@
 
 namespace MaliitKeyboard {
 namespace Logic {
-
-struct EditorOptions
-{
-    EditorOptions();
-    // all delays are in milliseconds
-    int backspace_auto_repeat_delay; // delay before first automatically repeated key
-    int backspace_auto_repeat_interval; // interval between automatically repeated keys
-};
 
 class AbstractTextEditorPrivate;
 
@@ -102,8 +95,7 @@ public:
         KeyStateReleased
     };
 
-    explicit AbstractTextEditor(const EditorOptions &options,
-                                Model::Text *text,
+    explicit AbstractTextEditor(Model::Text *text,
                                 Logic::AbstractWordEngine *word_engine,
                                 Logic::AbstractLanguageFeatures *language_features,
                                 QObject *parent = 0);
@@ -112,6 +104,9 @@ public:
     Model::Text * text() const;
     Logic::AbstractWordEngine * wordEngine() const;
     Logic::AbstractLanguageFeatures * languageFeatures() const;
+
+    void setAutoRepeatBehaviour(int auto_repeat_delay,
+                                int auto_repeat_interval);
 
     Q_SLOT void onKeyPressed(const Key &key);
     Q_SLOT void onKeyReleased(const Key &key);

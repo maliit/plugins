@@ -99,7 +99,7 @@ private:
         Key right_layout;
         right_layout.setAction(Key::ActionRightLayout);
 
-        Editor editor(Logic::EditorOptions(), 0, 0, 0);
+        Editor editor(0, 0, 0);
         InputMethodHostProbe probe;
         editor.setHost(&probe);
 

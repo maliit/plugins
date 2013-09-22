@@ -52,12 +52,11 @@ QEvent::Type toQEventType(Logic::AbstractTextEditor::KeyState state)
 
 }
 
-Editor::Editor(const Logic::EditorOptions &options,
-               Model::Text *text,
+Editor::Editor(Model::Text *text,
                Logic::AbstractWordEngine *word_engine,
                Logic::AbstractLanguageFeatures *language_features,
                QObject *parent)
-    : AbstractTextEditor(options, text, word_engine, language_features, parent)
+    : AbstractTextEditor(text, word_engine, language_features, parent)
     , m_host(0)
 {}
 

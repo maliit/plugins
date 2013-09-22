@@ -31,23 +31,10 @@
 
 #include "abstracttexteditor.h"
 #include "models/wordribbon.h"
+#include "models/styleattributes.h"
 
 namespace MaliitKeyboard {
 namespace Logic {
-
-//! \class EditorOptions
-//! \brief Plain struct implementing editor options.
-
-//! \fn EditorOptions::EditorOptions()
-//! \brief Constructor.
-//!
-//! Sets backspace_auto_repeat_delay to 500 miliseconds and backspace_auto_repeat_interval to 300 miliseconds.
-
-//! \var EditorOptions::backspace_auto_repeat_delay
-//! \brief Delay before first automatically repeated key in miliseconds.
-
-//! \var EditorOptions::backspace_auto_repeat_interval
-//! \brief Interval between automatically repeated key in miliseconds.
 
 //! \class AbstractTextEditor
 //! \brief Class implementing preedit edition.
@@ -259,17 +246,13 @@ bool extractWordBoundariesAtCursor(const QString& surrounding_text,
 
 } // unnamed namespace
 
-EditorOptions::EditorOptions()
-    : backspace_auto_repeat_delay(500)
-    , backspace_auto_repeat_interval(300)
-{}
-
 class AbstractTextEditorPrivate
 {
 public:
     QTimer auto_repeat_backspace_timer;
     bool backspace_sent;
-    EditorOptions options;
+    int auto_repeat_delay;
+    int auto_repeat_interval;
     QScopedPointer<Model::Text> text;
     QScopedPointer<Logic::AbstractWordEngine> word_engine;
     QScopedPointer<Logic::AbstractLanguageFeatures> language_features;
@@ -279,20 +262,19 @@ public:
     int ignore_next_cursor_position;
     QString ignore_next_surrounding_text;
 
-    explicit AbstractTextEditorPrivate(const EditorOptions &new_options,
-                                       Model::Text *new_text,
+    explicit AbstractTextEditorPrivate(Model::Text *new_text,
                                        Logic::AbstractWordEngine *new_word_engine,
                                        Logic::AbstractLanguageFeatures *new_language_features);
     bool valid() const;
 };
 
-AbstractTextEditorPrivate::AbstractTextEditorPrivate(const EditorOptions &new_options,
-                                                     Model::Text *new_text,
+AbstractTextEditorPrivate::AbstractTextEditorPrivate(Model::Text *new_text,
                                                      Logic::AbstractWordEngine *new_word_engine,
                                                      Logic::AbstractLanguageFeatures *new_language_features)
     : auto_repeat_backspace_timer()
     , backspace_sent(false)
-    , options(new_options)
+    , auto_repeat_delay(500)
+    , auto_repeat_interval(300)
     , text(new_text)
     , word_engine(new_word_engine)
     , language_features(new_language_features)
@@ -319,20 +301,18 @@ bool AbstractTextEditorPrivate::valid() const
 }
 
 //! \brief Constructor.
-//! \param options Editor options.
 //! \param text Text model.
 //! \param word_engine Word engine.
 //! \param language_features Language features.
 //! \param parent Parent of this instance or \c NULL if none is needed.
 //!
 //! Takes ownership of \a text, \a word_engine and \a language_features.
-AbstractTextEditor::AbstractTextEditor(const EditorOptions &options,
-                                       Model::Text *text,
+AbstractTextEditor::AbstractTextEditor(Model::Text *text,
                                        Logic::AbstractWordEngine *word_engine,
                                        Logic::AbstractLanguageFeatures *language_features,
                                        QObject *parent)
     : QObject(parent)
-    , d_ptr(new AbstractTextEditorPrivate(options, text, word_engine, language_features))
+    , d_ptr(new AbstractTextEditorPrivate(text, word_engine, language_features))
 {
     connect(&d_ptr->auto_repeat_backspace_timer, SIGNAL(timeout()),
             this,                                SLOT(autoRepeatBackspace()));
@@ -364,6 +344,16 @@ Logic::AbstractWordEngine * AbstractTextEditor::wordEngine() const
     return d->word_engine.data();
 }
 
+//! \brief Sets auto-repeat behavior for pressed keys.
+void AbstractTextEditor::setAutoRepeatBehaviour(int auto_repeat_delay,
+                                                int auto_repeat_interval)
+{
+    Q_D(AbstractTextEditor);
+
+    d->auto_repeat_delay = auto_repeat_delay;
+    d->auto_repeat_interval = auto_repeat_interval;
+}
+
 //! \brief Reacts to key press.
 //! \param key Pressed key.
 //!
@@ -386,7 +376,7 @@ void AbstractTextEditor::onKeyPressed(const Key &key)
         }
 
         commitPreedit();
-        d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_delay);
+        d->auto_repeat_backspace_timer.start(d->auto_repeat_delay);
     }
 }
 
@@ -523,7 +513,7 @@ void AbstractTextEditor::onKeyEntered(const Key &key)
 
     if (key.action() == Key::ActionBackspace) {
         d->backspace_sent = false;
-        d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_delay);
+        d->auto_repeat_backspace_timer.start(d->auto_repeat_delay);
     }
 }
 
@@ -681,7 +671,7 @@ void AbstractTextEditor::autoRepeatBackspace()
 
     sendKeyEvent(KeyStatePressed, Qt::Key_Backspace, Qt::NoModifier);
     d->backspace_sent = true;
-    d->auto_repeat_backspace_timer.start(d->options.backspace_auto_repeat_interval);
+    d->auto_repeat_backspace_timer.start(d->auto_repeat_interval);
 }
 
 //! \brief Emits wordCandidatesChanged() signal with current preedit

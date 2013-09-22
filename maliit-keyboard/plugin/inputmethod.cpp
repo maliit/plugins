@@ -76,6 +76,9 @@ typedef QMap<QString, SharedOverride>::const_iterator OverridesIterator;
 
 namespace {
 
+const int AutoRepeatDelayDefault = 500;
+const int AutoRepeatIntervalDefault = 50;
+
 void makeQuickViewTransparent(QQuickView *view)
 {
     QSurfaceFormat format;
@@ -135,6 +138,7 @@ public:
     ScopedSetting auto_caps;
     ScopedSetting word_engine;
     ScopedSetting hide_word_ribbon_in_portrait_mode;
+    ScopedSetting auto_repeat_behaviour;
 };
 
 class LayoutGroup
@@ -188,7 +192,7 @@ InputMethodPrivate::InputMethodPrivate(InputMethod *const q,
     : surface(getSurface(host))
     , extended_surface(getOverlaySurface(host, surface.data()))
     , magnifier_surface(getOverlaySurface(host, surface.data()))
-    , editor(Logic::EditorOptions(), new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures)
+    , editor(new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures)
     , feedback()
     , style(new Style)
     , notifier()
@@ -344,6 +348,7 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
     registerAutoCapsSetting(host);
     registerWordEngineSetting(host);
     registerHideWordRibbonInPortraitModeSetting(host);
+    registerAutoRepeatBehaviour(host);
 
     // Setting layout orientation depends on word engine and hide word ribbon
     // settings to be initialized first:
@@ -577,6 +582,28 @@ void InputMethod::registerHideWordRibbonInPortraitModeSetting(MAbstractInputMeth
 }
 
 
+void InputMethod::registerAutoRepeatBehaviour(MAbstractInputMethodHost *host)
+{
+    Q_D(InputMethod);
+
+    QVariantMap attributes;
+    attributes[Maliit::SettingEntryAttributes::defaultValue] = (QVariantList() << AutoRepeatDelayDefault << AutoRepeatIntervalDefault);
+    attributes[Maliit::SettingEntryAttributes::valueRangeMin] = 0;
+    attributes[Maliit::SettingEntryAttributes::valueRangeMax] = 10000;
+
+    d->settings.auto_repeat_behaviour.reset(
+        host->registerPluginSetting("auto_repeat_behaviour",
+                                    QT_TR_NOOP("Auto repeat behaviour"),
+                                    Maliit::IntListType,
+                                    attributes));
+
+    connect(d->settings.auto_repeat_behaviour.data(), SIGNAL(valueChanged()),
+            this, SLOT(onAutoRepeatBehaviourChanged()));
+
+    onAutoRepeatBehaviourChanged();
+}
+
+
 void InputMethod::onLeftLayoutSelected()
 {
     // This API smells real bad.
@@ -658,6 +685,15 @@ void InputMethod::onHideWordRibbonInPortraitModeSettingChanged()
     Q_D(InputMethod);
     d->setLayoutOrientation(d->layout.helper.orientation());
 }
+
+void InputMethod::onAutoRepeatBehaviourChanged()
+{
+    Q_D(InputMethod);
+    const QVariantList list(d->settings.auto_repeat_behaviour->value().toList());
+    d->editor.setAutoRepeatBehaviour(list.length() > 0 ? list.at(0).toInt() : AutoRepeatDelayDefault,
+                                     list.length() > 1 ? list.at(1).toInt() : AutoRepeatIntervalDefault);
+}
+
 
 void InputMethod::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
 {

@@ -57,20 +57,22 @@ class TestRepeatBackspace
 private:
     QScopedPointer<Editor> editor;
     QScopedPointer<InputMethodHostProbe> host;
-    Logic::EditorOptions options;
     int delay;
+    int auto_repeat_delay;
+    int auto_repeat_interval;
 
     Q_SLOT void initTestCase()
     {
-        options.backspace_auto_repeat_delay = 50;
-        options.backspace_auto_repeat_interval = 20;
+        auto_repeat_delay = 50;
+        auto_repeat_interval = 20;
 
-        delay = qMax(options.backspace_auto_repeat_delay, options.backspace_auto_repeat_interval) + 10;
+        delay = qMax(auto_repeat_delay, auto_repeat_interval) + 10;
     }
 
     Q_SLOT void init()
     {
-        editor.reset(new Editor(options, new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures));
+        editor.reset(new Editor(new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures));
+        editor->setAutoRepeatBehaviour(auto_repeat_delay, auto_repeat_interval);
         host.reset(new InputMethodHostProbe);
         editor->setHost(host.data());
     }
@@ -191,13 +193,13 @@ private:
 
         QCOMPARE(host->keyEventCount(), 0);
 
-        QTest::qWait(options.backspace_auto_repeat_delay + 10);
+        QTest::qWait(auto_repeat_delay + 10);
 
         QCOMPARE(host->keyEventCount(), 1);
         QCOMPARE(host->lastKeyEvent().type(), QEvent::KeyPress);
         QCOMPARE(host->lastKeyEvent().key(), int(Qt::Key_Backspace));
 
-        QTest::qWait(options.backspace_auto_repeat_interval + 10);
+        QTest::qWait(auto_repeat_interval + 10);
 
         QCOMPARE(host->keyEventCount(), 2);
         QCOMPARE(host->lastKeyEvent().type(), QEvent::KeyPress);

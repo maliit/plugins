@@ -80,6 +80,7 @@ private:
     void registerAutoCapsSetting(MAbstractInputMethodHost *host);
     void registerWordEngineSetting(MAbstractInputMethodHost *host);
     void registerHideWordRibbonInPortraitModeSetting(MAbstractInputMethodHost *host);
+    void registerAutoRepeatBehaviour(MAbstractInputMethodHost *host);
 
     Q_SLOT void onScreenSizeChange(const QRect &rect);
     Q_SLOT void onStyleSettingChanged();
@@ -89,6 +90,7 @@ private:
     Q_SLOT void onAutoCapsSettingChanged();
     Q_SLOT void onWordEngineSettingChanged();
     Q_SLOT void onHideWordRibbonInPortraitModeSettingChanged();
+    Q_SLOT void onAutoRepeatBehaviourChanged();
     Q_SLOT void updateKey(const QString &key_id,
                           const MKeyOverride::KeyOverrideAttributes changed_attributes);
 

@@ -52,8 +52,7 @@ private:
     MAbstractInputMethodHost *m_host;
 
 public:
-    explicit Editor(const Logic::EditorOptions &options,
-                    Model::Text *text,
+    explicit Editor(Model::Text *text,
                     Logic::AbstractWordEngine *word_engine,
                     Logic::AbstractLanguageFeatures *language_features,
                     QObject *parent = 0);
