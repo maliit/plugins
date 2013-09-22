@@ -163,7 +163,7 @@ private:
     virtual void invokeAction(const QString &action, const QString &key_sequence) = 0;
 
     void commitPreedit();
-    Q_SLOT void autoRepeatBackspace();
+    Q_SLOT void autoRepeatKey();
 };
 
 }} // namespace Logic, MaliitKeyboard

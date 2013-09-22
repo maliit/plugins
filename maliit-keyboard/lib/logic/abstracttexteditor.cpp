@@ -246,6 +246,19 @@ bool extractWordBoundariesAtCursor(const QString& surrounding_text,
     return true;
 }
 
+Qt::Key toRepeatableQtKey(Key::Action action)
+{
+    switch(action) {
+    default: return Qt::Key_unknown;
+    case Key::ActionBackspace: return Qt::Key_Backspace;
+    case Key::ActionLeft: return Qt::Key_Left;
+    case Key::ActionUp: return Qt::Key_Up;
+    case Key::ActionRight: return Qt::Key_Right;
+    case Key::ActionDown: return Qt::Key_Down;
+    case Key::ActionSpace: return Qt::Key_Space;
+    }
+}
+
 } // unnamed namespace
 
 //! \brief Connects event handler to editor.
@@ -296,10 +309,24 @@ void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
 class AbstractTextEditorPrivate
 {
 public:
-    QTimer auto_repeat_backspace_timer;
-    bool backspace_sent;
-    int auto_repeat_delay;
-    int auto_repeat_interval;
+    struct AutoRepeat {
+        QTimer timer;
+        Qt::Key key;
+        bool key_sent;
+        int delay;
+        int interval;
+
+        AutoRepeat()
+            : timer()
+            , key(Qt::Key_unknown)
+            , key_sent(false)
+            , delay(500)
+            , interval(50)
+        {
+            timer.setSingleShot(true);
+        }
+    } auto_repeat;
+
     QScopedPointer<Model::Text> text;
     QScopedPointer<Logic::AbstractWordEngine> word_engine;
     QScopedPointer<Logic::AbstractLanguageFeatures> language_features;
@@ -318,10 +345,7 @@ public:
 AbstractTextEditorPrivate::AbstractTextEditorPrivate(Model::Text *new_text,
                                                      Logic::AbstractWordEngine *new_word_engine,
                                                      Logic::AbstractLanguageFeatures *new_language_features)
-    : auto_repeat_backspace_timer()
-    , backspace_sent(false)
-    , auto_repeat_delay(500)
-    , auto_repeat_interval(300)
+    : auto_repeat()
     , text(new_text)
     , word_engine(new_word_engine)
     , language_features(new_language_features)
@@ -331,7 +355,6 @@ AbstractTextEditorPrivate::AbstractTextEditorPrivate(Model::Text *new_text,
     , ignore_next_cursor_position(-1)
     , ignore_next_surrounding_text()
 {
-    auto_repeat_backspace_timer.setSingleShot(true);
     (void) valid();
 }
 
@@ -361,8 +384,8 @@ AbstractTextEditor::AbstractTextEditor(Model::Text *text,
     : QObject(parent)
     , d_ptr(new AbstractTextEditorPrivate(text, word_engine, language_features))
 {
-    connect(&d_ptr->auto_repeat_backspace_timer, SIGNAL(timeout()),
-            this,                                SLOT(autoRepeatBackspace()));
+    connect(&d_ptr->auto_repeat.timer, SIGNAL(timeout()),
+            this,                      SLOT(autoRepeatKey()));
 
     connect(word_engine, SIGNAL(candidatesChanged(WordCandidateList)),
             this,        SIGNAL(wordCandidatesChanged(WordCandidateList)));
@@ -392,15 +415,16 @@ void AbstractTextEditor::setAutoRepeatBehaviour(int auto_repeat_delay,
 {
     Q_D(AbstractTextEditor);
 
-    d->auto_repeat_delay = auto_repeat_delay;
-    d->auto_repeat_interval = auto_repeat_interval;
+    d->auto_repeat.delay = auto_repeat_delay;
+    d->auto_repeat.interval = auto_repeat_interval;
 }
 
 //! \brief Reacts to key press.
 //! \param key Pressed key.
 //!
-//! For now it only checks whether backspace was pressed. In such case
-//! preedit is commited and primary candidate is cleared.
+//! Checks whether auto-repeatable key was was pressed, in which case preedit
+//! gets committed. Backspace cancels primary candidate, too (relevant for
+//! auto-correct).
 void AbstractTextEditor::onKeyPressed(const Key &key)
 {
     Q_D(AbstractTextEditor);
@@ -409,16 +433,20 @@ void AbstractTextEditor::onKeyPressed(const Key &key)
         return;
     }
 
+    d->auto_repeat.key = toRepeatableQtKey(key.action());
+    if (d->auto_repeat.key != Qt::Key_unknown) {
+        commitPreedit();
+        d->auto_repeat.timer.start(d->auto_repeat.delay);
+        d->auto_repeat.key_sent = true;
+    }
+
     if (key.action() == Key::ActionBackspace) {
         if (d->auto_correct_enabled && not d->text->primaryCandidate().isEmpty()) {
             d->text->setPrimaryCandidate(QString());
-            d->backspace_sent = true;
+            d->auto_repeat.key_sent = true;
         } else {
-            d->backspace_sent = false;
+            d->auto_repeat.key_sent = false;
         }
-
-        commitPreedit();
-        d->auto_repeat_backspace_timer.start(d->auto_repeat_delay);
     }
 }
 
@@ -468,11 +496,11 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
     case Key::ActionBackspace: {
         commitPreedit();
 
-        if (not d->backspace_sent) {
+        if (not d->auto_repeat.key_sent) {
             event_key = Qt::Key_Backspace;
         }
 
-        d->auto_repeat_backspace_timer.stop();
+        d->auto_repeat.timer.stop();
      } break;
 
     case Key::ActionSpace: {
@@ -491,6 +519,8 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
         if (auto_caps_activated && d->auto_caps_enabled) {
             Q_EMIT autoCapsActivated();
         }
+
+        d->auto_repeat.timer.stop();
     } break;
 
     case Key::ActionReturn:
@@ -508,18 +538,26 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
 
     case Key::ActionLeft:
         event_key = Qt::Key_Left;
+        commitPreedit();
+        d->auto_repeat.timer.stop();
         break;
 
     case Key::ActionUp:
         event_key = Qt::Key_Up;
+        commitPreedit();
+        d->auto_repeat.timer.stop();
         break;
 
     case Key::ActionRight:
         event_key = Qt::Key_Right;
+        commitPreedit();
+        d->auto_repeat.timer.stop();
         break;
 
     case Key::ActionDown:
         event_key = Qt::Key_Down;
+        commitPreedit();
+        d->auto_repeat.timer.stop();
         break;
 
     case Key::ActionLeftLayout:
@@ -553,23 +591,23 @@ void AbstractTextEditor::onKeyEntered(const Key &key)
 {
     Q_D(AbstractTextEditor);
 
-    if (key.action() == Key::ActionBackspace) {
-        d->backspace_sent = false;
-        d->auto_repeat_backspace_timer.start(d->auto_repeat_delay);
+    d->auto_repeat.key = toRepeatableQtKey(key.action());
+    if (d->auto_repeat.key != Qt::Key_unknown) {
+        d->auto_repeat.key_sent = false;
+        d->auto_repeat.timer.start(d->auto_repeat.delay);
     }
 }
 
 //! \brief Reacts to sliding out of a key.
 //! \param key Slid out key.
 //!
-//! For now it only stops backspace repeat timer if we slide out
-//! from backspace.
+//! Stops auto-repeat when sliding out from repeatable keys.
 void AbstractTextEditor::onKeyExited(const Key &key)
 {
     Q_D(AbstractTextEditor);
 
-    if (key.action() == Key::ActionBackspace) {
-        d->auto_repeat_backspace_timer.stop();
+    if (toRepeatableQtKey(key.action()) != Qt::Key_unknown) {
+        d->auto_repeat.timer.stop();
     }
 }
 
@@ -699,21 +737,28 @@ void AbstractTextEditor::commitPreedit()
 
 // TODO: this implementation does not take into account following features:
 // 1) preedit string
-//      if there is preedit then first call to autoRepeatBackspace should clean it completely
+//      if there is preedit then first call to autoRepeatKey should clean it completely
 //      and following calls should remove remaining text character by character
 // 2) multitouch
 //      it is not completely clean how to handle multitouch for backspace,
 //      but we can follow the strategy from meego-keyboard - release pressed
 //      key when user press another one at the same time. Then we do not need to
 //      change anything in this method
-//! \brief Sends backspace and sets backspace repeat timer.
-void AbstractTextEditor::autoRepeatBackspace()
+//! \brief Sends key event and sets auto repeat timer.
+void AbstractTextEditor::autoRepeatKey()
 {
     Q_D(AbstractTextEditor);
 
-    sendKeyEvent(KeyStatePressed, Qt::Key_Backspace, Qt::NoModifier);
-    d->backspace_sent = true;
-    d->auto_repeat_backspace_timer.start(d->auto_repeat_interval);
+    commitPreedit();
+
+    if (d->auto_repeat.key == Qt::Key_Space) {
+        sendCommitString(" ");
+    } else {
+        sendKeyEvent(KeyStatePressed, d->auto_repeat.key, Qt::NoModifier);
+    }
+
+    d->auto_repeat.key_sent = true;
+    d->auto_repeat.timer.start(d->auto_repeat.interval);
 }
 
 //! \brief Emits wordCandidatesChanged() signal with current preedit
