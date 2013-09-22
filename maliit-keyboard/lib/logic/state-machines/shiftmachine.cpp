@@ -60,38 +60,31 @@ void ShiftMachine::setup(LayoutUpdater *updater)
     setChildMode(QState::ExclusiveStates);
 
     QState *no_shift = 0;
-    QState *shift = 0;
     QState *latched_shift = 0;
     QState *caps_lock = 0;
 
     // addState makes state machine to be a parent of passed state,
     // so we don't have to care about deleting states explicitly.
     addState(no_shift = new QState);
-    addState(shift = new QState);
     addState(latched_shift = new QState);
     addState(caps_lock = new QState);
     setInitialState(no_shift);
 
     no_shift->setObjectName(no_shift_state);
-    shift->setObjectName(shift_state);
     latched_shift->setObjectName(latched_shift_state);
     caps_lock->setObjectName(caps_lock_state);
 
-    no_shift->addTransition(updater, SIGNAL(shiftPressed()), shift);
-    no_shift->addTransition(updater, SIGNAL(autoCapsActivated()), latched_shift);
     connect(no_shift, SIGNAL(entered()),
             updater,  SLOT(syncLayoutToView()));
+    connect(latched_shift, SIGNAL(entered()),
+            updater,       SLOT(syncLayoutToView()));
+    connect(caps_lock, SIGNAL(entered()),
+            updater,   SLOT(syncLayoutToView()));
 
-    shift->addTransition(updater, SIGNAL(shiftCancelled()), no_shift);
-    shift->addTransition(updater, SIGNAL(shiftReleased()), latched_shift);
-    connect(shift,   SIGNAL(entered()),
-            updater, SLOT(syncLayoutToView()));
-
+    no_shift->addTransition(updater, SIGNAL(shiftPressed()), latched_shift);
+    no_shift->addTransition(updater, SIGNAL(autoCapsActivated()), latched_shift);
     latched_shift->addTransition(updater, SIGNAL(shiftCancelled()), no_shift);
     latched_shift->addTransition(updater, SIGNAL(shiftReleased()), caps_lock);
-    connect(latched_shift, SIGNAL(entered()),
-            updater,  SLOT(syncLayoutToView()));
-
     caps_lock->addTransition(updater, SIGNAL(shiftReleased()), no_shift);
 
     // Defer to first main loop iteration:
