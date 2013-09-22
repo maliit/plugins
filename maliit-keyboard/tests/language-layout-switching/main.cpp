@@ -34,7 +34,6 @@
 #include "models/key.h"
 #include "models/keyarea.h"
 #include "logic/layouthelper.h"
-#include "view/setup.h"
 #include "plugin/editor.h"
 #include "logic/layoutupdater.h"
 #include "logic/style.h"

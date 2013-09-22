@@ -44,7 +44,6 @@
 #include "logic/eventhandler.h"
 #include "logic/style.h"
 
-#include "view/setup.h"
 #include "plugin/editor.h"
 #include "plugin/updatenotifier.h"
 #include "inputmethodhostprobe.h"
@@ -214,7 +213,7 @@ public:
         surface->scene()->setSceneRect(0, 0, g_size, g_size);
         layout_helper.setOrientation(orientation);
 
-        Setup::connectEventHandlerToTextEditor(&event_handler, &editor);
+        Logic::connectEventHandlerToTextEditor(&event_handler, &editor);
 
         layout_helper.setExtendedPanel(key_area);
         layout_helper.setActivePanel(Logic::LayoutHelper::ExtendedPanel);

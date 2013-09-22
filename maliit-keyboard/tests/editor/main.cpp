@@ -40,7 +40,6 @@
 #include "logic/layouthelper.h"
 #include "logic/layoutupdater.h"
 #include "logic/style.h"
-#include "view/setup.h"
 
 #include <QtCore>
 #include <QtTest>

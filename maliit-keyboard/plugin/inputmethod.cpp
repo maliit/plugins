@@ -47,8 +47,6 @@
 #include "logic/languagefeatures.h"
 #include "logic/eventhandler.h"
 
-#include "view/setup.h"
-
 #ifdef HAVE_QT_MOBILITY
 #include "view/soundfeedback.h"
 typedef MaliitKeyboard::SoundFeedback DefaultFeedback;
@@ -294,8 +292,11 @@ InputMethod::InputMethod(MAbstractInputMethodHost *host)
     Q_D(InputMethod);
 
     // FIXME: Reconnect feedback instance.
-    Setup::connectAll(&d->layout.event_handler, &d->layout.updater, &d->editor);
-    Setup::connectAll(&d->extended_layout.event_handler, &d->extended_layout.updater, &d->editor);
+    Logic::connectEventHandlerToTextEditor(&d->layout.event_handler, &d->editor);
+    Logic::connectLayoutUpdaterToTextEditor(&d->layout.updater, &d->editor);
+
+    Logic::connectEventHandlerToTextEditor(&d->extended_layout.event_handler, &d->editor);
+    Logic::connectLayoutUpdaterToTextEditor(&d->extended_layout.updater, &d->editor);
 
     connect(&d->layout.helper, SIGNAL(centerPanelChanged(KeyArea,Logic::KeyOverrides)),
             &d->layout.model, SLOT(setKeyArea(KeyArea)));

@@ -30,6 +30,8 @@
  */
 
 #include "abstracttexteditor.h"
+#include "logic/eventhandler.h" // For signal/slot connection setup.
+#include "logic/layoutupdater.h" // For signal/slot connection setup.
 #include "models/wordribbon.h"
 #include "models/styleattributes.h"
 
@@ -245,6 +247,51 @@ bool extractWordBoundariesAtCursor(const QString& surrounding_text,
 }
 
 } // unnamed namespace
+
+//! \brief Connects event handler to editor.
+//! @param event_handler The event handler, provides e.g. key events.
+//! @param editor The editor, responding to (key) events.
+void connectEventHandlerToTextEditor(EventHandler *event_handler,
+                                     AbstractTextEditor *editor)
+{
+    QObject::connect(event_handler, SIGNAL(keyPressed(Key)),
+                     editor,        SLOT(onKeyPressed(Key)));
+
+    QObject::connect(event_handler, SIGNAL(keyReleased(Key)),
+                     editor,        SLOT(onKeyReleased(Key)));
+
+    QObject::connect(event_handler, SIGNAL(keyEntered(Key)),
+                     editor,        SLOT(onKeyEntered(Key)));
+
+    QObject::connect(event_handler, SIGNAL(keyExited(Key)),
+                     editor,        SLOT(onKeyExited(Key)));
+}
+
+//! \brief Connects layout updater to editor.
+//! @param updater The layout updater.
+//! @param editor The editor.
+void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
+                                      AbstractTextEditor *editor)
+{
+    QObject::connect(updater, SIGNAL(wordCandidateSelected(QString)),
+                     editor,  SLOT(replaceAndCommitPreedit(QString)));
+
+    QObject::connect(updater, SIGNAL(addToUserDictionary()),
+                     editor,  SLOT(showUserCandidate()));
+
+    QObject::connect(updater, SIGNAL(userCandidateSelected(QString)),
+                     editor,  SLOT(addToUserDictionary(QString)));
+
+    QObject::connect(editor,  SIGNAL(preeditEnabledChanged(bool)),
+                     updater, SLOT(setWordRibbonVisible(bool)));
+
+    QObject::connect(editor,  SIGNAL(wordCandidatesChanged(WordCandidateList)),
+                     updater, SLOT(onWordCandidatesChanged(WordCandidateList)));
+
+    QObject::connect(editor,  SIGNAL(autoCapsActivated()),
+                     updater, SIGNAL(autoCapsActivated()));
+}
+
 
 class AbstractTextEditorPrivate
 {

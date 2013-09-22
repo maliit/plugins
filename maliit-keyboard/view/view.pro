@@ -18,13 +18,11 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 HEADERS += \
-    setup.h \
     abstractfeedback.h \
     nullfeedback.h \
     surface.h \
 
 SOURCES += \
-    setup.cpp \
     abstractfeedback.cpp \
     nullfeedback.cpp \
     surface.cpp \

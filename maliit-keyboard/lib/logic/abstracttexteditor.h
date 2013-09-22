@@ -44,6 +44,16 @@
 namespace MaliitKeyboard {
 namespace Logic {
 
+class EventHandler;
+class LayoutUpdater;
+class AbstractTextEditor;
+
+void connectEventHandlerToTextEditor(EventHandler *event_handler,
+                                     AbstractTextEditor *editor);
+
+void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
+                                      AbstractTextEditor *editor);
+
 class AbstractTextEditorPrivate;
 
 class AbstractTextEditor

@@ -40,7 +40,6 @@
 #include "logic/layouthelper.h"
 #include "logic/layoutupdater.h"
 #include "logic/style.h"
-#include "view/setup.h"
 
 #include <QtCore>
 #include <QtTest>
@@ -211,7 +210,7 @@ private:
         style->setProfile("nokia-n9");
         updater.setStyle(style);
 
-        Setup::connectLayoutUpdaterToTextEditor(&updater, &editor);
+        Logic::connectLayoutUpdaterToTextEditor(&updater, &editor);
         QSignalSpy spy(&updater, SIGNAL(wordRibbonVisibleChanged(bool)));
         QCOMPARE(editor.wordEngine()->isEnabled(), false);
         QCOMPARE(editor.isPreeditEnabled(), false);
