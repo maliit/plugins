@@ -282,15 +282,15 @@ void connectLayoutUpdaterToTextEditor(LayoutUpdater *updater,
     QObject::connect(updater, SIGNAL(userCandidateSelected(QString)),
                      editor,  SLOT(addToUserDictionary(QString)));
 
-    QObject::connect(editor,  SIGNAL(preeditEnabledChanged(bool)),
-                     updater, SLOT(setWordRibbonVisible(bool)));
-
     QObject::connect(editor,  SIGNAL(wordCandidatesChanged(WordCandidateList)),
                      updater, SLOT(onWordCandidatesChanged(WordCandidateList)));
 
     QObject::connect(editor,  SIGNAL(autoCapsActivated()),
                      updater, SIGNAL(autoCapsActivated()));
-}
+
+    QObject::connect(editor->wordEngine(), SIGNAL(enabledChanged(bool)),
+                     updater,              SLOT(setWordRibbonVisible(bool)));
+    }
 
 
 class AbstractTextEditorPrivate
@@ -364,13 +364,8 @@ AbstractTextEditor::AbstractTextEditor(Model::Text *text,
     connect(&d_ptr->auto_repeat_backspace_timer, SIGNAL(timeout()),
             this,                                SLOT(autoRepeatBackspace()));
 
-    connect(word_engine, SIGNAL(enabledChanged(bool)),
-            this,        SLOT(setPreeditEnabled(bool)));
-
     connect(word_engine, SIGNAL(candidatesChanged(WordCandidateList)),
             this,        SIGNAL(wordCandidatesChanged(WordCandidateList)));
-
-    setPreeditEnabled(word_engine->isEnabled());
 }
 
 //! \brief Destructor.

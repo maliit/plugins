@@ -203,6 +203,10 @@ InputMethodPrivate::InputMethodPrivate(InputMethod *const q,
 {
     editor.setHost(host);
 
+#ifndef DISABLE_PREEDIT
+    editor.setPreeditEnabled(true);
+#endif
+
     layout.updater.setLayout(&layout.helper);
     extended_layout.updater.setLayout(&extended_layout.helper);
 
