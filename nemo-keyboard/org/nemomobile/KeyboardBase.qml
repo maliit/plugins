@@ -45,14 +45,6 @@ MouseArea {
         id: inputHandler
     }
 
-    BorderImage {
-        width: 480; height: 318;
-        border { left: 1; top: 4; right: 1; bottom:0 }
-        horizontalTileMode: BorderImage.Repeat
-        verticalTileMode: BorderImage.Repeat
-        source: "vkb-body.png"
-    }
-
     Popper {
         id: popper
         z: 10
@@ -61,6 +53,63 @@ MouseArea {
     Timer {
         id: pressTimer
         interval: 500
+    }
+
+    Rectangle {
+        id: tracker
+        width: 30
+        height: 30
+        radius: 30
+        border.width: 2
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        z: 100
+        color: "#0078bd"
+        Timer {
+            id: movetimer
+            interval: 150
+            property int key
+            onTriggered: {
+                MInputMethodQuick.sendKey(key)
+            }
+        }
+
+        MouseArea {
+            width: 45
+            height: 45
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            property int _startlX
+            property int _startlY
+            onPressed: {
+                _startlX = mouse.x
+                _startlY = mouse.y
+            }
+
+            onPositionChanged: {
+                if ((mouse.y + _startlY < (height))) {
+                    movetimer.key = Qt.Key_Up
+                    movetimer.start()
+                }else if ((mouse.y - _startlY > (height))) {
+                    movetimer.key = Qt.Key_Down
+                    movetimer.start()
+                }else if ((mouse.x - _startlX < (width))) {
+                    movetimer.key = Qt.Key_Left
+                    movetimer.start()
+                }else if ((mouse.x + _startlX > (width))) {
+                    movetimer.key = Qt.Key_Right
+                    movetimer.start()
+                }
+            }
+        }
+    }
+
+    BorderImage {
+        width: 480; height: 318;
+        border { left: 1; top: 4; right: 1; bottom:0 }
+        horizontalTileMode: BorderImage.Repeat
+        verticalTileMode: BorderImage.Repeat
+        source: "vkb-body.png"
     }
 
     Connections {
@@ -84,6 +133,10 @@ MouseArea {
     property int _startY
 
     onPressed: {
+        if (keyboard.childAt(mouse.x, mouse.y) == tracker) {
+            mouse.accepted = false
+        }
+
         _startX = mouse.x
         _startY = mouse.y
         pressTimer.start()
@@ -190,4 +243,3 @@ MouseArea {
         }
     }
 }
- 
