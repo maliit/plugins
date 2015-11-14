@@ -48,10 +48,10 @@ TARBALL_PATH = $$DIST_PATH$$TARBALL_SUFFIX
 
 # The 'make dist' target
 # Creates a tarball
-QMAKE_EXTRA_TARGETS += dist
-dist.target = dist
-dist.commands += git archive HEAD --prefix=$$DIST_NAME/ | bzip2 > $$TARBALL_PATH;
-dist.commands += md5sum $$TARBALL_PATH | cut -d \' \' -f 1 > $$DIST_PATH\\.md5
+QMAKE_EXTRA_TARGETS += release
+release.target = release
+release.commands += git archive HEAD --prefix=$$DIST_NAME/ | bzip2 > $$TARBALL_PATH;
+release.commands += md5sum $$TARBALL_PATH | cut -d \' \' -f 1 > $$DIST_PATH\\.md5
 
 # The 'make coverage' target
 # Builds plugins with coverage libs in separate directory.
