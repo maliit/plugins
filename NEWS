@@ -1,10 +1,13 @@
-[next]
+0.99.1
 ======
 
 CHANGES SINCE 0.99.0
 * New plugin settings:
   - auto_repeat_behaviour: A tuple of integers, comma-separated, controlling
     delay and interval of pressed-down keys.
+* Switch Nemo keyboard to Glacier-UI graphics
+* Add support for extra small key widths to maliit-keyboard
+* Add support for arrow icons in maliit-keyboard
 
 0.99.0
 ======
