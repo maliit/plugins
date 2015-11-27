@@ -193,13 +193,13 @@ private:
 
         QCOMPARE(host->keyEventCount(), 0);
 
-        QTest::qWait(auto_repeat_delay + 10);
+        QTest::qWait(auto_repeat_delay + 15);
 
         QCOMPARE(host->keyEventCount(), 1);
         QCOMPARE(host->lastKeyEvent().type(), QEvent::KeyPress);
         QCOMPARE(host->lastKeyEvent().key(), int(Qt::Key_Backspace));
 
-        QTest::qWait(auto_repeat_interval + 10);
+        QTest::qWait(auto_repeat_interval);
 
         QCOMPARE(host->keyEventCount(), 2);
         QCOMPARE(host->lastKeyEvent().type(), QEvent::KeyPress);
@@ -216,4 +216,4 @@ private:
 
 QTEST_MAIN(TestRepeatBackspace)
 
-#include "main.moc"
+#include "repeat-backspace.moc"

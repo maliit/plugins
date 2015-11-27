@@ -59,9 +59,9 @@ typedef MaliitKeyboard::NullFeedback DefaultFeedback;
 #include <maliit/plugins/abstractpluginsetting.h>
 #include <maliit/plugins/updateevent.h>
 
-#include <QApplication>
-#include <QWidget>
-#include <QDesktopWidget>
+//#include <QApplication>
+//#include <QWidget>
+//#include <QDesktopWidget>
 #include <QtQuick>
 
 class MImUpdateEvent;

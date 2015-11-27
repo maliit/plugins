@@ -33,9 +33,6 @@
 
 #include <QtCore>
 
-#include <QApplication>
-#include <QCommonStyle>
-
 namespace TestUtils {
 
 } // namespace TestUtils

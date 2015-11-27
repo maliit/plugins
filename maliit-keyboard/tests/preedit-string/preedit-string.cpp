@@ -55,8 +55,6 @@
 #include <QtCore>
 #include <QtGui>
 
-#include <QtWidgets>
-
 using namespace MaliitKeyboard;
 Q_DECLARE_METATYPE(Logic::LayoutHelper::Orientation)
 Q_DECLARE_METATYPE(QList<QMouseEvent*>)
@@ -191,8 +189,6 @@ public:
     Logic::LayoutHelper layout_helper;
     Logic::EventHandler event_handler;
     SharedStyle style;
-    QScopedPointer<QGraphicsView> surface;
-    QScopedPointer<QGraphicsView> extended_surface;
     KeyArea key_area;
 
     SetupTest(Logic::LayoutHelper::Orientation orientation = Logic::LayoutHelper::Landscape,
@@ -203,14 +199,10 @@ public:
         , layout_helper()
         , event_handler(&layout, &layout_updater)
         , style(new Style(qApp))
-        , surface(new QGraphicsView)
-        , extended_surface(new QGraphicsView(surface.data()))
         , key_area(createAbcdArea())
     {
         // geometry stuff is usually done by maliit-server, so we need
         // to do it manually here:
-        surface->setSceneRect(0, 0, g_size, g_size);
-        surface->scene()->setSceneRect(0, 0, g_size, g_size);
         layout_helper.setOrientation(orientation);
 
         Logic::connectEventHandlerToTextEditor(&event_handler, &editor);
@@ -623,4 +615,5 @@ private:
 };
 
 QTEST_MAIN(TestPreeditString)
-#include "main.moc"
+
+#include "preedit-string.moc"

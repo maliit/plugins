@@ -622,4 +622,4 @@ private:
 };
 
 QTEST_MAIN(TestLanguageLayoutLoading)
-#include "main.moc"
+#include "language-layout-loading.moc"

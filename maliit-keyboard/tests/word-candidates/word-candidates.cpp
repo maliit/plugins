@@ -240,4 +240,5 @@ private:
 };
 
 QTEST_MAIN(TestWordCandidates)
-#include "main.moc"
+
+#include "word-candidates.moc"

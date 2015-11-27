@@ -36,7 +36,8 @@
 #include "logic/layouthelper.h"
 #include "plugin/editor.h"
 #include "logic/layoutupdater.h"
-#include "logic/style.h"
+#include "logic/languagefeatures.h"
+#include "logic/wordengine.h"
 #include "inputmethodhostprobe.h"
 
 #include <QtCore>
@@ -98,7 +99,7 @@ private:
         Key right_layout;
         right_layout.setAction(Key::ActionRightLayout);
 
-        Editor editor(0, 0, 0);
+        Editor editor(new Model::Text, new Logic::WordEngine, new Logic::LanguageFeatures);
         InputMethodHostProbe probe;
         editor.setHost(&probe);
 
@@ -120,4 +121,4 @@ private:
 };
 
 QTEST_MAIN(TestLanguageLayoutSwitching)
-#include "main.moc"
+#include "language-layout-switching.moc"

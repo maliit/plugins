@@ -26,6 +26,7 @@
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *maliit-keyboard
  *
  */
 
@@ -101,7 +102,7 @@ private:
                 << false << "Helol Wordl! " << "Helol Wordl! ";
         QTest::newRow("auto-correct disabled, multiple punctation")
                 << false << "Helol Wordl!! " << "Helol Wordl!! ";
-        QTest::newRow("auto-correct enabled, digits")
+        QTest::newRow("auto-correct disabled, digits")
                 << false << "Helol Wordl12 " << "Helol Wordl12 ";
         QTest::newRow("auto-correct enabled")
                 << true << "Helol Wordl! " << "Hello World! ";
@@ -207,4 +208,4 @@ private:
 };
 
 QTEST_MAIN(TestEditor)
-#include "main.moc"
+#include "ut_editor.moc"
