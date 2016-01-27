@@ -21,3 +21,4 @@ core
 
 /coverage-report
 /coverage-build
+*.user
