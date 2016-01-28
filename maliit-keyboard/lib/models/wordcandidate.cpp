@@ -59,7 +59,7 @@ WordCandidate::WordCandidate(Source source, const QString &word)
 bool WordCandidate::valid() const
 {
     return (m_area.size().isValid()
-            && not m_label.text().isEmpty());
+            && !m_label.text().isEmpty());
 }
 
 QRect WordCandidate::rect() const
@@ -139,7 +139,7 @@ bool operator==(const WordCandidate &lhs,
 bool operator!=(const WordCandidate &lhs,
                 const WordCandidate &rhs)
 {
-    return (not (lhs == rhs));
+    return (!(lhs == rhs));
 }
 
 } // namespace MaliitKeyboard

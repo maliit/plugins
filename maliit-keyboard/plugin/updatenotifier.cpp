@@ -77,12 +77,12 @@ void UpdateNotifier::notify(MImUpdateEvent* event)
         d->has_selection = has_selection;
     }
 
-    if (not d->has_selection and properties_changed.contains(g_cursor_position_property)) {
+    if (!d->has_selection && properties_changed.contains(g_cursor_position_property)) {
         const int cursor_position(event->value(g_cursor_position_property).toInt());
         const QString surrounding_text(event->value(g_surrounding_text_property).toString());
         bool emit_a_signal(true);
 
-        if (emit_a_signal and properties_changed.contains(g_anchor_position_property)) {
+        if (emit_a_signal && properties_changed.contains(g_anchor_position_property)) {
             const int anchor_position(event->value(g_anchor_position_property).toInt());
 
             emit_a_signal = (anchor_position == cursor_position);

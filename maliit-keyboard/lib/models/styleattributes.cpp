@@ -179,7 +179,7 @@ QVariant lookup(const QScopedPointer<const QSettings> &store,
 {
     const QVariant &result(store->value(buildKey(orientation, style_name, attribute_name)));
 
-    if (not result.isValid()) {
+    if (!result.isValid()) {
         return store->value(buildKey(orientation, QByteArray("default"), attribute_name));
     }
 

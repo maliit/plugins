@@ -44,7 +44,7 @@ namespace {
 bool removeKey(QVector<Key> *keys,
                const Key &key)
 {
-    if (not keys) {
+    if (!keys) {
         return false;
     }
 

@@ -66,7 +66,7 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
     KeyArea ka;
     Keyboard kb(source);
 
-    if (not attributes) {
+    if (!attributes) {
         qCritical() << __PRETTY_FUNCTION__
                     << "No style given, aborting.";
         return ka;
@@ -151,7 +151,7 @@ KeyArea createFromKeyboard(StyleAttributes *attributes,
 
         if (at_row_end) {
             pos.ry() += row_height;
-            if (not is_extended_keyarea
+            if (!is_extended_keyarea
                 && spacer_count > 0 && pos.x() < max_width + 1) {
                 const int spacer_width = qMax<int>(0, max_width - pos.x()) / spacer_count;
                 pos.setX(0);
@@ -221,7 +221,7 @@ KeyAreaConverter::KeyAreaConverter(StyleAttributes *attributes,
     , m_loader(loader)
     , m_orientation(LayoutHelper::Landscape)
 {
-    if (not attributes || not loader) {
+    if (!attributes || !loader) {
         qFatal("Neither attributes nor loader can be null.");
     }
 }

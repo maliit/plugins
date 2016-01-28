@@ -58,7 +58,7 @@ Key modifyKey(const Key &key,
               KeyDescription::State state,
               const StyleAttributes *attributes)
 {
-    if (not attributes) {
+    if (!attributes) {
         return key;
     }
 
@@ -75,7 +75,7 @@ void applyStyleToCandidate(WordCandidate *candidate,
                            LayoutHelper::Orientation orientation,
                            ActivationPolicy policy)
 {
-    if (not candidate || not attributes) {
+    if (!candidate || !attributes) {
         return;
     }
 
@@ -104,7 +104,7 @@ void applyStyleToWordRibbon(WordRibbon *ribbon,
                             const SharedStyle &style,
                             LayoutHelper::Orientation orientation)
 {
-    if (not ribbon || style.isNull()) {
+    if (!ribbon || style.isNull()) {
         return;
     }
 
@@ -122,7 +122,7 @@ bool updateWordRibbon(LayoutHelper *layout,
                       const StyleAttributes *attributes,
                       ActivationPolicy policy)
 {
-    if (not layout || not attributes) {
+    if (!layout || !attributes) {
         return false;
     }
 
@@ -232,8 +232,8 @@ public:
 
     bool inShiftedState() const
     {
-        return (shift_machine.inState(ShiftMachine::shift_state) or
-                shift_machine.inState(ShiftMachine::caps_lock_state) or
+        return (shift_machine.inState(ShiftMachine::shift_state) ||
+                shift_machine.inState(ShiftMachine::caps_lock_state) ||
                 shift_machine.inState(ShiftMachine::latched_shift_state));
     }
 
@@ -249,12 +249,12 @@ public:
 
     bool areSymbolsShown() const
     {
-        return arePrimarySymbolsShown() or areSecondarySymbolsShown();
+        return arePrimarySymbolsShown() || areSecondarySymbolsShown();
     }
 
     bool inDeadkeyState() const
     {
-        return (deadkey_machine.inState(DeadkeyMachine::deadkey_state) or
+        return (deadkey_machine.inState(DeadkeyMachine::deadkey_state) ||
                 deadkey_machine.inState(DeadkeyMachine::latched_deadkey_state));
     }
 
@@ -315,7 +315,7 @@ void LayoutUpdater::setLayout(LayoutHelper *layout)
     Q_D(LayoutUpdater);
     d->layout = layout;
 
-    if (not d->initialized) {
+    if (!d->initialized) {
         init();
         d->initialized = true;
     }
@@ -393,7 +393,7 @@ void LayoutUpdater::onKeyPressed(const Key &key)
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -425,7 +425,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key)
     Q_UNUSED(key);
     Q_D(LayoutUpdater);
 
-    if (not d->layout || d->style.isNull()) {
+    if (!d->layout || d->style.isNull()) {
         return;
     }
 
@@ -438,7 +438,7 @@ void LayoutUpdater::onKeyLongPressed(const Key &key)
     converter.setLayoutOrientation(orientation);
     KeyArea ext_ka(converter.extendedKeyArea(key));
 
-    if (not ext_ka.hasKeys()) {
+    if (!ext_ka.hasKeys()) {
         if (key.action() == Key::ActionSpace) {
             Q_EMIT addToUserDictionary();
         }
@@ -466,7 +466,7 @@ void LayoutUpdater::onKeyReleased(const Key &key)
 {
     Q_D(const LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -517,7 +517,7 @@ void LayoutUpdater::onKeyAreaPressed(LayoutHelper::Panel panel)
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -530,7 +530,7 @@ void LayoutUpdater::onKeyAreaReleased(LayoutHelper::Panel panel)
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -546,7 +546,7 @@ void LayoutUpdater::onKeyEntered(const Key &key)
 {
     Q_D(const LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -563,7 +563,7 @@ void LayoutUpdater::onKeyExited(const Key &key)
 {
     Q_D(const LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -575,7 +575,7 @@ void LayoutUpdater::clearActiveKeysAndMagnifier()
 {
     Q_D(const LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         qCritical() << __PRETTY_FUNCTION__
                     << "No layout specified.";
         return;
@@ -598,7 +598,7 @@ void LayoutUpdater::onWordCandidatesChanged(const WordCandidateList &candidates)
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout || not isWordRibbonVisible()) {
+    if (!d->layout || !isWordRibbonVisible()) {
         qWarning() << __PRETTY_FUNCTION__
                    << "No layout specified or word ribbon not visible.";
         return;
@@ -629,7 +629,7 @@ void LayoutUpdater::onExtendedKeysShown(const Key &main_key)
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout || d->style.isNull()) {
+    if (!d->layout || d->style.isNull()) {
         return;
     }
 
@@ -642,7 +642,7 @@ void LayoutUpdater::onExtendedKeysShown(const Key &main_key)
     converter.setLayoutOrientation(orientation);
     KeyArea ext_ka(converter.extendedKeyArea(main_key));
 
-    if (not ext_ka.hasKeys()) {
+    if (!ext_ka.hasKeys()) {
         if (main_key.action() == Key::ActionSpace) {
             Q_EMIT addToUserDictionary();
         }
@@ -696,7 +696,7 @@ void LayoutUpdater::syncLayoutToView()
 {
     Q_D(const LayoutUpdater);
 
-    if (not d->layout) {
+    if (!d->layout) {
         return;
     }
 
@@ -730,7 +730,7 @@ void LayoutUpdater::switchToMainView()
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout || d->style.isNull()) {
+    if (!d->layout || d->style.isNull()) {
         return;
     }
 
@@ -755,7 +755,7 @@ void LayoutUpdater::switchToPrimarySymView()
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout || d->style.isNull()) {
+    if (!d->layout || d->style.isNull()) {
         return;
     }
 
@@ -772,7 +772,7 @@ void LayoutUpdater::switchToSecondarySymView()
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout || d->style.isNull()) {
+    if (!d->layout || d->style.isNull()) {
         return;
     }
 
@@ -786,7 +786,7 @@ void LayoutUpdater::switchToAccentedView()
 {
     Q_D(LayoutUpdater);
 
-    if (not d->layout || d->style.isNull()) {
+    if (!d->layout || d->style.isNull()) {
         return;
     }
 

@@ -54,7 +54,7 @@ MaliitContextPrivate::MaliitContextPrivate(InputMethod *const new_input_method,
     , style(new_style)
 {
     Q_ASSERT(input_method != 0);
-    Q_ASSERT(not style.isNull());
+    Q_ASSERT(!style.isNull());
 }
 
 
@@ -76,7 +76,7 @@ MaliitContext::~MaliitContext()
 //! \param base_name Base name of the image.
 QString MaliitContext::image(const QString &base_name) const
 {
-    if (not base_name.isEmpty()) {
+    if (!base_name.isEmpty()) {
         Q_D(const MaliitContext);
         return d->style->directory(Style::Images) + "/" + base_name;
     }

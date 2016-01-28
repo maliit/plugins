@@ -67,7 +67,7 @@ void Text::setPreedit(const QString &preedit,
 {
     const int preedit_len(preedit.length());
 
-    if (cursor_pos_override < 0 or cursor_pos_override > preedit_len) {
+    if (cursor_pos_override < 0 || cursor_pos_override > preedit_len) {
         cursor_pos_override = preedit_len;
     }
 

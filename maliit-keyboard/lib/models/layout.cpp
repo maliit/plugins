@@ -43,7 +43,7 @@ namespace {
 QUrl toUrl(const QString &directory,
             const QString &base_name)
 {
-    if (not (directory.isEmpty() || base_name.isEmpty())) {
+    if (!(directory.isEmpty() || base_name.isEmpty())) {
         return QUrl(directory + "/" + base_name);
     }
 
@@ -122,8 +122,8 @@ void Layout::setKeyArea(const KeyArea &area)
     const bool geometry_changed(d->key_area.rect() != area.rect());
     const bool background_changed(d->key_area.area().background() != area.area().background());
     const bool background_borders_changed(d->key_area.area().backgroundBorders() != area.area().backgroundBorders());
-    const bool visible_changed((d->key_area.keys().isEmpty() && not area.keys().isEmpty())
-                               || (not d->key_area.keys().isEmpty() && area.keys().isEmpty()));
+    const bool visible_changed((d->key_area.keys().isEmpty() && !area.keys().isEmpty())
+                               || (!d->key_area.keys().isEmpty() && area.keys().isEmpty()));
     const bool origin_changed(d->key_area.origin() != area.origin());
 
     d->key_area = area;
@@ -146,7 +146,7 @@ void Layout::setKeyArea(const KeyArea &area)
     }
 
     if (visible_changed) {
-        Q_EMIT visibleChanged(not d->key_area.keys().isEmpty());
+        Q_EMIT visibleChanged(!d->key_area.keys().isEmpty());
     }
 
     endResetModel();
@@ -172,7 +172,7 @@ void Layout::replaceKey(int index,
 bool Layout::isVisible() const
 {
     Q_D(const Layout);
-    return (not d->key_area.keys().isEmpty());
+    return (!d->key_area.keys().isEmpty());
 }
 
 
