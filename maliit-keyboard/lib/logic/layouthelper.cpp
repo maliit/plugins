@@ -31,7 +31,11 @@
  */
 
 #include <algorithm>
-#include <tr1/functional>
+#ifdef _MSC_VER
+    #include <functional>
+#else
+    #include <tr1/functional>
+#endif
 
 #include "layouthelper.h"
 #include "coreutils.h"
