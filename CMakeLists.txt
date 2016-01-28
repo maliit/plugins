@@ -12,6 +12,18 @@ option(enable-docs "Build documentation" ON)
 
 set(MALIIT_DEFAULT_PROFILE "nokia-n9" CACHE STRING "Default keyboard style")
 
+# Windows compatibility
+
+if (WIN32 )
+    if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+        set (CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/../maliit" CACHE PATH "default install path" FORCE )
+    endif()
+	
+	set (CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}" FORCE)
+endif()
+
+# Install paths
+
 if(NOT DEFINED INCLUDE_INSTALL_DIR)
     set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH
             "Installation directory for C/C++ header files [CMAKE_INSTALL_PREFIX/include]")
