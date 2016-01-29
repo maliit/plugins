@@ -66,7 +66,7 @@ QString LanguageFeatures::appendixForReplacedPreedit(const QString &preedit) con
     QString appendix;
     for (int i = preedit.size() - 1; i >= 0; i--)
     {
-        if (not preedit.at(i).isPunct()) {
+        if (!preedit.at(i).isPunct()) {
             appendix = preedit.right(preedit.size() - i - 1);
             break;
         }

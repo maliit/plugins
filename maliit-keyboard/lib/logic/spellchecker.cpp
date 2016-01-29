@@ -89,12 +89,12 @@ SpellCheckerPrivate::SpellCheckerPrivate(const QString &dictionary_path,
     , ignored_words()
     , user_dictionary_file(user_dictionary)
 {
-    if (not codec) {
-        qWarning () << __PRETTY_FUNCTION__ << ":Could not find codec for" << hunspell.get_dic_encoding() << "- turning off spellchecking and suggesting.";
+    if (!codec) {
+        qWarning () << __PRETTY_FUNCTION__ << ":Could !find codec for" << hunspell.get_dic_encoding() << "- turning off spellchecking and suggesting.";
         return;
     }
 
-    if (not user_dictionary.isEmpty() and QFile::exists(user_dictionary)) {
+    if (!user_dictionary.isEmpty() && QFile::exists(user_dictionary)) {
         QFile file(user_dictionary);
         if (file.open(QFile::ReadOnly)) {
             QTextStream stream(&file);
@@ -130,7 +130,7 @@ bool SpellChecker::spell(const QString &word)
 {
     Q_D(SpellChecker);
 
-    if (not d->enabled or d->ignored_words.contains(word)) {
+    if (!d->enabled || d->ignored_words.contains(word)) {
         return true;
     }
 
@@ -147,7 +147,7 @@ QStringList SpellChecker::suggest(const QString &word,
 {
     Q_D(SpellChecker);
 
-    if (not d->enabled) {
+    if (!d->enabled) {
         return QStringList();
     }
 
@@ -177,7 +177,7 @@ void SpellChecker::ignoreWord(const QString &word)
 {
     Q_D(SpellChecker);
 
-    if (not d->enabled) {
+    if (!d->enabled) {
         return;
     }
 
@@ -191,7 +191,7 @@ void SpellChecker::addToUserWordlist(const QString &word)
 {
     Q_D(SpellChecker);
 
-    if (not d->enabled) {
+    if (!d->enabled) {
         return;
     }
 

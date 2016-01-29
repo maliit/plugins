@@ -78,7 +78,7 @@ bool operator==(const Label &lhs,
 bool operator!=(const Label &lhs,
                 const Label &rhs)
 {
-    return (not (lhs == rhs));
+    return (!(lhs == rhs));
 }
 
 } // namespace MaliitKeyboard

@@ -51,35 +51,35 @@ bool LayoutParser::parse()
 {
     goToRootElement();
 
-    if (not m_xml.isStartElement() || m_xml.name() != QLatin1String("keyboard")) {
+    if (!m_xml.isStartElement() || m_xml.name() != QLatin1String("keyboard")) {
         error(QString::fromLatin1("Expected '<keyboard>', but got '<%1>'.").arg(m_xml.name().toString()));
-    } else if (not m_xml.hasError()) {
+    } else if (!m_xml.hasError()) {
         parseKeyboard();
     }
 
     //readToEnd();
 
-    return not m_xml.hasError();
+    return !m_xml.hasError();
 }
 
 bool LayoutParser::isLanguageFile()
 {
     goToRootElement();
 
-    if (not m_xml.isStartElement() || m_xml.name() != QLatin1String("keyboard")) {
+    if (!m_xml.isStartElement() || m_xml.name() != QLatin1String("keyboard")) {
         return false;
-    } else if (not m_xml.hasError()) {
+    } else if (!m_xml.hasError()) {
         const QXmlStreamAttributes attributes(m_xml.attributes());
         const QStringRef language(attributes.value(QLatin1String("language")));
 
-        return (not language.isEmpty());
+        return (!language.isEmpty());
     }
     return false;
 }
 
 void LayoutParser::goToRootElement()
 {
-    while (not m_xml.atEnd()) {
+    while (!m_xml.atEnd()) {
         QXmlStreamReader::TokenType type(m_xml.readNext());
 
         if (type == QXmlStreamReader::StartElement) {
@@ -90,7 +90,7 @@ void LayoutParser::goToRootElement()
 
 void LayoutParser::error(const QString &message)
 {
-    if (not m_xml.hasError()) {
+    if (!m_xml.hasError()) {
         const QString full_message (QString::number(m_xml.lineNumber()) +
                                     ":" +
                                     QString::number(m_xml.columnNumber()) +
@@ -178,7 +178,7 @@ void LayoutParser::parseNewStyleImport()
             error(QString::fromLatin1("Expected '<symview>' or '<number>' or '<phonenumber>', but got '<%1>'.").arg(name.toString()));
         }
     }
-    if (not found_anything) {
+    if (!found_anything) {
         error(QString::fromLatin1("Expected '<symview>' or '<number>' or '<phonenumber>'."));
     }
 }
@@ -216,7 +216,7 @@ bool LayoutParser::validateOldStyleImport()
             // opening and closing tag:
             // <import file="...">
             // </import>
-            if (not m_xml.isWhitespace()) {
+            if (!m_xml.isWhitespace()) {
                 error(QString::fromLatin1("Stray text in import tag: '%1'.").arg(m_xml.text().toString()));
                 return false;
             }
@@ -261,7 +261,7 @@ void LayoutParser::parseLayout()
         }
     }
 
-    if (not found_section) {
+    if (!found_section) {
         error(QString::fromLatin1("Expected '<section>'."));
     }
 }
@@ -322,7 +322,7 @@ void LayoutParser::parseSection(const TagLayoutPtr &layout)
         }
     }
 
-    if (not found_row) {
+    if (!found_row) {
         error(QString::fromLatin1("Expected '<row>'."));
     }
 
@@ -368,13 +368,13 @@ void LayoutParser::parseKey(const TagRowPtr &row)
         const QStringRef name(m_xml.name());
 
         if (name == QLatin1String("binding")) {
-            if (not new_key->binding()) {
+            if (!new_key->binding()) {
                 parseBinding(new_key);
             } else {
                 error(QString::fromLatin1("Expected only one '<binding>', but got another one."));
             }
         } else if (name == QLatin1String("extended")) {
-            if (not new_key->extended()) {
+            if (!new_key->extended()) {
                 parseExtended(new_key);
             } else {
                 error(QString::fromLatin1("Expected only one '<extended>', but got another one."));
@@ -384,7 +384,7 @@ void LayoutParser::parseKey(const TagRowPtr &row)
         }
     }
 
-    if (not new_key->binding()) {
+    if (!new_key->binding()) {
         error(QString::fromLatin1("Expected exactly one '<binding>' but got none."));
     }
 }
@@ -443,7 +443,7 @@ void LayoutParser::parseModifiers(const TagBindingPtr &binding)
         const QStringRef name(m_xml.name());
 
         if (name == QLatin1String("binding")) {
-            if (not new_modifiers->binding()) {
+            if (!new_modifiers->binding()) {
                 parseBinding(new_modifiers);
             } else {
                 error(QString::fromLatin1("Expected only one '<binding>', but got another one."));
@@ -453,7 +453,7 @@ void LayoutParser::parseModifiers(const TagBindingPtr &binding)
         }
     }
 
-    if (not new_modifiers->binding()) {
+    if (!new_modifiers->binding()) {
         error(QString::fromLatin1("Expected exactly one '<binding>', but got none."));
     }
 }
@@ -476,7 +476,7 @@ void LayoutParser::parseExtended(const TagKeyPtr &key)
         }
     }
 
-    if (not found_row) {
+    if (!found_row) {
         error(QString::fromLatin1("Expected at least one '<row>', but got none."));
     }
 }
@@ -489,7 +489,7 @@ void LayoutParser::parseSpacer(const TagRowPtr &row)
 
 void LayoutParser::readToEnd()
 {
-    while (not m_xml.atEnd()) {
+    while (!m_xml.atEnd()) {
         m_xml.readNext();
     }
 }

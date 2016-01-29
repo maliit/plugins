@@ -183,7 +183,7 @@ Keyboard getKeyboard(const TagKeyboardPtr &keyboard,
     if (keyboard) {
         TagLayoutPtrs layouts(keyboard->layouts());
 
-        if (not layouts.isEmpty()) {
+        if (!layouts.isEmpty()) {
             const TagSectionPtrs sections(layouts.first()->sections());
             // sections cannot be empty - parser does not allow that.
             const TagSectionPtr section(sections[page % sections.size()]);
@@ -205,7 +205,7 @@ Keyboard getKeyboard(const TagKeyboardPtr &keyboard,
 
                         ++key_count;
 
-                        if (not shifted or all_modifiers.isEmpty()) {
+                        if (!shifted || all_modifiers.isEmpty()) {
                             the_binding = binding;
                         } else {
                             Q_FOREACH (const TagModifiersPtr &modifiers, all_modifiers) {
@@ -213,7 +213,7 @@ Keyboard getKeyboard(const TagKeyboardPtr &keyboard,
                                     the_binding = modifiers->binding();
                                 }
                             }
-                            if (not the_binding) {
+                            if (!the_binding) {
                                 the_binding = binding;
                             }
                         }
@@ -230,7 +230,7 @@ Keyboard getKeyboard(const TagKeyboardPtr &keyboard,
                         skeyboard.key_descriptions.append(key_and_desc.second);
                         spacer_met = false;
                     } else { // spacer
-                        if (not skeyboard.key_descriptions.isEmpty()) {
+                        if (!skeyboard.key_descriptions.isEmpty()) {
                             KeyDescription &previous_skey_description(skeyboard.key_descriptions.last());
 
                             if (previous_skey_description.row == row_num) {
@@ -260,7 +260,7 @@ QPair<TagKeyPtr, TagBindingPtr> getTagKeyAndBinding(const TagKeyboardPtr &keyboa
     if (keyboard) {
         TagLayoutPtrs layouts(keyboard->layouts());
 
-        if (not layouts.isEmpty()) {
+        if (!layouts.isEmpty()) {
             // sections cannot be empty - parser does not allow that.
             TagRowPtrs rows(layouts.first()->sections().first()->rows());
 
@@ -333,7 +333,7 @@ Keyboard getImportedKeyboard(const QString &id,
             Q_FOREACH (const QString &f_result, f_results) {
                 const QFileInfo file_info(getLanguagesDir() + "/" + f_result);
 
-                if (file_info.exists() and file_info.isFile()) {
+                if (file_info.exists() && file_info.isFile()) {
                     const TagKeyboardPtr keyboard(getTagKeyboard(file_info.baseName()));
                     return getKeyboard(keyboard, false, page);
                 }
@@ -350,7 +350,7 @@ Keyboard getImportedKeyboard(const QString &id,
                 if (file_regexp.exactMatch(import)) {
                     QFileInfo file_info(getLanguagesDir() + "/" + import);
 
-                    if (file_info.exists() and file_info.isFile()) {
+                    if (file_info.exists() && file_info.isFile()) {
                         const TagKeyboardPtr keyboard(getTagKeyboard(file_regexp.cap(1)));
                         return getKeyboard(keyboard, false, page);
                     }
@@ -360,7 +360,7 @@ Keyboard getImportedKeyboard(const QString &id,
             // If we got there then we try to just load a file with name in default_file.
             QFileInfo file_info(getLanguagesDir() + "/" + default_file);
 
-            if (file_info.exists() and file_info.isFile()) {
+            if (file_info.exists() && file_info.isFile()) {
                 const TagKeyboardPtr keyboard(getTagKeyboard(file_info.baseName()));
                 return getKeyboard(keyboard, false);
             }
@@ -542,7 +542,7 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
     const QPair<TagKeyPtr, TagBindingPtr> pair(getTagKeyAndBinding(keyboard, key.label().text(), &shifted));
     Keyboard skeyboard;
 
-    if (pair.first and pair.second) {
+    if (pair.first && pair.second) {
         const TagExtendedPtr extended(pair.first->extended());
 
         if (extended) {
@@ -568,7 +568,7 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
                                 }
                             }
                         }
-                        if (not the_binding) {
+                        if (!the_binding) {
                             the_binding = binding;
                         }
 
@@ -587,8 +587,8 @@ Keyboard KeyboardLoader::extendedKeyboard(const Key &key) const
             // I don't like this prepending source key idea - it should be done
             // in language layout file.
             if (row_index == 1
-                and not key.label().text().isEmpty()
-                and key.action() == Key::ActionInsert) {
+                && !key.label().text().isEmpty()
+                && key.action() == Key::ActionInsert) {
                 Key first_key(skeyboard.keys.first());
                 KeyDescription first_desc(skeyboard.key_descriptions.first());
 

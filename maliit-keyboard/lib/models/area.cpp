@@ -80,7 +80,7 @@ bool operator==(const Area &lhs,
 bool operator!=(const Area &lhs,
                 const Area &rhs)
 {
-    return (not (lhs == rhs));
+    return (!(lhs == rhs));
 }
 
 } // namespace MaliitKeyboard

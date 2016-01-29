@@ -135,10 +135,10 @@ void AbstractWordEngine::computeCandidates(Model::Text *text)
     // with that we probably will want to turn off preedit styling at
     // all.
 
-    if (not isEnabled()
-        || not text
+    if (!isEnabled()
+        || !text
         || text->preedit().isEmpty()
-        || not text->preedit().at(text->preedit().length() - 1).isLetterOrNumber()) {
+        || !text->preedit().at(text->preedit().length() - 1).isLetterOrNumber()) {
         // FIXME: We should here set some special preedit face in text
         // model (say Disabled or None) which would be interpreted by
         // editor to send no formatting informations along with

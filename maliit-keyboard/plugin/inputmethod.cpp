@@ -455,7 +455,7 @@ bool InputMethod::imExtensionEvent(MImExtensionEvent *event)
 {
     Q_D(InputMethod);
 
-    if (not event or event->type() != MImExtensionEvent::Update) {
+    if (!event || event->type() != MImExtensionEvent::Update) {
         return false;
     }
 

@@ -50,7 +50,7 @@ ViewMachine::~ViewMachine()
 
 void ViewMachine::setup(LayoutUpdater *updater)
 {
-    if (not updater) {
+    if (!updater) {
         qCritical() << __PRETTY_FUNCTION__
                     << "No updater specified. Aborting setup.";
         return;

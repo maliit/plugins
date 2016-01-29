@@ -48,7 +48,7 @@ Key::Key()
 bool Key::valid() const
 {
     return (m_area.size().isValid()
-            && (not m_label.text().isEmpty() || m_action != Key::ActionCommit));
+            && (!m_label.text().isEmpty() || m_action != Key::ActionCommit));
 }
 
 QRect Key::rect() const
@@ -168,7 +168,7 @@ bool operator==(const Key &lhs,
 bool operator!=(const Key &lhs,
                 const Key &rhs)
 {
-    return (not (lhs == rhs));
+    return (!(lhs == rhs));
 }
 
 } // namespace MaliitKeyboard

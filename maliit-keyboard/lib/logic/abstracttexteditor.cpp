@@ -169,7 +169,7 @@ namespace {
 //! easier to specify punctuations and whitespaces.
 inline bool isSeparator(const QChar &c)
 {
-    return (c.isPunct() or c.isSpace());
+    return (c.isPunct() || c.isSpace());
 }
 
 //! \brief Extracts a word boundaries at cursor position.
@@ -367,7 +367,7 @@ bool AbstractTextEditorPrivate::valid() const
                     << "Invalid text model, or no word engine given! The text editor will not function properly.";
     }
 
-    return (not is_invalid);
+    return (!is_invalid);
 }
 
 //! \brief Constructor.
@@ -429,7 +429,7 @@ void AbstractTextEditor::onKeyPressed(const Key &key)
 {
     Q_D(AbstractTextEditor);
 
-    if (not d->valid()) {
+    if (!d->valid()) {
         return;
     }
 
@@ -441,7 +441,7 @@ void AbstractTextEditor::onKeyPressed(const Key &key)
     }
 
     if (key.action() == Key::ActionBackspace) {
-        if (d->auto_correct_enabled && not d->text->primaryCandidate().isEmpty()) {
+        if (d->auto_correct_enabled && !d->text->primaryCandidate().isEmpty()) {
             d->text->setPrimaryCandidate(QString());
             d->auto_repeat.key_sent = true;
         } else {
@@ -462,7 +462,7 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
 {
     Q_D(AbstractTextEditor);
 
-    if (not d->valid()) {
+    if (!d->valid()) {
         return;
     }
 
@@ -487,7 +487,7 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
         sendPreeditString(d->text->preedit(), d->text->preeditFace(),
                           Replacement(d->text->cursorPosition()));
 
-        if (not d->preedit_enabled) {
+        if (!d->preedit_enabled) {
             commitPreedit();
         }
 
@@ -496,7 +496,7 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
     case Key::ActionBackspace: {
         commitPreedit();
 
-        if (not d->auto_repeat.key_sent) {
+        if (!d->auto_repeat.key_sent) {
             event_key = Qt::Key_Backspace;
         }
 
@@ -505,7 +505,7 @@ void AbstractTextEditor::onKeyReleased(const Key &key)
 
     case Key::ActionSpace: {
         const bool auto_caps_activated = d->language_features->activateAutoCaps(d->text->preedit());
-        const bool replace_preedit = d->auto_correct_enabled && not d->text->primaryCandidate().isEmpty();
+        const bool replace_preedit = d->auto_correct_enabled && !d->text->primaryCandidate().isEmpty();
 
         if (replace_preedit) {
             const QString &appendix = d->language_features->appendixForReplacedPreedit(d->text->preedit());
@@ -617,7 +617,7 @@ void AbstractTextEditor::replacePreedit(const QString &replacement)
 {
     Q_D(AbstractTextEditor);
 
-    if (not d->valid()) {
+    if (!d->valid()) {
         return;
     }
 
@@ -635,7 +635,7 @@ void AbstractTextEditor::replaceAndCommitPreedit(const QString &replacement)
 {
     Q_D(AbstractTextEditor);
 
-    if (not d->valid()) {
+    if (!d->valid()) {
         return;
     }
 
@@ -655,7 +655,7 @@ void AbstractTextEditor::clearPreedit()
 {
     Q_D(AbstractTextEditor);
 
-    if (not d->valid()) {
+    if (!d->valid()) {
         return;
     }
 
@@ -726,7 +726,7 @@ void AbstractTextEditor::commitPreedit()
 {
     Q_D(AbstractTextEditor);
 
-    if (not d->valid() || d->text->preedit().isEmpty()) {
+    if (!d->valid() || d->text->preedit().isEmpty()) {
         return;
     }
 
@@ -813,12 +813,12 @@ void AbstractTextEditor::onCursorPositionChanged(int cursor_position,
     Q_D(AbstractTextEditor);
     Replacement r;
 
-    if (not extractWordBoundariesAtCursor(surrounding_text, cursor_position, &r)) {
+    if (!extractWordBoundariesAtCursor(surrounding_text, cursor_position, &r)) {
         return;
     }
 
-    if (r.start < 0 or r.length < 0) {
-        if (d->ignore_next_surrounding_text == surrounding_text and
+    if (r.start < 0 || r.length < 0) {
+        if (d->ignore_next_surrounding_text == surrounding_text &&
             d->ignore_next_cursor_position == cursor_position) {
             d->ignore_next_surrounding_text.clear();
             d->ignore_next_cursor_position = -1;

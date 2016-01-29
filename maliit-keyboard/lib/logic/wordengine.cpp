@@ -47,19 +47,19 @@ void appendToCandidates(WordCandidateList *candidates,
                         const QString &candidate,
                         bool is_preedit_capitalized)
 {
-    if (not candidates) {
+    if (!candidates) {
         return;
     }
 
     QString changed_candidate(candidate);
 
-    if (not changed_candidate.isEmpty() && is_preedit_capitalized) {
+    if (!changed_candidate.isEmpty() && is_preedit_capitalized) {
         changed_candidate[0] = changed_candidate.at(0).toUpper();
     }
 
     WordCandidate word_candidate(source, changed_candidate);
 
-    if (not candidates->contains(word_candidate)) {
+    if (!candidates->contains(word_candidate)) {
         candidates->append(word_candidate);
     }
 }
@@ -172,7 +172,7 @@ WordCandidateList WordEngine::fetchCandidates(Model::Text *text)
     Q_D(WordEngine);
 
     const QString &preedit(text->preedit());
-    const bool is_preedit_capitalized(not preedit.isEmpty() && preedit.at(0).isUpper());
+    const bool is_preedit_capitalized(!preedit.isEmpty() && preedit.at(0).isUpper());
 
 #ifdef HAVE_PRESAGE
     const QString &context = (text->surroundingLeft() + preedit);
@@ -180,7 +180,7 @@ WordCandidateList WordEngine::fetchCandidates(Model::Text *text)
     const std::vector<std::string> predictions = d->presage.predict();
 
     // TODO: Fine-tune presage behaviour to also perform error correction, not just word prediction.
-    if (not context.isEmpty()) {
+    if (!context.isEmpty()) {
         // FIXME: max_candidates should come from style, too:
         const static unsigned int max_candidates = 7;
         const int count(qMin<int>(predictions.size(), max_candidates));
@@ -193,7 +193,7 @@ WordCandidateList WordEngine::fetchCandidates(Model::Text *text)
 
     const bool correct_spelling(d->spell_checker.spell(preedit));
 
-    if (candidates.isEmpty() and not correct_spelling) {
+    if (candidates.isEmpty() and !correct_spelling) {
         Q_FOREACH(const QString &correction, d->spell_checker.suggest(preedit, 5)) {
             appendToCandidates(&candidates, WordCandidate::SourceSpellChecking, correction, is_preedit_capitalized);
         }
